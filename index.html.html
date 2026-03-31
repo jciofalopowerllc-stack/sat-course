@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT Preparation Course — Haley Ciofalo</title>
+
+<style>
+/* ================================================================
+   COURSE SHELL v2 — CSS VARIABLES
+   Edit :root to change global theme. Module colors below.
+   ================================================================ */
+:root {
+  --sb-bg: #0F0F11; --sb-border: #1E1E24;
+  --sb-text: #7A7A85; --sb-text-hover: #C4C4CE; --sb-text-active: #F5F5F8;
+  --sb-active-bg: rgba(255,255,255,.07); --sb-hover-bg: rgba(255,255,255,.04);
+  --sb-w: 268px;
+  --bg: #F6F5F1; --surface: #FFFFFF; --surface2: #F0EFE9;
+  --border: #E2E0D8; --border2: #CCCAC0;
+  --text: #1C1C1E; --text2: #58575A; --text3: #A09EA8;
+  --topbar-h: 52px; --audiobar-h: 66px;
+  --m0:#6366F1; --m1:#E8533A; --m2:#7C4DFF; --m3:#0288D1;
+  --m4:#00897B; --m5:#F9A825; --m6:#1565C0; --m7:#2E7D32; --m8:#78909C;
+  --ai:#6366F1;
+  --radius:10px; --radius-sm:6px;
+  --shadow:0 1px 4px rgba(0,0,0,.08); --shadow-md:0 4px 16px rgba(0,0,0,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+
+/* ── Layout ── */
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;z-index:100;position:fixed;top:0;left:var(--sb-w);right:0}
+.topbar-course{font-family:Georgia,'Times New Roman',serif;font-size:14px;color:var(--text2)}
+.topbar-sep{color:var(--border2)}
+.topbar-current{font-size:14px;font-weight:500;color:var(--text)}
+.topbar-progress{margin-left:auto;display:flex;align-items:center;gap:10px}
+.progress-track{width:120px;height:5px;background:var(--border);border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;border-radius:999px;background:var(--m6);transition:width .4s}
+.progress-label{font-size:12px;color:var(--text3)}
+.layout{display:flex;height:100%;padding-top:var(--topbar-h);padding-bottom:var(--audiobar-h)}
+
+/* ── Sidebar ── */
+.sidebar{width:var(--sb-w);background:var(--sb-bg);flex-shrink:0;overflow-y:auto;position:fixed;top:0;left:0;bottom:var(--audiobar-h);padding-top:calc(var(--topbar-h) + 16px);scrollbar-width:thin;scrollbar-color:#2A2A34 transparent}
+.sb-header{padding:0 16px 16px}
+.sb-logo{font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#F5F5F8;letter-spacing:-.01em;line-height:1.2}
+.sb-student{font-size:11px;color:var(--sb-text);margin-top:4px}
+.sb-score-row{display:flex;gap:8px;margin-top:12px}
+.sb-score{background:rgba(255,255,255,.06);border-radius:5px;padding:5px 10px;text-align:center;flex:1}
+.sb-score-n{font-size:15px;font-weight:600;color:#F5F5F8}
+.sb-score-l{font-size:10px;color:var(--sb-text);margin-top:1px}
+.sb-divider{height:1px;background:var(--sb-border);margin:0 16px 10px}
+.sb-ai-btn{display:flex;align-items:center;gap:7px;width:100%;text-align:left;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);border-radius:6px;color:#A5B4FC;font-size:12px;font-weight:500;padding:8px 14px;cursor:pointer;margin:0 16px 4px;width:calc(100% - 32px);transition:all .15s}
+.sb-ai-btn:hover{background:rgba(99,102,241,.25)}
+.sb-ai-btn .ai-dot{width:6px;height:6px;border-radius:50%;background:#6366F1;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:.4}50%{opacity:1}}
+.module-group{margin-bottom:2px}
+.module-header{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:background .15s}
+.module-header:hover{background:var(--sb-hover-bg)}
+.module-header.active{background:var(--sb-active-bg)}
+.module-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.module-title{font-size:12px;font-weight:500;color:var(--sb-text-hover);flex:1;line-height:1.3}
+.module-header.active .module-title{color:var(--sb-text-active)}
+.module-count{font-size:10px;color:var(--sb-text)}
+.module-chevron{font-size:10px;color:var(--sb-text);transition:transform .2s}
+.module-header.open .module-chevron{transform:rotate(90deg)}
+.lesson-list{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.lesson-list.open{max-height:600px}
+.lesson-item{display:flex;align-items:center;gap:9px;padding:6px 16px 6px 33px;cursor:pointer;transition:background .12s}
+.lesson-item:hover{background:var(--sb-hover-bg)}
+.lesson-item.active{background:var(--sb-active-bg)}
+.lesson-dot{width:6px;height:6px;border-radius:50%;background:var(--sb-border);flex-shrink:0;transition:all .2s}
+.lesson-item.active .lesson-dot{background:#fff}
+.lesson-item.done .lesson-dot{background:#4CAF50}
+.lesson-name{font-size:12px;color:var(--sb-text);flex:1;line-height:1.35}
+.lesson-item.active .lesson-name{color:var(--sb-text-active)}
+
+/* ── Content ── */
+.content{flex:1;margin-left:var(--sb-w);overflow-y:auto;padding:36px 48px 36px;max-width:900px}
+@media(max-width:1100px){.content{padding:28px 24px}}
+.lesson-header{margin-bottom:32px}
+.lesson-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.10em;margin-bottom:8px}
+.lesson-title{font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:1.25;color:var(--text);margin-bottom:8px}
+.lesson-meta{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--text3);flex-wrap:wrap}
+.text-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px}
+.text-block p{font-size:15px;line-height:1.75;color:var(--text2);margin-bottom:14px}
+.text-block p:last-child{margin-bottom:0}
+.text-block h3{font-family:Georgia,'Times New Roman',serif;font-size:18px;color:var(--text);margin-bottom:10px}
+.text-block ul{padding-left:20px}
+.text-block ul li{font-size:15px;line-height:1.7;color:var(--text2);margin-bottom:5px}
+.callout{border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;font-size:14px;line-height:1.65}
+.callout strong{font-weight:600}
+.callout.blue{background:#EBF5FD;border-left:3px solid var(--m3);color:#1A4A6E}
+.callout.red{background:#FDF0EE;border-left:3px solid var(--m1);color:#6E2018}
+.callout.green{background:#EDF7ED;border-left:3px solid var(--m4);color:#1A4A2A}
+.callout.purple{background:#F0EDFF;border-left:3px solid var(--m2);color:#3D2A70}
+.callout.amber{background:#FEF8E7;border-left:3px solid var(--m5);color:#6B4400}
+.listen-btn{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;padding:8px 18px;border-radius:999px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;margin-bottom:22px;transition:all .15s}
+.listen-btn:hover{background:var(--border)}
+.listen-btn svg{width:14px;height:14px}
+
+/* ── Video Player ── */
+.video-player{background:#14141A;border-radius:var(--radius);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow-md)}
+.vp-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.vp-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.10em}
+.vp-slide-count{font-size:11px;color:rgba(255,255,255,.4)}
+.vp-stage{min-height:340px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.vp-visual{flex-shrink:0;height:190px;display:flex;align-items:center;justify-content:center;padding:20px}
+.vp-text{padding:20px 28px 24px;flex:1}
+.vp-heading{font-family:Georgia,'Times New Roman',serif;font-size:20px;color:#F5F5F8;margin-bottom:10px;line-height:1.3}
+.vp-body{font-size:14px;color:rgba(255,255,255,.7);line-height:1.75}
+.vp-body strong{color:#F5F5F8;font-weight:600}
+.vp-controls{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid rgba(255,255,255,.06)}
+.vp-dots{display:flex;gap:7px}
+.vp-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .2s}
+.vp-dot.active{background:#fff;transform:scale(1.2)}
+.vp-dot.done{background:rgba(255,255,255,.5)}
+.vp-btns{display:flex;align-items:center;gap:10px}
+.vp-btn{background:rgba(255,255,255,.1);border:none;border-radius:6px;color:#F5F5F8;cursor:pointer;font-size:12px;padding:6px 14px;transition:background .15s;display:flex;align-items:center;gap:6px}
+.vp-btn:hover{background:rgba(255,255,255,.18)}
+.vp-btn.play-btn{background:rgba(255,255,255,.15);padding:7px 18px}
+.vp-transcript{background:#1A1A22;border-top:1px solid rgba(255,255,255,.05)}
+.vp-transcript-toggle{width:100%;text-align:left;background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;padding:10px 20px;cursor:pointer}
+.vp-transcript-body{padding:0 20px 16px;font-size:13px;color:rgba(255,255,255,.5);line-height:1.8;display:none}
+.vp-transcript-body.open{display:block}
+.slide-enter{animation:slideIn .35s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── Drills ── */
+.drill-section{margin-bottom:24px}
+.drill-section-title{font-family:Georgia,'Times New Roman',serif;font-size:18px;color:var(--text);margin-bottom:14px}
+.drill-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:12px;transition:border-color .2s}
+.drill-num{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
+.drill-passage{background:var(--surface2);border-radius:6px;padding:12px 16px;margin-bottom:12px;font-size:13.5px;color:var(--text2);line-height:1.8;font-style:italic}
+.drill-stem{font-size:14px;font-weight:500;color:var(--text);margin-bottom:12px;line-height:1.5}
+.drill-choices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.drill-choice{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .12s;line-height:1.45}
+.drill-choice:hover{border-color:var(--border2);background:#ECECEA}
+.drill-choice .ltr{font-weight:700;margin-right:7px;color:var(--text)}
+.drill-choice.correct{background:#EDF7ED;border-color:#69BF72;color:var(--text);pointer-events:none}
+.drill-choice.correct .ltr{color:#2E7D32}
+.drill-choice.wrong{background:#FDF0EE;border-color:#E8A09A;pointer-events:none}
+.drill-choice.wrong .ltr{color:#C62828}
+.drill-reveal{font-size:12px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;cursor:pointer}
+.drill-reveal:hover{background:var(--border)}
+.drill-explanation{display:none;margin-top:12px;background:var(--surface2);border-radius:7px;padding:14px 16px}
+.drill-explanation.open{display:block}
+.exp-correct{font-size:12px;font-weight:700;color:#2E7D32;margin-bottom:6px}
+.exp-body{font-size:13px;color:var(--text2);line-height:1.7}
+.exp-trap{font-size:11px;color:#7A4400;background:#FEF3DD;border-radius:4px;padding:4px 9px;display:inline-block;margin-top:7px}
+
+/* ── AI FEEDBACK PANEL ── */
+.ai-feedback-panel{background:linear-gradient(135deg,#EEF2FF 0%,#F0EDFF 100%);border:1px solid rgba(99,102,241,.2);border-left:3px solid var(--ai);border-radius:var(--radius);padding:16px 18px;margin-top:14px;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ai-feedback-label{font-size:10px;font-weight:700;color:var(--ai);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ai-feedback-text{font-size:13.5px;color:#2D2A4A;line-height:1.75}
+.ai-feedback-actions{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.ai-action-btn{font-size:12px;font-weight:500;padding:7px 14px;border-radius:6px;border:1px solid;cursor:pointer;transition:all .15s}
+.ai-action-primary{background:var(--ai);color:#fff;border-color:var(--ai)}
+.ai-action-primary:hover{opacity:.85}
+.ai-action-secondary{background:transparent;color:var(--ai);border-color:rgba(99,102,241,.3)}
+.ai-action-secondary:hover{background:rgba(99,102,241,.08)}
+
+/* ── AI Loading dots ── */
+.ai-loading{display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(99,102,241,.6);padding:6px 0}
+.ai-dots{display:flex;gap:4px}
+.ai-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ai);animation:dotPulse 1.2s infinite}
+.ai-dots span:nth-child(2){animation-delay:.2s}
+.ai-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dotPulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1.1)}}
+
+/* ── Adaptive Drill Section ── */
+.adaptive-section{border:1px solid rgba(99,102,241,.2);border-radius:var(--radius);padding:20px 22px;margin-top:28px;background:rgba(99,102,241,.03)}
+.adaptive-header{font-size:11px;font-weight:700;color:var(--ai);text-transform:uppercase;letter-spacing:.10em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.adaptive-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.gen-btn{background:var(--ai);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.gen-btn:hover{opacity:.85}
+.gen-btn:disabled{opacity:.45;cursor:not-allowed}
+.ai-drill-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(99,102,241,.15);color:var(--ai);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── Chat Drawer ── */
+.chat-drawer{position:fixed;right:0;top:var(--topbar-h);bottom:var(--audiobar-h);width:340px;background:var(--surface);border-left:1px solid var(--border);box-shadow:-4px 0 20px rgba(0,0,0,.08);transform:translateX(100%);transition:transform .3s ease;z-index:300;display:flex;flex-direction:column}
+.chat-drawer.open{transform:translateX(0)}
+.chat-drawer-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chat-drawer-title{font-family:Georgia,'Times New Roman',serif;font-size:16px;color:var(--text)}
+.chat-drawer-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.chat-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text3);line-height:1;padding:2px 6px}
+.chat-close:hover{color:var(--text)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chat-msg{max-width:92%}
+.chat-msg.user{align-self:flex-end}
+.chat-msg.ai{align-self:flex-start}
+.chat-bubble{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.65}
+.chat-msg.user .chat-bubble{background:var(--ai);color:#fff;border-radius:12px 12px 3px 12px}
+.chat-msg.ai .chat-bubble{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:12px 12px 12px 3px}
+.chat-input-row{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+.chat-input{flex:1;font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);outline:none;font-family:inherit}
+.chat-input:focus{border-color:var(--ai)}
+.chat-send{background:var(--ai);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;flex-shrink:0}
+.chat-send:hover{opacity:.85}
+
+/* ── Tutor FAB ── */
+.tutor-fab{position:fixed;right:20px;bottom:calc(var(--audiobar-h) + 16px);background:var(--ai);color:#fff;border:none;border-radius:999px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(99,102,241,.4);z-index:250;transition:all .2s;display:flex;align-items:center;gap:7px}
+.tutor-fab:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.5)}
+.fab-pulse{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.8);animation:fabPulse 2s infinite}
+@keyframes fabPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.3);opacity:1}}
+
+/* ── Review Overlay ── */
+.review-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.review-overlay.open{display:flex}
+.review-modal{background:var(--surface);border-radius:var(--radius);max-width:580px;width:100%;max-height:82vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.review-modal-header{padding:22px 26px 18px;border-bottom:1px solid var(--border)}
+.review-modal-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ai);margin-bottom:6px}
+.review-modal-title{font-family:Georgia,'Times New Roman',serif;font-size:22px;color:var(--text)}
+.review-modal-sub{font-size:13px;color:var(--text3);margin-top:4px}
+.review-modal-body{padding:22px 26px}
+.review-modal-body p{font-size:14.5px;line-height:1.8;color:var(--text2);margin-bottom:14px}
+.review-modal-body p:last-child{margin-bottom:0}
+.review-modal-footer{padding:18px 26px;border-top:1px solid var(--border);display:flex;gap:10px}
+.review-return-btn{flex:1;background:var(--ai);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 20px;font-size:14px;font-weight:500;cursor:pointer}
+.review-return-btn:hover{opacity:.85}
+.review-close-btn{background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 18px;font-size:14px;cursor:pointer}
+
+/* ── Lesson Nav ── */
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding-top:24px;border-top:1px solid var(--border)}
+.ln-btn{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:10px 20px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .15s}
+.ln-btn:hover{background:var(--surface2)}
+.ln-btn.primary{background:var(--text);color:#fff;border-color:var(--text)}
+.ln-btn.primary:hover{opacity:.85}
+
+/* ── Resource Cards ── */
+.resource-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.resource-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;text-decoration:none;color:inherit;transition:all .15s;display:block}
+.resource-card:hover{border-color:var(--border2);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.rc-num{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.10em;margin-bottom:7px}
+.rc-title{font-family:Georgia,'Times New Roman',serif;font-size:16px;color:var(--text);margin-bottom:6px}
+.rc-desc{font-size:13px;color:var(--text3);line-height:1.55}
+.rc-open{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;font-weight:500}
+
+/* ── Score / Domain displays ── */
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.score-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.score-n{font-family:Georgia,'Times New Roman',serif;font-size:28px}
+.score-l{font-size:11px;color:var(--text3);margin-top:4px}
+.domain-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.domain-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.domain-row:last-child{margin-bottom:0}
+.d-name{font-size:13px;min-width:210px}
+.d-track{flex:1;height:8px;background:var(--surface2);border-radius:999px;overflow:hidden}
+.d-fill{height:100%;border-radius:999px}
+.d-score{font-size:12px;color:var(--text3);min-width:65px;text-align:right}
+.d-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;min-width:60px;text-align:center}
+.dt-red{background:#FDF0EE;color:#C62828}
+.dt-amber{background:#FEF8E7;color:#7A4400}
+.dt-green{background:#EDF7ED;color:#2E7D32}
+
+/* ── Audio Bar ── */
+.audiobar{position:fixed;bottom:0;left:0;right:0;height:var(--audiobar-h);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:200}
+.ab-label{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;min-width:36px}
+.ab-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ab-btn:hover{background:var(--border)}
+.ab-btn.active{background:var(--m3);border-color:var(--m3);color:#fff}
+.ab-text{flex:1;font-size:13px;color:var(--text2);line-height:1.4;max-height:40px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ab-text.speaking{color:var(--m3)}
+.ab-speed,.ab-stop{font-size:12px;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:4px;border:1px solid var(--border)}
+.ab-speed:hover,.ab-stop:hover{background:var(--surface2)}
+
+/* ── Error Pattern Display ── */
+.error-pattern-report{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px}
+.error-pattern-report h3{font-family:Georgia,'Times New Roman',serif;font-size:18px;margin-bottom:12px}
+.error-bars{margin-bottom:16px}
+.error-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px}
+.error-bar-track{flex:1;height:6px;background:var(--surface2);border-radius:999px;overflow:hidden}
+.error-bar-fill{height:100%;border-radius:999px;background:var(--ai)}
+.error-count{min-width:24px;text-align:right;color:var(--text3)}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.divider{height:1px;background:var(--border);margin:24px 0}
+.empty-state{text-align:center;padding:80px 40px;color:var(--text3);font-size:15px}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span class="topbar-course">SAT Prep Course</span>
+  <span class="topbar-sep">›</span>
+  <span class="topbar-current" id="topbar-current">Loading...</span>
+  <div class="topbar-progress">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-label" id="progress-label">0 / 0 complete</span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="content" id="content"><div class="empty-state">Loading...</div></main>
+</div>
+
+<!-- AUDIO BAR -->
+<div class="audiobar">
+  <span class="ab-label">Audio</span>
+  <button class="ab-btn" id="ab-play" onclick="AB.toggle()" title="Play / Pause">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path id="ab-icon" d="M3 2l7 4-7 4z"/></svg>
+  </button>
+  <div class="ab-text" id="ab-text">Press Listen on any lesson section to hear narration.</div>
+  <span class="ab-speed" id="ab-speed" onclick="AB.cycleSpeed()">1×</span>
+  <span class="ab-stop" onclick="AB.stop()">■ Stop</span>
+</div>
+
+<!-- TUTOR FAB -->
+<button class="tutor-fab" id="tutor-fab" onclick="Chat.open()">
+  <span class="fab-pulse"></span> Ask Tutor
+</button>
+
+<!-- CHAT DRAWER -->
+<div class="chat-drawer" id="chat-drawer">
+  <div class="chat-drawer-header">
+    <div>
+      <div class="chat-drawer-title">AI Tutor</div>
+      <div class="chat-drawer-sub">Ask anything about this lesson</div>
+    </div>
+    <button class="chat-close" onclick="Chat.close()">×</button>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" type="text" placeholder="Ask a question..."
+      onkeydown="if(event.key==='Enter')Chat.send()">
+    <button class="chat-send" onclick="Chat.send()">→</button>
+  </div>
+</div>
+
+<!-- REVIEW OVERLAY -->
+<div class="review-overlay" id="review-overlay">
+  <div class="review-modal">
+    <div class="review-modal-header">
+      <div class="review-modal-eyebrow">✦ AI Concept Review</div>
+      <div class="review-modal-title" id="review-title">Targeted Review</div>
+      <div class="review-modal-sub" id="review-sub">Reviewing the concept behind your answer</div>
+    </div>
+    <div class="review-modal-body" id="review-content">
+      <div class="ai-loading"><div class="ai-dots"><span></span><span></span><span></span></div> Generating targeted review...</div>
+    </div>
+    <div class="review-modal-footer">
+      <button class="review-return-btn" id="review-return-btn" onclick="Review.returnAndRetry()">I've reviewed this — try again →</button>
+      <button class="review-close-btn" onclick="Review.close()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   SAT COURSE v2 — AI-Powered Learning Engine
+   ────────────────────────────────────────────────────────────────
+   COURSE_CONFIG  All content — edit to revise anything
+   AI             Anthropic API integration (5 AI features)
+   AB             Audio narration (Web Speech API)
+   VP             Video player (animated slides)
+   CE             Course engine (navigation, progress, error log)
+   R              Renderer (all lesson types + AI hooks)
+   Review         Branching review overlay system
+   Chat           AI tutor chat drawer
+   ErrorPanel     Error pattern analysis
+   ────────────────────────────────────────────────────────────────
+   AI FEATURES:
+   1. Personalized wrong-answer feedback (priority #1)
+   2. Branching concept review + return to question
+   3. Error pattern detection & analysis report
+   4. Adaptive drill generation based on error patterns
+   5. AI tutor chat (lesson-aware, error-aware)
+   ================================================================ */
+
+/* ================================================================
+   GOOGLE CONFIGURATION
+   Paste your credentials here after completing setup guide.
+   Course works fully without Google — all features are optional.
+   ================================================================ */
+const GOOGLE_CONFIG = {
+  CLIENT_ID: 'PASTE_CLIENT_ID_HERE',
+  SPREADSHEET_ID: 'PASTE_SPREADSHEET_ID_HERE',
+  CLASSROOM_COURSE_ID: 'PASTE_COURSE_ID_HERE',
+  configured: false
+};
+
+/* ================================================================
+   COURSE CONFIGURATION
+   ⚠ BETA EDITING ZONE — all content lives here
+   ================================================================ */
+const COURSE_CONFIG = {
+  student: {
+    name:'Haley Ciofalo', grade:'11', state:'New Jersey',
+    baseline:{total:920,rw:440,math:480,pctile:40},
+    target:{total:1050,rw:490,math:530},
+    testDate:'PSAT/NMSQT · October 2025', nmscIndex:136
+  },
+  modules:[
+    // ══ M0: ORIENTATION ══
+    {id:'m0',title:'Course Orientation',color:'#6366F1',icon:'◈',lessons:[
+      {id:'m0l1',title:'Welcome to Your SAT Course',type:'video',duration:'6 min',eyebrow:'Module 0 · Orientation',videoLabel:'Course Introduction',
+        slides:[
+          {heading:'Welcome, Haley.',body:'This course is built specifically for you — from your PSAT score report, your domain strengths and gaps, and the strategies most likely to move your score in 8 weeks.',visual:'welcome',audio:'Welcome, Haley. This course is built specifically for you — from your PSAT score report, your domain strengths and gaps, and the strategies most likely to move your score in 8 weeks.'},
+          {heading:'Your Baseline: 920 (40th Percentile)',body:'R&W scored 440 — 61 points below the 3-year national average. Math scored 480, near average at the 51st percentile. The gap is real, and it is fixable.',visual:'scores',audio:'Your PSAT total of 920 places you at the 40th percentile. Reading and Writing scored 440, which is 61 points below the national average. Math scored 480, near average at the 51st percentile. The gap is real and it is fixable.'},
+          {heading:'What Makes This Course Different',body:'Your Craft & Structure (490–540) and Data Analysis/Geometry (550–600) show genuine capability. This course focuses on the highest-leverage gaps: Expression of Ideas and Algebra.',visual:'strengths',audio:'You are not starting from zero. Your Craft and Structure and Data Analysis scores show genuine capability. This course focuses on the highest-leverage gaps: Expression of Ideas and Algebra.'},
+          {heading:'AI-Powered Personalization',body:'This course uses AI to adapt to how you are actually performing. When you answer a question incorrectly, the AI tutor explains exactly why your specific choice was wrong. Drill questions are generated based on your real error patterns.',visual:'ai-feature',audio:'This course is powered by an AI tutor that adapts to your performance. When you answer a question incorrectly, the AI explains exactly why your specific choice was wrong. New drill questions are generated based on your actual error patterns.'},
+          {heading:'Your 8-Week Target: 1,020–1,050+',body:'A focused 8-week effort targeting your specific weak domains is projected to produce a 100–130 point improvement. R&W rising from 440 to 490+ and Math from 480 to 530+.',visual:'target',audio:'A focused 8-week effort is projected to produce a 100 to 130 point improvement. Reading and Writing rising from 440 to 490 or above, and Math rising from 480 to 530 or above.'}
+        ]},
+      {id:'m0l2',title:'Understanding Your Score Report',type:'reading',duration:'8 min',eyebrow:'Module 0 · Orientation',
+        audioScript:'This lesson walks through your PSAT score report. Your total of 920 is the sum of Reading and Writing 440 and Math 480. Your highest-priority domain is Expression of Ideas, scoring 370 to 410, which is the lowest score on your entire report. Your strongest domain is Craft and Structure at 490 to 540. On the Math side, Data Analysis and Geometry score 550 to 600, while Algebra and Advanced Math score 420 to 460. This course targets your three priority domains first: Expression of Ideas, Algebra, and Advanced Math.',
+        content:[{type:'scores'},{type:'callout',style:'red',text:'<strong>Highest priority:</strong> Expression of Ideas (370–410) is the lowest score on your entire report — and the highest-leverage fix. Every point here moves your R&W section score more than any other domain.'},{type:'domains'},{type:'callout',style:'green',text:'<strong>Your strengths are real assets.</strong> Craft & Structure (490–540) tells us you are an analytical reader. Data Analysis and Geometry (550–600) tell us you think well visually and statistically.'}]}
+    ]},
+
+    // ══ M1: EXPRESSION OF IDEAS ══
+    {id:'m1',title:'Expression of Ideas',color:'#E8533A',icon:'✎',lessons:[
+      {id:'m1l1',title:'What Is Expression of Ideas?',type:'video',duration:'7 min',eyebrow:'Module 1 · Expression of Ideas',videoLabel:'Concept Introduction',
+        slides:[
+          {heading:'Expression of Ideas: The Overview',body:'Expression of Ideas is your lowest-scoring domain (370–410) and also the most heavily weighted domain in R&W. It tests your ability to improve writing in progress — not simply understand what you read.',visual:'eoi-intro',audio:'Expression of Ideas is your lowest-scoring domain and the most heavily weighted in Reading and Writing. It tests your ability to improve writing that is already in progress — not simply understand what you read.'},
+          {heading:'Three Question Types',body:'<strong>Transitions:</strong> Choose the word that signals the logical relationship between two ideas.<br><br><strong>Add / Delete:</strong> Decide whether a sentence belongs in the paragraph.<br><br><strong>Sentence Placement:</strong> Determine where a sentence goes within a passage.',visual:'eoi-types',audio:'There are three question types. Transitions ask you to choose the word that signals the logical relationship between two ideas. Add and Delete questions ask whether a sentence belongs. Sentence Placement asks where a sentence goes.'},
+          {heading:'Why These Are Learnable',body:'Unlike Craft & Structure, where you analyze what an author did, Expression of Ideas asks you to act as the editor. Every question type has a clear, repeatable process — and that process is what this module teaches.',visual:'eoi-process',audio:'Expression of Ideas asks you to act as the editor. Every question type has a clear, repeatable process, and that process is what this module teaches you.'},
+          {heading:'The Core Principle: Function Over Form',body:'Every Expression of Ideas question tests <strong>function over form</strong>. The question is never "what sounds good?" — it is always "what serves the paragraph\'s specific purpose?" Purpose is the only criterion.',visual:'eoi-principle',audio:'Every Expression of Ideas question tests function over form. The question is never what sounds good — it is always what serves the paragraph\'s specific purpose. Purpose is the only criterion.'}
+        ]},
+      {id:'m1l2',title:'Transitions — The 4 Relationships',type:'video',duration:'10 min',eyebrow:'Module 1 · Expression of Ideas',videoLabel:'Transitions Method',
+        slides:[
+          {heading:'What Does a Transition Do?',body:'A transition signals the <strong>logical relationship</strong> between two ideas. The SAT tests whether you can identify that relationship and match it to the correct connector. The topic is irrelevant — only the relationship matters.',visual:'trans-intro',audio:'A transition signals the logical relationship between two ideas. The SAT tests whether you can identify that relationship and match it to the correct connector. The topic is completely irrelevant — only the relationship matters.'},
+          {heading:'Relationship 1: Contrast',body:'The second idea opposes or contradicts the first.<br><br><strong>Flat contrast:</strong> However · In contrast · By contrast<br><strong>Concessive:</strong> Nevertheless · Yet · Still · Even so',visual:'trans-contrast',audio:'The first relationship is Contrast. The second idea opposes or contradicts the first. Flat contrast words include However, In contrast, and By contrast. Concessive contrast words — true despite what was just said — include Nevertheless, Yet, Still, and Even so.'},
+          {heading:'Relationship 2: Continuation',body:'The second idea adds to or supports the first.<br><br><strong>Words:</strong> Additionally · Furthermore · Moreover · Also · Similarly',visual:'trans-continue',audio:'The second relationship is Continuation. The second idea adds to or supports the first. Continuation words include Additionally, Furthermore, Moreover, Also, and Similarly.'},
+          {heading:'Relationship 3: Cause & Effect',body:'The second idea is a result of the first.<br><br><strong>Effect words:</strong> Therefore · Thus · Consequently · As a result<br><br>Test: Could you place "which is why" between the sentences?',visual:'trans-cause',audio:'The third relationship is Cause and Effect. The second idea is a result of the first. Effect words include Therefore, Thus, Consequently, and As a result. To test: ask yourself — could you place "which is why" between the two sentences?'},
+          {heading:'Relationship 4: Example / Elaboration',body:'The second idea illustrates or specifies the first.<br><br><strong>Words:</strong> For example · For instance · Specifically · In particular',visual:'trans-example',audio:'The fourth relationship is Example or Elaboration. The second idea illustrates or specifies the first. Words include For example, For instance, Specifically, and In particular.'},
+          {heading:'The Method — Always in This Order',body:'<strong>Step 1:</strong> Read both sentences completely.<br><strong>Step 2:</strong> Name the relationship in your own words.<br><strong>Step 3:</strong> Match to the connector category.<br><strong>Step 4:</strong> Select and verify the others fail.',visual:'trans-method',audio:'The method must always happen in this order. Step 1: read both sentences. Step 2: name the relationship in your own words before looking at choices. Step 3: match to the connector category. Step 4: select, then verify the other choices fail.'}
+        ]},
+      {id:'m1l3',title:'Transitions Practice Drills',type:'drill',duration:'12 min',eyebrow:'Module 1 · Expression of Ideas',
+        audioScript:'This drill session has four transitions questions. For each, name the relationship between the two sentences before selecting. Use the method: read both sentences, name the relationship, match to the connector, then select.',
+        reviewLesson:'m1l2',
+        drills:[
+          {num:'Question 1 of 4 — Transitions',passage:'Early studies suggested that sleep deprivation had only minor effects on cognitive performance. ______ subsequent research demonstrated that even moderate sleep loss significantly impairs decision-making, memory, and reaction time.',stem:'Which choice completes the text with the most logical transition?',choices:['For example,','Similarly,','However,','Therefore,'],correct:2,explanation:'The sentences contrast: early studies = minor effects; later research = significant impairment. "However" signals flat contrast. "Similarly" implies agreement — exactly wrong. "Therefore" implies causation not stated.',trap:'Trap: B (Similarly) sounds academic and safe — but reverses the logical relationship entirely.'},
+          {num:'Question 2 of 4 — Transitions',passage:'Roman concrete built over two thousand years ago remains standing today. ______ modern concrete typically begins to deteriorate within fifty years.',stem:'Which choice completes the text with the most logical transition?',choices:['Consequently,','Furthermore,','For instance,','By contrast,'],correct:3,explanation:'Roman concrete lasts 2,000+ years; modern lasts ~50 years. Direct contrast between two types. "By contrast" is precise. "Furthermore" adds supporting info — it would reinforce, not oppose.',trap:'Trap: "Furthermore" sounds neutral and academic. Always identify the relationship before looking at choices.'},
+          {num:'Question 3 of 4 — Transitions',passage:'The monarch butterfly\'s migration covers over 3,000 miles using the sun\'s position for navigation. ______ the butterflies also use Earth\'s magnetic field as a secondary system when sunlight is unavailable.',stem:'Which choice completes the text with the most logical transition?',choices:['In contrast,','Additionally,','Nevertheless,','As a result,'],correct:1,explanation:'"Additionally" signals continuation — the second sentence adds a second navigation method to the one described. "In contrast" implies opposition between the two methods, which is wrong.',trap:'Trap: "As a result" (D) — the passage does not claim using the sun causes magnetic-field use. Never infer causation unless explicitly stated.'},
+          {num:'Question 4 of 4 — Harder',passage:'Researchers long believed the amygdala functions solely as the brain\'s fear center. ______ recent neuroimaging studies revealed that it activates during positive emotional experiences too, suggesting it is better described as an emotional salience detector.',stem:'Which choice completes the text with the most logical transition?',choices:['In other words,','As a result,','Yet','Indeed,'],correct:2,explanation:'"Yet" signals a concessive contrast — the new research complicates the long-held belief. "Indeed" (D) would reinforce the belief, not challenge it. This is a concessive contrast, not a flat one.',trap:'Trap: "Indeed" — students who skim see "researchers believed" and "studies revealed" as agreeing. The content sharply contradicts the first claim.'}
+        ]},
+      {id:'m1l4',title:'Sentence Addition & Deletion',type:'reading',duration:'9 min',eyebrow:'Module 1 · Expression of Ideas',
+        audioScript:'Add and Delete questions follow one rule: evaluate every sentence against the paragraph\'s stated purpose — not the general topic. A sentence can be true, interesting, and related to the topic and still be wrong to add if it does not serve the specific purpose. The question stem almost always tells you what the paragraph is doing: explaining, arguing, illustrating, introducing. That stated purpose is your only criterion. The reasoning clause in the answer choice is as important as the instruction. Choice D might say "deleted" for the right reason. Choice C might also say "deleted" for a wrong reason. Always verify the reasoning, not just the instruction.',
+        content:[
+          {type:'text',html:'<h3>The One Rule: Purpose Over Topic</h3><p>Add/Delete questions fail students who evaluate whether the sentence is <em>true</em> or <em>related to the topic</em>. The SAT does not care about either. The only criterion is: does this sentence serve the paragraph\'s stated purpose?</p>'},
+          {type:'callout',style:'blue',text:'<strong>How to identify the purpose:</strong> The question stem often contains it — "The researcher argues that..." or "The paragraph focuses on explaining why..." Read the stem carefully before reading the proposed sentence.'},
+          {type:'text',html:'<h3>The Reasoning Clause Is Half the Answer</h3><p>Each choice has two parts: the instruction (add/delete) and the reasoning. Both must be correct. Always verify both independently — a choice that says "deleted, because the information is already stated" is wrong if the information is not actually stated elsewhere, even if "deleted" is the right instruction.</p>'},
+          {type:'callout',style:'amber',text:'<strong>Never accepted as a reason to add:</strong> "Reader familiarity," "general interest," "enriches the essay," or "improves flow." These are not SAT criteria. Only purpose and direct relevance count.'}
+        ]},
+      {id:'m1l5',title:'Add/Delete Practice Drills',type:'drill',duration:'10 min',eyebrow:'Module 1 · Expression of Ideas',
+        audioScript:'Three Add and Delete questions. Before answering, identify the paragraph\'s stated purpose from the question stem. Then evaluate the proposed sentence against that purpose — not the topic. Verify both the instruction and the reasoning in each answer choice.',
+        reviewLesson:'m1l4',
+        drills:[
+          {num:'Question 1 of 3 — Add / Delete',passage:'The paragraph explains why deep-sea hydrothermal vents support life despite their distance from sunlight. It focuses on chemosynthesis — bacteria converting hydrogen sulfide into energy. [Proposed: Hydrothermal vents were first discovered in 1977 near the Galápagos Islands by a team from Woods Hole Oceanographic Institution.]',stem:'Should the proposed sentence be added or deleted?',choices:['Added, because it provides historical context that enriches the discussion.','Added, because it establishes the credibility of scientists who study vents.','Deleted, because it shifts focus from how life survives to an unrelated historical detail.','Deleted, because readers are already familiar with the history of vent discovery.'],correct:2,explanation:'The paragraph\'s purpose is explaining how life survives via chemosynthesis. The proposed sentence — discovery date and team name — is interesting but does not serve this purpose. C correctly identifies both the instruction (deleted) and the reason (shifts focus). D says "deleted" for a wrong reason.',trap:'Trap: A — "enriches the discussion" sounds plausible but is not an SAT criterion.'},
+          {num:'Question 2 of 3 — Add / Delete',passage:'The paragraph argues that urban noise pollution is increasing and poses health risks to city residents. [Proposed: Researchers at Stanford have developed noise-canceling technology that could reduce exposure to traffic sounds by up to 40 percent.]',stem:'Should the proposed sentence be added or deleted?',choices:['Added, because it introduces a potential solution that complements the concern.','Added, because it cites credible research that strengthens the scientific basis.','Deleted, because the paragraph establishes the problem, not proposes solutions.','Deleted, because the Stanford research is not directly related to health risks.'],correct:2,explanation:'The paragraph\'s purpose is establishing that noise pollution is increasing and harmful. The proposed sentence introduces a solution — shifting from problem-establishing to problem-solving. C correctly identifies the mismatch.',trap:'Trap: B — citing credible research is never automatically a reason to add. The research must serve the paragraph\'s specific purpose.'},
+          {num:'Question 3 of 3 — Harder',passage:'The passage focuses on how composer Hildegard von Bingen used music to express theological ideas and notes that her compositions were structurally unconventional. [Proposed: Von Bingen also wrote extensively on natural science, producing illustrated manuscripts about plants, stones, and animals.]',stem:'Should the proposed sentence be added or deleted?',choices:['Added, because it establishes von Bingen as versatile, supporting her unconventional approach.','Added, because it provides biographical context that enriches understanding of von Bingen.','Deleted, because it introduces her scientific writings, unrelated to the musical/theological focus.','Deleted, because von Bingen\'s natural science work is already well known.'],correct:2,explanation:'The paragraph focuses on music and theology. The proposed sentence introduces natural science — a different domain entirely. C correctly identifies the scope mismatch. A mischaracterizes the paragraph\'s focus as "versatility" when it is specifically about music and theology.',trap:'Trap: A — "versatile" and "unconventional" are related concepts but A misidentifies the paragraph\'s actual focus.'}
+        ]}
+    ]},
+
+    // ══ M2: ALGEBRA ══
+    {id:'m2',title:'Algebra Foundations',color:'#7C4DFF',icon:'∑',lessons:[
+      {id:'m2l1',title:'Systems of Equations + Desmos',type:'video',duration:'9 min',eyebrow:'Module 2 · Algebra',videoLabel:'Systems + Desmos Strategy',
+        slides:[
+          {heading:'Your Math Strengths and Gaps',body:'You score 550–600 on Data Analysis and Geometry — genuinely strong. You score 420–460 on Algebra and Advanced Math. Applied, visual math is strong; symbolic, procedural math needs work. The good news: Desmos is built into every digital SAT.',visual:'alg-intro',audio:'You score 550 to 600 on Data Analysis and Geometry — genuinely strong. You score 420 to 460 on Algebra and Advanced Math. The gap: applied visual math is strong; symbolic procedural math needs work. The good news: Desmos is a graphing calculator built into every digital SAT and is legal to use on all math questions.'},
+          {heading:'Setting Up Two-Variable Systems',body:'Every two-variable word problem produces two equations. Write both before touching arithmetic.<br><br><strong>Equation 1:</strong> Total count (x + y = N)<br><strong>Equation 2:</strong> Total value (ax + by = V)',visual:'alg-system',audio:'Every two-variable word problem produces exactly two equations. Write both down before touching any arithmetic. Equation 1 is always the total count — x plus y equals N. Equation 2 is always the total value — some amount times x plus some amount times y equals V.'},
+          {heading:'Solving by Substitution',body:'From Equation 1: x = N − y. Substitute into Equation 2. Solve for y. Then substitute back. Always verify by plugging both values into both original equations.',visual:'alg-sub',audio:'To solve by substitution: from Equation 1, isolate one variable — x equals N minus y. Substitute into Equation 2. Solve for y, then substitute back to find x. Always verify by plugging both values into both original equations.'},
+          {heading:'The Desmos Method — 30 Seconds',body:'Open Desmos. Type each equation on its own line. The intersection appears automatically. Click it to read coordinates. Done.<br><br>Best for: systems, quadratic roots, max/min values, any question with a graph.',visual:'alg-desmos',audio:'Open Desmos. Type each equation on its own line. The intersection point appears automatically. Click it to read the coordinates. Done in thirty seconds.'},
+          {heading:'When to Use Desmos vs. Algebra',body:'<strong>Use Desmos:</strong> Two equations + asked for intersection, graph question, or algebra taking over 90 seconds.<br><br><strong>Use algebra:</strong> Desmos gives a messy decimal that doesn\'t match any choice.',visual:'alg-when',audio:'Use Desmos when: the question gives two equations and asks for the intersection, when it involves a graph, or when algebra is taking more than 90 seconds. Use algebra when Desmos gives a messy decimal that does not match any answer choice.'}
+        ]},
+      {id:'m2l2',title:'Backsolving: When Not to Solve',type:'reading',duration:'8 min',eyebrow:'Module 2 · Algebra',
+        audioScript:'Backsolving means plugging each answer choice into the problem and checking which one satisfies the conditions — instead of solving algebraically. It applies when the choices are specific numbers and the question asks for a single value. Start with the middle value. If the result is too high, try the next smaller value. If too low, try larger. Maximum three attempts — usually two. Backsolving works on approximately 30 percent of SAT Math questions.',
+        content:[
+          {type:'text',html:'<h3>What Is Backsolving?</h3><p>Backsolving means plugging answer choices into the problem to find which satisfies the conditions — instead of solving algebraically. It applies when: (1) choices are specific numbers, and (2) the question asks "what is the value of x."</p>'},
+          {type:'callout',style:'purple',text:'<strong>The method:</strong> Start with the middle value. If the result is too high, try the next smaller value. If too low, try larger. Maximum 3 attempts — usually 2.'},
+          {type:'text',html:'<h3>When to Use It</h3><ul><li>Linear equations with numerical choices</li><li>Word problems asking for a specific count or amount</li><li>Inequalities (test each choice)</li><li>Quadratics (plug each choice in, check if equation = 0)</li></ul>'},
+          {type:'callout',style:'green',text:'<strong>Two-variable tip:</strong> When backsolving a problem with two unknowns, use the total constraint to find the second variable from your tested value, then check the revenue/value equation.'}
+        ]},
+      {id:'m2l3',title:'Algebra Practice Drills',type:'drill',duration:'14 min',eyebrow:'Module 2 · Algebra',
+        audioScript:'Four algebra problems. For each, consider whether backsolving or Desmos would be faster than solving algebraically.',
+        reviewLesson:'m2l2',
+        drills:[
+          {num:'Question 1 of 4 — Linear equation',passage:'',stem:'If 3x + 7 = 4x − 5, what is the value of x?',choices:['5','8','12','15'],correct:2,explanation:'Backsolving: Try 8: 31≠27. Left bigger → try larger. Try 12: 43=43. ✓ Algebra: 7+5=4x−3x → x=12.',trap:'Backsolving (2 trials) is as fast as algebra here. Use whichever feels faster.'},
+          {num:'Question 2 of 4 — Word problem',passage:'A theater sold adult tickets for $12 and student tickets for $7. A total of 200 tickets were sold and total revenue was $1,790.',stem:'How many adult tickets were sold?',choices:['78','98','112','125'],correct:0,explanation:'System: a+s=200 and 12a+7s=1790. Substitute s=200−a: 12a+7(200−a)=1790 → 5a=390 → a=78. Check: 78×12+122×7=936+854=1790 ✓',trap:'Always set up both equations (count + value) before solving.'},
+          {num:'Question 3 of 4 — Systems',passage:'A farm has chickens and cows. There are 30 animals total. The animals have 84 legs total.',stem:'How many cows are on the farm?',choices:['8','12','18','21'],correct:1,explanation:'System: c+k=30 and 4c+2k=84. Substitute k=30−c: 2c=24 → c=12. Check: 12+18=30 ✓ and 48+36=84 ✓.',trap:'Trap: D (21) from 84÷4=21, ignoring chicken legs entirely.'},
+          {num:'Question 4 of 4 — Inequality',passage:'',stem:'Which value of x satisfies 2x − 3 > 5x + 9?',choices:['−6','−4','0','3'],correct:0,explanation:'Algebra: −12>3x → x<−4. Test A (−6): −15>−21 ✓. Test B (−4): −11>−11 — strict inequality fails. Only −6 qualifies.',trap:'Trap: B (−4) is the boundary value — satisfies x≤−4 but NOT the strict inequality x<−4.'}
+        ]},
+      {id:'m2l4',title:'Word Problem Translation Drills',type:'drill',duration:'12 min',eyebrow:'Module 2 · Algebra',
+        audioScript:'Word problem translation drills. The most common errors happen at the translation step, not the solving step.',
+        reviewLesson:'m2l1',
+        drills:[
+          {num:'Question 1 of 4 — Ratio',passage:'The ratio of cats to dogs at a shelter is 5:3. The total number of cats and dogs is n.',stem:'Which expression gives the number of cats?',choices:['3n/8','5n/8','5n/3','3n/5'],correct:1,explanation:'Plug in n=40: ratio 5:3 → 8 parts → cats=25. Test B: 5(40)/8=25 ✓. A gives dogs (15). Cats are 5 out of every 8 total.',trap:'Trap: A gives the number of dogs. Always plug in a concrete number to verify.'},
+          {num:'Question 2 of 4 — Combined rate',passage:'A printer prints 40 pages per minute. A second printer prints 60 pages per minute.',stem:'Running simultaneously, how many minutes to print 500 pages?',choices:['8.33 min','12.5 min','5 min','6.25 min'],correct:2,explanation:'Combined rate=100 ppm. Time=500÷100=5 min. A uses only 60 ppm. B uses only 40 ppm. Always add rates before dividing.',trap:'Trap: Using one printer\'s rate alone — most common error on combined-rate problems.'},
+          {num:'Question 3 of 4 — Sequential percent',passage:'A jacket costs $80. The store applies a 25% discount, then an additional 10% discount on the sale price.',stem:'What is the final price?',choices:['$44.00','$48.00','$54.00','$52.00'],correct:2,explanation:'Step 1: $80×0.75=$60. Step 2: $60×0.90=$54. D ($52) comes from adding 25%+10%=35% and applying at once — wrong.',trap:'Trap: Adding 25%+10%=35% and applying at once. Sequential discounts are NOT additive.'},
+          {num:'Question 4 of 4 — "Times as many"',passage:'Maya has 3 times as many stickers as Jonah. Together they have 48 stickers.',stem:'How many stickers does Jonah have?',choices:['16','12','36','24'],correct:1,explanation:'Let J=Jonah. Maya=3J. J+3J=48 → 4J=48 → J=12. A (16): 48÷3 forgot to include Jonah. C (36): that is Maya\'s count.',trap:'Trap: C — solving for Maya when the question asks for Jonah. Always re-read which variable you need.'}
+        ]}
+    ]},
+
+    // ══ M3: COMMAND OF EVIDENCE ══
+    {id:'m3',title:'Command of Evidence',color:'#0288D1',icon:'⊕',lessons:[
+      {id:'m3l1',title:'The Claim-First Method',type:'video',duration:'8 min',eyebrow:'Module 3 · Information & Ideas',videoLabel:'Evidence Strategy',
+        slides:[
+          {heading:'What Evidence Questions Test',body:'Evidence questions ask you to find which detail best supports a specific claim. Three wrong answers relate to the same topic. Only one directly proves the specific claim. This distinction is everything.',visual:'evid-intro',audio:'Evidence questions ask you to find which detail best supports a specific claim. Three wrong answers will relate to the same topic. Only one will directly prove the specific claim. The distinction between "relates to" and "supports" is everything.'},
+          {heading:'Step 1: Dissect the Claim',body:'Before reading the choices, count the parts of the claim. Most evidence questions test a two-part claim — cause AND effect, or subject AND specific attribute. Evidence must address ALL parts.',visual:'evid-parts',audio:'Before reading the choices, count the parts of the claim. Most evidence questions test a two-part claim — a cause and an effect, or a subject and a specific attribute. Evidence that confirms only one part does not directly support the full claim.'},
+          {heading:'Step 2: The "Also True" Test',body:'For each wrong choice: could this be true even if the claim is false? If yes → not strong evidence.<br><br>For the correct choice: could this be true if the claim is false? If no → that is your answer.',visual:'evid-test',audio:'For each wrong choice, ask: could this be true even if the claim is false? If yes, it is not strong evidence. For the correct choice, ask: could this be true if the claim is false? If no — that is your answer.'},
+          {heading:'The Causation Trap',body:'Any answer choice using "causes," "will produce," "proves," or "leads to" when the data shows only a correlation is automatically wrong. The SAT never allows causal conclusions from observational data.',visual:'evid-causal',audio:'Any answer choice using causal language — causes, will produce, proves, leads to — when the data only shows a correlation is automatically wrong. Eliminate it immediately.'},
+          {heading:'The Language of Correct Evidence',body:'Correct answers use hedged language:<br>✓ "is associated with" &nbsp; ✓ "tended to"<br>✓ "among the group studied" &nbsp; ✓ "suggests"<br><br>These are the fingerprints of a correct evidence answer.',visual:'evid-language',audio:'Correct evidence answers use hedged language. Look for phrases like "is associated with," "tended to," "among the group studied," and "suggests." These are the fingerprints of a correct SAT evidence answer.'}
+        ]},
+      {id:'m3l2',title:'Evidence Practice Drills',type:'drill',duration:'12 min',eyebrow:'Module 3 · Information & Ideas',
+        audioScript:'Four evidence questions. Identify all parts of the claim before reading choices. Use the "also true" test to eliminate choices that relate to the topic but do not directly prove the claim.',
+        reviewLesson:'m3l1',
+        drills:[
+          {num:'Question 1 of 4 — Text-based evidence',passage:'A researcher argues that birds in cities have adapted to noise pollution by shifting to higher-pitched songs to be heard above low-frequency traffic noise.',stem:'Which finding most directly supports the researcher\'s argument?',choices:['Urban birds were observed singing more frequently at dawn than rural birds.','Urban great tits sing at higher frequencies in cities with heavier traffic compared to quieter rural areas.','Studies show traffic noise is most intense in the low-frequency range.','Urban birds have larger brains relative to body size than rural birds.'],correct:1,explanation:'The claim has two parts: (1) higher pitches, (2) in response to noise. B confirms both: higher frequencies (part 1) in noisier cities vs. quieter rural areas (part 2). A mentions frequency of singing, not pitch. C describes the problem, not the adaptation.',trap:'Trap: C sounds relevant because it mentions traffic noise — but describes the problem only.'},
+          {num:'Question 2 of 4 — Quantitative evidence',passage:'Data — Age group: Screen time / Satisfaction (1–10). Ages 13–17: 7.2 hrs / 5.8. Ages 18–24: 6.8 / 6.1. Ages 25–34: 5.4 / 6.9. Ages 35–44: 4.1 / 7.4.',stem:'Which best describes the relationship shown in the table?',choices:['Higher screen time causes lower life satisfaction across all age groups.','As screen time decreases across age groups, satisfaction scores tend to increase.','Life satisfaction is primarily determined by age rather than screen time.','Reducing screen time will improve satisfaction for teenagers.'],correct:1,explanation:'B accurately describes the trend with careful language: "tend to increase" — hedged, not absolute. A uses "causes" — data shows correlation only. D makes a prescriptive recommendation beyond the data.',trap:'Trap: A and D feel like logical conclusions — but data shows association only, never causation.'},
+          {num:'Question 3 of 4 — Two-part causal claim',passage:'Biologist Dr. Amara Osei argues that monarch butterfly populations are declining primarily due to the loss of milkweed, the only plant on which monarchs lay eggs and caterpillars exclusively consume.',stem:'Which finding most directly supports Osei\'s argument?',choices:['Monarch populations have declined by over 80% in the past three decades.','Climate change has altered migration timing, causing mismatches with overwintering sites.','In regions where milkweed coverage declined by 50%+, monarch populations fell at twice the rate compared to regions with stable milkweed.','Monarchs require specific temperature ranges and are sensitive to pesticide exposure.'],correct:2,explanation:'Osei\'s claim: decline IS CAUSED BY milkweed loss. C directly links both: milkweed decline AND monarch decline moving together. A confirms decline but says nothing about milkweed. B attributes decline to a different cause — actually weakens the argument.',trap:'Trap: A confirms the decline and feels complete — but says nothing about WHY the decline is happening.'},
+          {num:'Question 4 of 4 — Quotation as evidence',passage:'Literary scholar Priya Nair contends that Austen\'s novels use irony not merely as a stylistic device but as a structural mechanism — allowing heroines to navigate social constraints they cannot openly challenge.',stem:'Which quotation most directly illustrates Nair\'s argument?',choices:['"It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."','"I declare after all there is no enjoyment like reading! How much sooner one tires of any thing than of a book!"','Elizabeth\'s private ironic inner monologue acknowledging a social situation she cannot openly defy.','"The person who has not pleasure in a good novel must be intolerably stupid."'],correct:2,explanation:'Nair\'s argument: irony as STRUCTURAL MECHANISM allowing heroines to navigate constraints they CANNOT OPENLY CHALLENGE. C shows Elizabeth using ironic inner voice to assert agency when she cannot openly defy expectations — both parts confirmed. A is ironic but does not show a heroine navigating a constraint.',trap:'Trap: A is the most famous Austen line and clearly ironic — but it is a narrative opening, not a heroine navigating a social constraint.'}
+        ]},
+      {id:'m3l3',title:'Quantitative Evidence & Data',type:'reading',duration:'7 min',eyebrow:'Module 3 · Information & Ideas',
+        audioScript:'Quantitative evidence questions pair a table or graph with a claim and ask which choice best uses the data. Three automatic eliminations apply before reading choice content. First, causal language is automatically wrong when data shows correlation. Second, extreme language — always, never, proves, definitively — is automatically wrong. Third, any choice that references a variable not shown in the graph is automatically wrong. Apply these three filters first and you will eliminate two or three options immediately.',
+        content:[
+          {type:'text',html:'<h3>Three Automatic Eliminations</h3><p>Apply these filters to every choice before reading content carefully:</p><ul><li><strong>Causal language:</strong> "causes," "leads to," "will produce" → Eliminate</li><li><strong>Extreme language:</strong> "proves," "all," "always," "never" → Eliminate</li><li><strong>Out-of-scope variable:</strong> References something not in the graph → Eliminate</li></ul>'},
+          {type:'callout',style:'blue',text:'<strong>What correct data answers always include:</strong> Hedged language ("tends to," "is associated with"), the correct scope ("among the cities studied"), and no causal claim unless the study design explicitly supports it.'},
+          {type:'callout',style:'amber',text:'<strong>Your Data Analysis score (550–600) is already a strength.</strong> Apply these three filters consistently and your accuracy in this domain will be near perfect.'}
+        ]}
+    ]},
+
+    // ══ M4: CONVENTIONS ══
+    {id:'m4',title:'Standard English Conventions',color:'#00897B',icon:'¶',lessons:[
+      {id:'m4l1',title:'Punctuation Rules — The Period Test',type:'video',duration:'9 min',eyebrow:'Module 4 · Conventions',videoLabel:'Punctuation Method',
+        slides:[
+          {heading:'Conventions: The Most Mechanical Points',body:'Conventions questions have the highest rules-to-points ratio on the SAT. These have a right answer determined by grammar rules alone. Learn the rules, get the points.',visual:'conv-intro',audio:'Standard English Conventions questions have the highest rules-to-points ratio on the entire SAT. These have a single right answer determined by grammar rules alone. Learn the rules, get the points.'},
+          {heading:'The Period Test',body:'For any punctuation question, apply the period test first: Can you place a period at the blank and have both halves be complete sentences?<br><br>If YES: two independent clauses → semicolon, period, or comma + FANBOYS.<br>If NO: cannot use a semicolon.',visual:'conv-period',audio:'For any punctuation question, apply the period test first: can you place a period at the blank and have both halves be grammatically complete sentences? If yes, you have two independent clauses. If no, you cannot use a semicolon.'},
+          {heading:'Joining Two Independent Clauses',body:'Valid options: Period · Semicolon · Comma + FANBOYS (for, and, nor, but, or, yet, so) · Semicolon + conjunctive adverb + comma<br><br>A comma alone = comma splice = always wrong.',visual:'conv-join',audio:'Valid joining options are: a period, a semicolon, a comma followed by a FANBOYS conjunction, or a semicolon followed by a conjunctive adverb and a comma. A comma alone is a comma splice and is always wrong.'},
+          {heading:'Colons: The Complete Sentence Rule',body:'A colon must be preceded by a grammatically complete sentence. It then introduces a list, explanation, or restatement.<br><br>✓ "The museum has three types: paintings, sculptures, and ceramics."<br>✗ "The museum contains: paintings, sculptures, and ceramics."',visual:'conv-colon',audio:'A colon must always be preceded by a grammatically complete sentence. It then introduces a list, explanation, or restatement. "The museum has three types, colon" is correct. "The museum contains, colon" is wrong because "contains" has no object yet.'},
+          {heading:'Matching Punctuation for Modifiers',body:'Non-restrictive phrases must be set off by <em>matching</em> punctuation on both sides:<br>• Two commas &nbsp; • Two em-dashes &nbsp; • Two parentheses<br><br>Mismatched punctuation is always wrong.',visual:'conv-modifier',audio:'Non-restrictive phrases must be set off by matching punctuation on both sides — either two commas, two em-dashes, or two parentheses. Mismatched punctuation is always wrong.'},
+          {heading:'Subject-Verb Agreement: The True Subject Rule',body:'Remove the intervening phrase mentally to find the true subject:<br><br>"The collection of manuscripts [is/are] housed in a vault."<br><br>Subject = collection (singular) → <em>is</em>',visual:'conv-agreement',audio:'For subject-verb agreement, remove the intervening phrase mentally to find the true subject. The collection of manuscripts — remove "of manuscripts" — and you have "The collection is housed in a vault." Collection is singular, so the verb must be singular: is, not are.'}
+        ]},
+      {id:'m4l2',title:'Concision & Redundancy',type:'reading',duration:'7 min',eyebrow:'Module 4 · Conventions',
+        audioScript:'Concision questions test one thing: can you say the same thing in fewer words? The SAT always rewards the shortest answer that preserves all meaning and is grammatically correct. Four redundancy patterns to recognize immediately: synonym pairs such as "occurred and took place," restating implied categories such as "the month of April," restating what context already establishes, and passive constructions that can be compressed. The minimum-necessary test: what is the least amount of text required to convey the essential meaning? That is the correct answer.',
+        content:[
+          {type:'text',html:'<h3>The Shortest-Correct Answer Rule</h3><p>The correct answer on concision questions is almost always the shortest choice that (1) preserves all essential meaning and (2) is grammatically correct. Work from shortest to longest when in doubt.</p>'},
+          {type:'callout',style:'green',text:'<strong>Four redundancy patterns:</strong><br>1. Synonym pairs: "occurred and took place"<br>2. Implied categories: "the month of April"<br>3. Restating context: "the summit meeting, which was a meeting that took place..."<br>4. Passive constructions: "which was reached" → "reached"'},
+          {type:'callout',style:'amber',text:'<strong>The "being" warning:</strong> "Being" in a modifier phrase is almost always wrong on the SAT. "The decision, being reached after months of deliberation" → "reached after months of deliberation." If you see "being" in a modifier, eliminate that choice.'}
+        ]},
+      {id:'m4l3',title:'Conventions Practice Drills',type:'drill',duration:'13 min',eyebrow:'Module 4 · Conventions',
+        audioScript:'Five conventions questions: joining clauses, modifier punctuation, concision, colon usage, and subject-verb agreement. Apply the period test to all punctuation questions first.',
+        reviewLesson:'m4l1',
+        drills:[
+          {num:'Question 1 of 5 — Joining clauses',passage:'',stem:'Choose the correct punctuation: "The Coriolis effect influences large-scale wind patterns ______ it does not affect the direction water drains from a bathtub."',choices:['patterns, however it','patterns; however, it','patterns however, it','patterns: however it'],correct:1,explanation:'Period test: both halves are complete sentences. Two independent clauses joined by "however" (conjunctive adverb) require semicolon + however + comma. A is a comma splice. C has no punctuation before "however."',trap:'Trap: A — "however" feels like it should follow a comma the way "and" does. Conjunctive adverbs require a semicolon before them.'},
+          {num:'Question 2 of 5 — Modifier',passage:'',stem:'Choose the correctly punctuated version with Marie Curie.',choices:['Curie, the first person to win two Nobel Prizes, was born','Curie the first person to win two Nobel Prizes, was born','Curie, the first person to win two Nobel Prizes was born','Curie — the first person to win two Nobel Prizes — was born'],correct:3,explanation:'A non-restrictive appositive needs matching punctuation on both sides. A (two commas) and D (two em-dashes) are both valid. B has no opening punctuation — wrong. C has comma left, nothing right — mismatched.',trap:'Trap: C — students remember to put commas around extra information but forget the rule requires matching punctuation on BOTH sides.'},
+          {num:'Question 3 of 5 — Concision',passage:'',stem:'Which is most concise? "The committee\'s final decision, [which was a decision that was reached after months of deliberation], surprised everyone."',choices:['which was a decision that was reached after months of deliberation,','which had been a decision that came after months of deliberation,','reached after months of deliberation,','being reached after months of deliberation,'],correct:2,explanation:'"Which was a decision" repeats "decision." "That was reached" is passive and wordy. "Reached after months of deliberation" conveys the same meaning in 5 words vs. 11. "Being reached" (D) — always wrong on the SAT.',trap:'Trap: A (no change) — always re-read the original critically. "Which was a decision that was reached" has multiple layers of redundancy.'},
+          {num:'Question 4 of 5 — Colon',passage:'',stem:'Which correctly uses a colon?',choices:['The museum contains: paintings, sculptures, and ceramics from the Renaissance.','The museum contains works from three major art forms: paintings, sculptures, and ceramics.','The museum\'s collection includes: a variety of Renaissance-era pieces.','Paintings, sculptures, and ceramics: are the museum\'s primary collection types.'],correct:1,explanation:'A colon must follow a complete sentence. In B, "The museum contains works from three major art forms" is complete. A breaks between "contains" and its object — incomplete before the colon.',trap:'Trap: A — students associate colons with introducing lists. The rule is: a COMPLETE SENTENCE must precede the colon.'},
+          {num:'Question 5 of 5 — Subject-verb agreement',passage:'',stem:'Choose the correct verb: "The collection of ancient manuscripts, many of which ______ been damaged by moisture over the centuries, is housed in a vault."',choices:['has','have','had','having'],correct:1,explanation:'The subject of the embedded clause is "which," referring to "manuscripts" (plural): "many of which have been damaged." The main verb "is" correctly refers to the singular "collection."',trap:'Trap: A ("has") — students see "collection" (singular) nearby and match to it. Always find the subject of the CLAUSE containing the blank.'}
+        ]}
+    ]},
+
+    // ══ M5: ADVANCED MATH ══
+    {id:'m5',title:'Advanced Math Entry',color:'#F9A825',icon:'f(x)',lessons:[
+      {id:'m5l1',title:'Quadratics — Visual First',type:'reading',duration:'9 min',eyebrow:'Module 5 · Advanced Math',
+        audioScript:'A quadratic equation has the form a-x-squared plus b-x plus c equals zero. The solutions — called roots or zeros — are where the parabola crosses the x-axis. There are three ways to find them: factoring, the quadratic formula, and graphing in Desmos. For the SAT, Desmos is almost always fastest. Open Desmos, type the equation, and read the x-intercepts. The vertex form is y equals a times the quantity x minus h squared plus k, where h and k are the vertex coordinates. The discriminant b-squared minus 4ac tells you how many real roots exist: positive means two roots, zero means one root, negative means no real roots.',
+        content:[
+          {type:'text',html:'<h3>Quadratic Essentials</h3><p>A quadratic: ax² + bx + c = 0. Solutions (roots) are x-values where the parabola crosses the x-axis. Found by: factoring, quadratic formula, or Desmos (fastest on SAT).</p>'},
+          {type:'callout',style:'amber',text:'<strong>Desmos-first rule:</strong> On any SAT question asking for roots, vertex, or intersection of a quadratic — graph it in Desmos first. Reading coordinates takes 5 seconds.'},
+          {type:'text',html:'<h3>Vertex Form — Max/Min Questions</h3><p>Vertex form: y = a(x−h)² + k, where (h, k) is the vertex.<br>• a > 0: vertex is minimum point<br>• a < 0: vertex is maximum point</p><p>SAT shortcut: graph in Desmos and read the vertex directly.</p>'},
+          {type:'callout',style:'green',text:'<strong>The discriminant (b²−4ac):</strong> > 0 = two real roots · = 0 = one root · < 0 = no real roots. Determines how many solutions exist without solving.'}
+        ]},
+      {id:'m5l2',title:'Plug-in Values Strategy',type:'drill',duration:'12 min',eyebrow:'Module 5 · Advanced Math',
+        audioScript:'The plug-in strategy applies when a question uses variables without specific values and asks which expression is equivalent. Pick a specific number for the variable — avoid 0 and 1 — compute the target value from the original expression, then test each answer choice with the same number. The choice that matches is correct. If two choices match, pick a second number to break the tie.',
+        reviewLesson:'m5l1',
+        drills:[
+          {num:'Question 1 of 4 — Equivalent expression',passage:'',stem:'If x ≠ 0, which expression is equivalent to (4x³ − 8x²) ÷ (2x)?',choices:['2x² − 4x²','2x² − 4x','2x³ − 4x','4x² − 8x'],correct:1,explanation:'Plug in x=3. Target: (108−72)÷6=6. Test B: 2(9)−4(3)=6 ✓. Algebra: 4x³/2x − 8x²/2x = 2x²−4x.',trap:'C: off by one on the exponent of the first term. D: divided only the coefficients.'},
+          {num:'Question 2 of 4 — Always true',passage:'',stem:'Which expression is always equal to 3(n + 4) − 2n?',choices:['n + 4','5n + 12','n + 12','3n + 4'],correct:2,explanation:'Plug in n=5. Target: 3(9)−10=17. Test C: 5+12=17 ✓. Algebra: 3n+12−2n=n+12.',trap:'Plug-in is faster than distributing here — one number test eliminates three choices at once.'},
+          {num:'Question 3 of 4 — Percent trap',passage:'',stem:'A price is increased by 20%, then decreased by 20%. The final price is what percent of the original?',choices:['100%','98%','96%','94%'],correct:2,explanation:'Plug in $100. After +20%: $120. After −20%: $120×0.80=$96. Final=96% of original.',trap:'Trap: A (100%) — assumed +20% and −20% cancel. They don\'t: the second applies to a larger base.'},
+          {num:'Question 4 of 4 — Function composition',passage:'',stem:'If f(x) = 2x² and g(x) = x + 3, what is f(g(2))?',choices:['10','14','22','50'],correct:3,explanation:'Step 1: g(2)=5. Step 2: f(5)=2(25)=50. Composition: inner function first.',trap:'Trap: C (22) — computed f(2)+g(2)=8+14=22. Confuses addition with composition.'}
+        ]},
+      {id:'m5l3',title:'Exponential & Function Models',type:'reading',duration:'8 min',eyebrow:'Module 5 · Advanced Math',
+        audioScript:'Exponential functions model growth or decay where the rate of change is proportional to the current value. The standard form is y equals a times b to the power of x. If b is greater than 1, the function models growth. If b is between 0 and 1, it models decay. When the doubling or halving period is not 1 unit, the exponent becomes x divided by the period. A population that starts at 500 and doubles every 3 years: y equals 500 times 2 to the power of x over 3.',
+        content:[
+          {type:'text',html:'<h3>Exponential Model Form</h3><p>y = a · bˣ where a = initial value, b = growth/decay factor.<br>• b > 1: growth &nbsp; • 0 < b < 1: decay &nbsp; • b = (1+r): rate r</p>'},
+          {type:'callout',style:'amber',text:'<strong>When the period is not 1:</strong> If a quantity doubles every 3 years, the exponent is x/3, not x. Always ask: "How many doubling periods fit in x units?"'},
+          {type:'text',html:'<h3>Identifying Function Type from a Table</h3><p>• Linear: differences between consecutive y-values are constant<br>• Exponential: ratios between consecutive y-values are constant</p><p>y goes 2, 4, 8, 16 → ratios all ×2 → exponential</p>'},
+          {type:'callout',style:'blue',text:'<strong>Desmos tip:</strong> On any function modeling question, type a few data points from a table as (x,y) coordinates in Desmos and see which function type fits visually. Faster than calculating ratios manually.'}
+        ]}
+    ]},
+
+    // ══ M6: TEST STRATEGY ══
+    {id:'m6',title:'Test Strategy & Pacing',color:'#1565C0',icon:'◎',lessons:[
+      {id:'m6l1',title:'1-Pass / 2-Pass Pacing System',type:'video',duration:'8 min',eyebrow:'Module 6 · Test Strategy',videoLabel:'Pacing System',
+        slides:[
+          {heading:'Why Students Lose Points on Pacing',body:'Most students who score below their capability do so not because they lack knowledge — but because they spend too long on hard questions and run out of time on easy ones. Pacing is a scoring strategy.',visual:'pacing-intro',audio:'Most students who score below their capability do so not because they lack knowledge — but because they spend too long on hard questions early in the section and run out of time on easier questions at the end.'},
+          {heading:'Pass 1: Harvest Easy Points',body:'Work through every question in order. If a question takes longer than 90 seconds, <strong>stop</strong>. Make your best guess. Flag it. Move on.<br><br>Goal: answer everything answerable in under 90 seconds.',visual:'pacing-pass1',audio:'In Pass 1, work through every question in order. If any question takes longer than 90 seconds, stop. Make your best guess, flag the question, and move on. The goal is to answer every question you can solve quickly and flag everything else.'},
+          {heading:'Pass 2: Return with Fresh Eyes',body:'After reaching the end, return to flagged questions with remaining time. Two things changed: (1) more context from other questions, (2) you\'re no longer in the same mental frame. The fresh-eyes effect is real.',visual:'pacing-pass2',audio:'After reaching the end of the section, return to all flagged questions with your remaining time. Two things have changed: you now have more context from other questions, and you are no longer stuck in the same mental frame.'},
+          {heading:'The No-Blank Rule',body:'The digital SAT has NO penalty for wrong answers.<br><br>Blank = 0% chance. Random guess = 25% chance.<br><br>Rule: <strong>no blank responses, ever.</strong> With 30 seconds left — click any answer.',visual:'pacing-blank',audio:'The digital SAT has absolutely no penalty for wrong answers. A blank gives you zero percent chance. A random guess gives you 25 percent chance. The rule is non-negotiable: no blank responses, ever.'},
+          {heading:'Your Pacing Targets',body:'R&W: 27 questions in 32 minutes → 71 seconds average<br>Math: 22 questions in 35 minutes → 95 seconds average<br><br>These are averages — easy questions take 30 seconds; hard ones get leftover time in Pass 2.',visual:'pacing-target',audio:'Your Reading and Writing module has 27 questions in 32 minutes — an average of 71 seconds per question. Math has 22 questions in 35 minutes — 95 seconds average. These are averages, not targets per question.'}
+        ]},
+      {id:'m6l2',title:'Trap Types Taxonomy',type:'video',duration:'7 min',eyebrow:'Module 6 · Test Strategy',videoLabel:'Wrong Answer Taxonomy',
+        slides:[
+          {heading:'Why Wrong Answers Are Designed',body:'The SAT does not create wrong answers randomly. Each distractor is engineered to attract students who made a specific, predictable error. Learn the taxonomy and recognize the trap before it catches you.',visual:'trap-intro',audio:'The SAT does not create wrong answer choices randomly. Each distractor is engineered to attract students who made a specific predictable type of error. Learning the trap taxonomy means you can recognize the pattern before it catches you.'},
+          {heading:'Trap 1: Too Extreme',body:'"Always," "never," "proves," "definitively," "all students."<br><br>SAT data never allows absolute conclusions. Any choice with extreme language on a data or evidence question is almost always wrong.',visual:'trap-extreme',audio:'Trap type 1 is Too Extreme. The choice uses language stronger than the evidence supports — words like always, never, proves, definitively. SAT data never allows absolute conclusions. Eliminate immediately.'},
+          {heading:'Trap 2: Out of Scope',body:'The choice introduces a concept not in the original passage or data.<br><br>Test: "Did the passage/table actually measure this?" If no → eliminate.',visual:'trap-scope',audio:'Trap type 2 is Out of Scope. The choice introduces a concept not in the original passage or data. To test: ask yourself — did the passage or table actually measure this? If no, eliminate immediately.'},
+          {heading:'Trap 3: Right Idea, Wrong Detail',body:'Correct topic, wrong specific detail — a number, direction, or relationship.<br><br>This catches students who read too quickly. Always verify the specific claim against the text.',visual:'trap-detail',audio:'Trap type 3 is Right Idea, Wrong Detail. The choice gets the general topic right but a specific detail wrong — a number, direction, or relationship. Always verify the specific claim in the choice against the text.'},
+          {heading:'Trap 4: Distractor by Repetition',body:'Uses words from the passage — making it feel familiar — but assembles them to distort the meaning.<br><br>Familiar-sounding ≠ correct. Evaluate meaning, not vocabulary.',visual:'trap-repeat',audio:'Trap type 4 is Distractor by Repetition. The choice uses words from the passage — making it feel familiar and correct — but assembles those words in a way that distorts the meaning. Familiar-sounding is not the same as correct.'}
+        ]},
+      {id:'m6l3',title:'Annotated Walkthroughs',type:'resource',duration:'20 min',eyebrow:'Module 6 · Test Strategy',
+        audioScript:'The Annotated Walkthroughs resource contains 10 fully worked SAT questions with step-by-step expert reasoning and labeled wrong-answer traps. Use this resource after completing Modules 1 through 5. The 10 questions cover transitions, add/delete, command of evidence, punctuation, concision, algebra word problems, systems with Desmos, plug-in values, data analysis causation, and the 1-pass/2-pass pacing scenario.',
+        resourceFile:'annotated_walkthroughs.html',resourceLabel:'Open Annotated Walkthroughs',
+        resourceDesc:'10 fully worked questions with expert reasoning and trap labels for every wrong answer.'}
+    ]},
+
+    // ══ M7: FULL TEST PREP ══
+    {id:'m7',title:'Full Test Preparation',color:'#2E7D32',icon:'✓',lessons:[
+      {id:'m7l1',title:'Practice Test Protocol',type:'reading',duration:'7 min',eyebrow:'Module 7 · Full Test Prep',
+        audioScript:'The Week 7 practice test is the most important study session in your entire preparation. Set your start time to match the real test. Use only the Bluebook app. Do not pause. When you finish, categorize every wrong answer by domain and trap type before looking at explanations. This categorization step is where the real learning happens.',
+        content:[
+          {type:'callout',style:'green',text:'<strong>The Week 7 test is your most important session.</strong> Treat it exactly like the real SAT — same time of day, same conditions, same mindset. Your nervous system needs to have "done it before."'},
+          {type:'text',html:'<h3>Before the Test</h3><ul><li>Set start time to match real test (~8:30 AM)</li><li>Use Bluebook app on laptop or tablet — not phone</li><li>Eat a normal breakfast, no caffeine changes</li><li>Silence all notifications</li></ul>'},
+          {type:'text',html:'<h3>After the Test — The Critical Step</h3><p>Before reading any explanations: categorize every wrong answer by (1) domain and (2) trap type. Write them down. Count frequency.</p><p>The pattern reveals your Week 8 targets. If 4 wrong answers share the same trap type, that trap type — not a domain — is your most efficient fix.</p>'}
+        ]},
+      {id:'m7l2',title:'Post-Test Analysis & Week 8 Protocol',type:'reading',duration:'6 min',eyebrow:'Module 7 · Full Test Prep',
+        audioScript:'Post-test analysis converts your test errors into a specific, ranked study list. Create a frequency table of wrong answers by trap type. The trap type that appears most often is your single highest-leverage fix for Week 8. In Week 8, drill those specific error patterns for 20 minutes per day. On the final two days before the test, stop all new problem work. Sleep is preparation.',
+        content:[
+          {type:'text',html:'<h3>Week 8 Protocol</h3><p>One objective: fix your top 2–3 recurring error patterns.</p><ul><li>20 min/day drilling identified error types only</li><li>15 min/day reviewing error log patterns</li><li>No new content, no new domains</li></ul>'},
+          {type:'callout',style:'blue',text:'<strong>Final 2 days:</strong> No practice problems. Confirm test center location and logistics. Sleep 8+ hours both nights. Sleep is the most evidence-backed performance enhancer available.'},
+          {type:'callout',style:'green',text:'<strong>Final reminder:</strong> The SAT tests skills you already have — what changes is your ability to apply them efficiently under time pressure. Eight weeks of focused work is enough. You have done the work. Trust it.'}
+        ]}
+    ]},
+
+    // ══ M8: RESOURCES HUB ══
+    {id:'m8',title:'Resources Hub',color:'#78909C',icon:'⧉',lessons:[
+      {id:'m8l1',title:'All Course Materials',type:'resources',duration:'Reference',eyebrow:'Resources Hub',
+        audioScript:'The Resources Hub contains all five supplementary course materials. Each opens in a new tab. Keep these bookmarked for easy access throughout your 8 weeks.',
+        resources:[
+          {num:'01',title:'Interactive Drill Sheets',file:'drill_sheets.html',color:'#E8533A',desc:'Six question-type drills — Transitions, Evidence, Conventions, Backsolving, Plug-in, Word Problems — with instant feedback and trap explanations.'},
+          {num:'02',title:'Personalized Hybrid Plan',file:'hybrid_plan.html',color:'#7C4DFF',desc:'8-week schedule with domain mode assignments, score targets, and a day-by-day study calendar.'},
+          {num:'03',title:'Progress Tracker',file:'progress_tracker.html',color:'#0288D1',desc:'Five-tab interactive tracker: log weekly scores, domain progress, error log, weekly checklist, and summary view.'},
+          {num:'04',title:'Parent & Student Overview',file:'parent_student_overview.html',color:'#00897B',desc:'Printable summary of diagnostic profile, 8-week timeline, score targets, and guidance for student and parents.'},
+          {num:'05',title:'Annotated Walkthroughs',file:'annotated_walkthroughs.html',color:'#1565C0',desc:'10 fully worked SAT questions with step-by-step expert reasoning and wrong-answer trap labels.'}
+        ]}
+    ]}
+  ]
+}; // end COURSE_CONFIG
+
+/* ================================================================
+   AI SYSTEM
+   Anthropic API integration for all 5 AI features.
+   ================================================================ */
+const AI = {
+  MODEL: 'claude-sonnet-4-20250514',
+
+  studentCtx() {
+    const s = COURSE_CONFIG.student;
+    return `Student: ${s.name}, Grade ${s.grade}, ${s.state}. PSAT: ${s.baseline.total} total (R&W: ${s.baseline.rw} at 32nd percentile, Math: ${s.baseline.math} at 51st percentile). Weaknesses: Expression of Ideas (370-410), Algebra (420-460), Advanced Math (420-460). Strengths: Craft & Structure (490-540), Data Analysis (550-600), Geometry (550-600). 8-week SAT target: ${s.target.total}+.`;
+  },
+
+  async call(userPrompt, systemPrompt) {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: this.MODEL,
+          max_tokens: 1000,
+          system: systemPrompt || `You are an expert SAT tutor. ${this.studentCtx()}`,
+          messages: [{ role: 'user', content: userPrompt }]
+        })
+      });
+      const data = await res.json();
+      if (data.error) return `AI Error: ${data.error.message}`;
+      return data.content?.[0]?.text || 'No response received.';
+    } catch(e) {
+      return 'Unable to reach AI tutor. Please check your connection and try again.';
+    }
+  },
+
+  // Feature 1 (Priority): Personalized wrong-answer feedback
+  async explainWrongAnswer(drill, chosenIdx, correctIdx, lessonCtx) {
+    const sys = `You are an expert SAT tutor giving personalized feedback. ${this.studentCtx()} Be direct, warm, and specific. Under 90 words total. Do not use bullet points.`;
+    const prompt = `Lesson: "${lessonCtx.title}" (${lessonCtx.module})
+Question: ${drill.stem}
+Correct answer: ${['A','B','C','D'][correctIdx]}) ${drill.choices[correctIdx]}
+Student chose: ${['A','B','C','D'][chosenIdx]}) ${drill.choices[chosenIdx]}
+Pre-written explanation: ${drill.explanation}
+${drill.trap ? 'Trap label: ' + drill.trap : ''}
+
+In 2-3 sentences: (1) explain specifically why HER chosen answer was wrong, referencing her exact choice; (2) explain why the correct answer is right; (3) give one actionable tip she can apply to the next similar question. Be encouraging and personal.`;
+    return this.call(prompt, sys);
+  },
+
+  // Feature 5: Branching review content
+  async getBranchReview(drill, chosenIdx, correctIdx, moduleTitle) {
+    const sys = `You are an SAT tutor creating a targeted mini-lesson. ${this.studentCtx()} Under 130 words. Plain paragraphs only — no headers, no bullets.`;
+    const prompt = `A student just got this wrong:
+Question: ${drill.stem}
+She chose: ${drill.choices[chosenIdx]}
+Correct: ${drill.choices[correctIdx]}
+Module: ${moduleTitle}
+${drill.explanation}
+
+Write a 3-4 sentence targeted mini-lesson that: (1) re-explains the core concept she missed, (2) gives a concrete rule or test she can apply immediately, (3) ends with a single clear sentence she can use as a mental anchor for similar questions. Make it feel like a tutor speaking directly to her, not a textbook.`;
+    return this.call(prompt, sys);
+  },
+
+  // Feature 3: Error pattern detection
+  async analyzeErrors(errorLog) {
+    if (!errorLog || !errorLog.length) return 'No errors logged yet. Complete some drills to see your pattern analysis here.';
+    const sys = `You are an SAT tutor analyzing student error patterns. ${this.studentCtx()} Be specific and actionable. Under 160 words. Speak directly to the student as "you."`;
+    const recent = errorLog.slice(-25);
+    const prompt = `Analyze these ${recent.length} error records and identify top patterns:
+${JSON.stringify(recent, null, 2)}
+
+Tell the student: (1) her #1 most common error pattern or trap type with a count; (2) what specific behavior triggers it (be concrete — not "rushing" but "reading the first sentence before the second is complete"); (3) the single most important behavioral change to make; (4) a brief word of encouragement. Format as 2-3 natural paragraphs.`;
+    return this.call(prompt, sys);
+  },
+
+  // Feature 4: Adaptive drill generation
+  async generateDrills(errorPatterns, moduleTitle) {
+    const sys = `You are generating SAT practice questions. ${this.studentCtx()} Respond ONLY in valid JSON — no markdown fences, no preamble, no commentary.`;
+    const patternDesc = errorPatterns.length
+      ? errorPatterns.map(p => `${p.type} (${p.count}x)`).join(', ')
+      : 'general practice';
+    const prompt = `Generate 3 new SAT-style practice questions for module: "${moduleTitle}".
+Error patterns to target: ${patternDesc}
+
+Respond with ONLY this exact JSON (no markdown, no extra text):
+{"drills":[{"num":"AI Question 1 of 3","passage":"context sentence or empty string","stem":"question stem here","choices":["A option text","B option text","C option text","D option text"],"correct":0,"explanation":"why correct is right and why each wrong choice is wrong","trap":"specific trap this question targets"}]}
+
+Make questions realistic SAT difficulty. Vary the formats. Use the module topic.`;
+    const raw = await this.call(prompt, sys);
+    try {
+      const clean = raw.replace(/```json|```/g,'').trim();
+      const parsed = JSON.parse(clean);
+      return parsed.drills || null;
+    } catch(e) { return null; }
+  },
+
+  // Feature 2: AI tutor chat
+  async chat(message, lessonCtx, errorLog) {
+    const recentErrors = (errorLog || []).slice(-6).map(e => `${e.trapType||'general'} in ${e.lessonTitle||e.lessonId}`).join('; ') || 'none yet';
+    const sys = `You are Haley's personal SAT tutor. ${this.studentCtx()}
+Current lesson: "${lessonCtx?.title || 'none'}" in "${lessonCtx?.module || 'general'}".
+Recent errors: ${recentErrors}.
+Instructions: Be concise (under 130 words unless a longer explanation is genuinely needed). Be warm, direct, and specific to SAT prep. If she asks for a practice question, generate one in plain text. If she asks about a concept, explain it with a concrete example. Never lecture beyond what she asked.`;
+    return this.call(message, sys);
+  }
+};
+
+/* ================================================================
+   AUDIO SYSTEM (AB)
+   ================================================================ */
+const AB = {
+  synth: window.speechSynthesis,
+  rate: 1.0, speaking: false, current: null,
+  speeds: [0.8, 1.0, 1.2, 1.5], speedIdx: 1,
+
+  speak(text, onEnd) {
+    this.stop();
+    if (!text) return;
+    const utt = new SpeechSynthesisUtterance(text.replace(/<[^>]*>/g,''));
+    utt.rate = this.rate; utt.lang = 'en-US';
+    this.current = utt; this.speaking = true;
+    const abText = document.getElementById('ab-text');
+    const abPlay = document.getElementById('ab-play');
+    const abIcon = document.getElementById('ab-icon');
+    if (abText) { abText.textContent = text.replace(/<[^>]*>/g,'').slice(0,110)+'…'; abText.classList.add('speaking'); }
+    if (abIcon) abIcon.setAttribute('d','M3 2h2v8H3zm4 0h2v8H7z');
+    if (abPlay) abPlay.classList.add('active');
+    utt.onend = () => {
+      this.speaking = false;
+      if (abText) { abText.textContent = 'Narration complete.'; abText.classList.remove('speaking'); }
+      if (abIcon) abIcon.setAttribute('d','M3 2l7 4-7 4z');
+      if (abPlay) abPlay.classList.remove('active');
+      if (onEnd) onEnd();
+    };
+    utt.onerror = () => { this.speaking = false; };
+    this.synth.speak(utt);
+  },
+
+  stop() {
+    this.synth.cancel(); this.speaking = false;
+    const abText = document.getElementById('ab-text');
+    const abIcon = document.getElementById('ab-icon');
+    const abPlay = document.getElementById('ab-play');
+    if (abText) { abText.textContent = 'Stopped.'; abText.classList.remove('speaking'); }
+    if (abIcon) abIcon.setAttribute('d','M3 2l7 4-7 4z');
+    if (abPlay) abPlay.classList.remove('active');
+  },
+
+  toggle() {
+    if (this.speaking) { this.synth.pause(); this.speaking = false; }
+    else if (this.synth.paused) { this.synth.resume(); this.speaking = true; }
+  },
+
+  cycleSpeed() {
+    this.speedIdx = (this.speedIdx + 1) % this.speeds.length;
+    this.rate = this.speeds[this.speedIdx];
+    const el = document.getElementById('ab-speed');
+    if (el) el.textContent = this.rate + '×';
+  }
+};
+
+/* ================================================================
+   VIDEO PLAYER (VP)
+   ================================================================ */
+const VP = {
+  slides:[], current:0, lesson:null, transcriptOpen:false,
+  load(lesson) { this.lesson=lesson; this.slides=lesson.slides; this.current=0; },
+  render() {
+    const s = this.slides[this.current];
+    const total = this.slides.length;
+    const c = CE.currentModule().color;
+    const dots = this.slides.map((_,i)=>`<span class="vp-dot${i===this.current?' active':i<this.current?' done':''}" onclick="VP.goto(${i})"></span>`).join('');
+    const transcript = this.slides.map((sl,i)=>`<p><strong>Slide ${i+1}:</strong> ${sl.audio}</p>`).join('');
+    return `
+      <div class="video-player">
+        <div class="vp-header">
+          <span class="vp-label" style="color:${c}">${this.lesson.videoLabel}</span>
+          <span class="vp-slide-count">Slide ${this.current+1} of ${total}</span>
+        </div>
+        <div class="vp-stage">
+          <div class="vp-visual" style="background:linear-gradient(135deg,${c}18,${c}08)">${this.getSVG(s.visual,c)}</div>
+          <div class="vp-text slide-enter">
+            <div class="vp-heading">${s.heading}</div>
+            <div class="vp-body">${s.body}</div>
+          </div>
+        </div>
+        <div class="vp-controls">
+          <div class="vp-dots">${dots}</div>
+          <div class="vp-btns">
+            <button class="vp-btn" onclick="VP.prev()" ${this.current===0?'disabled style="opacity:.4"':''}>◀ Prev</button>
+            <button class="vp-btn play-btn" onclick="VP.playNarration()">🔊 Listen</button>
+            <button class="vp-btn" onclick="VP.next()" ${this.current===total-1?'disabled style="opacity:.4"':''}>Next ▶</button>
+          </div>
+        </div>
+        <div class="vp-transcript">
+          <button class="vp-transcript-toggle" onclick="VP.toggleTranscript()">▼ View full transcript</button>
+          <div class="vp-transcript-body${this.transcriptOpen?' open':''}" id="vp-transcript">${transcript}</div>
+        </div>
+      </div>`;
+  },
+  getSVG(key, c) {
+    const svgs = {
+      'welcome':`<svg width="160" height="120" viewBox="0 0 160 120"><rect x="20" y="30" width="120" height="70" rx="10" fill="${c}22" stroke="${c}" stroke-width="1.5"/><text x="80" y="68" text-anchor="middle" fill="${c}" font-size="32" font-family="serif">SAT</text></svg>`,
+      'scores':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="60" width="35" height="40" rx="4" fill="${c}"/><rect x="55" y="70" width="35" height="30" rx="4" fill="${c}88"/><rect x="100" y="50" width="35" height="50" rx="4" fill="${c}44"/><rect x="145" y="40" width="25" height="60" rx="4" fill="${c}22"/><text x="27" y="55" text-anchor="middle" fill="${c}" font-size="11" font-weight="bold">920</text></svg>`,
+      'strengths':`<svg width="180" height="110" viewBox="0 0 180 110"><circle cx="90" cy="55" r="40" fill="none" stroke="${c}22" stroke-width="20"/><path d="M90 15 A40 40 0 0 1 122 75" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round"/><text x="90" y="60" text-anchor="middle" fill="${c}" font-size="14" font-weight="bold">Strong</text></svg>`,
+      'ai-feature':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="20" y="20" width="140" height="70" rx="10" fill="${c}18" stroke="${c}" stroke-width="1"/><text x="90" y="50" text-anchor="middle" fill="${c}" font-size="13" font-weight="bold">AI Tutor</text><text x="90" y="68" text-anchor="middle" fill="${c}88" font-size="10">Adapts to your errors</text><circle cx="150" cy="25" r="8" fill="${c}"/><text x="150" y="29" text-anchor="middle" fill="white" font-size="10">✦</text></svg>`,
+      'target':`<svg width="160" height="120" viewBox="0 0 160 120"><circle cx="80" cy="60" r="48" fill="none" stroke="${c}22" stroke-width="3"/><circle cx="80" cy="60" r="32" fill="none" stroke="${c}44" stroke-width="3"/><circle cx="80" cy="60" r="16" fill="none" stroke="${c}88" stroke-width="3"/><circle cx="80" cy="60" r="5" fill="${c}"/><text x="80" y="112" text-anchor="middle" fill="${c}" font-size="13" font-weight="bold">1,020–1,050+</text></svg>`,
+      'eoi-intro':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="20" width="160" height="16" rx="4" fill="${c}22"/><rect x="10" y="44" width="130" height="16" rx="4" fill="${c}22"/><rect x="10" y="68" width="145" height="16" rx="4" fill="${c}44" stroke="${c}" stroke-width="1.5"/><text x="90" y="100" text-anchor="middle" fill="${c}" font-size="11">Expression of Ideas: edit this</text></svg>`,
+      'eoi-types':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="10" width="50" height="35" rx="5" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="35" y="32" text-anchor="middle" fill="${c}" font-size="10">Transitions</text><rect x="65" y="10" width="50" height="35" rx="5" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="90" y="32" text-anchor="middle" fill="${c}" font-size="10">Add/Delete</text><rect x="120" y="10" width="50" height="35" rx="5" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="145" y="32" text-anchor="middle" fill="${c}" font-size="9">Placement</text><path d="M90 48v20" stroke="${c}" stroke-width="1.5"/><rect x="55" y="68" width="70" height="30" rx="5" fill="${c}"/><text x="90" y="87" text-anchor="middle" fill="white" font-size="11">Purpose First</text></svg>`,
+      'eoi-process':`<svg width="180" height="110" viewBox="0 0 180 110"><circle cx="40" cy="55" r="28" fill="${c}22" stroke="${c}" stroke-width="1.5"/><text x="40" y="51" text-anchor="middle" fill="${c}" font-size="9">Understand</text><text x="40" y="63" text-anchor="middle" fill="${c}" font-size="9">Author</text><path d="M70 55h20" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 2"/><circle cx="120" cy="55" r="28" fill="${c}"/><text x="120" y="51" text-anchor="middle" fill="white" font-size="9">Act as</text><text x="120" y="63" text-anchor="middle" fill="white" font-size="9">Editor</text></svg>`,
+      'eoi-principle':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="20" y="15" width="140" height="35" rx="6" fill="${c}22"/><text x="90" y="37" text-anchor="middle" fill="${c}" font-size="14" font-weight="bold">FUNCTION</text><path d="M90 52v12" stroke="${c}" stroke-width="1.5"/><text x="90" y="72" text-anchor="middle" fill="${c}" font-size="11">not "what sounds good"</text></svg>`,
+      'trans-intro':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="30" width="65" height="50" rx="6" fill="${c}22"/><text x="42" y="57" text-anchor="middle" fill="${c}" font-size="10">Idea A</text><rect x="105" y="30" width="65" height="50" rx="6" fill="${c}22"/><text x="137" y="57" text-anchor="middle" fill="${c}" font-size="10">Idea B</text><rect x="77" y="43" width="26" height="24" rx="4" fill="${c}"/><text x="90" y="58" text-anchor="middle" fill="white" font-size="9">Yet</text></svg>`,
+      'trans-contrast':`<svg width="180" height="110" viewBox="0 0 180 110"><path d="M30 55h120" stroke="${c}22" stroke-width="2"/><path d="M30 40h50" stroke="${c}" stroke-width="3" stroke-linecap="round"/><path d="M100 70h50" stroke="${c}88" stroke-width="3" stroke-linecap="round"/><text x="90" y="55" text-anchor="middle" fill="${c}" font-size="13" font-weight="bold">↕ Contrast</text><text x="90" y="98" text-anchor="middle" fill="${c}88" font-size="10">However · Nevertheless · Yet</text></svg>`,
+      'trans-continue':`<svg width="180" height="110" viewBox="0 0 180 110"><path d="M20 55h140" stroke="${c}" stroke-width="3" stroke-linecap="round"/><text x="90" y="45" text-anchor="middle" fill="${c}" font-size="13" font-weight="bold">→ Continuation</text><text x="90" y="98" text-anchor="middle" fill="${c}88" font-size="10">Additionally · Furthermore</text></svg>`,
+      'trans-cause':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="35" width="50" height="30" rx="5" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="35" y="53" text-anchor="middle" fill="${c}" font-size="9">Cause</text><path d="M62 50h20" stroke="${c}" stroke-width="2"/><polygon points="82,46 90,50 82,54" fill="${c}"/><rect x="92" y="35" width="78" height="30" rx="5" fill="${c}"/><text x="131" y="53" text-anchor="middle" fill="white" font-size="9">Effect</text><text x="90" y="98" text-anchor="middle" fill="${c}88" font-size="10">Therefore · Thus · Consequently</text></svg>`,
+      'trans-example':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="20" y="15" width="140" height="25" rx="5" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="90" y="31" text-anchor="middle" fill="${c}" font-size="10">General Claim</text><path d="M90 42v12" stroke="${c}" stroke-width="1.5"/><rect x="20" y="56" width="140" height="25" rx="5" fill="${c}"/><text x="90" y="72" text-anchor="middle" fill="white" font-size="10">Specific Example</text><text x="90" y="100" text-anchor="middle" fill="${c}88" font-size="10">For example · Specifically</text></svg>`,
+      'trans-method':`<svg width="180" height="120" viewBox="0 0 180 120"><text x="90" y="16" text-anchor="middle" fill="${c}" font-size="11" font-weight="bold">Always in This Order</text>${[['1. Read','both'],['2. Name','relation'],['3. Match','connector'],['4. Select','& verify']].map((t,i)=>`<rect x="${10+i*42}" y="24" width="36" height="40" rx="5" fill="${c}${i===1?'':'22'}" stroke="${c}" stroke-width="1"/><text x="${28+i*42}" y="42" text-anchor="middle" fill="${i===1?'white':c}" font-size="8">${t[0]}</text><text x="${28+i*42}" y="54" text-anchor="middle" fill="${i===1?'white':c}" font-size="8">${t[1]}</text>`).join('')}</svg>`,
+      'alg-intro':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="50" width="40" height="40" rx="4" fill="${c}"/><text x="30" y="74" text-anchor="middle" fill="white" font-size="9">Data</text><rect x="58" y="55" width="40" height="35" rx="4" fill="${c}"/><text x="78" y="76" text-anchor="middle" fill="white" font-size="9">Geo</text><rect x="106" y="68" width="30" height="22" rx="4" fill="${c}44" stroke="${c}" stroke-width="1"/><text x="121" y="82" text-anchor="middle" fill="${c}" font-size="9">Alg</text><rect x="144" y="72" width="26" height="18" rx="4" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="157" y="84" text-anchor="middle" fill="${c}" font-size="8">Adv</text></svg>`,
+      'alg-system':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="20" y="30" fill="${c}" font-size="12" font-weight="bold">x + y = N</text><text x="20" y="55" fill="${c}" font-size="12" font-weight="bold">ax + by = V</text><text x="20" y="82" fill="${c}88" font-size="10">Equation 1: Total count</text><text x="20" y="98" fill="${c}88" font-size="10">Equation 2: Total value</text></svg>`,
+      'alg-sub':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="20" y="24" fill="${c}" font-size="11">x = N − y</text><text x="20" y="50" fill="${c}" font-size="11">a(N−y) + by = V</text><text x="20" y="76" fill="${c}" font-size="11">Solve for y</text><text x="20" y="100" fill="${c}" font-size="13" font-weight="bold">Substitute back ✓</text></svg>`,
+      'alg-desmos':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="10" width="160" height="90" rx="8" fill="${c}11" stroke="${c}" stroke-width="1.5"/><text x="90" y="35" text-anchor="middle" fill="${c}" font-size="11">y = 2x + 5</text><text x="90" y="55" text-anchor="middle" fill="${c}88" font-size="11">y = −x + 8</text><circle cx="90" cy="75" r="6" fill="${c}"/><text x="90" y="100" text-anchor="middle" fill="${c}" font-size="10">Click → read coordinates</text></svg>`,
+      'alg-when':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="15" width="75" height="80" rx="6" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="47" y="38" text-anchor="middle" fill="${c}" font-size="10" font-weight="bold">Use Desmos</text><text x="47" y="55" text-anchor="middle" fill="${c}" font-size="9">Two equations</text><text x="47" y="69" text-anchor="middle" fill="${c}" font-size="9">Graph question</text><text x="47" y="83" text-anchor="middle" fill="${c}" font-size="9">&gt;90 sec stuck</text><rect x="95" y="15" width="75" height="80" rx="6" fill="${c}11" stroke="${c}44" stroke-width="1"/><text x="132" y="38" text-anchor="middle" fill="${c}88" font-size="10" font-weight="bold">Use Algebra</text><text x="132" y="55" text-anchor="middle" fill="${c}88" font-size="9">Desmos gives</text><text x="132" y="69" text-anchor="middle" fill="${c}88" font-size="9">messy decimal</text></svg>`,
+      'evid-intro':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="10" width="160" height="35" rx="6" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="90" y="31" text-anchor="middle" fill="${c}" font-size="11">Claim: A causes B</text><rect x="10" y="64" width="45" height="28" rx="4" fill="${c}22"/><text x="32" y="80" text-anchor="middle" fill="${c}88" font-size="9">Relates</text><rect x="67" y="64" width="46" height="28" rx="4" fill="${c}"/><text x="90" y="80" text-anchor="middle" fill="white" font-size="9">Supports</text><rect x="125" y="64" width="45" height="28" rx="4" fill="${c}22"/><text x="147" y="80" text-anchor="middle" fill="${c}88" font-size="9">Relates</text></svg>`,
+      'evid-parts':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="20" width="160" height="35" rx="6" fill="${c}22"/><text x="90" y="38" text-anchor="middle" fill="${c}" font-size="11">Two-Part Claim</text><text x="90" y="52" text-anchor="middle" fill="${c}88" font-size="9">Cause → Effect</text><rect x="10" y="72" width="65" height="25" rx="4" fill="${c}"/><text x="42" y="88" text-anchor="middle" fill="white" font-size="9">Part 1</text><rect x="105" y="72" width="65" height="25" rx="4" fill="${c}"/><text x="137" y="88" text-anchor="middle" fill="white" font-size="9">Part 2</text></svg>`,
+      'evid-test':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="18" text-anchor="middle" fill="${c}" font-size="11" font-weight="bold">Also True Test</text><rect x="15" y="25" width="150" height="32" rx="5" fill="${c}22"/><text x="90" y="45" text-anchor="middle" fill="${c}" font-size="9">Could this be true if claim is FALSE?</text><rect x="10" y="72" width="65" height="25" rx="4" fill="${c}22" stroke="${c}44" stroke-width="1"/><text x="42" y="88" text-anchor="middle" fill="${c}88" font-size="9">Yes → Wrong</text><rect x="105" y="72" width="65" height="25" rx="4" fill="${c}"/><text x="137" y="88" text-anchor="middle" fill="white" font-size="9">No → Correct</text></svg>`,
+      'evid-causal':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="15" y="15" width="150" height="35" rx="6" fill="#FFEBEE" stroke="#E53935" stroke-width="1.5"/><text x="90" y="37" text-anchor="middle" fill="#C62828" font-size="11" font-weight="bold">AUTO-ELIMINATE</text><text x="90" y="62" text-anchor="middle" fill="${c}" font-size="10">"causes" · "will produce" · "proves"</text><text x="90" y="100" text-anchor="middle" fill="${c}88" font-size="9">when data = correlation only</text></svg>`,
+      'evid-language':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="18" text-anchor="middle" fill="${c}" font-size="11" font-weight="bold">Correct Language</text>${["is associated with","tends to","suggests","among the group studied"].map((t,i)=>`<rect x="15" y="${26+i*18}" width="150" height="14" rx="4" fill="${c}${['22','18','14','10'][i]}"/><text x="25" y="${38+i*18}" fill="${c}" font-size="10">✓ "${t}"</text>`).join('')}</svg>`,
+      'conv-intro':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="22" text-anchor="middle" fill="${c}" font-size="13" font-weight="bold">Rules = Points</text><rect x="15" y="32" width="50" height="55" rx="6" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="40" y="55" text-anchor="middle" fill="${c}" font-size="9">Learn</text><text x="40" y="69" text-anchor="middle" fill="${c}" font-size="9">the rule</text><path d="M68 60h14" stroke="${c}" stroke-width="2"/><polygon points="82,56 90,60 82,64" fill="${c}"/><rect x="92" y="32" width="73" height="55" rx="6" fill="${c}"/><text x="128" y="62" text-anchor="middle" fill="white" font-size="9">Get the point</text></svg>`,
+      'conv-period':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="18" text-anchor="middle" fill="${c}" font-size="12" font-weight="bold">Period Test</text><rect x="10" y="25" width="75" height="35" rx="5" fill="${c}22"/><text x="47" y="46" text-anchor="middle" fill="${c}" font-size="9">Clause A.</text><rect x="95" y="25" width="75" height="35" rx="5" fill="${c}22"/><text x="132" y="46" text-anchor="middle" fill="${c}" font-size="9">Clause B.</text><text x="90" y="80" text-anchor="middle" fill="${c}" font-size="10">Both complete?</text><text x="90" y="98" text-anchor="middle" fill="${c}" font-size="10">→ Need ; or . or , + FANBOYS</text></svg>`,
+      'conv-join':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="16" text-anchor="middle" fill="${c}" font-size="11" font-weight="bold">Valid Joiners</text>${["Period","Semicolon","Comma + FANBOYS","Semicolon + however,"].map((t,i)=>`<rect x="15" y="${22+i*18}" width="150" height="14" rx="3" fill="${c}${i===0?'':i===1?'44':'22'}"/><text x="22" y="${34+i*18}" fill="${i===0?'white':c}" font-size="9">✓ ${t}</text>`).join('')}<rect x="15" y="94" width="150" height="13" rx="3" fill="#FFEBEE" stroke="#E53935" stroke-width="1"/><text x="22" y="104" fill="#C62828" font-size="9">✗ Comma alone (comma splice)</text></svg>`,
+      'conv-colon':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="15" width="160" height="25" rx="5" fill="${c}"/><text x="90" y="31" text-anchor="middle" fill="white" font-size="10">Complete sentence : list/explanation</text><text x="90" y="58" text-anchor="middle" fill="${c}" font-size="10">✓ Museum has three forms: A, B, C</text><rect x="10" y="68" width="160" height="25" rx="5" fill="#FFEBEE" stroke="#E53935" stroke-width="1"/><text x="90" y="84" text-anchor="middle" fill="#C62828" font-size="10">✗ Museum contains: A, B, C</text></svg>`,
+      'conv-modifier':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="18" y="22" fill="${c}" font-size="11">Marie Curie</text><rect x="90" y="12" width="80" height="22" rx="4" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="130" y="27" text-anchor="middle" fill="${c}" font-size="9">the winner</text><text x="18" y="52" fill="${c}" font-size="11">was born in Poland.</text><text x="90" y="80" text-anchor="middle" fill="${c}" font-size="10">Match: , , or — — or ( )</text></svg>`,
+      'conv-agreement':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="15" y="25" fill="${c}" font-size="12" font-weight="bold">The collection</text><rect x="15" y="32" width="130" height="16" rx="3" fill="${c}22"/><text x="80" y="44" text-anchor="middle" fill="${c}88" font-size="9">of ancient manuscripts</text><text x="15" y="65" fill="${c}" font-size="12">is housed in a vault.</text><text x="90" y="95" text-anchor="middle" fill="${c}" font-size="10">Subject = collection (singular) → is</text></svg>`,
+      'pacing-intro':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="20" width="160" height="20" rx="4" fill="${c}22"/><rect x="10" y="20" width="60" height="20" rx="4" fill="${c}" opacity=".8"/><text x="90" y="35" text-anchor="middle" fill="${c}" font-size="9">Time on 1 hard question</text><rect x="10" y="50" width="160" height="20" rx="4" fill="${c}22"/><rect x="10" y="50" width="130" height="20" rx="4" fill="${c}"/><text x="75" y="64" text-anchor="middle" fill="white" font-size="9">Easy questions answered</text><text x="90" y="95" text-anchor="middle" fill="${c}" font-size="10">Which row earns more points?</text></svg>`,
+      'pacing-pass1':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="18" text-anchor="middle" fill="${c}" font-size="12" font-weight="bold">Pass 1</text>${Array.from({length:10},(_,i)=>`<rect x="${12+i*16}" y="28" width="12" height="20" rx="3" fill="${i===4||i===7?'#FFB74D':c}" opacity="${i===4||i===7?.6:.9}"/><text x="${18+i*16}" y="60" text-anchor="middle" fill="${i===4||i===7?'#E65100':c}" font-size="8">${i===4||i===7?'⚑':'✓'}</text>`).join('')}<text x="90" y="88" text-anchor="middle" fill="${c}88" font-size="9">Flag hard ones · keep moving</text></svg>`,
+      'pacing-pass2':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="18" text-anchor="middle" fill="${c}" font-size="12" font-weight="bold">Pass 2</text><rect x="60" y="28" width="22" height="22" rx="4" fill="#FFB74D"/><text x="71" y="44" text-anchor="middle" fill="#E65100" font-size="14">⚑</text><rect x="110" y="28" width="22" height="22" rx="4" fill="#FFB74D"/><text x="121" y="44" text-anchor="middle" fill="#E65100" font-size="14">⚑</text><path d="M90 52v14" stroke="${c}" stroke-width="1.5"/><text x="90" y="76" text-anchor="middle" fill="${c}" font-size="10">Fresh eyes + more context</text></svg>`,
+      'pacing-blank':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="20" y="20" width="65" height="60" rx="8" fill="#FFEBEE" stroke="#E53935" stroke-width="2"/><text x="52" y="55" text-anchor="middle" fill="#C62828" font-size="22">✗</text><text x="52" y="74" text-anchor="middle" fill="#C62828" font-size="10">Blank=0%</text><rect x="95" y="20" width="65" height="60" rx="8" fill="${c}22" stroke="${c}" stroke-width="2"/><text x="127" y="55" text-anchor="middle" fill="${c}" font-size="22">?</text><text x="127" y="74" text-anchor="middle" fill="${c}" font-size="10">Guess=25%</text></svg>`,
+      'pacing-target':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="20" text-anchor="middle" fill="${c}" font-size="12" font-weight="bold">Your Pacing Targets</text><rect x="10" y="28" width="160" height="28" rx="5" fill="${c}22"/><text x="90" y="43" text-anchor="middle" fill="${c}" font-size="10">R&W: 27Q / 32min = 71 sec avg</text><rect x="10" y="62" width="160" height="28" rx="5" fill="${c}"/><text x="90" y="77" text-anchor="middle" fill="white" font-size="10">Math: 22Q / 35min = 95 sec avg</text></svg>`,
+      'trap-intro':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="20" text-anchor="middle" fill="${c}" font-size="12" font-weight="bold">Wrong Answers Are Designed</text><rect x="20" y="30" width="140" height="60" rx="8" fill="${c}22" stroke="${c}" stroke-width="1"/><text x="90" y="55" text-anchor="middle" fill="${c}" font-size="10">Each distractor targets</text><text x="90" y="69" text-anchor="middle" fill="${c}" font-size="10">a specific predictable error</text></svg>`,
+      'trap-extreme':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="15" width="160" height="28" rx="6" fill="#FFEBEE" stroke="#E53935" stroke-width="2"/><text x="90" y="33" text-anchor="middle" fill="#C62828" font-size="12" font-weight="bold">TOO EXTREME</text><text x="90" y="60" text-anchor="middle" fill="${c}" font-size="10">"always" · "never" · "proves"</text><text x="90" y="100" text-anchor="middle" fill="${c}88" font-size="9">Data never allows absolutes → Eliminate</text></svg>`,
+      'trap-scope':`<svg width="180" height="110" viewBox="0 0 180 110"><circle cx="90" cy="60" r="35" fill="${c}22" stroke="${c}" stroke-width="1.5"/><text x="90" y="64" text-anchor="middle" fill="${c}" font-size="10">Passage Scope</text><circle cx="90" cy="60" r="50" fill="none" stroke="#E53935" stroke-width="1.5" stroke-dasharray="4 3"/><text x="142" y="28" fill="#C62828" font-size="9">Out of scope ✗</text></svg>`,
+      'trap-detail':`<svg width="180" height="110" viewBox="0 0 180 110"><rect x="10" y="15" width="160" height="35" rx="6" fill="${c}22"/><text x="90" y="37" text-anchor="middle" fill="${c}" font-size="11" font-weight="bold">Correct topic ✓</text><rect x="10" y="58" width="160" height="35" rx="6" fill="#FFEBEE" stroke="#E53935" stroke-width="1"/><text x="90" y="79" text-anchor="middle" fill="#C62828" font-size="10">Wrong detail ✗ (different number/direction)</text></svg>`,
+      'trap-repeat':`<svg width="180" height="110" viewBox="0 0 180 110"><text x="90" y="18" text-anchor="middle" fill="${c}" font-size="10">Familiar words ✓   Distorted meaning ✗</text><rect x="20" y="25" width="140" height="60" rx="6" fill="${c}22"/><text x="90" y="50" text-anchor="middle" fill="${c}" font-size="10">Passage words reassembled</text><text x="90" y="66" text-anchor="middle" fill="${c}" font-size="10">to say something different</text><text x="90" y="98" text-anchor="middle" fill="${c}88" font-size="9">Evaluate meaning, not vocabulary</text></svg>`
+    };
+    return svgs[key]||`<svg width="120" height="80"><rect x="10" y="10" width="100" height="60" rx="8" fill="${c}22"/><text x="60" y="45" text-anchor="middle" fill="${c}" font-size="10">${key}</text></svg>`;
+  },
+  next() { if(this.current<this.slides.length-1){this.current++;this.refresh();AB.stop();} },
+  prev() { if(this.current>0){this.current--;this.refresh();AB.stop();} },
+  goto(n) { this.current=n;this.refresh();AB.stop(); },
+  playNarration() {
+    const s=this.slides[this.current];
+    AB.speak(s.audio,()=>{if(this.current<this.slides.length-1){this.current++;this.refresh();this.playNarration();}});
+  },
+  toggleTranscript() {
+    this.transcriptOpen=!this.transcriptOpen;
+    const el=document.getElementById('vp-transcript');
+    const btn=el?el.previousElementSibling:null;
+    if(el)el.classList.toggle('open',this.transcriptOpen);
+    if(btn)btn.textContent=this.transcriptOpen?'▲ Hide transcript':'▼ View full transcript';
+  },
+  refresh() { R.renderLesson(CE.currentLesson()); }
+};
+
+/* ================================================================
+   COURSE ENGINE (CE)
+   Navigation, state, progress, error log.
+   ================================================================ */
+const CE = {
+  state:{moduleId:'m0',lessonId:'m0l1'},
+  progress:{}, errorLog:[],
+
+  init() {
+    try { this.progress=JSON.parse(localStorage.getItem('hc_course_progress')||'{}'); } catch(e){this.progress={};}
+    try { this.errorLog=JSON.parse(localStorage.getItem('hc_error_log')||'[]'); } catch(e){this.errorLog=[];}
+    this.buildSidebar();
+    this.navigateTo('m0','m0l1');
+    setTimeout(() => Google.init(), 500);
+  },
+
+  navigateTo(moduleId,lessonId) {
+    this.state.moduleId=moduleId; this.state.lessonId=lessonId;
+    AB.stop();
+    const lesson=this.currentLesson();
+    if(lesson&&lesson.type==='video')VP.load(lesson);
+    R.renderLesson(lesson);
+    this.buildSidebar();
+    this.updateProgressBar();
+    document.getElementById('content').scrollTop=0;
+  },
+
+  currentModule() { return COURSE_CONFIG.modules.find(m=>m.id===this.state.moduleId)||COURSE_CONFIG.modules[0]; },
+  currentLesson() { const mod=this.currentModule(); return mod.lessons.find(l=>l.id===this.state.lessonId)||mod.lessons[0]; },
+
+  markComplete(lessonId) {
+    this.progress[lessonId]=true;
+    try{localStorage.setItem('hc_course_progress',JSON.stringify(this.progress));}catch(e){}
+    this.buildSidebar(); this.updateProgressBar();
+    const lesson = this.allLessons().find(l=>l.id===lessonId);
+    if (lesson) Google.syncComplete(lesson);
+  },
+
+  isComplete(lessonId) { return !!this.progress[lessonId]; },
+
+  allLessons() { return COURSE_CONFIG.modules.flatMap(m=>m.lessons); },
+
+  nextLesson() {
+    const all=this.allLessons();
+    const idx=all.findIndex(l=>l.id===this.state.lessonId);
+    return idx<all.length-1?all[idx+1]:null;
+  },
+
+  prevLesson() {
+    const all=this.allLessons();
+    const idx=all.findIndex(l=>l.id===this.state.lessonId);
+    return idx>0?all[idx-1]:null;
+  },
+
+  moduleForLesson(lessonId) { return COURSE_CONFIG.modules.find(m=>m.lessons.some(l=>l.id===lessonId)); },
+
+  // Error log methods
+  logError(entry) {
+    this.errorLog.push({...entry,timestamp:Date.now()});
+    try{localStorage.setItem('hc_error_log',JSON.stringify(this.errorLog));}catch(e){}
+    Google.syncError(entry);
+  },
+
+  getErrorPatterns() {
+    const freq={};
+    this.errorLog.forEach(e=>{const k=e.trapType||e.lessonId;freq[k]=(freq[k]||0)+1;});
+    return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([type,count])=>({type,count}));
+  },
+
+  updateProgressBar() {
+    const all=this.allLessons();
+    const done=all.filter(l=>this.isComplete(l.id)).length;
+    const pct=Math.round(done/all.length*100);
+    const fill=document.getElementById('progress-fill');
+    const label=document.getElementById('progress-label');
+    const topbar=document.getElementById('topbar-current');
+    if(fill)fill.style.width=pct+'%';
+    if(label)label.textContent=`${done} / ${all.length} complete`;
+    if(topbar)topbar.textContent=this.currentLesson()?.title||'';
+  },
+
+  buildSidebar() {
+    const sb=document.getElementById('sidebar');
+    const s=COURSE_CONFIG.student;
+    const errCount=this.errorLog.length;
+    let html=`
+      <div class="sb-header">
+        <div class="sb-logo">SAT Prep Course</div>
+        <div class="sb-student">${s.name} · Grade ${s.grade} · ${s.state}</div>
+        <div class="sb-score-row">
+          <div class="sb-score"><div class="sb-score-n" style="color:#E8533A">${s.baseline.total}</div><div class="sb-score-l">Baseline</div></div>
+          <div class="sb-score"><div class="sb-score-n" style="color:#6366F1">${s.target.total}</div><div class="sb-score-l">Target</div></div>
+        </div>
+      </div>
+      <div class="sb-divider"></div>
+      <button class="sb-ai-btn" onclick="ErrorPanel.open()">
+        <span class="ai-dot"></span>
+        Analyze my error patterns ${errCount>0?`<span style="margin-left:auto;font-size:10px;opacity:.7">${errCount} logged</span>`:''}
+      </button>
+      <div style="margin-bottom:8px"></div>`;
+
+    COURSE_CONFIG.modules.forEach(mod=>{
+      const isActiveModule=mod.id===this.state.moduleId;
+      const hasActiveLesson=mod.lessons.some(l=>l.id===this.state.lessonId);
+      const isOpen=isActiveModule||hasActiveLesson;
+      html+=`
+        <div class="module-group">
+          <div class="module-header${isActiveModule?' active':''}${isOpen?' open':''}" onclick="CE.toggleModule('${mod.id}')">
+            <span class="module-dot" style="background:${mod.color}"></span>
+            <span class="module-title">${mod.icon} ${mod.title}</span>
+            <span class="module-count">${mod.lessons.length}</span>
+            <span class="module-chevron">›</span>
+          </div>
+          <div class="lesson-list${isOpen?' open':''}">
+            ${mod.lessons.map(l=>{
+              const isActive=l.id===this.state.lessonId;
+              const isDone=this.isComplete(l.id);
+              const tc={video:'#7C4DFF',drill:'#00897B',resource:'#0288D1',resources:'#78909C',reading:'#455A64'};
+              return `<div class="lesson-item${isActive?' active':''}${isDone?' done':''}" onclick="CE.navigateToLesson('${l.id}')">
+                <span class="lesson-dot" style="${isActive?`background:${mod.color}`:''}"></span>
+                <span class="lesson-name">${l.title}</span>
+                <span style="font-size:9px;padding:1px 5px;border-radius:3px;border:1px solid;color:${tc[l.type]||'#999'};border-color:${tc[l.type]||'#999'}33;background:${tc[l.type]||'#999'}11">${l.type}</span>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    });
+    html += Google.renderPanel();
+    sb.innerHTML=html;
+  },
+
+  toggleModule(moduleId) {
+    const headers=document.querySelectorAll('.module-header');
+    const lists=document.querySelectorAll('.lesson-list');
+    headers.forEach((h,i)=>{
+      const thisId=COURSE_CONFIG.modules[i]?.id;
+      if(thisId===moduleId){h.classList.toggle('open');lists[i].classList.toggle('open');}
+    });
+  },
+
+  navigateToLesson(lessonId) {
+    const mod=this.moduleForLesson(lessonId);
+    if(mod)this.navigateTo(mod.id,lessonId);
+  }
+};
+
+/* ================================================================
+   RENDERER (R)
+   Renders all lesson types + AI integration hooks.
+   ================================================================ */
+const R = {
+  drillRegistry: {}, // stores drill data by id for AI access
+
+  renderLesson(lesson) {
+    if(!lesson)return;
+    const mod=CE.currentModule();
+    const content=document.getElementById('content');
+    let html=`
+      <div class="lesson-header">
+        <div class="lesson-eyebrow" style="color:${mod.color}">${lesson.eyebrow}</div>
+        <h1 class="lesson-title">${lesson.title}</h1>
+        <div class="lesson-meta">
+          <span>⏱ ${lesson.duration}</span>
+          <span style="text-transform:capitalize">· ${lesson.type} lesson</span>
+          ${lesson.type==='drill'?'<span style="color:#6366F1;font-weight:500">· ✦ AI-powered feedback</span>':''}
+        </div>
+      </div>`;
+    switch(lesson.type){
+      case 'video':   html+=this.renderVideo(lesson); break;
+      case 'reading': html+=this.renderReading(lesson); break;
+      case 'drill':   html+=this.renderDrill(lesson); break;
+      case 'resource':html+=this.renderResource(lesson); break;
+      case 'resources':html+=this.renderResources(lesson); break;
+    }
+    html+=this.renderNav();
+    content.innerHTML=html;
+  },
+
+  renderVideo(lesson) {
+    return `<button class="listen-btn" onclick="AB.speak(this.dataset.text)" data-text="${lesson.slides.map(s=>s.audio).join(' ').replace(/"/g,'&quot;')}">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6z"/></svg>
+      Listen to full lesson
+    </button>${VP.render()}`;
+  },
+
+  renderReading(lesson) {
+    let html=`<button class="listen-btn" onclick="AB.speak(this.dataset.text)" data-text="${(lesson.audioScript||'').replace(/"/g,'&quot;').replace(/`/g,'')}">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6z"/></svg>
+      Listen to this lesson
+    </button>`;
+    (lesson.content||[]).forEach(b=>{
+      if(b.type==='text')html+=`<div class="text-block">${b.html}</div>`;
+      else if(b.type==='callout')html+=`<div class="callout ${b.style}">${b.text}</div>`;
+      else if(b.type==='scores')html+=this.renderScores();
+      else if(b.type==='domains')html+=this.renderDomains();
+    });
+    return html;
+  },
+
+  renderDrill(lesson) {
+    const mod=CE.currentModule();
+    let html=`<button class="listen-btn" onclick="AB.speak(this.dataset.text)" data-text="${(lesson.audioScript||'').replace(/"/g,'&quot;').replace(/`/g,'')}">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6z"/></svg>
+      Listen to drill instructions
+    </button>
+    <div class="callout blue" style="margin-bottom:20px">
+      <strong>✦ AI Tutor is active.</strong> When you answer incorrectly, the AI will explain specifically why your answer was wrong and give you personalized guidance. You can also click "Review this concept" to get a targeted mini-lesson before trying again.
+    </div>
+    <div class="drill-section">`;
+
+    (lesson.drills||[]).forEach((d,qi)=>{
+      const id=`drill_${lesson.id}_${qi}`;
+      // Register drill for AI access
+      this.drillRegistry[id]={
+        drill:d,
+        lessonCtx:{title:lesson.title,module:mod.title,moduleId:mod.id},
+        reviewLesson:lesson.reviewLesson||null
+      };
+      html+=`
+        <div class="drill-card" id="${id}">
+          <div class="drill-num">${d.num}</div>
+          ${d.passage?`<div class="drill-passage">${d.passage}</div>`:''}
+          <div class="drill-stem">${d.stem}</div>
+          <div class="drill-choices" id="${id}_choices">
+            ${d.choices.map((c,ci)=>`
+              <div class="drill-choice" onclick="R.pick('${id}',${ci})">
+                <span class="ltr">${['A','B','C','D'][ci]}</span>${c}
+              </div>`).join('')}
+          </div>
+          <button class="drill-reveal" onclick="R.reveal('${id}_exp')">Reveal explanation</button>
+          <div class="drill-explanation" id="${id}_exp">
+            <div class="exp-correct">Correct answer: ${['A','B','C','D'][d.correct]}) ${d.choices[d.correct]}</div>
+            <div class="exp-body">${d.explanation}</div>
+            ${d.trap?`<div class="exp-trap">⚠ ${d.trap}</div>`:''}
+          </div>
+        </div>`;
+    });
+
+    html+='</div>';
+
+    // Adaptive drill section
+    html+=`
+      <div class="adaptive-section">
+        <div class="adaptive-header">
+          <span>✦</span> AI-Generated Practice Questions
+        </div>
+        <div class="adaptive-desc">
+          Finished the drills above? Generate new questions targeted to your specific error patterns. The AI analyzes what you have gotten wrong and writes new questions designed to address those exact gaps.
+        </div>
+        <button class="gen-btn" id="gen-btn-${lesson.id}" onclick="R.generateAdaptiveDrills('${lesson.id}','${mod.title.replace(/'/g,'\\\'')}')" >
+          Generate questions for me
+        </button>
+        <div id="adaptive-container-${lesson.id}"></div>
+      </div>`;
+
+    return html;
+  },
+
+  renderResource(lesson) {
+    return `<button class="listen-btn" onclick="AB.speak(this.dataset.text)" data-text="${(lesson.audioScript||'').replace(/"/g,'&quot;')}">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6z"/></svg>
+      Listen to overview
+    </button>
+    <div class="text-block"><p>${lesson.resourceDesc}</p></div>
+    <div class="resource-grid" style="grid-template-columns:1fr">
+      <a href="${lesson.resourceFile}" target="_blank" class="resource-card" style="border-color:${CE.currentModule().color}33">
+        <div class="rc-title">${lesson.resourceLabel}</div>
+        <div class="rc-desc">${lesson.resourceDesc}</div>
+        <div class="rc-open" style="color:${CE.currentModule().color}">Open in new tab →</div>
+      </a>
+    </div>`;
+  },
+
+  renderResources(lesson) {
+    let html=`<button class="listen-btn" onclick="AB.speak(this.dataset.text)" data-text="${(lesson.audioScript||'').replace(/"/g,'&quot;')}">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6z"/></svg>
+      Listen to overview
+    </button><div class="resource-grid">`;
+    (lesson.resources||[]).forEach(r=>{
+      html+=`<a href="${r.file}" target="_blank" class="resource-card">
+        <div class="rc-num" style="color:${r.color}">Deliverable ${r.num}</div>
+        <div class="rc-title">${r.title}</div>
+        <div class="rc-desc">${r.desc}</div>
+        <div class="rc-open" style="color:${r.color}">Open file →</div>
+      </a>`;
+    });
+    return html+'</div>';
+  },
+
+  renderScores() {
+    const s=COURSE_CONFIG.student;
+    return `<div class="score-grid">
+      <div class="score-box"><div class="score-n" style="color:#E8533A">${s.baseline.total}</div><div class="score-l">PSAT Total</div></div>
+      <div class="score-box"><div class="score-n" style="color:#0288D1">${s.baseline.rw}</div><div class="score-l">R&W (32nd %ile)</div></div>
+      <div class="score-box"><div class="score-n" style="color:#7C4DFF">${s.baseline.math}</div><div class="score-l">Math (51st %ile)</div></div>
+      <div class="score-box"><div class="score-n" style="color:#2E7D32">${s.target.total}+</div><div class="score-l">8-Wk Target</div></div>
+    </div>`;
+  },
+
+  renderDomains() {
+    const domains=[
+      {name:'Expression of Ideas',score:'370–410',pct:40,color:'#E53935',tag:'Priority',tc:'dt-red'},
+      {name:'Information and Ideas',score:'420–480',pct:52,color:'#FB8C00',tag:'Build',tc:'dt-amber'},
+      {name:'Standard English Conventions',score:'420–480',pct:52,color:'#FB8C00',tag:'Build',tc:'dt-amber'},
+      {name:'Craft and Structure',score:'490–540',pct:72,color:'#43A047',tag:'Strength',tc:'dt-green'},
+      {name:'Algebra',score:'420–460',pct:44,color:'#E53935',tag:'Priority',tc:'dt-red'},
+      {name:'Advanced Math',score:'420–460',pct:44,color:'#E53935',tag:'Priority',tc:'dt-red'},
+      {name:'Data Analysis',score:'550–600',pct:82,color:'#43A047',tag:'Strength',tc:'dt-green'},
+      {name:'Geometry & Trig',score:'550–600',pct:82,color:'#43A047',tag:'Strength',tc:'dt-green'}
+    ];
+    return `<div class="domain-list">${domains.map(d=>`
+      <div class="domain-row">
+        <span class="d-name">${d.name}</span>
+        <div class="d-track"><div class="d-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+        <span class="d-score">${d.score}</span>
+        <span class="d-tag ${d.tc}">${d.tag}</span>
+      </div>`).join('')}</div>`;
+  },
+
+  renderNav() {
+    const prev=CE.prevLesson();
+    const next=CE.nextLesson();
+    const curr=CE.currentLesson();
+    return `<div class="lesson-nav">
+      ${prev?`<button class="ln-btn" onclick="CE.navigateToLesson('${prev.id}')">← ${prev.title}</button>`:'<div></div>'}
+      <div>
+        ${CE.isComplete(curr?.id)
+          ?'<span style="font-size:13px;color:var(--text3)">✓ Completed</span>'
+          :`<button class="ln-btn primary" onclick="CE.markComplete('${curr?.id}');this.textContent='✓ Marked complete'">Mark complete</button>`}
+      </div>
+      ${next?`<button class="ln-btn" onclick="CE.navigateToLesson('${next.id}')">Next: ${next.title} →</button>`:'<span style="color:var(--text3);font-size:13px">Course complete 🎉</span>'}
+    </div>`;
+  },
+
+  // AI Feature 1 (Priority): Personalized wrong-answer feedback
+  async pick(drillId, chosen) {
+    const reg=this.drillRegistry[drillId];
+    if(!reg)return;
+    const {drill,lessonCtx}=reg;
+    const correct=drill.correct;
+
+    const choices=document.querySelectorAll(`#${drillId}_choices .drill-choice`);
+    choices.forEach((el,i)=>{
+      el.style.pointerEvents='none';
+      if(i===correct)el.classList.add('correct');
+      else if(i===chosen&&chosen!==correct)el.classList.add('wrong');
+    });
+
+    if(chosen!==correct){
+      // Log the error
+      CE.logError({
+        lessonId:CE.state.lessonId,
+        lessonTitle:lessonCtx.title,
+        module:lessonCtx.module,
+        questionId:drillId,
+        chosen:drill.choices[chosen],
+        correct:drill.choices[correct],
+        trapType:drill.trap||'general',
+        chosenIdx:chosen,
+        correctIdx:correct
+      });
+      CE.buildSidebar(); // refresh error count in sidebar
+
+      // Show AI feedback panel (loading state)
+      const card=document.getElementById(drillId);
+      const fb=document.createElement('div');
+      fb.id=`${drillId}_ai`;
+      fb.className='ai-feedback-panel';
+      fb.innerHTML=`
+        <div class="ai-feedback-label">✦ AI Tutor — Personalized Feedback</div>
+        <div class="ai-loading"><div class="ai-dots"><span></span><span></span><span></span></div> Analyzing your answer...</div>`;
+      card.appendChild(fb);
+
+      // Get AI explanation
+      const explanation=await AI.explainWrongAnswer(drill,chosen,correct,lessonCtx);
+      fb.innerHTML=`
+        <div class="ai-feedback-label">✦ AI Tutor — Personalized Feedback</div>
+        <div class="ai-feedback-text">${explanation}</div>
+        <div class="ai-feedback-actions">
+          <button class="ai-action-btn ai-action-primary" onclick="Review.open('${drillId}',${chosen},${correct})">Review this concept →</button>
+          <button class="ai-action-btn ai-action-secondary" onclick="R.resetDrill('${drillId}')">Try again</button>
+        </div>`;
+
+      // Speak the feedback
+      AB.speak(explanation);
+    }
+  },
+
+  // Feature 5: Reset drill for retry (used by Review.returnAndRetry)
+  resetDrill(drillId) {
+    const choices=document.querySelectorAll(`#${drillId}_choices .drill-choice`);
+    choices.forEach(el=>{
+      el.style.pointerEvents='auto';
+      el.classList.remove('correct','wrong');
+    });
+    const fb=document.getElementById(`${drillId}_ai`);
+    if(fb)fb.remove();
+  },
+
+  // Feature 4: Adaptive drill generation
+  async generateAdaptiveDrills(lessonId, moduleTitle) {
+    const btn=document.getElementById(`gen-btn-${lessonId}`);
+    const container=document.getElementById(`adaptive-container-${lessonId}`);
+    if(!btn||!container)return;
+    btn.disabled=true; btn.textContent='Generating...';
+    container.innerHTML=`<div class="ai-loading" style="margin-top:18px"><div class="ai-dots"><span></span><span></span><span></span></div> Building questions from your error patterns...</div>`;
+
+    const patterns=CE.getErrorPatterns();
+    const drills=await AI.generateDrills(patterns,moduleTitle);
+
+    btn.disabled=false; btn.textContent='Generate more questions';
+
+    if(!drills){
+      container.innerHTML='<p style="color:var(--text3);font-size:13px;margin-top:14px">Could not generate questions. Please try again in a moment.</p>';
+      return;
+    }
+
+    let html='<div style="margin-top:20px">';
+    drills.forEach((d,qi)=>{
+      const ts=Date.now();
+      const id=`adp_${lessonId}_${ts}_${qi}`;
+      this.drillRegistry[id]={
+        drill:d,
+        lessonCtx:{title:'AI Practice',module:moduleTitle,moduleId:CE.state.moduleId},
+        reviewLesson:CE.currentLesson()?.reviewLesson||null
+      };
+      html+=`
+        <div class="drill-card" id="${id}" style="border-color:rgba(99,102,241,.3)">
+          <div class="drill-num" style="color:#6366F1">${d.num} <span class="ai-drill-badge">AI Generated</span></div>
+          ${d.passage?`<div class="drill-passage">${d.passage}</div>`:''}
+          <div class="drill-stem">${d.stem}</div>
+          <div class="drill-choices" id="${id}_choices">
+            ${d.choices.map((c,ci)=>`<div class="drill-choice" onclick="R.pick('${id}',${ci})"><span class="ltr">${['A','B','C','D'][ci]}</span>${c}</div>`).join('')}
+          </div>
+          <button class="drill-reveal" onclick="R.reveal('${id}_exp')">Reveal explanation</button>
+          <div class="drill-explanation" id="${id}_exp">
+            <div class="exp-correct">Correct: ${['A','B','C','D'][d.correct]}) ${d.choices[d.correct]}</div>
+            <div class="exp-body">${d.explanation}</div>
+            ${d.trap?`<div class="exp-trap">⚠ ${d.trap}</div>`:''}
+          </div>
+        </div>`;
+    });
+    container.innerHTML=html+'</div>';
+  },
+
+  reveal(id) {
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.classList.toggle('open');
+    const btn=el.previousElementSibling;
+    if(btn)btn.textContent=el.classList.contains('open')?'Hide explanation':'Reveal explanation';
+  }
+};
+
+/* ================================================================
+   REVIEW SYSTEM
+   Feature 5: Branching concept review overlay.
+   ================================================================ */
+const Review = {
+  currentDrillId: null,
+
+  async open(drillId, chosenIdx, correctIdx) {
+    this.currentDrillId = drillId;
+    const overlay = document.getElementById('review-overlay');
+    const content = document.getElementById('review-content');
+    const sub = document.getElementById('review-sub');
+    overlay.classList.add('open');
+
+    const reg = R.drillRegistry[drillId];
+    if (!reg) return;
+
+    const returnBtn = document.getElementById('review-return-btn');
+    if (returnBtn) returnBtn.style.display = '';
+
+    if (sub) sub.textContent = `For: "${reg.lessonCtx.module}"`;
+    content.innerHTML = '<div class="ai-loading"><div class="ai-dots"><span></span><span></span><span></span></div> Generating targeted review...</div>';
+
+    const reviewText = await AI.getBranchReview(reg.drill, chosenIdx, correctIdx, reg.lessonCtx.module);
+    content.innerHTML = `<p>${reviewText}</p>`;
+    AB.speak(reviewText);
+  },
+
+  returnAndRetry() {
+    document.getElementById('review-overlay').classList.remove('open');
+    AB.stop();
+    if (this.currentDrillId) {
+      R.resetDrill(this.currentDrillId);
+      // Scroll to the drill
+      const el = document.getElementById(this.currentDrillId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    this.currentDrillId = null;
+  },
+
+  close() {
+    document.getElementById('review-overlay').classList.remove('open');
+    AB.stop();
+    this.currentDrillId = null;
+  }
+};
+
+/* ================================================================
+   CHAT SYSTEM
+   Feature 2: AI tutor chat drawer.
+   ================================================================ */
+const Chat = {
+  initialized: false,
+
+  open() {
+    document.getElementById('chat-drawer').classList.add('open');
+    if (!this.initialized) {
+      this.initialized = true;
+      const lesson = CE.currentLesson();
+      this.addMessage('ai', `Hi Haley! I'm your AI tutor. Ask me anything about this lesson — "${lesson?.title||'the current lesson'}" — or any SAT concept. I can also generate a quick practice question if you want more reps.`);
+    }
+    setTimeout(() => document.getElementById('chat-input')?.focus(), 300);
+  },
+
+  close() {
+    document.getElementById('chat-drawer').classList.remove('open');
+  },
+
+  addMessage(role, text) {
+    const container = document.getElementById('chat-messages');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = `chat-msg ${role}`;
+    div.innerHTML = `<div class="chat-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  },
+
+  async send() {
+    const input = document.getElementById('chat-input');
+    if (!input) return;
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    this.addMessage('user', msg);
+
+    const loadingId = 'chat-loading-' + Date.now();
+    const container = document.getElementById('chat-messages');
+    const loadDiv = document.createElement('div');
+    loadDiv.id = loadingId;
+    loadDiv.className = 'chat-msg ai';
+    loadDiv.innerHTML = '<div class="chat-bubble"><div class="ai-loading"><div class="ai-dots"><span></span><span></span><span></span></div></div></div>';
+    container.appendChild(loadDiv);
+    container.scrollTop = container.scrollHeight;
+
+    const lesson = CE.currentLesson();
+    const response = await AI.chat(msg, {title:lesson?.title,module:CE.currentModule()?.title}, CE.errorLog);
+
+    document.getElementById(loadingId)?.remove();
+    this.addMessage('ai', response);
+  }
+};
+
+/* ================================================================
+   ERROR PANEL
+   Feature 3: Error pattern detection modal.
+   ================================================================ */
+const ErrorPanel = {
+  async open() {
+    const overlay = document.getElementById('review-overlay');
+    const content = document.getElementById('review-content');
+    const title = document.getElementById('review-title');
+    const sub = document.getElementById('review-sub');
+    const returnBtn = document.getElementById('review-return-btn');
+
+    if (title) title.textContent = 'Your Error Pattern Report';
+    if (sub) sub.textContent = `Based on ${CE.errorLog.length} recorded responses`;
+    if (returnBtn) returnBtn.style.display = 'none';
+    overlay.classList.add('open');
+
+    if (!CE.errorLog.length) {
+      content.innerHTML = '<p style="color:var(--text3);font-size:14px">No errors logged yet. Complete some drill lessons and come back — the AI will analyze your specific error patterns and tell you exactly what to focus on.</p>';
+      return;
+    }
+
+    // Show raw error frequency bars first
+    const patterns = CE.getErrorPatterns();
+    const maxCount = patterns[0]?.count || 1;
+    const barsHtml = patterns.map(p => `
+      <div class="error-bar-row">
+        <span style="flex:1;font-size:12px;color:var(--text2)">${p.type}</span>
+        <div class="error-bar-track" style="max-width:160px">
+          <div class="error-bar-fill" style="width:${Math.round(p.count/maxCount*100)}%"></div>
+        </div>
+        <span class="error-count">${p.count}×</span>
+      </div>`).join('');
+
+    content.innerHTML = `
+      <div class="error-bars" style="margin-bottom:20px">${barsHtml}</div>
+      <div class="ai-loading"><div class="ai-dots"><span></span><span></span><span></span></div> Generating AI analysis...</div>`;
+
+    const analysis = await AI.analyzeErrors(CE.errorLog);
+    const loadingEl = content.querySelector('.ai-loading');
+    if (loadingEl) {
+      const aiDiv = document.createElement('div');
+      aiDiv.innerHTML = `<div class="ai-feedback-panel" style="margin-top:0"><div class="ai-feedback-label">✦ AI Analysis</div><div class="ai-feedback-text">${analysis.replace(/\n/g,'<br>')}</div></div>`;
+      loadingEl.replaceWith(aiDiv);
+    }
+    AB.speak(analysis);
+  }
+};
+
+
+/* ================================================================
+   GOOGLE INTEGRATION (minimal — expands when credentials added)
+   ================================================================ */
+const Google = {
+  token: null,
+  userInfo: null,
+  get configured() { return GOOGLE_CONFIG.CLIENT_ID !== 'PASTE_CLIENT_ID_HERE'; },
+
+  init() {
+    if (!this.configured) return;
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.onload = () => this.initTokenClient();
+    document.head.appendChild(script);
+    try {
+      const t = sessionStorage.getItem('g_token');
+      if (t) { this.token = t; this.fetchUserInfo(); }
+    } catch(e) {}
+  },
+
+  initTokenClient() {
+    try {
+      const scopes = [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/classroom.coursework.students',
+        'https://www.googleapis.com/auth/classroom.announcements',
+        'https://www.googleapis.com/auth/drive.file'
+      ].join(' ');
+      this.tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CONFIG.CLIENT_ID,
+        scope: scopes,
+        callback: (resp) => {
+          if (resp.error) return;
+          this.token = resp.access_token;
+          try { sessionStorage.setItem('g_token', this.token); } catch(e) {}
+          this.fetchUserInfo();
+        }
+      });
+    } catch(e) { console.warn('GIS init error:', e); }
+  },
+
+  signIn() {
+    if (!this.configured) { alert('Add your Google Client ID to GOOGLE_CONFIG first.'); return; }
+    if (!this.tokenClient) { alert('Google not loaded yet. Please wait a moment and try again.'); return; }
+    this.tokenClient.requestAccessToken();
+  },
+
+  signOut() {
+    this.token = null; this.userInfo = null;
+    try { sessionStorage.removeItem('g_token'); } catch(e) {}
+    this.updateBar(false); CE.buildSidebar();
+  },
+
+  isReady() { return !!(this.token && this.configured); },
+
+  async fetchUserInfo() {
+    if (!this.token) return;
+    try {
+      const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo',
+        { headers: { Authorization: 'Bearer ' + this.token } });
+      if (!r.ok) { this.token = null; return; }
+      this.userInfo = await r.json();
+      this.updateBar(true);
+      CE.buildSidebar();
+      this.pullProgress();
+    } catch(e) {}
+  },
+
+  updateBar(on) {
+    let bar = document.getElementById('g-bar');
+    if (on && this.userInfo) {
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'g-bar';
+        bar.style.cssText = 'position:fixed;top:52px;left:268px;right:0;height:36px;background:linear-gradient(135deg,#E8F0FE,#F0EDFF);border-bottom:1px solid rgba(26,115,232,.15);display:flex;align-items:center;padding:0 20px;gap:10px;font-size:12px;color:#1A3A6E;z-index:90;font-family:inherit';
+        document.body.appendChild(bar);
+        document.getElementById('layout').style.paddingTop = '88px';
+      }
+      const name = this.userInfo.given_name || 'Haley';
+      bar.innerHTML = `<span style="width:22px;height:22px;border-radius:50%;background:#6366F1;color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">${name[0]}</span>
+        <strong>${name}</strong> · Google Connected
+        <span id="sync-status" style="margin-left:auto;font-size:11px;color:#1E8E3E">✓ Synced</span>
+        <button onclick="Google.signOut()" style="font-size:11px;background:none;border:none;cursor:pointer;color:rgba(26,58,110,.5);margin-left:8px">Sign out</button>`;
+    } else if (bar) {
+      bar.remove();
+      document.getElementById('layout').style.paddingTop = '';
+    }
+  },
+
+  setSyncing(on) {
+    const el = document.getElementById('sync-status');
+    if (el) el.textContent = on ? '⟳ Syncing...' : '✓ Synced';
+  },
+
+  async sheetsAppend(range, values) {
+    if (!this.isReady()) return;
+    this.setSyncing(true);
+    try {
+      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_CONFIG.SPREADSHEET_ID}/values/${range}:append?valueInputOption=USER_ENTERED`,
+        { method:'POST', headers:{ Authorization:'Bearer '+this.token,'Content-Type':'application/json' },
+          body: JSON.stringify({ values: [values] }) });
+    } catch(e) {}
+    this.setSyncing(false);
+  },
+
+  async pullProgress() {
+    if (!this.isReady()) return;
+    try {
+      const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_CONFIG.SPREADSHEET_ID}/values/Progress!A:E`,
+        { headers: { Authorization: 'Bearer ' + this.token } });
+      const d = await r.json();
+      (d.values||[]).slice(1).forEach(row => { if (row[0] && row[3]==='TRUE') CE.progress[row[0]] = true; });
+      try { localStorage.setItem('hc_course_progress', JSON.stringify(CE.progress)); } catch(e) {}
+      CE.buildSidebar(); CE.updateProgressBar();
+    } catch(e) {}
+  },
+
+  syncError(entry) {
+    this.sheetsAppend('ErrorLog!A:H', [
+      new Date().toISOString(), entry.lessonId||'', entry.lessonTitle||'',
+      entry.module||'', entry.questionId||'', entry.chosen||'', entry.correct||'', entry.trapType||''
+    ]);
+  },
+
+  syncComplete(lesson) {
+    this.sheetsAppend('Progress!A:E', [lesson.id, lesson.title, CE.currentModule().title, true, new Date().toISOString()]);
+    this.classroomPost('Great work! Completed: "' + lesson.title + '"');
+  },
+
+  async classroomPost(text) {
+    if (!this.isReady() || !GOOGLE_CONFIG.CLASSROOM_COURSE_ID || GOOGLE_CONFIG.CLASSROOM_COURSE_ID === 'PASTE_COURSE_ID_HERE') return;
+    try {
+      await fetch(`https://classroom.googleapis.com/v1/courses/${GOOGLE_CONFIG.CLASSROOM_COURSE_ID}/announcements`,
+        { method:'POST', headers:{ Authorization:'Bearer '+this.token,'Content-Type':'application/json' },
+          body: JSON.stringify({ text, state:'PUBLISHED' }) });
+    } catch(e) {}
+  },
+
+  renderPanel() {
+    if (!this.isReady()) {
+      return this.configured
+        ? `<div style="padding:12px 16px;border-top:1px solid #1E1E24"><button onclick="Google.signIn()" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:5px;color:rgba(255,255,255,.7);font-size:11px;padding:7px;cursor:pointer;font-family:inherit">Sign in with Google</button></div>`
+        : '';
+    }
+    const lesson = CE.currentLesson();
+    return `<div style="padding:12px 16px;border-top:1px solid #1E1E24">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:rgba(255,255,255,.3);margin-bottom:8px">🎓 Classroom</div>
+      <button onclick="Google.classroomPost(prompt('Announcement:'))" style="display:block;width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:rgba(255,255,255,.6);font-size:11px;padding:6px 10px;cursor:pointer;margin-bottom:4px;font-family:inherit;text-align:left">📢 Post announcement</button>
+      <button onclick="Google.logScoreUI()" style="display:block;width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:rgba(255,255,255,.6);font-size:11px;padding:6px 10px;cursor:pointer;font-family:inherit;text-align:left">📊 Log a score</button>
+    </div>`;
+  },
+
+  logScoreUI() {
+    const t = prompt('Total score:'); if (!t) return;
+    const rw = prompt('R&W score:');
+    const math = prompt('Math score:');
+    const notes = prompt('Notes (optional):') || '';
+    this.sheetsAppend('Scores!A:E', [new Date().toISOString().split('T')[0], +t, +rw, +math, notes]);
+    alert('Score logged to Sheets.');
+  }
+};
+
+// ================================================================
+// INITIALIZE
+// ================================================================
+// Robust initialization
+(function() {
+  function start() {
+    if (typeof CE !== 'undefined' && typeof COURSE_CONFIG !== 'undefined') {
+      CE.init();
+    } else {
+      setTimeout(start, 100);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+})();
+</script>
+</body>
+</html>
