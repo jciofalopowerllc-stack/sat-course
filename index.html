@@ -380,7 +380,7 @@ const GOOGLE_CONFIG = {
   CLIENT_ID: '174056296254-q28nsjb29sk32ansq1h0h5a33b3vp5aj.apps.googleusercontent.com',
   SPREADSHEET_ID: '1rNKH7-rMdCVEf7LpuJ6GPbGITK7A3F3I43tsunF3Rmo',
   CLASSROOM_COURSE_ID: 'ODU4MzczNDQxNzEx',
-  configured: false
+  configured: true
 };
 
 /* ================================================================
@@ -1510,7 +1510,7 @@ const ErrorPanel = {
 const Google = {
   token: null,
   userInfo: null,
-  get configured() { return GOOGLE_CONFIG.CLIENT_ID !== 'PASTE_CLIENT_ID_HERE'; },
+  get configured() { return GOOGLE_CONFIG.configured === true; },
 
   init() {
     if (!this.configured) return;
