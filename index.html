@@ -651,7 +651,7 @@ const AI = {
 
   async call(userPrompt, systemPrompt) {
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://eybkidirqmmavbsbomlj.supabase.co/functions/v1/sat-tutor-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
