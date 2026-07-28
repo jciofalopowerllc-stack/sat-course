@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Master Schedule Builder — Module 01</title>
+<title>Don Bosco Preparatory High School — Module 01</title>
 <style>
 /* ================================================================
    TOKEN SYSTEM
@@ -661,14 +661,18 @@ body {
   <!-- Header -->
   <div class="app-header">
     <div class="app-brand">
-      <div class="app-title">Master Schedule Builder</div>
+      <div class="app-title">Don Bosco Preparatory High School</div>
       <div class="app-sep"></div>
       <div class="app-subtitle">Module 01 &middot; Course Request Workbook</div>
     </div>
     <div class="header-actions">
-      <button class="btn" onclick="printWorkbook()">Print</button>
+      <label class="btn btn-primary" style="cursor:pointer">
+        Import Data
+        <input type="file" accept=".csv,.txt" onchange="handleFileImport(event)" style="display:none">
+      </label>
       <button class="btn" onclick="exportCSV()">Export CSV</button>
-      <button class="btn btn-primary" onclick="openAddStudent()">+ Add Student</button>
+      <button class="btn" onclick="printWorkbook()">Print</button>
+      <button class="btn" onclick="openAddStudent()">+ Student</button>
     </div>
   </div>
 
@@ -1365,6 +1369,116 @@ function renderAll() {
   else if (activeSheet==='review') renderReview();
   else if (activeSheet.startsWith('grade')) renderGrade(parseInt(activeSheet.replace('grade','')));
   updateBadges();
+}
+
+function handleFileImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length < 2) { alert('File appears empty.'); return; }
+    const header = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+    const findCol = (...names) => {
+      for (const n of names) {
+        const idx = header.findIndex(h => h.includes(n));
+        if (idx !== -1) return idx;
+      }
+      return -1;
+    };
+    const colId = findCol('person id', 'student id', 'studentid', 'id');
+    const colName = findCol('student', 'name', 'last');
+    const colGrade = findCol('grade', 'current grade');
+    const colCourseId = findCol('course id', 'courseid', 'course code');
+    const colCourseName = findCol('course name', 'coursename', 'course');
+
+    if (colCourseName === -1 && colCourseId === -1) {
+      alert('Could not find course columns. Expected headers with "Course Name" or "Course ID".');
+      return;
+    }
+
+    const importedStudents = {};
+    const importedRequests = [];
+    let rid = nextRequestId;
+    for (let i = 1; i < lines.length; i++) {
+      const cols = parseCSVLine(lines[i]);
+      if (cols.length < 2) continue;
+      const studentId = colId >= 0 ? cols[colId]?.trim() : 'S' + i;
+      const studentName = colName >= 0 ? cols[colName]?.trim() : '';
+      const gradeRaw = colGrade >= 0 ? cols[colGrade]?.trim() : '';
+      const courseId = colCourseId >= 0 ? cols[colCourseId]?.trim() : '';
+      const courseName = colCourseName >= 0 ? cols[colCourseName]?.trim() : '';
+
+      if (!studentId) continue;
+      const gradeNum = parseInt(gradeRaw.replace(/[^0-9]/g, '')) || 9;
+
+      if (!importedStudents[studentId]) {
+        const parts = studentName.split(/[,\s]+/).filter(Boolean);
+        importedStudents[studentId] = {
+          studentId,
+          last: parts[0] || studentId,
+          first: parts.slice(1).join(' ') || '',
+          grade: gradeNum,
+          counselor: '',
+          transcript: 'yes'
+        };
+      }
+
+      const cid = courseId || courseName.replace(/\s+/g, '_').substring(0, 10);
+      if (!COURSE_CATALOG.find(c => c.id === cid)) {
+        COURSE_CATALOG.push({
+          id: cid,
+          name: courseName || cid,
+          dept: 'Imported',
+          credits: 5,
+          grade: gradeNum,
+          prereq: null,
+          prereqGrade: null
+        });
+      }
+
+      importedRequests.push({
+        rid: rid++,
+        studentId,
+        courseId: cid,
+        semester: 'FY',
+        period: '',
+        prereqGrade: '',
+        notes: ''
+      });
+    }
+
+    students = Object.values(importedStudents);
+    requests = importedRequests;
+    nextStudentId = Math.max(...students.map(s => parseInt(s.studentId) || 10000)) + 1;
+    nextRequestId = rid;
+    saveState();
+    renderAll();
+    alert('Imported ' + students.length + ' students and ' + requests.length + ' course requests.');
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') { current += '"'; i++; }
+      else if (ch === '"') inQuotes = false;
+      else current += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { result.push(current); current = ''; }
+      else current += ch;
+    }
+  }
+  result.push(current);
+  return result;
 }
 
 loadState();
