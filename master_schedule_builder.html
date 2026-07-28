@@ -953,68 +953,7 @@ function saveState() {
   localStorage.setItem('msb_requests', JSON.stringify(requests));
 }
 
-function loadSampleData() {
-  if (students.length > 0) return;
-  students = [
-    {studentId:'10001',last:'Anderson',first:'Emily',grade:9,counselor:'Martinez',transcript:'yes'},
-    {studentId:'10002',last:'Brooks',first:'James',grade:9,counselor:'Martinez',transcript:'yes'},
-    {studentId:'10003',last:'Chen',first:'Sarah',grade:10,counselor:'Williams',transcript:'yes'},
-    {studentId:'10004',last:'Davis',first:'Michael',grade:10,counselor:'Williams',transcript:'no'},
-    {studentId:'10005',last:'Foster',first:'Olivia',grade:11,counselor:'Johnson',transcript:'yes'},
-    {studentId:'10006',last:'Garcia',first:'Daniel',grade:11,counselor:'Johnson',transcript:'yes'},
-    {studentId:'10007',last:'Harris',first:'Sophia',grade:12,counselor:'Thompson',transcript:'yes'},
-    {studentId:'10008',last:'Jackson',first:'Ethan',grade:12,counselor:'Thompson',transcript:'yes'},
-    {studentId:'10009',last:'Kim',first:'Ava',grade:10,counselor:'Williams',transcript:'yes'},
-    {studentId:'10010',last:'Lopez',first:'Noah',grade:9,counselor:'Martinez',transcript:'yes'},
-    {studentId:'10011',last:'Mitchell',first:'Isabella',grade:11,counselor:'Johnson',transcript:'yes'},
-    {studentId:'10012',last:'Nelson',first:'Liam',grade:12,counselor:'Thompson',transcript:'yes'},
-  ];
-  const sampleReqs = [
-    ['10001','ENG100','FY','',''],['10001','MTH100','FY','',''],['10001','SCI100','FY','',''],
-    ['10001','SOC100','FY','',''],['10001','WL100','FY','',''],['10001','EL200','FY','',''],
-    ['10001','EL210','S1','',''],
-    ['10002','ENG100','FY','',''],['10002','MTH100','FY','',''],['10002','SCI110','FY','',''],
-    ['10002','SOC100','FY','',''],['10002','EL120','FY','',''],['10002','EL200','FY','',''],
-    ['10002','EL320','S1','',''],
-    ['10003','ENG200','FY','B+',''],['10003','MTH200','FY','A-',''],['10003','SCI200','FY','B',''],
-    ['10003','SOC200','FY','',''],['10003','WL200','FY','B',''],['10003','EL300','FY','',''],
-    ['10003','EL210','S1','',''],
-    ['10004','ENG200','FY','B',''],['10004','MTH310','FY','A',''],['10004','SCI210','FY','A-',''],
-    ['10004','SOC210','FY','B+',''],['10004','WL200','FY','C+',''],['10004','EL300','FY','',''],
-    ['10004','EL100','FY','',''],['10004','EL200','FY','',''],
-    ['10005','ENG310','FY','A',''],['10005','MTH400','FY','B+',''],['10005','SCI310','FY','A-',''],
-    ['10005','SOC310','FY','A',''],['10005','WL300','FY','B',''],['10005','EL400','S1','',''],
-    ['10005','EL500','S2','',''],
-    ['10006','ENG300','FY','C',''],['10006','MTH300','FY','D+',''],['10006','SCI300','FY','C-',''],
-    ['10006','SOC300','FY','',''],['10006','MTH450','FY','D+',''],['10006','EL410','FY','',''],
-    ['10006','EL400','S1','',''],
-    ['10007','ENG410','FY','A',''],['10007','MTH410','FY','B+',''],['10007','SCI400','FY','A-',''],
-    ['10007','SOC400','FY','',''],['10007','WL310','FY','A',''],['10007','EL400','S1','',''],
-    ['10007','EL500','S2','',''],
-    ['10008','ENG400','FY','C',''],['10008','MTH420','FY','A',''],['10008','SCI400','FY','B+',''],
-    ['10008','SOC410','FY','B',''],['10008','EL300','FY','',''],['10008','EL300','FY','','duplicate test'],
-    ['10008','EL400','S1','',''],
-    ['10009','ENG200','FY','A',''],['10009','MTH200','FY','B',''],['10009','SCI250','FY','B+',''],
-    ['10009','SOC200','FY','',''],['10009','WL210','FY','A-',''],['10009','EL100','FY','',''],
-    ['10009','EL210','S1','',''],
-    ['10010','ENG100','FY','',''],['10010','MTH100','FY','',''],['10010','SCI100','FY','',''],
-    ['10010','SOC100','FY','',''],['10010','WL110','FY','',''],['10010','EL130','FY','',''],
-    ['10010','EL210','S1','',''],
-    ['10011','ENG300','FY','B',''],['10011','MTH350','FY','B-',''],['10011','SCI300','FY','C+',''],
-    ['10011','SOC300','FY','',''],['10011','WL300','FY','C',''],['10011','EL310','FY','B',''],
-    ['10011','EL400','S1','',''],
-    ['10012','ENG400','FY','B',''],['10012','MTH410','FY','C+',''],['10012','SCI400','FY','',''],
-    ['10012','SOC400','FY','',''],['10012','EL300','FY','',''],['10012','EL400','S1','',''],
-    ['10012','EL500','S2','',''],
-  ];
-  requests = sampleReqs.map((r,i) => ({
-    rid: i+1, studentId: r[0], courseId: r[1], semester: r[2],
-    prereqGrade: r[3], notes: r[4], period: ''
-  }));
-  nextStudentId = 10013;
-  nextRequestId = requests.length + 1;
-  saveState();
-}
+function loadSampleData() {}
 
 function getStudentFlags(studentId) {
   const stu = students.find(s => s.studentId === studentId);
