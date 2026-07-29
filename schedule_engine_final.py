@@ -7,6 +7,11 @@ v2 core algorithm with:
   - 8-input weighted composite scoring from priority_assignments.json
   - Most-constrained-first student ordering (Student Rank Score)
 """
+import sys
+_print = print
+def print(*args, **kwargs):
+    kwargs.setdefault('flush', True)
+    _print(*args, **kwargs)
 
 import openpyxl, json, math, random, collections, statistics, os, re
 from collections import defaultdict, Counter
@@ -657,9 +662,17 @@ print("=" * 60)
 assign = {pid: {} for pid in students}
 secfill = Counter()
 
+_occ_cache = {}
 def occ_cells(sid):
+    if sid in _occ_cache:
+        return _occ_cache[sid]
     s = sections[sid]
-    return [(s['period'], h) for h in s['halves']]
+    result = tuple((s['period'], h) for h in s['halves'])
+    _occ_cache[sid] = result
+    return result
+
+def _invalidate_occ_cache():
+    _occ_cache.clear()
 
 cell_usage = Counter()
 
@@ -898,16 +911,25 @@ def _restore_for_restart(fixed_state):
 
 fixed_state = _save_fixed_state()
 
+# Pre-compute deterministic sort orders (these never change between reseats)
+_reseat_pid_order = sorted(students.keys(), key=student_rank_key)
+_reseat_course_order = {}
+for _pid in _reseat_pid_order:
+    _reseat_course_order[_pid] = sorted(
+        sreq[_pid],
+        key=lambda c, _p=_pid: (placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
+    )
+
 
 def full_reseat():
     """Re-run complete student seating from scratch. Returns new clash list."""
+    _invalidate_occ_cache()
     for pid in students:
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
-    # Greedy warm-start (most-constrained-first)
-    for pid in sorted(students.keys(), key=student_rank_key):
-        for cid in sorted(sreq[pid], key=lambda c: (placement_sort_key(pid, c), len(sec_by_code.get(c, [])))):
+    for pid in _reseat_pid_order:
+        for cid in _reseat_course_order[pid]:
             if cid not in sec_by_code:
                 continue
             if cid == '745':
@@ -923,8 +945,8 @@ def full_reseat():
                 added_conflicts(pid, sid),
                 max(0, secfill[sid] + 1 - sections[sid]['cap']),
                 secfill[sid])))
-    # Enhanced CSP (8 rounds, severity-priority)
-    for rnd in range(8):
+    # Enhanced CSP (3 rounds — converges after round 1)
+    for rnd in range(3):
         cpids = [pid for pid in students
                  if any(cell_usage.get((pid, x), 0) > 1
                         for cid, sid in assign[pid].items() for x in occ_cells(sid))]
@@ -991,12 +1013,13 @@ def full_reseat():
     return nc
 
 
-def run_optimization_pass():
+def run_optimization_pass(cl=None):
     """Run full Phase D optimization on current period layout. Returns clash list."""
-    cl = full_reseat()
+    if cl is None:
+        cl = full_reseat()
     stalled = 0
-    for d_iter in range(40):
-        if stalled >= 4:
+    for d_iter in range(20):
+        if stalled >= 3:
             break
         sec_sc = Counter()
         for c in cl:
@@ -1044,10 +1067,11 @@ def run_optimization_pass():
             break
         cands.sort(reverse=True)
         improved = False
-        for est, sid, np in cands[:8]:
+        for est, sid, np in cands[:5]:
             s = sections[sid]
             op = s['period']
             s['period'] = np
+            _invalidate_occ_cache()
             tc = full_reseat()
             if len(tc) < len(cl):
                 cl = tc
@@ -1055,7 +1079,7 @@ def run_optimization_pass():
                 stalled = 0
                 break
             s['period'] = op
-            cl = full_reseat()
+            _invalidate_occ_cache()
         if not improved:
             stalled += 1
     return cl
@@ -1067,17 +1091,19 @@ best_periods = None
 best_halves = None
 best_seed = None
 
+import time as _time
 for restart, seed in enumerate(SEEDS):
+    _t0 = _time.time()
     _restore_for_restart(fixed_state)
     greedy_assign_periods(seed=seed)
     cl = full_reseat()
     baseline = len(cl)
 
-    # Quick optimization pass
-    cl = run_optimization_pass()
+    cl = run_optimization_pass(cl)
     result = len(cl)
+    _elapsed = _time.time() - _t0
 
-    print(f"  Restart {restart+1} (seed={seed}): baseline={baseline} -> optimized={result}")
+    print(f"  Restart {restart+1} (seed={seed}): baseline={baseline} -> optimized={result}  [{_elapsed:.1f}s]")
 
     if best_clash is None or result < len(best_clash):
         best_clash = cl
