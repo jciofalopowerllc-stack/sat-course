@@ -1,0 +1,982 @@
+[
+  {
+    "code": "143",
+    "title": "Creative Writing",
+    "dept": "English",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "New ENGLISH Teacher (TBD)"
+      }
+    ]
+  },
+  {
+    "code": "144",
+    "title": "Public Speaking",
+    "dept": "English",
+    "total_sections": 3,
+    "designation": "SPLIT (2\u00d7S1, 1\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "New ENGLISH Teacher ELENA (TBD)"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "New ENGLISH Teacher ELENA (TBD)"
+      },
+      {
+        "sec": 3,
+        "semester": "S2",
+        "teacher": "New ENGLISH Teacher ELENA (TBD)"
+      }
+    ]
+  },
+  {
+    "code": "145",
+    "title": "Journalism",
+    "dept": "English",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "New ENGLISH Teacher (TBD)"
+      }
+    ]
+  },
+  {
+    "code": "201",
+    "title": "Introduction to Guitar",
+    "dept": "Music/Art",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Lopez, Enrique"
+      }
+    ]
+  },
+  {
+    "code": "220",
+    "title": "Music Theory",
+    "dept": "Music/Art",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Lopez, Enrique"
+      }
+    ]
+  },
+  {
+    "code": "225",
+    "title": "Tech Theater Level 1",
+    "dept": "Theater Arts",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "New THEATER Teacher (TBD)"
+      }
+    ]
+  },
+  {
+    "code": "228",
+    "title": "Adv Theater Production",
+    "dept": "Theater Arts",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "New THEATER Teacher (TBD)"
+      }
+    ]
+  },
+  {
+    "code": "241",
+    "title": "Studio Art I",
+    "dept": "Music/Art",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Dennehy, Sheri"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Dennehy, Sheri"
+      }
+    ]
+  },
+  {
+    "code": "242",
+    "title": "Studio Art II",
+    "dept": "Music/Art",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Dennehy, Sheri"
+      }
+    ]
+  },
+  {
+    "code": "243",
+    "title": "Studio Art III",
+    "dept": "Music/Art",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Dennehy, Sheri"
+      }
+    ]
+  },
+  {
+    "code": "248",
+    "title": "Adv Drawing",
+    "dept": "Music/Art",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Dennehy, Sheri"
+      }
+    ]
+  },
+  {
+    "code": "249",
+    "title": "Adv Painting",
+    "dept": "Music/Art",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Dennehy, Sheri"
+      }
+    ]
+  },
+  {
+    "code": "472",
+    "title": "Web Design",
+    "dept": "Computer Science",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Calidas, Riddhi"
+      }
+    ]
+  },
+  {
+    "code": "473",
+    "title": "Introduction to Programming",
+    "dept": "Computer Science",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Calidas, Riddhi"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Calidas, Riddhi"
+      }
+    ]
+  },
+  {
+    "code": "494",
+    "title": "Applied Programming",
+    "dept": "Computer Science",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Calidas, Riddhi"
+      }
+    ]
+  },
+  {
+    "code": "570",
+    "title": "Introduction to Robotics",
+    "dept": "Engineering",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "McConnell, George"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "McConnell, George"
+      }
+    ]
+  },
+  {
+    "code": "580",
+    "title": "Robotics Engineering",
+    "dept": "Engineering",
+    "total_sections": 4,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "McConnell, George"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "McConnell, George"
+      },
+      {
+        "sec": 3,
+        "semester": "Builder Choice",
+        "teacher": "McConnell, George"
+      },
+      {
+        "sec": 4,
+        "semester": "Builder Choice",
+        "teacher": "McConnell, George"
+      }
+    ]
+  },
+  {
+    "code": "585",
+    "title": "Robotics Design",
+    "dept": "Engineering",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "McConnell, George"
+      }
+    ]
+  },
+  {
+    "code": "590",
+    "title": "Robotics Project",
+    "dept": "Engineering",
+    "total_sections": 1,
+    "designation": "S1",
+    "category": "PRESCRIBED S1 (all sections)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "McConnell, George"
+      }
+    ]
+  },
+  {
+    "code": "591",
+    "title": "Robotics Project II",
+    "dept": "Engineering",
+    "total_sections": 1,
+    "designation": "S1",
+    "category": "PRESCRIBED S1 (all sections)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "McConnell, George"
+      }
+    ]
+  },
+  {
+    "code": "595",
+    "title": "Engineering Design",
+    "dept": "Engineering",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Kozak, Bernadette"
+      }
+    ]
+  },
+  {
+    "code": "610",
+    "title": "Health/PE",
+    "dept": "Physical Education",
+    "total_sections": 10,
+    "designation": "SPLIT (5\u00d7S1, 5\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 3,
+        "semester": "S1",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 4,
+        "semester": "S1",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 5,
+        "semester": "S1",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 6,
+        "semester": "S2",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 7,
+        "semester": "S2",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 8,
+        "semester": "S2",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 9,
+        "semester": "S2",
+        "teacher": "Biggs, Tyrell"
+      },
+      {
+        "sec": 10,
+        "semester": "S2",
+        "teacher": "Biggs, Tyrell"
+      }
+    ]
+  },
+  {
+    "code": "620",
+    "title": "Driver's Ed/PE",
+    "dept": "Physical Education",
+    "total_sections": 10,
+    "designation": "SPLIT (5\u00d7S1, 5\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 3,
+        "semester": "S1",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 4,
+        "semester": "S1",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 5,
+        "semester": "S1",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 6,
+        "semester": "S2",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 7,
+        "semester": "S2",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 8,
+        "semester": "S2",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 9,
+        "semester": "S2",
+        "teacher": "Daniels, Torrence"
+      },
+      {
+        "sec": 10,
+        "semester": "S2",
+        "teacher": "Daniels, Torrence"
+      }
+    ]
+  },
+  {
+    "code": "631",
+    "title": "CPR-AED Training/PE",
+    "dept": "Physical Education",
+    "total_sections": 5,
+    "designation": "SPLIT (3\u00d7S1, 2\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 3,
+        "semester": "S1",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 4,
+        "semester": "S2",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 5,
+        "semester": "S2",
+        "teacher": "Chiaravalloti, Michael"
+      }
+    ]
+  },
+  {
+    "code": "642",
+    "title": "Nutrition & Fitness/PE",
+    "dept": "Physical Education",
+    "total_sections": 5,
+    "designation": "SPLIT (2\u00d7S1, 3\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S2",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 2,
+        "semester": "S2",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 3,
+        "semester": "S2",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 4,
+        "semester": "S1",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 5,
+        "semester": "S1",
+        "teacher": "Chiaravalloti, Michael"
+      }
+    ]
+  },
+  {
+    "code": "708",
+    "title": "Introduction to Business",
+    "dept": "Business",
+    "total_sections": 5,
+    "designation": "SPLIT (2\u00d7S1, 3\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "Sabella, Daniel"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "Sabella, Daniel"
+      },
+      {
+        "sec": 3,
+        "semester": "S2",
+        "teacher": "Sabella, Daniel"
+      },
+      {
+        "sec": 4,
+        "semester": "S2",
+        "teacher": "Sabella, Daniel"
+      },
+      {
+        "sec": 5,
+        "semester": "S2",
+        "teacher": "Sabella, Daniel"
+      }
+    ]
+  },
+  {
+    "code": "726",
+    "title": "Business Concepts",
+    "dept": "Business",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Esposito, John"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Esposito, John"
+      }
+    ]
+  },
+  {
+    "code": "727",
+    "title": "Sports and Entertainment Marketing",
+    "dept": "Business",
+    "total_sections": 3,
+    "designation": "MIXED (2\u00d7S1, 1\u00d7AI)",
+    "category": "MIXED (some prescribed, some builder)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "Corcoran, Kevin"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "Corcoran, Kevin"
+      },
+      {
+        "sec": 3,
+        "semester": "Builder Choice",
+        "teacher": "Unassigned"
+      }
+    ]
+  },
+  {
+    "code": "732",
+    "title": "Business Law",
+    "dept": "Business",
+    "total_sections": 3,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Unassigned"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Zawacki, Richard"
+      },
+      {
+        "sec": 3,
+        "semester": "Builder Choice",
+        "teacher": "Zawacki, Richard"
+      }
+    ]
+  },
+  {
+    "code": "734",
+    "title": "Leadership, Entrepreneurship and Opportunity Program I",
+    "dept": "Business",
+    "total_sections": 2,
+    "designation": "S2",
+    "category": "PRESCRIBED S2 (all sections)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S2",
+        "teacher": "Esposito, John"
+      },
+      {
+        "sec": 2,
+        "semester": "S2",
+        "teacher": "Esposito, John"
+      }
+    ]
+  },
+  {
+    "code": "741",
+    "title": "Psychology",
+    "dept": "Social Studies",
+    "total_sections": 3,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Saggio, Jack"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Saggio, Jack"
+      },
+      {
+        "sec": 3,
+        "semester": "Builder Choice",
+        "teacher": "Saggio, Jack"
+      }
+    ]
+  },
+  {
+    "code": "744",
+    "title": "Sociology",
+    "dept": "Social Studies",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Quast, Richard"
+      }
+    ]
+  },
+  {
+    "code": "745",
+    "title": "Leadership, Entrepreneurship and Opportunity Program II",
+    "dept": "Business",
+    "total_sections": 2,
+    "designation": "S1",
+    "category": "PRESCRIBED S1 (all sections)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "Esposito, John"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "Esposito, John"
+      }
+    ]
+  },
+  {
+    "code": "751",
+    "title": "American Government & Politics",
+    "dept": "Social Studies",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Quast, Richard"
+      },
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Saggio, Jack"
+      }
+    ]
+  },
+  {
+    "code": "756",
+    "title": "Introduction to Law",
+    "dept": "Social Studies",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Winters, Jack"
+      }
+    ]
+  },
+  {
+    "code": "758",
+    "title": "Bloomberg Market Concepts",
+    "dept": "Business",
+    "total_sections": 2,
+    "designation": "S2",
+    "category": "PRESCRIBED S2 (all sections)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S2",
+        "teacher": "Corcoran, Kevin"
+      },
+      {
+        "sec": 2,
+        "semester": "S2",
+        "teacher": "Corcoran, Kevin"
+      }
+    ]
+  },
+  {
+    "code": "849",
+    "title": "Catholic Social Teaching",
+    "dept": "Theology",
+    "total_sections": 8,
+    "designation": "SPLIT (4\u00d7S1, 4\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S1",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      },
+      {
+        "sec": 3,
+        "semester": "S1",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      },
+      {
+        "sec": 4,
+        "semester": "S1",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      },
+      {
+        "sec": 5,
+        "semester": "S2",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      },
+      {
+        "sec": 6,
+        "semester": "S2",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      },
+      {
+        "sec": 7,
+        "semester": "S2",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      },
+      {
+        "sec": 8,
+        "semester": "S2",
+        "teacher": "New THEO 2 Teacher (TBD)"
+      }
+    ]
+  },
+  {
+    "code": "851",
+    "title": "Spirituality of Vocation",
+    "dept": "Theology",
+    "total_sections": 8,
+    "designation": "SPLIT (4\u00d7S1, 4\u00d7S2)",
+    "category": "PRESCRIBED SPLIT (S1+S2 per section)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "S2",
+        "teacher": "Laracy, John"
+      },
+      {
+        "sec": 2,
+        "semester": "S2",
+        "teacher": "Laracy, John"
+      },
+      {
+        "sec": 3,
+        "semester": "S2",
+        "teacher": "Laracy, John"
+      },
+      {
+        "sec": 4,
+        "semester": "S2",
+        "teacher": "Laracy, John"
+      },
+      {
+        "sec": 5,
+        "semester": "S1",
+        "teacher": "Laracy, John"
+      },
+      {
+        "sec": 6,
+        "semester": "S1",
+        "teacher": "Laracy, John"
+      },
+      {
+        "sec": 7,
+        "semester": "S1",
+        "teacher": "Laracy, John"
+      },
+      {
+        "sec": 8,
+        "semester": "S1",
+        "teacher": "Laracy, John"
+      }
+    ]
+  },
+  {
+    "code": "2014",
+    "title": "Multi-Media Production",
+    "dept": "Communication Arts",
+    "total_sections": 1,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      }
+    ]
+  },
+  {
+    "code": "2024",
+    "title": "TV/Film Process and Principles",
+    "dept": "Communication Arts",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      }
+    ]
+  },
+  {
+    "code": "2034",
+    "title": "TV/Film Production & Editing I",
+    "dept": "Communication Arts",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      }
+    ]
+  },
+  {
+    "code": "2044",
+    "title": "TV/Film Production II",
+    "dept": "Communication Arts",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      }
+    ]
+  },
+  {
+    "code": "2054",
+    "title": "Digital Media",
+    "dept": "Communication Arts",
+    "total_sections": 2,
+    "designation": "AI CHOICE",
+    "category": "BUILDER CHOICE (engine decides)",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      },
+      {
+        "sec": 2,
+        "semester": "Builder Choice",
+        "teacher": "Park, Sam"
+      }
+    ]
+  }
+]
