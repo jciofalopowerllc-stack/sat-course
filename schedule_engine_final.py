@@ -1,10 +1,11 @@
 """Don Bosco Prep 2026-27 Scheduling Engine — FINAL BUILD
-v1 core algorithm with:
+v2 core algorithm with:
   - Both authoritative sources consumed (Prescribed + Sectioning Template)
   - Prior-year schedule loaded for validation/reporting (not for period assignment)
   - Teacher load violations flagged per Jamie's rules
   - Prior-year alignment stats in output
-  - Priority scale (0-5) from course_priorities.json for scheduling order and conflict resolution
+  - 8-input weighted composite scoring from priority_assignments.json
+  - Most-constrained-first student ordering (Student Rank Score)
 """
 
 import openpyxl, json, math, random, collections, statistics, os, re
@@ -24,6 +25,96 @@ for _plevel, _pinfo in _prio_data['scale'].items():
 
 def prio(c):
     return COURSE_PRIORITY.get(str(c), 1)
+
+# ── 8-Input Composite Scoring System ──
+with open(os.path.join(os.path.dirname(__file__) or '.', 'priority_assignments.json')) as _paf:
+    PRIO_ASSIGN = json.load(_paf)
+
+_PA_WEIGHTS = PRIO_ASSIGN['metadata']['weights']
+_W = (_PA_WEIGHTS['CFP'], _PA_WEIGHTS['CYRP'], _PA_WEIGHTS['SSP'], _PA_WEIGHTS['MTP'],
+      _PA_WEIGHTS['CTAP'], _PA_WEIGHTS['TL'], _PA_WEIGHTS['PL'], _PA_WEIGHTS['RL'])
+
+_COURSE_PRIO = PRIO_ASSIGN.get('course_priorities', {})
+_STUDENT_PRIO = PRIO_ASSIGN.get('student_priorities', {})
+_TEACHER_PRIO = PRIO_ASSIGN.get('teacher_priorities', {})
+_placement_cache = {}
+
+def placement_score(pid, cid):
+    """8-input weighted composite score for a student-course placement.
+    Returns (weighted_sum, constraint_count). Cached."""
+    key = (str(pid), str(cid))
+    if key in _placement_cache:
+        return _placement_cache[key]
+    cp = _COURSE_PRIO.get(key[1], {})
+    sp = _STUDENT_PRIO.get(key[0], {})
+    cfp = cp.get('CFP', 0)
+    cyrp = cp.get('CYRP', 0)
+    ssp = sp.get('SSP', 1)
+    teachers = cp.get('teachers', [])
+    mtp = max(((_TEACHER_PRIO.get(t, {}).get('MTP', 1)) for t in teachers), default=1) if teachers else 1
+    ctap = cp.get('CTAP', 0)
+    tl = cp.get('TL', 0)
+    pl = cp.get('PL', 0)
+    rl = cp.get('RL', 0)
+    vals = (cfp, cyrp, ssp, mtp, ctap, tl, pl, rl)
+    ws = sum(v * w for v, w in zip(vals, _W))
+    cc = sum(1 for v in vals if v >= 4)
+    result = (ws, cc)
+    _placement_cache[key] = result
+    return result
+
+def placement_sort_key(pid, cid):
+    """Sort key for ordering placements: constraint count DESC, weighted sum DESC."""
+    ws, cc = placement_score(pid, cid)
+    return (-cc, -ws)
+
+_course_composite_cache = {}
+
+def course_composite(cid):
+    """Course-level composite for Phase A ordering (no student dimension). Cached."""
+    cid_s = str(cid)
+    if cid_s in _course_composite_cache:
+        return _course_composite_cache[cid_s]
+    cp = _COURSE_PRIO.get(cid_s, {})
+    cfp = cp.get('CFP', 0)
+    cyrp = cp.get('CYRP', 0)
+    ctap = cp.get('CTAP', 0)
+    tl = cp.get('TL', 0)
+    pl = cp.get('PL', 0)
+    rl = cp.get('RL', 0)
+    teachers = cp.get('teachers', [])
+    mtp = max(((_TEACHER_PRIO.get(t, {}).get('MTP', 1)) for t in teachers), default=1) if teachers else 1
+    total = cfp * _W[0] + cyrp * _W[1] + mtp * _W[3] + ctap * _W[4] + tl * _W[5] + pl * _W[6] + rl * _W[7]
+    cc = sum(1 for v in (cfp, cyrp, mtp, ctap, tl, pl, rl) if v >= 4)
+    result = (-cc, -total)
+    _course_composite_cache[cid_s] = result
+    return result
+
+_student_rank_cache = {}
+
+def _compute_student_ranks():
+    """Pre-compute student rank scores after sreq is populated."""
+    scores = []
+    for pid in _STUDENT_PRIO:
+        sp = _STUDENT_PRIO[pid]
+        courses = sp.get('courses', [])
+        max_cc = 0
+        total_ws = 0.0
+        for cid in courses:
+            ws, cc = placement_score(pid, cid)
+            total_ws += ws
+            if cc > max_cc:
+                max_cc = cc
+        scores.append((pid, max_cc, total_ws))
+    scores.sort(key=lambda x: (-x[1], -x[2]))
+    for rank, (pid, mc, tw) in enumerate(scores, 1):
+        _student_rank_cache[pid] = (rank, mc, tw)
+
+def student_rank_key(pid):
+    """Sort key for student ordering: rank 1 = most restricted."""
+    if pid in _student_rank_cache:
+        return _student_rank_cache[pid][0]
+    return 99999
 
 print("=" * 60)
 print("SCHEDULING ENGINE — FINAL BUILD")
@@ -238,6 +329,14 @@ COURSE_TEACHER_LOCKS = {
     '631': 'Chiaravalloti, Michael' # CPR-AED Training/PE — only Chiaravalloti
 }
 
+# Pre-compute student rank scores for most-constrained-first ordering
+_compute_student_ranks()
+_ranked_count = len(_student_rank_cache)
+_top5 = sorted(_student_rank_cache.items(), key=lambda x: x[1][0])[:5]
+print(f"  Student ranks computed: {_ranked_count}")
+for _pid, (_rk, _mc, _tw) in _top5:
+    print(f"    Rank {_rk}: {_pid} (maxCC={_mc}, totalWS={_tw:.1f})")
+
 # ============================================================
 # 1. ASSIGN PERIODS (v1 algorithm — exact reproduction)
 # ============================================================
@@ -431,7 +530,7 @@ def greedy_assign_periods(seed=42):
     rng = random.Random(seed)
     unassigned = [s for s in sections if s['period'] is None]
     rng.shuffle(unassigned)
-    unassigned.sort(key=lambda s: (-prio(s['code']), len(sec_by_code[s['code']]), s['code'], s['section']))
+    unassigned.sort(key=lambda s: (course_composite(s['code']), len(sec_by_code[s['code']]), s['code'], s['section']))
 
     for s in unassigned:
         teacher = s['teacher']
@@ -589,10 +688,10 @@ for sid in leo2_sids:
     elif sections[sid]['period'] == 'E':
         leo2E = sid
 
-sorted_students = sorted(students.keys(), key=lambda pid: -len(sreq[pid]))
-print("  Greedy warm-start...")
+sorted_students = sorted(students.keys(), key=student_rank_key)
+print("  Greedy warm-start (most-constrained-first)...")
 for pid in sorted_students:
-    reqs = sorted(sreq[pid], key=lambda c: (-prio(c), len(sec_by_code.get(c, []))))
+    reqs = sorted(sreq[pid], key=lambda c: (placement_sort_key(pid, c), len(sec_by_code.get(c, []))))
     for cid in reqs:
         if cid not in sec_by_code:
             continue
@@ -635,7 +734,7 @@ def resolve_student(pid):
     for c, sid in pins.items():
         for x in occ_cells(sid):
             used.add(x)
-    others.sort(key=lambda c: (-prio(c), len(sec_by_code.get(c, []))))
+    others.sort(key=lambda c: (placement_sort_key(pid, c), len(sec_by_code.get(c, []))))
     res = {}
 
     def rec(i):
@@ -702,16 +801,20 @@ for pid in students:
         cs = [c for c in cs if c not in bump]
         if len(cs) > 1:
             prot_cs = [c for c in cs if c in PROT]
-            keep = max(prot_cs, key=lambda c: prio(c)) if prot_cs else max(cs, key=lambda c: prio(c))
+            _score_fn = lambda c: (-placement_score(pid, c)[1], -placement_score(pid, c)[0])
+            keep = min(prot_cs, key=_score_fn) if prot_cs else min(cs, key=_score_fn)
             for c in cs:
                 if c != keep and c not in PROT:
                     bump.add(c)
     for c in bump:
         s = sections[assign[pid][c]]
+        _ws, _cc = placement_score(pid, c)
         clash.append({
             'student': pid, 'name': students[pid], 'grade': grade[pid],
             'code': c, 'course': course_info.get(c, {}).get('title', c),
             'priority': prio(c),
+            'composite_ws': round(_ws, 1),
+            'composite_cc': _cc,
             'lost_period': s['period'],
             'lost_sem': 'Full-Year' if len(s['halves']) == 2 else ('Fall' if s['halves'][0] == 'S1' else 'Spring')
         })
@@ -802,9 +905,9 @@ def full_reseat():
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
-    # Greedy warm-start
-    for pid in sorted(students.keys(), key=lambda p: -len(sreq[p])):
-        for cid in sorted(sreq[pid], key=lambda c: (-prio(c), len(sec_by_code.get(c, [])))):
+    # Greedy warm-start (most-constrained-first)
+    for pid in sorted(students.keys(), key=student_rank_key):
+        for cid in sorted(sreq[pid], key=lambda c: (placement_sort_key(pid, c), len(sec_by_code.get(c, [])))):
             if cid not in sec_by_code:
                 continue
             if cid == '745':
@@ -847,16 +950,20 @@ def full_reseat():
             cs = [c for c in cs if c not in bmp]
             if len(cs) > 1:
                 pr = [c for c in cs if c in PROT]
-                kp = max(pr, key=prio) if pr else max(cs, key=prio)
+                _sf = lambda c: (-placement_score(pid, c)[1], -placement_score(pid, c)[0])
+                kp = min(pr, key=_sf) if pr else min(cs, key=_sf)
                 for c in cs:
                     if c != kp and c not in PROT:
                         bmp.add(c)
         for c in bmp:
             bs = sections[assign[pid][c]]
+            _ws_b, _cc_b = placement_score(pid, c)
             nc.append({
                 'student': pid, 'name': students[pid], 'grade': grade[pid],
                 'code': c, 'course': course_info.get(c, {}).get('title', c),
                 'priority': prio(c),
+                'composite_ws': round(_ws_b, 1),
+                'composite_cc': _cc_b,
                 'lost_period': bs['period'],
                 'lost_sem': 'Full-Year' if len(bs['halves']) == 2 else (
                     'Fall' if bs['halves'][0] == 'S1' else 'Spring')
@@ -1198,24 +1305,32 @@ for s in sections:
         'teacher': s['teacher'], 'room': s['room'], 'cap': s['cap'],
         'enrolled': secfill[s['sid']], 'section': s['section'],
         'priority': prio(s['code']),
+        'course_composite': course_composite(s['code']),
         'prior_year_match': prior_match_flag
     })
 
 for pid in students:
+    _rk_info = _student_rank_cache.get(pid, (999, 0, 0.0))
     output['assignments'][pid] = {
         'name': students[pid],
         'grade': grade[pid],
+        'rank': _rk_info[0],
+        'max_constraint_count': _rk_info[1],
+        'total_weighted_sum': round(_rk_info[2], 1),
         'courses': {}
     }
     for cid, sid in assign[pid].items():
         s = sections[sid]
+        _pws, _pcc = placement_score(pid, cid)
         output['assignments'][pid]['courses'][cid] = {
             'title': s['title'],
             'period': s['period'],
             'halves': list(s['halves']),
             'teacher': s['teacher'],
             'room': s['room'],
-            'section': s['section']
+            'section': s['section'],
+            'placement_ws': round(_pws, 1),
+            'placement_cc': _pcc
         }
 
 SOLUTION_FILE = os.path.join(SCRATCHPAD, "schedule_solution.json")
