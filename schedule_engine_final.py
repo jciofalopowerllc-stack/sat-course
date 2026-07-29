@@ -231,6 +231,59 @@ for r in range(2, rws.max_row + 1):
 print(f"  Students: {len(students)}")
 print(f"  Requests: {sum(len(v) for v in sreq.values())}")
 
+# ── CREDIT VALIDATION GATE ──
+# Every student's total requested credits must be <= 35.0.
+# Course 955 (Academic Support, 0 credits) is exempt from the cap.
+# Violations halt the engine and produce a report for the registrar.
+CREDIT_CAP = 35.0
+CREDIT_EXEMPT = {'955'}
+_credit_violations = []
+for _pid in sreq:
+    _total_cr = 0.0
+    _courses_cr = []
+    for _cid in sreq[_pid]:
+        if _cid in CREDIT_EXEMPT:
+            continue
+        _cr = course_info.get(_cid, {}).get('credits', 0) or 0
+        _total_cr += float(_cr)
+        _courses_cr.append((_cid, course_info.get(_cid, {}).get('title', _cid), float(_cr)))
+    if _total_cr > CREDIT_CAP:
+        _courses_cr.sort(key=lambda x: x[2])
+        _credit_violations.append({
+            'student_id': _pid,
+            'name': students[_pid],
+            'grade': grade.get(_pid, 0),
+            'total_credits': _total_cr,
+            'excess': round(_total_cr - CREDIT_CAP, 1),
+            'course_count': len(sreq[_pid]),
+            'courses': [{'code': c, 'title': t, 'credits': cr} for c, t, cr in _courses_cr]
+        })
+_credit_violations.sort(key=lambda v: (-v['total_credits'], v['student_id']))
+print(f"  Credit validation: {len(students)} students checked, cap={CREDIT_CAP}")
+if _credit_violations:
+    print(f"\n  *** CREDIT CAP VIOLATION: {len(_credit_violations)} students exceed {CREDIT_CAP} credits ***")
+    for _v in _credit_violations[:10]:
+        print(f"    {_v['student_id']} ({_v['name']}, Gr{_v['grade']}): {_v['total_credits']:.1f} credits ({_v['excess']:.1f} over) — {_v['course_count']} courses")
+    if len(_credit_violations) > 10:
+        print(f"    ... and {len(_credit_violations) - 10} more")
+    _report_path = os.path.join(SCRATCHPAD, 'credit_violations.json')
+    with open(_report_path, 'w') as _rf:
+        json.dump({
+            'validation': 'credit_cap',
+            'cap': CREDIT_CAP,
+            'exempt_courses': list(CREDIT_EXEMPT),
+            'total_students': len(students),
+            'violations': len(_credit_violations),
+            'students': _credit_violations
+        }, _rf, indent=2)
+    print(f"\n  Report saved: {_report_path}")
+    print(f"\n  *** ENGINE HALTED — credit violations must be resolved before scheduling. ***")
+    print(f"  *** Registrar: remove or reassign courses so every student is at or below {CREDIT_CAP} credits. ***")
+    print(f"  *** Then re-run the engine. ***")
+    sys.exit(1)
+else:
+    print(f"  Credit validation: PASSED (all students <= {CREDIT_CAP} credits)")
+
 lwb = openpyxl.load_workbook(f"{UPLOAD}/94920245-2627_LEO_II_COHORTS_A__B.xlsx", data_only=True)
 lws = lwb.active
 cohA, cohB = set(), set()
