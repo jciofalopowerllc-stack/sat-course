@@ -1,0 +1,156 @@
+============================================================
+SCHEDULING ENGINE — FINAL BUILD
+============================================================
+
+[0] LOADING DATA...
+  Sections: 350
+  Courses: 141
+  Teachers: 64
+  Students: 800
+  Requests: 6512
+  LEO Cohort A: 18, Cohort B: 18
+  Co-schedule: Group Name = ['Course Codes (comma separated)'] period=Period (if fixed)
+  Co-schedule: AP Art  = ['253', '254', '255', '764'] period=None
+  Co-schedule: Studio Art II-III = ['242', '243'] period=3
+  Co-schedule: Robotics Project = ['590', '591'] period=C
+  Co-schedule: Italian III/AP = ['333', '352'] period=G
+  Co-schedule: Guitar = ['201', '203'] period=None
+  Co-schedule: Theater = ['227', '228'] period=None
+
+  Loading 2025-26 master schedule for validation...
+  Prior-year entries: 388
+  Courses with period data: 133
+  Student ranks computed: 800
+    Rank 1: 106212 (maxCC=6, totalWS=398.0)
+    Rank 2: 106276 (maxCC=6, totalWS=393.0)
+    Rank 3: 106245 (maxCC=6, totalWS=388.0)
+    Rank 4: 106173 (maxCC=6, totalWS=371.0)
+    Rank 5: 106736 (maxCC=6, totalWS=365.0)
+
+============================================================
+[1] PHASE A: ASSIGN PERIODS
+============================================================
+  Semester locks applied: ['766', '765']
+  Full freedom courses: ['849', '851']
+  Co-schedule group 'AP Art ' (4 sections) — will assign unified period
+  Co-schedule group 'Guitar' (2 sections) — will assign unified period
+  Co-schedule group 'Theater' (1 sections) — will assign unified period
+  Full Freedom 849: 8 sections, 4 S1 / 4 S2 (demand=165)
+  Full Freedom 851: 8 sections, 4 S1 / 4 S2 (demand=165)
+  Co-schedule group 'AP Art ' -> Period A (4 sections)
+  Co-schedule group 'Guitar' -> Period B (2 sections)
+  Co-schedule group 'Theater' -> Period F (1 sections)
+  Sections assigned: 350/350
+    Period A: 50 sections
+    Period B: 49 sections
+    Period C: 51 sections
+    Period D: 50 sections
+    Period E: 51 sections
+    Period F: 50 sections
+    Period G: 49 sections
+  Teacher period conflicts: 3
+  Prior-year alignment: 131/319 sections match 2025-26 period
+  LOAD: New ENGLISH Teacher (TBD) S1=6/5 S2=4/5
+  LOAD: Chiaravalloti, Michael S1=6/5 S2=4/5
+  LOAD: Quast, Richard S1=6/5 S2=4/5
+  Load violations: 3
+
+============================================================
+[2] PHASE B: SEAT STUDENTS
+============================================================
+  Greedy warm-start (most-constrained-first)...
+  Initial: 6512 placements, 2125 students with conflicts
+  Running CSP re-solve...
+    Round 1: resolved 551, remaining ~575
+    Round 2: resolved 88, remaining ~575
+    Round 3: resolved 88, remaining ~575
+    Round 4: resolved 88, remaining ~575
+
+  Phase C: bumping remaining conflicts...
+
+============================================================
+[D] PHASE D: MULTI-RESTART CLASH RESOLUTION
+============================================================
+  Restart 1 (seed=4269): baseline=245 -> optimized=223  [47.5s]
+  Restart 2 (seed=256): baseline=294 -> optimized=236  [75.8s]
+  Restart 3 (seed=7777): baseline=322 -> optimized=195  [66.0s]
+  Restart 4 (seed=2024): baseline=266 -> optimized=241  [33.0s]
+  Restart 5 (seed=5050): baseline=287 -> optimized=243  [40.8s]
+  Restart 6 (seed=7): baseline=335 -> optimized=216  [131.1s]
+  Restart 7 (seed=1337): baseline=285 -> optimized=250  [63.5s]
+  Restart 8 (seed=3141): baseline=344 -> optimized=259  [41.8s]
+
+  BEST: seed=7777, 195 clashes
+
+  PHASE D COMPLETE: 195 clashes (started at 266)
+
+============================================================
+[3] RESULTS
+============================================================
+  Clashes: 195
+  Students affected: 124
+  Placed: 6317/6512 (97.0%)
+  Section sizes: min=1, max=58, avg=18.2
+
+  Clashes by priority level:
+    P1 (Elective-Standard): 67
+    P2 (Departmental Core): 13
+    P3 (Sequence/Honors): 96
+    P4 (Required Core): 19
+
+  Clashes by department:
+    Business: 42
+    Mathematics: 32
+    English: 31
+    Science: 29
+    Language: 21
+    Social Studies: 16
+    Communication Arts: 10
+    Theology: 5
+    Music/Art: 5
+    Computer Science: 3
+    Physical Education: 1
+
+  Prior-year alignment: 119/319 sections match 2025-26
+  Teacher load violations: 3
+    New ENGLISH Teacher (TBD): S1=6/5 S2=4/5
+    Chiaravalloti, Michael: S1=6/5 S2=4/5
+    Quast, Richard: S1=6/5 S2=4/5
+
+[3b] RESOLVING ROOM CONFLICTS...
+  Pass 1: 27 conflicts
+  Room conflicts resolved: 29 moves, 0 remaining
+    Classroom D-101 Per E -> Classroom D-102: Judge, Michelle (112)
+    Classroom D-103 Per A -> Lecture Hall D-206: DeLeon, Marco (432)
+    Classroom D-103 Per E -> Lecture Hall D-206: DeLeon, Marco (412)
+    Classroom D-103 Per F -> Classroom D-102: DeLeon, Marco (412)
+    Classroom D-104 Per A -> Classroom I-117: Saggio, Jack (741)
+    Classroom D-104 Per C -> Classroom D-110: Saggio, Jack (710)
+    Classroom D-104 Per D -> Classroom D-203: Saggio, Jack (741)
+    Classroom D-104 Per G -> Classroom D-201: Saggio, Jack (741)
+    Classroom D-104 Per G -> Classroom D-201: Saggio, Jack (751)
+    Classroom D-107 Per A -> Auditorium Audit.: New MATH  Teacher OH (TBD) (422)
+    Classroom D-107 Per B -> Classroom D-106: New MATH  Teacher OH (TBD) (410)
+    Classroom D-107 Per G -> Classroom D-205: New MATH  Teacher OH (TBD) (422)
+    Classroom D-210 Per G -> Lecture Hall D-206: Konopelski, Louis (456)
+    Classroom I-114 Per D -> Classroom I-117: Martino, Brianna (721)
+    Classroom I-114 Per F -> Classroom I-113: Martino, Brianna (721)
+    Classroom I-114 Per G -> Classroom I-119: Martino, Brianna (721)
+    Classroom I-115 Per G -> Classroom I-011: New ENGLISH Teacher (TBD) (130)
+    Classroom J-321 Per A -> Classroom J-221: New THEO 1 Teacher (TBD) (810)
+    Classroom J-323 Per A -> Band Room Band: New THEO 2 Teacher (TBD) (830)
+    Classroom J-323 Per A -> Classroom J-020: Sabella, Daniel (708)
+    Classroom J-323 Per D -> Art Room J-322: Sabella, Daniel (708)
+    Classroom J-323 Per E -> Art Room J-322: Sabella, Daniel (708)
+    Classroom S-231 Per E -> Band Room Band: Angotti, Sylvia (330)
+    Classroom S-231 Per F -> Classroom D-106: Angotti, Sylvia (321)
+    Classroom S-231 Per G -> Classroom S-232: Angotti, Sylvia (351)
+    Classroom S-233 Per B -> Classroom S-234: New ENGLISH Teacher (TBD) (143)
+    Classroom S-238 Per A -> Classroom S-235: Guy, Libbie (543)
+    Classroom S-238 Per B -> Auditorium Audit.: Guy, Libbie (543)
+    Classroom S-238 Per D -> Classroom S-235: Guy, Libbie (542)
+
+  Solution saved to /tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab48c5/scratchpad/schedule_solution.json
+============================================================
+DONE
+============================================================
