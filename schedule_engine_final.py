@@ -236,9 +236,16 @@ print("=" * 60)
 PINNED = {
     '745': [('C', ('S1',)), ('E', ('S1',))],
     '734': [('C', ('S2',)), ('D', ('S2',))],
-    '766': [('G', ('S1',))],
-    '765': [('G', ('S2',))],
 }
+
+# Semester-only locks: force semester assignment but let engine choose period freely
+SEMESTER_LOCKS = {
+    '766': ('S1',),   # AP Microeconomics locked to S1, period free
+    '765': ('S2',),   # AP Macroeconomics locked to S2, period free
+}
+
+# Full freedom courses: AI chooses both semester and period to minimize conflicts
+FULL_FREEDOM = {'849', '851'}  # Catholic Social Teaching, Spirituality of Vocation
 
 for cid, pins in PINNED.items():
     sids = sec_by_code.get(cid, [])
@@ -246,6 +253,13 @@ for cid, pins in PINNED.items():
         if i < len(pins):
             sections[sid]['period'] = pins[i][0]
             sections[sid]['halves'] = pins[i][1]
+
+for cid, halves in SEMESTER_LOCKS.items():
+    for sid in sec_by_code.get(cid, []):
+        sections[sid]['halves'] = halves
+
+print(f"  Semester locks applied: {list(SEMESTER_LOCKS.keys())}")
+print(f"  Full freedom courses: {list(FULL_FREEDOM)}")
 
 # Build co-schedule group membership: code -> group index
 code_to_cogroup = {}
@@ -279,9 +293,31 @@ for gi, cg in enumerate(cogroups):
     if has_sections:
         print(f"  Co-schedule group '{cg['name']}' ({len(cogroup_sids[gi])} sections) — will assign unified period")
 
+# Full Freedom courses: let engine optimize semester+period placement
+# Distribute sections across S1/S2 to maximize scheduling flexibility
+for cid in FULL_FREEDOM:
+    sids = [sid for sid in sec_by_code.get(cid, []) if sections[sid]['period'] is None]
+    if not sids:
+        continue
+    # Count students requesting this course to assess demand
+    demand = sum(1 for pid in students if cid in sreq[pid])
+    nsec = len(sids)
+    # Split evenly across semesters — if odd number, extra goes to S1
+    n_s1 = (nsec + 1) // 2
+    for i, sid in enumerate(sids):
+        if i < n_s1:
+            sections[sid]['halves'] = ('S1',)
+        else:
+            sections[sid]['halves'] = ('S2',)
+    print(f"  Full Freedom {cid}: {nsec} sections, {n_s1} S1 / {nsec - n_s1} S2 (demand={demand})")
+
 for cid, sids in sec_by_code.items():
     ci = course_info.get(cid, {})
     if ci.get('is_fy', True):
+        continue
+    if cid in FULL_FREEDOM:
+        continue
+    if cid in SEMESTER_LOCKS:
         continue
     unpinned = [sid for sid in sids if sections[sid]['period'] is None]
     for i, sid in enumerate(unpinned):
@@ -378,61 +414,65 @@ for gi, sids_in_group in cogroup_sids.items():
     print(f"  Co-schedule group '{cogroups[gi]['name']}' -> Period {best_period} ({len(sids_in_group)} sections)")
 
 # --- STEP 2: Greedy assignment for remaining sections ---
-unassigned = [s for s in sections if s['period'] is None]
-unassigned.sort(key=lambda s: (len(sec_by_code[s['code']]), s['code'], s['section']))
+def greedy_assign_periods(seed=42):
+    """Assign periods to all unassigned sections using greedy heuristic with randomized tiebreaking."""
+    rng = random.Random(seed)
+    unassigned = [s for s in sections if s['period'] is None]
+    rng.shuffle(unassigned)
+    unassigned.sort(key=lambda s: (len(sec_by_code[s['code']]), s['code'], s['section']))
 
-rng = random.Random(42)
+    for s in unassigned:
+        teacher = s['teacher']
+        room = s['room']
+        halves = s['halves']
+        code = s['code']
 
-for s in unassigned:
-    teacher = s['teacher']
-    room = s['room']
-    halves = s['halves']
-    code = s['code']
+        used_periods = set()
+        for other_sid in sec_by_code[code]:
+            if sections[other_sid]['period']:
+                used_periods.add(sections[other_sid]['period'])
 
-    used_periods = set()
-    for other_sid in sec_by_code[code]:
-        if sections[other_sid]['period']:
-            used_periods.add(sections[other_sid]['period'])
+        best_period = None
+        best_score = float('inf')
+        ties = []
 
-    best_period = None
-    best_score = float('inf')
+        for p in PERIODS:
+            if teacher and teacher != 'TBD' and teacher_busy(teacher, p, halves, s['sid']):
+                continue
+            if teacher_would_exceed_cap(teacher, p, halves):
+                continue
+            score = 0
+            if p in used_periods:
+                score += 10
+            period_load = sum(1 for sec in sections if sec['period'] == p)
+            score += period_load * 0.1
+            if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
+                score += 5
+            score += rng.random() * 0.01
 
-    for p in PERIODS:
-        if teacher and teacher != 'TBD' and teacher_busy(teacher, p, halves, s['sid']):
-            continue
-        # HARD CONSTRAINT: no teacher gets more than 6 distinct periods
-        if teacher_would_exceed_cap(teacher, p, halves):
-            continue
-        score = 0
-        if p in used_periods:
-            score += 10
-        period_load = sum(1 for sec in sections if sec['period'] == p)
-        score += period_load * 0.1
-        if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
-            score += 5
+            if score < best_score:
+                best_score = score
+                best_period = p
 
-        if score < best_score:
-            best_score = score
-            best_period = p
-
-    if best_period:
-        s['period'] = best_period
-    else:
-        # Fallback: prefer a period the teacher already uses (merge) over a new one
-        if teacher and teacher != 'TBD':
-            teacher_periods = set()
-            for sid in teacher_sections.get(teacher, []):
-                if sections[sid]['period']:
-                    teacher_periods.add(sections[sid]['period'])
-            if teacher_periods:
-                loads = Counter(sec['period'] for sec in sections if sec['period'])
-                s['period'] = min(teacher_periods, key=lambda p: loads.get(p, 0))
+        if best_period:
+            s['period'] = best_period
+        else:
+            if teacher and teacher != 'TBD':
+                teacher_periods = set()
+                for sid in teacher_sections.get(teacher, []):
+                    if sections[sid]['period']:
+                        teacher_periods.add(sections[sid]['period'])
+                if teacher_periods:
+                    loads = Counter(sec['period'] for sec in sections if sec['period'])
+                    s['period'] = min(teacher_periods, key=lambda p: loads.get(p, 0))
+                else:
+                    loads = Counter(sec['period'] for sec in sections if sec['period'])
+                    s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
             else:
                 loads = Counter(sec['period'] for sec in sections if sec['period'])
                 s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
-        else:
-            loads = Counter(sec['period'] for sec in sections if sec['period'])
-            s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
+
+greedy_assign_periods(seed=42)
 
 assigned_count = sum(1 for s in sections if s['period'])
 print(f"  Sections assigned: {assigned_count}/{len(sections)}")
@@ -571,11 +611,11 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
-PROT = {'745', '734', '766', '765'}
+PROT = {'745', '734'}
 
 def resolve_student(pid):
     pins = {}
-    for pc in ['745', '766', '765']:
+    for pc in ['745']:
         if pc in assign[pid]:
             pins[pc] = assign[pid][pc]
     others = [c for c in sreq[pid] if c not in pins and c in assign[pid]]
@@ -678,39 +718,14 @@ for pid in students:
         rm_place(pid, c)
 
 
+# FORCED_MOVES removed — 765/766 no longer pinned to Period G,
+# so G-decongest moves are stale. Engine finds optimal periods via Phase D.
+
 # ============================================================
-# PHASE D0: FORCED SECTION PERIOD MOVES (decongest Period G)
+# PHASE D: MULTI-RESTART ITERATIVE CLASH RESOLUTION
 # ============================================================
 print("\n" + "=" * 60)
-print("[D0] FORCED SECTION PERIOD MOVES")
-print("=" * 60)
-
-FORCED_MOVES = [
-    # (code, section#, new_period, reason)
-    ('149', 1, 'F', 'AP Eng Lit sec#1 G→F: resolve 9 AP Macro/Micro clashes'),
-    ('761', 1, 'A', 'AP Psychology G→A: decongest G, Harris free in A'),
-    ('585', 1, 'E', 'Robotics Design G→E: decongest G, McConnell free in E'),
-    ('743', 1, 'B', 'AP Euro History D→B: resolve 5 AP Latin clashes, Quast free in B'),
-]
-
-for fcode, fsec, fnew_per, freason in FORCED_MOVES:
-    moved = False
-    for sid in sec_by_code.get(fcode, []):
-        s = sections[sid]
-        if s['section'] == fsec:
-            old_per = s['period']
-            s['period'] = fnew_per
-            print(f"  FORCED: {fcode} {s['title']} sec#{fsec}: {old_per} → {fnew_per} ({freason})")
-            moved = True
-            break
-    if not moved:
-        print(f"  WARNING: Could not find {fcode} sec#{fsec}")
-
-# ============================================================
-# PHASE D: ITERATIVE CLASH RESOLUTION
-# ============================================================
-print("\n" + "=" * 60)
-print("[D] PHASE D: CLASH RESOLUTION")
+print("[D] PHASE D: MULTI-RESTART CLASH RESOLUTION")
 print("=" * 60)
 
 PINNED_SIDS = set()
@@ -722,11 +737,63 @@ for _cg in cogroups:
     for _cc in _cg['codes']:
         for _cs in sec_by_code.get(_cc, []):
             COGROUP_SIDS.add(_cs)
+# Also protect semester-locked sections from being moved to wrong semester
+SEMESTER_LOCKED_SIDS = set()
+for _slc in SEMESTER_LOCKS:
+    for _sls in sec_by_code.get(_slc, []):
+        SEMESTER_LOCKED_SIDS.add(_sls)
 
 code_requesters = defaultdict(set)
 for _pid in students:
     for _cid in sreq[_pid]:
         code_requesters[_cid].add(_pid)
+
+# Save original pre-greedy state for restarts
+_orig_periods = {}
+_orig_halves = {}
+for s in sections:
+    if s['sid'] in PINNED_SIDS or s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups:
+        _orig_periods[s['sid']] = s['period']
+        _orig_halves[s['sid']] = s['halves']
+    else:
+        _orig_periods[s['sid']] = s['period'] if s['sid'] in PINNED_SIDS else None
+        _orig_halves[s['sid']] = s['halves']
+
+def _save_fixed_state():
+    """Save period assignments that are fixed (pinned, co-scheduled)."""
+    fixed = {}
+    for s in sections:
+        if s['sid'] in PINNED_SIDS or s['sid'] in assigned_cogroups:
+            fixed[s['sid']] = (s['period'], s['halves'])
+    return fixed
+
+def _restore_for_restart(fixed_state):
+    """Reset all non-fixed sections to unassigned, restore fixed ones."""
+    for s in sections:
+        if s['sid'] in fixed_state:
+            s['period'], s['halves'] = fixed_state[s['sid']]
+        else:
+            s['period'] = None
+    # Re-apply semester locks
+    for cid, halves in SEMESTER_LOCKS.items():
+        for sid in sec_by_code.get(cid, []):
+            sections[sid]['halves'] = halves
+    # Re-apply Full Freedom semester splits
+    for cid in FULL_FREEDOM:
+        sids = [sid for sid in sec_by_code.get(cid, []) if sections[sid]['period'] is None]
+        n_s1 = (len(sids) + 1) // 2
+        for i, sid in enumerate(sids):
+            sections[sid]['halves'] = ('S1',) if i < n_s1 else ('S2',)
+    # Re-apply default semester alternation for other semester courses
+    for cid, sids_list in sec_by_code.items():
+        ci = course_info.get(cid, {})
+        if ci.get('is_fy', True) or cid in FULL_FREEDOM or cid in SEMESTER_LOCKS:
+            continue
+        unpinned = [sid for sid in sids_list if sections[sid]['period'] is None]
+        for i, sid in enumerate(unpinned):
+            sections[sid]['halves'] = ('S1',) if i % 2 == 0 else ('S2',)
+
+fixed_state = _save_fixed_state()
 
 
 def full_reseat():
@@ -816,83 +883,106 @@ def full_reseat():
     return nc
 
 
-# Establish enhanced baseline
-print("  Re-seating with enhanced solver (8-round CSP + redistribution)...")
-clash = full_reseat()
-print(f"  Enhanced baseline: {len(clash)} clashes")
-
-# Iterative section period moves
-stalled = 0
-for d_iter in range(25):
-    if stalled >= 3:
-        break
-    # Score sections by clash involvement (both bumped and kept sides)
-    sec_sc = Counter()
-    for cl in clash:
-        for sid in sec_by_code.get(cl['code'], []):
-            if sections[sid]['period'] == cl['lost_period']:
-                sec_sc[sid] += 1
-        pid_cl = cl['student']
-        for cid_cl, sid_cl in assign.get(pid_cl, {}).items():
-            if sections[sid_cl]['period'] == cl['lost_period']:
-                sec_sc[sid_cl] += 1
-    # Evaluate valid moves with estimated improvement
-    cands = []
-    for sid, score in sec_sc.most_common(40):
-        if sid in PINNED_SIDS or sid in COGROUP_SIDS or score < 2:
-            continue
-        s = sections[sid]
-        for p in PERIODS:
-            if p == s['period']:
-                continue
-            # Teacher availability check
-            if s['teacher'] and s['teacher'] != 'TBD':
-                if any(sections[ts]['period'] == p
-                       and set(sections[ts]['halves']) & set(s['halves'])
-                       and not in_same_cogroup(sid, ts)
-                       for ts in teacher_sections.get(s['teacher'], []) if ts != sid):
-                    continue
-                old_p = s['period']
-                s['period'] = None
-                exc = teacher_would_exceed_cap(s['teacher'], p, s['halves'])
-                s['period'] = old_p
-                if exc:
-                    continue
-            # Estimate new conflicts in target period
-            new_conf = 0
-            for rpid in code_requesters.get(s['code'], set()):
-                for rc in sreq[rpid]:
-                    if rc == s['code']:
-                        continue
-                    rsids = sec_by_code.get(rc, [])
-                    if rsids and all(sections[rs]['period'] == p for rs in rsids):
-                        if any(set(sections[rs]['halves']) & set(s['halves']) for rs in rsids):
-                            new_conf += 1
-                            break
-            est = score - new_conf
-            if est > 0:
-                cands.append((est, sid, p))
-    if not cands:
-        break
-    cands.sort(reverse=True)
-    # Test top candidates with full re-seat
-    improved = False
-    for est, sid, np in cands[:5]:
-        s = sections[sid]
-        op = s['period']
-        s['period'] = np
-        tc = full_reseat()
-        if len(tc) < len(clash):
-            clash = tc
-            print(f"    Iter {d_iter+1}: {s['code']} {s['title']} sec#{s['section']} "
-                  f"({s['teacher']}): {op}->{np}  clashes={len(clash)}")
-            improved = True
-            stalled = 0
+def run_optimization_pass():
+    """Run full Phase D optimization on current period layout. Returns clash list."""
+    cl = full_reseat()
+    stalled = 0
+    for d_iter in range(40):
+        if stalled >= 4:
             break
-        s['period'] = op
-        clash = full_reseat()
-    if not improved:
-        stalled += 1
+        sec_sc = Counter()
+        for c in cl:
+            for sid in sec_by_code.get(c['code'], []):
+                if sections[sid]['period'] == c['lost_period']:
+                    sec_sc[sid] += 1
+            pid_cl = c['student']
+            for cid_cl, sid_cl in assign.get(pid_cl, {}).items():
+                if sections[sid_cl]['period'] == c['lost_period']:
+                    sec_sc[sid_cl] += 1
+        cands = []
+        for sid, score in sec_sc.most_common(80):
+            if sid in PINNED_SIDS or sid in COGROUP_SIDS or score < 1:
+                continue
+            s = sections[sid]
+            for p in PERIODS:
+                if p == s['period']:
+                    continue
+                if s['teacher'] and s['teacher'] != 'TBD':
+                    if any(sections[ts]['period'] == p
+                           and set(sections[ts]['halves']) & set(s['halves'])
+                           and not in_same_cogroup(sid, ts)
+                           for ts in teacher_sections.get(s['teacher'], []) if ts != sid):
+                        continue
+                    old_p = s['period']
+                    s['period'] = None
+                    exc = teacher_would_exceed_cap(s['teacher'], p, s['halves'])
+                    s['period'] = old_p
+                    if exc:
+                        continue
+                new_conf = 0
+                for rpid in code_requesters.get(s['code'], set()):
+                    for rc in sreq[rpid]:
+                        if rc == s['code']:
+                            continue
+                        rsids = sec_by_code.get(rc, [])
+                        if rsids and all(sections[rs]['period'] == p for rs in rsids):
+                            if any(set(sections[rs]['halves']) & set(s['halves']) for rs in rsids):
+                                new_conf += 1
+                                break
+                est = score - new_conf
+                if est > 0:
+                    cands.append((est, sid, p))
+        if not cands:
+            break
+        cands.sort(reverse=True)
+        improved = False
+        for est, sid, np in cands[:8]:
+            s = sections[sid]
+            op = s['period']
+            s['period'] = np
+            tc = full_reseat()
+            if len(tc) < len(cl):
+                cl = tc
+                improved = True
+                stalled = 0
+                break
+            s['period'] = op
+            cl = full_reseat()
+        if not improved:
+            stalled += 1
+    return cl
+
+# Multi-restart: try different random seeds for greedy period assignment
+SEEDS = [4269, 256, 7777, 2024, 5050, 7, 1337, 3141]
+best_clash = None
+best_periods = None
+best_halves = None
+best_seed = None
+
+for restart, seed in enumerate(SEEDS):
+    _restore_for_restart(fixed_state)
+    greedy_assign_periods(seed=seed)
+    cl = full_reseat()
+    baseline = len(cl)
+
+    # Quick optimization pass
+    cl = run_optimization_pass()
+    result = len(cl)
+
+    print(f"  Restart {restart+1} (seed={seed}): baseline={baseline} -> optimized={result}")
+
+    if best_clash is None or result < len(best_clash):
+        best_clash = cl
+        best_seed = seed
+        best_periods = {s['sid']: s['period'] for s in sections}
+        best_halves = {s['sid']: s['halves'] for s in sections}
+
+# Restore best solution
+for s in sections:
+    s['period'] = best_periods[s['sid']]
+    s['halves'] = best_halves[s['sid']]
+clash = full_reseat()
+print(f"\n  BEST: seed={best_seed}, {len(clash)} clashes")
 
 # Recompute stats after section moves
 prior_match = sum(1 for s in sections
