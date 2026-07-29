@@ -1,0 +1,1030 @@
+{
+  "scale": {
+    "0": {
+      "label": "Elective \u2014 Flexible",
+      "description": "Non-essential elective with multiple scheduling alternatives. Can be dropped or rescheduled without academic impact.",
+      "courses": []
+    },
+    "1": {
+      "label": "Elective \u2014 Standard",
+      "description": "Standard elective that enhances the program but is not required for graduation or sequence completion.",
+      "courses": [
+        "2024",
+        "2034",
+        "2044",
+        "2054",
+        "241",
+        "473",
+        "500",
+        "546",
+        "570",
+        "580",
+        "708",
+        "726",
+        "727",
+        "732",
+        "742",
+        "751",
+        "757",
+        "758"
+      ]
+    },
+    "2": {
+      "label": "Departmental Core",
+      "description": "Core departmental offering that fulfills graduation requirements. Multiple sections typically available.",
+      "courses": [
+        "310",
+        "320",
+        "510",
+        "520",
+        "530",
+        "610",
+        "620",
+        "631",
+        "642",
+        "710",
+        "720",
+        "730",
+        "741"
+      ]
+    },
+    "3": {
+      "label": "Sequence / Honors Track",
+      "description": "Progressive academic sequence or Honors-level track. Missing it delays academic progression by a year.",
+      "courses": [
+        "111",
+        "121",
+        "131",
+        "141",
+        "2014",
+        "312",
+        "321",
+        "322",
+        "330",
+        "331",
+        "333",
+        "411",
+        "421",
+        "422",
+        "430",
+        "431",
+        "432",
+        "440",
+        "448",
+        "511",
+        "521",
+        "531",
+        "542",
+        "543",
+        "711",
+        "721",
+        "731",
+        "752",
+        "756"
+      ]
+    },
+    "4": {
+      "label": "Required Core / Grade-Level Mandate",
+      "description": "Required course mandated by grade level or graduation policy. Every student in the grade must complete it.",
+      "courses": [
+        "110",
+        "112",
+        "120",
+        "122",
+        "130",
+        "132",
+        "140",
+        "144",
+        "145",
+        "146",
+        "410",
+        "412",
+        "420",
+        "810",
+        "820",
+        "830",
+        "849",
+        "851"
+      ]
+    },
+    "5": {
+      "label": "AP / Singleton / Non-Substitutable",
+      "description": "Highest priority. AP courses, unique singletons, cohort-pinned courses. Cannot be left unscheduled.",
+      "courses": [
+        "129",
+        "139",
+        "143",
+        "149",
+        "201",
+        "203",
+        "206",
+        "209",
+        "220",
+        "225",
+        "228",
+        "242",
+        "243",
+        "248",
+        "249",
+        "253",
+        "254",
+        "255",
+        "311",
+        "315",
+        "323",
+        "327",
+        "332",
+        "339",
+        "351",
+        "352",
+        "359",
+        "425",
+        "435",
+        "443",
+        "445",
+        "450",
+        "453",
+        "455",
+        "456",
+        "472",
+        "490",
+        "491",
+        "494",
+        "496",
+        "544",
+        "551",
+        "553",
+        "557",
+        "558",
+        "585",
+        "590",
+        "591",
+        "595",
+        "713",
+        "722",
+        "729",
+        "733",
+        "734",
+        "743",
+        "744",
+        "745",
+        "761",
+        "763",
+        "764",
+        "765",
+        "766",
+        "955"
+      ]
+    }
+  },
+  "course_defaults": {
+    "110": {
+      "priority": 4,
+      "title": "Composition & Literature",
+      "dept": "English",
+      "sections": 6
+    },
+    "111": {
+      "priority": 3,
+      "title": "Composition & Literature H",
+      "dept": "English",
+      "sections": 3
+    },
+    "112": {
+      "priority": 4,
+      "title": "Composition & Literature",
+      "dept": "English",
+      "sections": 1
+    },
+    "120": {
+      "priority": 4,
+      "title": "American Literature",
+      "dept": "English",
+      "sections": 6
+    },
+    "121": {
+      "priority": 3,
+      "title": "American Literature H",
+      "dept": "English",
+      "sections": 2
+    },
+    "122": {
+      "priority": 4,
+      "title": "American Literature",
+      "dept": "English",
+      "sections": 1
+    },
+    "129": {
+      "priority": 5,
+      "title": "AP Seminar",
+      "dept": "English",
+      "sections": 2
+    },
+    "130": {
+      "priority": 4,
+      "title": "British Literature",
+      "dept": "English",
+      "sections": 5
+    },
+    "131": {
+      "priority": 3,
+      "title": "British Literature H",
+      "dept": "English",
+      "sections": 3
+    },
+    "132": {
+      "priority": 4,
+      "title": "British Literature",
+      "dept": "English",
+      "sections": 1
+    },
+    "139": {
+      "priority": 5,
+      "title": "AP English Language",
+      "dept": "English",
+      "sections": 2
+    },
+    "140": {
+      "priority": 4,
+      "title": "World Literature",
+      "dept": "English",
+      "sections": 3
+    },
+    "141": {
+      "priority": 3,
+      "title": "College English Honors",
+      "dept": "English",
+      "sections": 3
+    },
+    "143": {
+      "priority": 5,
+      "title": "Creative Writing",
+      "dept": "English",
+      "sections": 1
+    },
+    "144": {
+      "priority": 4,
+      "title": "Public Speaking",
+      "dept": "English",
+      "sections": 3
+    },
+    "145": {
+      "priority": 4,
+      "title": "Journalism",
+      "dept": "English",
+      "sections": 1
+    },
+    "146": {
+      "priority": 4,
+      "title": "World Literature",
+      "dept": "English",
+      "sections": 1
+    },
+    "149": {
+      "priority": 5,
+      "title": "AP English Literature",
+      "dept": "English",
+      "sections": 2
+    },
+    "201": {
+      "priority": 5,
+      "title": "Introduction to Guitar",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "2014": {
+      "priority": 3,
+      "title": "Multi-Media Production",
+      "dept": "Communication Arts",
+      "sections": 1
+    },
+    "2024": {
+      "priority": 1,
+      "title": "TV/Film Process and Principles",
+      "dept": "Communication Arts",
+      "sections": 2
+    },
+    "203": {
+      "priority": 5,
+      "title": "Guitar Ensemble",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "2034": {
+      "priority": 1,
+      "title": "TV/Film Production & Editing I",
+      "dept": "Communication Arts",
+      "sections": 2
+    },
+    "2044": {
+      "priority": 1,
+      "title": "TV/Film Production II",
+      "dept": "Communication Arts",
+      "sections": 2
+    },
+    "2054": {
+      "priority": 1,
+      "title": "Digital Media",
+      "dept": "Communication Arts",
+      "sections": 2
+    },
+    "206": {
+      "priority": 5,
+      "title": "Band",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "209": {
+      "priority": 5,
+      "title": "String Orchestra",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "220": {
+      "priority": 5,
+      "title": "Music Theory",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "225": {
+      "priority": 5,
+      "title": "Tech Theater Level 1",
+      "dept": "Theater Arts",
+      "sections": 1
+    },
+    "228": {
+      "priority": 5,
+      "title": "Adv Theater Production",
+      "dept": "Theater Arts",
+      "sections": 1
+    },
+    "241": {
+      "priority": 1,
+      "title": "Studio Art I",
+      "dept": "Music/Art",
+      "sections": 2
+    },
+    "242": {
+      "priority": 5,
+      "title": "Studio Art II",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "243": {
+      "priority": 5,
+      "title": "Studio Art III",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "248": {
+      "priority": 5,
+      "title": "Adv Drawing",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "249": {
+      "priority": 5,
+      "title": "Adv Painting",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "253": {
+      "priority": 5,
+      "title": "AP Drawing",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "254": {
+      "priority": 5,
+      "title": "AP 2-D Art and Design",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "255": {
+      "priority": 5,
+      "title": "AP 3-D Art and Design",
+      "dept": "Music/Art",
+      "sections": 1
+    },
+    "310": {
+      "priority": 2,
+      "title": "Spanish I",
+      "dept": "Language",
+      "sections": 5
+    },
+    "311": {
+      "priority": 5,
+      "title": "Spanish I H",
+      "dept": "Language",
+      "sections": 1
+    },
+    "312": {
+      "priority": 3,
+      "title": "Italian I",
+      "dept": "Language",
+      "sections": 2
+    },
+    "315": {
+      "priority": 5,
+      "title": "Latin I H",
+      "dept": "Language",
+      "sections": 1
+    },
+    "320": {
+      "priority": 2,
+      "title": "Spanish II",
+      "dept": "Language",
+      "sections": 4
+    },
+    "321": {
+      "priority": 3,
+      "title": "Spanish II H",
+      "dept": "Language",
+      "sections": 2
+    },
+    "322": {
+      "priority": 3,
+      "title": "Italian II",
+      "dept": "Language",
+      "sections": 2
+    },
+    "323": {
+      "priority": 5,
+      "title": "Italian II H",
+      "dept": "Language",
+      "sections": 1
+    },
+    "327": {
+      "priority": 5,
+      "title": "Latin II H",
+      "dept": "Language",
+      "sections": 1
+    },
+    "330": {
+      "priority": 3,
+      "title": "Spanish III",
+      "dept": "Language",
+      "sections": 3
+    },
+    "331": {
+      "priority": 3,
+      "title": "Spanish III H",
+      "dept": "Language",
+      "sections": 3
+    },
+    "332": {
+      "priority": 5,
+      "title": "Italian III",
+      "dept": "Language",
+      "sections": 1
+    },
+    "333": {
+      "priority": 3,
+      "title": "Italian III H",
+      "dept": "Language",
+      "sections": 1
+    },
+    "339": {
+      "priority": 5,
+      "title": "Latin III H",
+      "dept": "Language",
+      "sections": 1
+    },
+    "351": {
+      "priority": 5,
+      "title": "AP Spanish",
+      "dept": "Language",
+      "sections": 2
+    },
+    "352": {
+      "priority": 5,
+      "title": "AP Italian",
+      "dept": "Language",
+      "sections": 1
+    },
+    "359": {
+      "priority": 5,
+      "title": "AP Latin",
+      "dept": "Language",
+      "sections": 1
+    },
+    "410": {
+      "priority": 4,
+      "title": "Algebra I",
+      "dept": "Mathematics",
+      "sections": 5
+    },
+    "411": {
+      "priority": 3,
+      "title": "Algebra I H",
+      "dept": "Mathematics",
+      "sections": 2
+    },
+    "412": {
+      "priority": 4,
+      "title": "Algebra I",
+      "dept": "Mathematics",
+      "sections": 3
+    },
+    "420": {
+      "priority": 4,
+      "title": "Geometry",
+      "dept": "Mathematics",
+      "sections": 4
+    },
+    "421": {
+      "priority": 3,
+      "title": "Geometry H",
+      "dept": "Mathematics",
+      "sections": 3
+    },
+    "422": {
+      "priority": 3,
+      "title": "Geometry",
+      "dept": "Mathematics",
+      "sections": 3
+    },
+    "425": {
+      "priority": 5,
+      "title": "Adv Geometry H",
+      "dept": "Mathematics",
+      "sections": 1
+    },
+    "430": {
+      "priority": 3,
+      "title": "Algebra II/Trig",
+      "dept": "Mathematics",
+      "sections": 4
+    },
+    "431": {
+      "priority": 3,
+      "title": "Algebra II/Trig H",
+      "dept": "Mathematics",
+      "sections": 3
+    },
+    "432": {
+      "priority": 3,
+      "title": "Algebra II/Trig",
+      "dept": "Mathematics",
+      "sections": 2
+    },
+    "435": {
+      "priority": 5,
+      "title": "Adv Algebra II / Trig H",
+      "dept": "Mathematics",
+      "sections": 1
+    },
+    "440": {
+      "priority": 3,
+      "title": "Precalculus",
+      "dept": "Mathematics",
+      "sections": 5
+    },
+    "443": {
+      "priority": 5,
+      "title": "AP Precalculus",
+      "dept": "Mathematics",
+      "sections": 3
+    },
+    "445": {
+      "priority": 5,
+      "title": "Adv Precalculus H",
+      "dept": "Mathematics",
+      "sections": 1
+    },
+    "448": {
+      "priority": 3,
+      "title": "Pre-college Math",
+      "dept": "Mathematics",
+      "sections": 2
+    },
+    "450": {
+      "priority": 5,
+      "title": "Calculus H",
+      "dept": "Mathematics",
+      "sections": 1
+    },
+    "453": {
+      "priority": 5,
+      "title": "AP Calc AB",
+      "dept": "Mathematics",
+      "sections": 2
+    },
+    "455": {
+      "priority": 5,
+      "title": "AP Calc BC",
+      "dept": "Mathematics",
+      "sections": 1
+    },
+    "456": {
+      "priority": 5,
+      "title": "AP Statistics",
+      "dept": "Mathematics",
+      "sections": 1
+    },
+    "472": {
+      "priority": 5,
+      "title": "Web Design",
+      "dept": "Computer Science",
+      "sections": 1
+    },
+    "473": {
+      "priority": 1,
+      "title": "Introduction to Programming",
+      "dept": "Computer Science",
+      "sections": 2
+    },
+    "490": {
+      "priority": 5,
+      "title": "AP Computer Science A",
+      "dept": "Computer Science",
+      "sections": 1
+    },
+    "491": {
+      "priority": 5,
+      "title": "AP Computer Science Principles",
+      "dept": "Computer Science",
+      "sections": 1
+    },
+    "494": {
+      "priority": 5,
+      "title": "Applied Programming",
+      "dept": "Computer Science",
+      "sections": 1
+    },
+    "496": {
+      "priority": 5,
+      "title": "AP Cybersecurity",
+      "dept": "Computer Science",
+      "sections": 1
+    },
+    "500": {
+      "priority": 1,
+      "title": "Earth Science",
+      "dept": "Science",
+      "sections": 2
+    },
+    "510": {
+      "priority": 2,
+      "title": "Biology",
+      "dept": "Science",
+      "sections": 5
+    },
+    "511": {
+      "priority": 3,
+      "title": "Biology H",
+      "dept": "Science",
+      "sections": 4
+    },
+    "520": {
+      "priority": 2,
+      "title": "Chemistry",
+      "dept": "Science",
+      "sections": 5
+    },
+    "521": {
+      "priority": 3,
+      "title": "Chemistry H",
+      "dept": "Science",
+      "sections": 5
+    },
+    "530": {
+      "priority": 2,
+      "title": "Physics",
+      "dept": "Science",
+      "sections": 4
+    },
+    "531": {
+      "priority": 3,
+      "title": "Physics H",
+      "dept": "Science",
+      "sections": 3
+    },
+    "542": {
+      "priority": 3,
+      "title": "Anatomy/Physiology",
+      "dept": "Science",
+      "sections": 1
+    },
+    "543": {
+      "priority": 3,
+      "title": "Anatomy/Physiology H",
+      "dept": "Science",
+      "sections": 2
+    },
+    "544": {
+      "priority": 5,
+      "title": "Sports Medicine",
+      "dept": "Science",
+      "sections": 1
+    },
+    "546": {
+      "priority": 1,
+      "title": "Forensics",
+      "dept": "Science",
+      "sections": 2
+    },
+    "551": {
+      "priority": 5,
+      "title": "AP Biology",
+      "dept": "Science",
+      "sections": 1
+    },
+    "553": {
+      "priority": 5,
+      "title": "AP Chemistry",
+      "dept": "Science",
+      "sections": 1
+    },
+    "557": {
+      "priority": 5,
+      "title": "AP Physics 1",
+      "dept": "Science",
+      "sections": 2
+    },
+    "558": {
+      "priority": 5,
+      "title": "AP Physics C",
+      "dept": "Science",
+      "sections": 1
+    },
+    "570": {
+      "priority": 1,
+      "title": "Introduction to Robotics",
+      "dept": "Engineering",
+      "sections": 2
+    },
+    "580": {
+      "priority": 1,
+      "title": "Robotics Engineering",
+      "dept": "Engineering",
+      "sections": 4
+    },
+    "585": {
+      "priority": 5,
+      "title": "Robotics Design",
+      "dept": "Engineering",
+      "sections": 1
+    },
+    "590": {
+      "priority": 5,
+      "title": "Robotics Project",
+      "dept": "Engineering",
+      "sections": 1
+    },
+    "591": {
+      "priority": 5,
+      "title": "Robotics Project II",
+      "dept": "Engineering",
+      "sections": 1
+    },
+    "595": {
+      "priority": 5,
+      "title": "Engineering Design",
+      "dept": "Engineering",
+      "sections": 1
+    },
+    "610": {
+      "priority": 2,
+      "title": "Health/PE",
+      "dept": "Physical Education",
+      "sections": 10
+    },
+    "620": {
+      "priority": 2,
+      "title": "Driver's Ed/PE",
+      "dept": "Physical Education",
+      "sections": 10
+    },
+    "631": {
+      "priority": 2,
+      "title": "CPR-AED Training/PE",
+      "dept": "Physical Education",
+      "sections": 5
+    },
+    "642": {
+      "priority": 2,
+      "title": "Nutrition & Fitness/PE",
+      "dept": "Physical Education",
+      "sections": 5
+    },
+    "708": {
+      "priority": 1,
+      "title": "Introduction to Business",
+      "dept": "Business",
+      "sections": 5
+    },
+    "710": {
+      "priority": 2,
+      "title": "World History",
+      "dept": "Social Studies",
+      "sections": 5
+    },
+    "711": {
+      "priority": 3,
+      "title": "World History H",
+      "dept": "Social Studies",
+      "sections": 2
+    },
+    "713": {
+      "priority": 5,
+      "title": "AP World History",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "720": {
+      "priority": 2,
+      "title": "U.S. History I",
+      "dept": "Social Studies",
+      "sections": 5
+    },
+    "721": {
+      "priority": 3,
+      "title": "U.S. History I H",
+      "dept": "Social Studies",
+      "sections": 3
+    },
+    "722": {
+      "priority": 5,
+      "title": "Adv U.S. History I H",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "726": {
+      "priority": 1,
+      "title": "Business Concepts",
+      "dept": "Business",
+      "sections": 2
+    },
+    "727": {
+      "priority": 1,
+      "title": "Sports and Entertainment Marketing",
+      "dept": "Business",
+      "sections": 3
+    },
+    "729": {
+      "priority": 5,
+      "title": "AP Business with Personal Finance",
+      "dept": "Business",
+      "sections": 2
+    },
+    "730": {
+      "priority": 2,
+      "title": "U.S. History II",
+      "dept": "Social Studies",
+      "sections": 3
+    },
+    "731": {
+      "priority": 3,
+      "title": "U.S. History II H",
+      "dept": "Social Studies",
+      "sections": 2
+    },
+    "732": {
+      "priority": 1,
+      "title": "Business Law",
+      "dept": "Business",
+      "sections": 3
+    },
+    "733": {
+      "priority": 5,
+      "title": "AP U.S. History",
+      "dept": "Social Studies",
+      "sections": 3
+    },
+    "734": {
+      "priority": 5,
+      "title": "Leadership, Entrepreneurship and Opportunity Program I",
+      "dept": "Business",
+      "sections": 2
+    },
+    "741": {
+      "priority": 2,
+      "title": "Psychology",
+      "dept": "Social Studies",
+      "sections": 3
+    },
+    "742": {
+      "priority": 1,
+      "title": "Economics",
+      "dept": "Business",
+      "sections": 2
+    },
+    "743": {
+      "priority": 5,
+      "title": "AP European History",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "744": {
+      "priority": 5,
+      "title": "Sociology",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "745": {
+      "priority": 5,
+      "title": "Leadership, Entrepreneurship and Opportunity Program II",
+      "dept": "Business",
+      "sections": 2
+    },
+    "751": {
+      "priority": 1,
+      "title": "American Government & Politics",
+      "dept": "Social Studies",
+      "sections": 2
+    },
+    "752": {
+      "priority": 3,
+      "title": "Economics H",
+      "dept": "Business",
+      "sections": 2
+    },
+    "756": {
+      "priority": 3,
+      "title": "Introduction to Law",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "757": {
+      "priority": 1,
+      "title": "International Business Strategies",
+      "dept": "Business",
+      "sections": 3
+    },
+    "758": {
+      "priority": 1,
+      "title": "Bloomberg Market Concepts",
+      "dept": "Business",
+      "sections": 2
+    },
+    "761": {
+      "priority": 5,
+      "title": "AP Psychology",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "763": {
+      "priority": 5,
+      "title": "AP U.S. Government & Politics",
+      "dept": "Social Studies",
+      "sections": 2
+    },
+    "764": {
+      "priority": 5,
+      "title": "AP Art History",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "765": {
+      "priority": 5,
+      "title": "AP Macroeconomics",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "766": {
+      "priority": 5,
+      "title": "AP Microeconomics",
+      "dept": "Social Studies",
+      "sections": 1
+    },
+    "810": {
+      "priority": 4,
+      "title": "Theology 9",
+      "dept": "Theology",
+      "sections": 9
+    },
+    "820": {
+      "priority": 4,
+      "title": "Theology 10",
+      "dept": "Theology",
+      "sections": 9
+    },
+    "830": {
+      "priority": 4,
+      "title": "Theology 11",
+      "dept": "Theology",
+      "sections": 9
+    },
+    "849": {
+      "priority": 4,
+      "title": "Catholic Social Teaching",
+      "dept": "Theology",
+      "sections": 8
+    },
+    "851": {
+      "priority": 4,
+      "title": "Spirituality of Vocation",
+      "dept": "Theology",
+      "sections": 8
+    },
+    "955": {
+      "priority": 5,
+      "title": "Academic Support",
+      "dept": "Special Education",
+      "sections": 4
+    }
+  },
+  "version": "1.0",
+  "notes": "Auto-generated priority assignments. Course-level defaults can be overridden per student request."
+}

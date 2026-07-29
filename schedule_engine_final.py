@@ -1,9 +1,10 @@
 """Don Bosco Prep 2026-27 Scheduling Engine — FINAL BUILD
-v1 core algorithm (286-clash baseline) with:
+v1 core algorithm with:
   - Both authoritative sources consumed (Prescribed + Sectioning Template)
   - Prior-year schedule loaded for validation/reporting (not for period assignment)
   - Teacher load violations flagged per Jamie's rules
   - Prior-year alignment stats in output
+  - Priority scale (0-5) from course_priorities.json for scheduling order and conflict resolution
 """
 
 import openpyxl, json, math, random, collections, statistics, os, re
@@ -12,6 +13,17 @@ from collections import defaultdict, Counter
 UPLOAD = "/root/.claude/uploads/a04b5f0d-60df-588f-8acb-79549aab48c5"
 SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab48c5/scratchpad"
 PERIODS = list('ABCDEFG')
+
+# Load priority scale (0-5) for course scheduling priority
+with open(os.path.join(os.path.dirname(__file__) or '.', 'course_priorities.json')) as _pf:
+    _prio_data = json.load(_pf)
+COURSE_PRIORITY = {}
+for _plevel, _pinfo in _prio_data['scale'].items():
+    for _pc in _pinfo.get('courses', []):
+        COURSE_PRIORITY[str(_pc)] = int(_plevel)
+
+def prio(c):
+    return COURSE_PRIORITY.get(str(c), 1)
 
 print("=" * 60)
 print("SCHEDULING ENGINE — FINAL BUILD")
@@ -419,7 +431,7 @@ def greedy_assign_periods(seed=42):
     rng = random.Random(seed)
     unassigned = [s for s in sections if s['period'] is None]
     rng.shuffle(unassigned)
-    unassigned.sort(key=lambda s: (len(sec_by_code[s['code']]), s['code'], s['section']))
+    unassigned.sort(key=lambda s: (-prio(s['code']), len(sec_by_code[s['code']]), s['code'], s['section']))
 
     for s in unassigned:
         teacher = s['teacher']
@@ -580,7 +592,7 @@ for sid in leo2_sids:
 sorted_students = sorted(students.keys(), key=lambda pid: -len(sreq[pid]))
 print("  Greedy warm-start...")
 for pid in sorted_students:
-    reqs = sorted(sreq[pid], key=lambda c: len(sec_by_code.get(c, [])))
+    reqs = sorted(sreq[pid], key=lambda c: (-prio(c), len(sec_by_code.get(c, []))))
     for cid in reqs:
         if cid not in sec_by_code:
             continue
@@ -611,19 +623,19 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
-PROT = {'745', '734'}
+PROT = {str(c) for c, p in COURSE_PRIORITY.items() if p == 5}
 
 def resolve_student(pid):
     pins = {}
-    for pc in ['745']:
-        if pc in assign[pid]:
+    for pc in assign[pid]:
+        if pc in PROT:
             pins[pc] = assign[pid][pc]
     others = [c for c in sreq[pid] if c not in pins and c in assign[pid]]
     used = set()
     for c, sid in pins.items():
         for x in occ_cells(sid):
             used.add(x)
-    others.sort(key=lambda c: len(sec_by_code.get(c, [])))
+    others.sort(key=lambda c: (-prio(c), len(sec_by_code.get(c, []))))
     res = {}
 
     def rec(i):
@@ -679,19 +691,6 @@ for round_num in range(4):
 
 print("\n  Phase C: bumping remaining conflicts...")
 
-def prio(c):
-    ci = course_info.get(c, {})
-    dept = ci.get('dept', '')
-    if c in PROT:
-        return 5
-    if dept == 'English':
-        return 5
-    if dept in ('Mathematics', 'Science', 'Theology'):
-        return 4
-    if dept in ('Social Studies', 'Language'):
-        return 3
-    return 1
-
 clash = []
 for pid in students:
     cells = defaultdict(list)
@@ -712,6 +711,7 @@ for pid in students:
         clash.append({
             'student': pid, 'name': students[pid], 'grade': grade[pid],
             'code': c, 'course': course_info.get(c, {}).get('title', c),
+            'priority': prio(c),
             'lost_period': s['period'],
             'lost_sem': 'Full-Year' if len(s['halves']) == 2 else ('Fall' if s['halves'][0] == 'S1' else 'Spring')
         })
@@ -804,7 +804,7 @@ def full_reseat():
     cell_usage.clear()
     # Greedy warm-start
     for pid in sorted(students.keys(), key=lambda p: -len(sreq[p])):
-        for cid in sorted(sreq[pid], key=lambda c: len(sec_by_code.get(c, []))):
+        for cid in sorted(sreq[pid], key=lambda c: (-prio(c), len(sec_by_code.get(c, [])))):
             if cid not in sec_by_code:
                 continue
             if cid == '745':
@@ -856,6 +856,7 @@ def full_reseat():
             nc.append({
                 'student': pid, 'name': students[pid], 'grade': grade[pid],
                 'code': c, 'course': course_info.get(c, {}).get('title', c),
+                'priority': prio(c),
                 'lost_period': bs['period'],
                 'lost_sem': 'Full-Year' if len(bs['halves']) == 2 else (
                     'Fall' if bs['halves'][0] == 'S1' else 'Spring')
@@ -864,7 +865,7 @@ def full_reseat():
     # Post-bump redistribution: place bumped students in free periods
     for cl in list(nc):
         pid, cid = cl['student'], cl['code']
-        if cid in PROT or cid == '745' or cid in assign.get(pid, {}):
+        if cid in PROT or cid in assign.get(pid, {}):
             continue
         used = set()
         for c2, s2 in assign.get(pid, {}).items():
@@ -1036,9 +1037,16 @@ if sec_sizes:
     print(f"  Section sizes: min={min(sec_sizes)}, max={max(sec_sizes)}, avg={statistics.mean(sec_sizes):.1f}")
 
 dept_clashes = Counter()
+prio_clashes = Counter()
 for c in clash:
     ci = course_info.get(c['code'], {})
     dept_clashes[ci.get('dept', 'Unknown')] += 1
+    prio_clashes[prio(c['code'])] += 1
+print(f"\n  Clashes by priority level:")
+PRIO_LABELS = {0: 'Elective-Flexible', 1: 'Elective-Standard', 2: 'Departmental Core',
+               3: 'Sequence/Honors', 4: 'Required Core', 5: 'AP/Singleton'}
+for pl in sorted(prio_clashes.keys()):
+    print(f"    P{pl} ({PRIO_LABELS.get(pl, '?')}): {prio_clashes[pl]}")
 print(f"\n  Clashes by department:")
 for dept, cnt in dept_clashes.most_common():
     print(f"    {dept}: {cnt}")
@@ -1189,6 +1197,7 @@ for s in sections:
         'dept': s['dept'], 'period': s['period'], 'halves': list(s['halves']),
         'teacher': s['teacher'], 'room': s['room'], 'cap': s['cap'],
         'enrolled': secfill[s['sid']], 'section': s['section'],
+        'priority': prio(s['code']),
         'prior_year_match': prior_match_flag
     })
 
