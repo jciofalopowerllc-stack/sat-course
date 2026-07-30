@@ -1,0 +1,319 @@
+<title>Data Source Audit Report — 2026-27 Master Schedule</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --bg-card: #ffffff;
+    --bg-alt: #f5f3ef;
+    --text: #1c2127;
+    --text-m: #6b7280;
+    --border: #e0ded9;
+    --red: #c9362a;
+    --red-bg: #fef1f0;
+    --red-bdr: #f5c6c2;
+    --amber: #a8600a;
+    --amber-bg: #fef8ec;
+    --amber-bdr: #f5dfa8;
+    --blue: #2563eb;
+    --blue-bg: #eff6ff;
+    --green: #167a3a;
+    --green-bg: #f0fdf4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    font-variant-numeric: tabular-nums;
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#111318;--bg-card:#1a1d24;--bg-alt:#22252e;--text:#e4e5e9;--text-m:#9ca3af;
+    --border:#2d3039;--red:#f87171;--red-bg:#2a1515;--red-bdr:#5c2020;
+    --amber:#fbbf24;--amber-bg:#2a2010;--amber-bdr:#5c4a10;
+    --blue:#60a5fa;--blue-bg:#172554;--green:#4ade80;--green-bg:#132a1c;--shadow:0 1px 3px rgba(0,0,0,.3);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#111318;--bg-card:#1a1d24;--bg-alt:#22252e;--text:#e4e5e9;--text-m:#9ca3af;
+    --border:#2d3039;--red:#f87171;--red-bg:#2a1515;--red-bdr:#5c2020;
+    --amber:#fbbf24;--amber-bg:#2a2010;--amber-bdr:#5c4a10;
+    --blue:#60a5fa;--blue-bg:#172554;--green:#4ade80;--green-bg:#132a1c;--shadow:0 1px 3px rgba(0,0,0,.3);
+  }
+  :root[data-theme="light"]{
+    --bg:#faf9f7;--bg-card:#ffffff;--bg-alt:#f5f3ef;--text:#1c2127;--text-m:#6b7280;
+    --border:#e0ded9;--red:#c9362a;--red-bg:#fef1f0;--red-bdr:#f5c6c2;
+    --amber:#a8600a;--amber-bg:#fef8ec;--amber-bdr:#f5dfa8;
+    --blue:#2563eb;--blue-bg:#eff6ff;--green:#167a3a;--green-bg:#f0fdf4;--shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;line-height:1.55}
+  .wrap{max-width:960px;margin:0 auto;padding:32px 24px 60px}
+  h1{font-size:22px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{font-size:13px;color:var(--text-m);margin-bottom:24px}
+  .sev-strip{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase;margin-right:6px}
+  .sev-critical{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bdr)}
+  .sev-high{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bdr)}
+  .sev-medium{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue)}
+  .sev-low{background:var(--bg-alt);color:var(--text-m);border:1px solid var(--border)}
+  .sev-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green)}
+  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:28px}
+  .summary-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;box-shadow:var(--shadow);text-align:center}
+  .summary-card .val{font-size:28px;font-weight:700;line-height:1.2}
+  .summary-card .lbl{font-size:11px;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+  .val.red{color:var(--red)}.val.amber{color:var(--amber)}.val.blue{color:var(--blue)}.val.green{color:var(--green)}
+  .file-section{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden}
+  .file-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;user-select:none}
+  .file-header:hover{background:var(--bg-alt)}
+  .file-name{font-size:15px;font-weight:600;flex:1;min-width:200px}
+  .file-meta{font-size:12px;color:var(--text-m)}
+  .file-body{padding:16px 20px;display:none}
+  .file-body.open{display:block}
+  .finding{padding:10px 0;border-bottom:1px solid var(--border)}
+  .finding:last-child{border-bottom:none}
+  .finding-title{font-size:14px;font-weight:600;margin-bottom:3px}
+  .finding-desc{font-size:13px;color:var(--text-m);line-height:1.5}
+  .action-box{background:var(--red-bg);border:1px solid var(--red-bdr);border-radius:8px;padding:16px 20px;margin-bottom:24px}
+  .action-box h2{font-size:16px;font-weight:700;color:var(--red);margin:0 0 12px}
+  .action-list{list-style:none;padding:0;margin:0}
+  .action-list li{padding:6px 0;border-bottom:1px solid var(--red-bdr);font-size:14px;display:flex;gap:8px}
+  .action-list li:last-child{border-bottom:none}
+  .action-num{font-weight:700;color:var(--red);min-width:24px}
+  .action-file{font-size:12px;color:var(--text-m)}
+  table.xt{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  table.xt th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-m);padding:6px 10px;border-bottom:1px solid var(--border);font-weight:600}
+  table.xt td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  table.xt tr:last-child td{border-bottom:none}
+  .mono{font-family:"SF Mono","Cascadia Code","Fira Code",monospace;font-size:12px}
+  .expand-arrow{transition:transform .2s;font-size:12px;color:var(--text-m)}
+  .expand-arrow.open{transform:rotate(90deg)}
+  @media(max-width:640px){.wrap{padding:16px 12px}.file-header{padding:10px 14px}.file-body{padding:12px 14px}}
+</style>
+
+<div class="wrap">
+  <h1>Data Source Audit Report</h1>
+  <div class="sub">Don Bosco Prep 2026-27 Master Schedule Build &mdash; JCiofalo Power LLC &mdash; Audit date: 30 Jul 2026</div>
+
+  <div class="summary-grid">
+    <div class="summary-card"><div class="val">6</div><div class="lbl">Files Audited</div></div>
+    <div class="summary-card"><div class="val red">5</div><div class="lbl">Critical</div></div>
+    <div class="summary-card"><div class="val amber">16</div><div class="lbl">High</div></div>
+    <div class="summary-card"><div class="val blue">40</div><div class="lbl">Medium</div></div>
+    <div class="summary-card"><div class="val">36</div><div class="lbl">Low</div></div>
+    <div class="summary-card"><div class="val red">97</div><div class="lbl">Total Issues</div></div>
+  </div>
+
+  <div class="action-box">
+    <h2>Action Items Before Re-Upload</h2>
+    <ol class="action-list">
+      <li><span class="action-num">1</span><div><strong>Fix credits for 765 &amp; 766</strong> — AP Macroeconomics and AP Microeconomics must be 2.5 credits / Semester, not 5.0 / Full-Year. Director corrected 21 Jul 2026 per Tenant Intake, but the Course Sectioning Template was never updated.<br><span class="action-file">Course Sectioning Template &rarr; Step 1 column D</span></div></li>
+      <li><span class="action-num">2</span><div><strong>Add course 227 (Intermediate Theater, 2.5 cr)</strong> to the Course Sectioning Template. It exists in the Tenant Intake and has 1 student request but no sections in the template.<br><span class="action-file">Course Sectioning Template &rarr; Step 1</span></div></li>
+      <li><span class="action-num">3</span><div><strong>Add course 723 (Introduction to Political Science, 2.5 cr)</strong> to the Course Sectioning Template. It exists in the Tenant Intake but has no template entry. Verify whether it has student requests.<br><span class="action-file">Course Sectioning Template &rarr; Step 1</span></div></li>
+      <li><span class="action-num">4</span><div><strong>Verify row count: 7,336 vs 6,525.</strong> The Student Course Requests filename claims 7,336 records but the file contains only 6,525 data rows. Confirm whether the filename is stale or 811 requests are missing.<br><span class="action-file">Student Course Requests export from SIS</span></div></li>
+      <li><span class="action-num">5</span><div><strong>Remove 9 Placeholder rows</strong> (Course ID = 0, Course Name = "Placeholder") from Student Course Requests. These are incomplete registrations.<br><span class="action-file">Student Course Requests rows 2-10</span></div></li>
+      <li><span class="action-num">6</span><div><strong>Remove 3 duplicate requests</strong> — Student 112896/Spanish II, Student 106243/Nutrition&amp;Fitness, Student 106291/Nutrition&amp;Fitness.<br><span class="action-file">Student Course Requests</span></div></li>
+      <li><span class="action-num">7</span><div><strong>Add Student ID column to LEO II Cohorts file.</strong> Currently contains only student names — the engine matches by string comparison, which fails on name variations (e.g., "De Pierro" vs "DePierro").<br><span class="action-file">LEO II Cohorts &rarr; add Person ID column</span></div></li>
+      <li><span class="action-num">8</span><div><strong>Resolve 35 TBD teacher placeholders</strong> across 8 departments in the Course Sectioning Template. These sections cannot be assigned to real teachers until names are finalized.<br><span class="action-file">Course Sectioning Template &rarr; Step 2</span></div></li>
+      <li><span class="action-num">9</span><div><strong>Fix section numbering anomalies</strong> — AP Macro/Micro sections start at "2" (no section 1), AP Physics 1 has two section 1s, Theology 9 has duplicate section numbers (two 6s, two 7s).<br><span class="action-file">Course Sectioning Template &rarr; Step 2</span></div></li>
+      <li><span class="action-num">10</span><div><strong>Fix 70 null period values</strong> in Prior Year Reference — all S1 (Fall semester) sections. Without period data, these cannot inform the 2026-27 build.<br><span class="action-file">Prior Year Master Schedule</span></div></li>
+      <li><span class="action-num">11</span><div><strong>Fix 9 whitespace-corrupted Class IDs</strong> in Prior Year Reference — embedded TAB characters and trailing spaces that break exact-match lookups.<br><span class="action-file">Prior Year Master Schedule</span></div></li>
+      <li><span class="action-num">12</span><div><strong>Clear Tab 0 Row 27 warning</strong> in Tenant Intake — Course 955 exemption was answered by the Director but the "Not decided" warning was never cleared.<br><span class="action-file">Tenant Intake &rarr; 0 School Setup</span></div></li>
+    </ol>
+  </div>
+
+  <div class="file-section">
+    <div class="file-header" onclick="toggle(this)">
+      <span class="expand-arrow">&#9654;</span>
+      <span class="file-name">1. Course Sectioning Template</span>
+      <span class="sev-strip sev-critical">3 CRITICAL</span>
+      <span class="sev-strip sev-high">9 HIGH</span>
+      <span class="file-meta">141 courses &bull; ~350 sections &bull; 8 sheets</span>
+    </div>
+    <div class="file-body">
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-critical">CRITICAL</span> Credit error: 765 &amp; 766</div>
+        <div class="finding-desc">AP Macroeconomics and AP Microeconomics listed at 5.0 credits / Full-Year. The Tenant Intake (authoritative, Director-corrected 21 Jul 2026) shows both as 2.5 / Semester. This error inflates credit totals for 37+ students.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-critical">CRITICAL</span> Missing course: 227 Intermediate Theater</div>
+        <div class="finding-desc">Exists in Tenant Intake (2.5 credits) and _Lists dropdown but has no entry in Step 1. 1 student request is orphaned.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-critical">CRITICAL</span> Missing course: 723 Introduction to Political Science</div>
+        <div class="finding-desc">Exists in Tenant Intake (2.5 credits) but entirely absent from the template. Verify demand.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> 35 TBD teacher assignments</div>
+        <div class="finding-desc">Sections across English, Math, Theology, Theater, Language, and more are assigned to 8 named placeholder teachers. These bypass the Teachers dropdown list.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> Section numbering anomalies</div>
+        <div class="finding-desc">AP Macro/Micro start at section "2" (no section 1). AP Physics 1 has two section 1s. Theology 9 has duplicate numbers (two 6s, two 7s).</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> Step 1 vs Step 2 section count mismatches</div>
+        <div class="finding-desc">4 PE courses have excess sections in Step 2 (15 total). 2 Engineering courses (590, 591) each need 1 section added.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> 1 section with NULL room (Journalism 145)</div>
+        <div class="finding-desc">This section cannot be placed in the schedule without a room assignment.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> 10 idle teachers with 0 assigned sections</div>
+        <div class="finding-desc">On the Teacher Load tab — either intentional (future hires) or data entry gaps.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-section">
+    <div class="file-header" onclick="toggle(this)">
+      <span class="expand-arrow">&#9654;</span>
+      <span class="file-name">2. Student Course Requests</span>
+      <span class="sev-strip sev-critical">2 CRITICAL</span>
+      <span class="sev-strip sev-high">3 HIGH</span>
+      <span class="file-meta">6,525 rows &bull; 800 students &bull; 143 courses</span>
+    </div>
+    <div class="file-body">
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-critical">CRITICAL</span> Row count discrepancy: 7,336 vs 6,525</div>
+        <div class="finding-desc">Filename claims 7,336 records but the file contains 6,525 data rows with zero blank rows. 811 rows (11.1%) are unaccounted for. The source export must be verified.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-critical">CRITICAL</span> 9 Placeholder rows (Course ID = 0)</div>
+        <div class="finding-desc">Rows 2-10 have Course ID = integer 0 and Course Name = "Placeholder". These are incomplete registrations that cannot be scheduled. Standard null checks miss them because the value is 0, not blank.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> 3 duplicate student+course pairs</div>
+        <div class="finding-desc">Student 112896/Spanish II, Student 106243/Nutrition&amp;Fitness/PE, Student 106291/Nutrition&amp;Fitness/PE. Each appears twice.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> Course 227 (Intermediate Theater) — 1 orphan request</div>
+        <div class="finding-desc">Student 113087 (Grade 10) requests a course that exists in Tenant Intake but has no sections in the Course Sectioning Template.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> PII: Student names in column B</div>
+        <div class="finding-desc">800 full names in "Last, First" format. Per FERPA and data-minimization policy, only Person ID is needed for scheduling.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-section">
+    <div class="file-header" onclick="toggle(this)">
+      <span class="expand-arrow">&#9654;</span>
+      <span class="file-name">3. LEO II Cohorts A &amp; B</span>
+      <span class="sev-strip sev-critical">1 CRITICAL</span>
+      <span class="sev-strip sev-high">1 HIGH</span>
+      <span class="file-meta">36 students &bull; 18 per cohort &bull; 1 sheet</span>
+    </div>
+    <div class="file-body">
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-critical">CRITICAL</span> No Student ID column — name-only matching</div>
+        <div class="finding-desc">The engine matches LEO students by exact name string. No numeric Person ID exists in this file. Any name format variation (typos, spacing, capitalization) causes silent mismatches with no error raised.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> Fragile name: "De Pierro, Jake"</div>
+        <div class="finding-desc">Multi-word last name is especially vulnerable to string-match failure (DePierro, de Pierro, De pierro). If the Student Course Requests file spells the name differently, this student is silently excluded from LEO cohort handling.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">MEDIUM</span> S1 Fall only — no S2 data</div>
+        <div class="finding-desc">File covers only Semester 1 (Fall). If S2 (Spring) cohort assignments differ, that data is missing.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-section">
+    <div class="file-header" onclick="toggle(this)">
+      <span class="expand-arrow">&#9654;</span>
+      <span class="file-name">4. Principal's Prescribed Sections</span>
+      <span class="sev-strip sev-high">5 HIGH</span>
+      <span class="file-meta">15 department sheets &bull; ~141 courses</span>
+    </div>
+    <div class="file-body">
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> 8 courses with NULL prescribed section counts</div>
+        <div class="finding-desc">ART: 243, 254, 255, 764 &bull; ENGINEERING: 591 &bull; LANGUAGE: 352 &bull; MUSIC: 203 &bull; THEATER: 228. All are co-scheduled/merged with sibling courses (intentional), but downstream parsers expecting a numeric value will fail.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">MEDIUM</span> 13 merged cell ranges across sheets</div>
+        <div class="finding-desc">Merged cells are a well-known parsing hazard. Every department tab merges the section-count header, and some merge data cells for co-scheduled groups.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-low">LOW</span> Teacher names in headers (PII)</div>
+        <div class="finding-desc">15 sheets expose teacher last names. Some include TBD placeholders ("New ENGLISH Teacher ELENA (TBD)").</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-section">
+    <div class="file-header" onclick="toggle(this)">
+      <span class="expand-arrow">&#9654;</span>
+      <span class="file-name">5. Prior Year Master Schedule (2025-26)</span>
+      <span class="sev-strip sev-high">2 HIGH</span>
+      <span class="file-meta">388 rows &bull; 146 courses &bull; 66 teachers</span>
+    </div>
+    <div class="file-body">
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> 70 rows with NULL period values</div>
+        <div class="finding-desc">All 70 are Fall-semester (S1) sections starting at row 320 — 46 unique section IDs across Business, Comm Arts, CompSci, Engineering, English, Music/Art, PE, Social Studies, Theology. These cannot serve as period-placement references.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> 9 Class IDs with whitespace corruption</div>
+        <div class="finding-desc">8 contain embedded TAB characters, 1 has a trailing space. Exact-match lookups fail on these records.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">MEDIUM</span> Inconsistent Class ID format</div>
+        <div class="finding-desc">4+ patterns used: standard dash (742-1), colon-delimited (609-S:A, 851:5), space-delimited with suffix (340-1 E), irregular spacing (2054 - 1 S). 53 of 388 records use non-standard formats.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="file-section">
+    <div class="file-header" onclick="toggle(this)">
+      <span class="expand-arrow">&#9654;</span>
+      <span class="file-name">6. Verify Tenant Intake</span>
+      <span class="sev-strip sev-high">3 HIGH</span>
+      <span class="file-meta">28 tabs &bull; 143 courses &bull; authoritative source</span>
+    </div>
+    <div class="file-body">
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> Student PII on Tabs 14 &amp; 16</div>
+        <div class="finding-desc">Tab 14 (Period 8 Approvals): 6 students with IDs and full names. Tab 16 (Student Restrictions): 7 student restriction entries with identifiers.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> Tab 0 Row 27 — uncleared warning</div>
+        <div class="finding-desc">Course 955 exemption from 35.0 credit tally was answered by the Director, but the "Not decided — see warning" text was never cleared. Could confuse downstream consumers.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">HIGH</span> Tab 15 — all 33 consistency checks show NULL</div>
+        <div class="finding-desc">These are specifications, not live validations. No actual validation has been executed.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-high">MEDIUM</span> Tab 3 — STAFF ID column empty for all teachers</div>
+        <div class="finding-desc">No cross-referencing key between teacher records and other files.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-ok">VERIFIED</span> Credit corrections for 765 &amp; 766 already documented</div>
+        <div class="finding-desc">Director confirmed 21 Jul 2026: both are 2.5 credits / Semester. The Tenant Intake has the correct values. The Course Sectioning Template was never updated.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title"><span class="sev-strip sev-ok">VERIFIED</span> Course 955 fully defined</div>
+        <div class="finding-desc">0 credits, Full-Year, max 4 sections, class size 8, exempt from 35.0 credit tally, no graduation credit.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;padding:16px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;">
+    <h2 style="font-size:16px;margin:0 0 12px">Cross-File Integrity</h2>
+    <table class="xt">
+      <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Tenant Intake credits vs Template credits</td><td><span class="sev-strip sev-critical">2 MISMATCHES</span></td><td>765 &amp; 766: Intake=2.5, Template=5.0</td></tr>
+        <tr><td>Tenant Intake courses vs Template courses</td><td><span class="sev-strip sev-critical">2 MISSING</span></td><td>227 (Intermediate Theater) &amp; 723 (Intro Political Science) in Intake but not Template</td></tr>
+        <tr><td>Student Requests courses vs Template courses</td><td><span class="sev-strip sev-high">1 ORPHAN</span></td><td>Course 227 requested but has no template sections</td></tr>
+        <tr><td>Prescribed Sections credits vs Intake credits</td><td><span class="sev-strip sev-ok">MATCH</span></td><td>Zero mismatches</td></tr>
+        <tr><td>LEO Cohort names vs Student Request names</td><td><span class="sev-strip sev-high">UNVERIFIABLE</span></td><td>Name-only matching — no shared ID key</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function toggle(el) {
+  const body = el.nextElementSibling;
+  const arrow = el.querySelector('.expand-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+</script>
