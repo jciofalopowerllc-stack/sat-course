@@ -2080,10 +2080,15 @@ try:
             'total_clashes': len(clash),
             'affected_students': len(_scr_clashes)
         }
+        _scr_cs = defaultdict(list)
+        for _s in sections:
+            _h = 3 if len(_s['halves']) == 2 else (1 if _s['halves'][0] == 'S1' else 2)
+            _scr_cs[_s['code']].append([_s['section'], _s['period'], _h, _s['teacher'], secfill[_s['sid']], _s['cap']])
         _scr_d = json.dumps({
             'S': _scr_sections, 'C': _scr_clashes,
             'N': _scr_names, 'SS': dict(_scr_ss),
-            'O': _scr_occ, 'stats': _scr_stats
+            'O': _scr_occ, 'CS': dict(_scr_cs),
+            'stats': _scr_stats
         })
         _scr_js = f"const D = {_scr_d};"
         _scr_out = _inject_data(_scr_html, r'const D\s*=\s*\{', _scr_js)
