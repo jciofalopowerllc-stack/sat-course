@@ -11,9 +11,11 @@
       "CTAP": 1.5,
       "TL": 2.0,
       "PL": 2.0,
-      "RL": 1.5
+      "RL": 1.5,
+      "SC": 1.5,
+      "CR": 1.5
     },
-    "max_weighted_sum": 62.5,
+    "max_weighted_sum": 77.5,
     "scoring_rules": {
       "CFP": "From course_priorities.json: 0=Flex Elective, 1=Std Elective, 2=Dept Core, 3=Sequence/Honors, 4=Required Core, 5=AP/Singleton",
       "CYRP": "5=singleton+oversubscribed, 4=ratio>=30, 3=ratio>=20, 2=ratio>=10, 1=has demand, 0=none",
@@ -22,7 +24,9 @@
       "CTAP": "5=sole teacher+singleton section, 4=sole teacher or <=2 sections, 3=few teachers, 2=many sections, 1=standard",
       "TL": "5=locked semester, 0=flexible",
       "PL": "5=locked period, 0=flexible",
-      "RL": "5=specialized room, 0=standard"
+      "RL": "5=specialized room, 0=standard",
+      "SC": "5=1 section (singleton), 4=2 sections, 3=3 sections, 2=4-5 sections, 1=6+ sections",
+      "CR": "Computed dynamically: count of student's other requests sharing period slots with this course"
     }
   },
   "course_priorities": {
