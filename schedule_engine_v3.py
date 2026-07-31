@@ -2055,7 +2055,36 @@ try:
                     'sc': _data['sc']
                 })
         _scr_clashes.sort(key=lambda x: (-len(x['cl']), x['g'], x['n']))
-        _scr_d = json.dumps({'S': _scr_sections, 'C': _scr_clashes})
+        _scr_names = {}
+        for _pid, _name in students.items():
+            _scr_names[_pid] = [_name, grade.get(_pid, 9)]
+        _scr_ss = defaultdict(list)
+        for _pid, _courses in assign.items():
+            for _cid, _sid in _courses.items():
+                _s = sections[_sid]
+                _key = f"{_cid}-{_s['section']}"
+                _scr_ss[_key].append(_pid)
+        _scr_occ = {}
+        for _pid, _courses in assign.items():
+            _entries = []
+            for _cid, _sid in _courses.items():
+                _s = sections[_sid]
+                _h = 3 if len(_s['halves']) == 2 else (1 if _s['halves'][0] == 'S1' else 2)
+                _entries.append([_cid, _s['title'], _s['period'], _s['section']])
+            _scr_occ[_pid] = _entries
+        _total_requests = len(requests)
+        _total_placed = sum(len(v) for v in assign.values())
+        _scr_stats = {
+            'placed': _total_placed,
+            'total_requests': _total_requests,
+            'total_clashes': len(clash),
+            'affected_students': len(_scr_clashes)
+        }
+        _scr_d = json.dumps({
+            'S': _scr_sections, 'C': _scr_clashes,
+            'N': _scr_names, 'SS': dict(_scr_ss),
+            'O': _scr_occ, 'stats': _scr_stats
+        })
         _scr_js = f"const D = {_scr_d};"
         _scr_out = _inject_data(_scr_html, r'const D\s*=\s*\{', _scr_js)
         if _scr_out:
