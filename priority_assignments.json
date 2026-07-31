@@ -19,14 +19,15 @@
     "scoring_rules": {
       "CFP": "From course_priorities.json: 0=Flex Elective, 1=Std Elective, 2=Dept Core, 3=Sequence/Honors, 4=Required Core, 5=AP/Singleton",
       "CYRP": "5=singleton+oversubscribed, 4=ratio>=30, 3=ratio>=20, 2=ratio>=10, 1=has demand, 0=none",
-      "SSP": "5=LEO, 4=Robotics/StringOrch, 3=AcademicSupport, 1=Standard",
+      "SSP": "5=LEO, 4=Pathway, 3=AcademicSupport, 1=Standard",
       "MTP": "5=sole+overload/3+unique, 4=sole or overload, 3=AP/honors teacher, 2=multi-section, 1=standard",
       "CTAP": "5=sole teacher+singleton section, 4=sole teacher or <=2 sections, 3=few teachers, 2=many sections, 1=standard",
       "TL": "5=locked semester, 0=flexible",
       "PL": "5=locked period, 0=flexible",
       "RL": "5=specialized room, 0=standard",
       "SC": "5=1 section (singleton), 4=2 sections, 3=3 sections, 2=4-5 sections, 1=6+ sections",
-      "CR": "Computed dynamically: count of student's other requests sharing period slots with this course"
+      "CR": "Computed dynamically: count of student's other requests sharing period slots with this course",
+      "TSSP": "5=teaches LEO courses, 4=teaches Pathway courses, 3=teaches AcademicSupport courses, 1=standard"
     }
   },
   "course_priorities": {
@@ -2265,7 +2266,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 11,
       "courses": [
@@ -2286,7 +2287,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -2306,7 +2307,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -2324,7 +2325,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -2421,7 +2422,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -2458,7 +2459,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 11,
       "courses": [
@@ -2479,7 +2480,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -2627,7 +2628,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 9,
       "courses": [
@@ -2832,7 +2833,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 11,
       "courses": [
@@ -2906,7 +2907,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -2926,7 +2927,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -2984,7 +2985,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -3219,7 +3220,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -3317,7 +3318,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -3355,7 +3356,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 9,
       "courses": [
@@ -3485,7 +3486,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -3505,7 +3506,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -3525,7 +3526,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 9,
       "courses": [
@@ -3836,7 +3837,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 9,
       "courses": [
@@ -3981,7 +3982,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -4071,7 +4072,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -4198,7 +4199,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -4255,7 +4256,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -4377,7 +4378,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -4469,7 +4470,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 9,
       "courses": [
@@ -4525,7 +4526,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -4595,7 +4596,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -4633,7 +4634,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 9,
       "courses": [
@@ -4689,7 +4690,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 11,
       "courses": [
@@ -4743,7 +4744,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -4915,7 +4916,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -4933,7 +4934,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -5264,7 +5265,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -5314,7 +5315,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -5332,7 +5333,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -5349,7 +5350,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 11,
       "courses": [
@@ -5482,7 +5483,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -5516,7 +5517,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 11,
       "courses": [
@@ -5553,7 +5554,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -5883,7 +5884,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -6122,7 +6123,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -6248,7 +6249,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -6407,7 +6408,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -6629,7 +6630,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -6789,7 +6790,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -6933,7 +6934,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -7058,7 +7059,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -7170,7 +7171,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -7483,7 +7484,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -7549,7 +7550,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -7675,7 +7676,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -7725,7 +7726,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -7743,7 +7744,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -7776,7 +7777,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -7793,7 +7794,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -7905,7 +7906,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -8127,7 +8128,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -8288,7 +8289,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -8338,7 +8339,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -8372,7 +8373,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -8612,7 +8613,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -8724,7 +8725,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -8851,7 +8852,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -8916,7 +8917,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9028,7 +9029,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -9061,7 +9062,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9172,7 +9173,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9236,7 +9237,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9543,7 +9544,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9677,7 +9678,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9758,7 +9759,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9791,7 +9792,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -9825,7 +9826,7 @@
       "grade": "12th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 10,
       "courses": [
@@ -9908,7 +9909,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10037,7 +10038,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10071,7 +10072,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10138,7 +10139,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10218,7 +10219,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10456,7 +10457,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10602,7 +10603,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10620,7 +10621,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10686,7 +10687,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10798,7 +10799,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10816,7 +10817,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -10880,7 +10881,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10914,7 +10915,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -10932,7 +10933,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11158,7 +11159,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11223,7 +11224,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11290,7 +11291,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11629,7 +11630,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11663,7 +11664,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11681,7 +11682,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11779,7 +11780,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11860,7 +11861,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -11956,7 +11957,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -12021,7 +12022,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -12315,7 +12316,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -12396,7 +12397,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -12542,7 +12543,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -12623,7 +12624,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -12657,7 +12658,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -12707,7 +12708,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -12757,7 +12758,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -12791,7 +12792,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -12841,7 +12842,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -13003,7 +13004,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -13037,7 +13038,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -13055,7 +13056,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -13120,7 +13121,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -13201,7 +13202,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -13412,7 +13413,7 @@
       "grade": "10th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -13527,7 +13528,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -13545,7 +13546,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -13659,7 +13660,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -13771,7 +13772,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -13964,7 +13965,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -14062,7 +14063,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -14209,7 +14210,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -14323,7 +14324,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -14356,7 +14357,7 @@
       "grade": "11th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -14374,7 +14375,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -14391,7 +14392,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -14408,7 +14409,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -14571,7 +14572,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -14686,7 +14687,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -14976,7 +14977,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -15090,7 +15091,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "Robotics"
+        "Pathway"
       ],
       "course_count": 8,
       "courses": [
@@ -15346,7 +15347,7 @@
       "grade": "9th Grade",
       "SSP": 4,
       "populations": [
-        "StringOrchestra"
+        "Pathway"
       ],
       "course_count": 7,
       "courses": [
@@ -15432,6 +15433,10 @@
         "421",
         "425",
         "445"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Angotti, Sylvia": {
@@ -15442,6 +15447,11 @@
         "321",
         "330",
         "351"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Arcede, Francis": {
@@ -15450,6 +15460,10 @@
       "unique_courses": 1,
       "courses": [
         "810"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Biggs, Tyrell": {
@@ -15458,6 +15472,10 @@
       "unique_courses": 1,
       "courses": [
         "610"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Calidas, Riddhi": {
@@ -15471,6 +15489,11 @@
         "491",
         "494",
         "496"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Campbell, Scott": {
@@ -15481,6 +15504,11 @@
         "431",
         "453",
         "455"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Carr, Lynette": {
@@ -15490,6 +15518,10 @@
       "courses": [
         "311",
         "320"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Chiaravalloti, Michael": {
@@ -15499,6 +15531,11 @@
       "courses": [
         "631",
         "642"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Connelly, Tiffany": {
@@ -15508,6 +15545,11 @@
       "courses": [
         "544",
         "546"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Corcoran, Kevin": {
@@ -15518,6 +15560,11 @@
         "727",
         "757",
         "758"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Daniels, Torrence": {
@@ -15526,6 +15573,10 @@
       "unique_courses": 1,
       "courses": [
         "620"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "DeLeon, Marco": {
@@ -15535,6 +15586,10 @@
       "courses": [
         "412",
         "432"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Delmonico, Marisa": {
@@ -15544,6 +15599,10 @@
       "courses": [
         "111",
         "129"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Dennehy, Sheri": {
@@ -15560,6 +15619,10 @@
         "254",
         "255",
         "764"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Doughty, Chelsea": {
@@ -15568,6 +15631,10 @@
       "unique_courses": 1,
       "courses": [
         "520"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Dwyer, Kevin": {
@@ -15577,6 +15644,11 @@
       "courses": [
         "130",
         "141"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Esposito, John": {
@@ -15588,6 +15660,11 @@
         "729",
         "734",
         "745"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Fisk, Mary Pat": {
@@ -15597,6 +15674,10 @@
       "courses": [
         "131",
         "139"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Gerlach, Reese": {
@@ -15606,6 +15687,11 @@
       "courses": [
         "420",
         "440"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Gettler, Mary": {
@@ -15616,6 +15702,11 @@
         "435",
         "440",
         "448"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Guy, Libbie": {
@@ -15625,6 +15716,11 @@
       "courses": [
         "542",
         "543"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Hampson, Elizabeth": {
@@ -15634,6 +15730,11 @@
       "courses": [
         "430",
         "443"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Harris, Megan": {
@@ -15644,6 +15745,11 @@
         "730",
         "731",
         "761"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Janeczko, Douglas": {
@@ -15653,6 +15759,10 @@
       "courses": [
         "500",
         "510"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Judge, Michelle": {
@@ -15663,6 +15773,10 @@
         "112",
         "122",
         "955"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Kilduff, Kevin": {
@@ -15672,6 +15786,11 @@
       "courses": [
         "511",
         "553"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Konopelski, Louis": {
@@ -15682,6 +15801,11 @@
         "456",
         "765",
         "766"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Kozak, Bernadette": {
@@ -15691,6 +15815,10 @@
       "courses": [
         "530",
         "595"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Langan, John": {
@@ -15700,6 +15828,10 @@
       "courses": [
         "820",
         "830"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Laracy, John": {
@@ -15709,6 +15841,11 @@
       "courses": [
         "830",
         "851"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Lomascolo, Frank": {
@@ -15718,6 +15855,10 @@
       "courses": [
         "810",
         "820"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Lopez, Enrique": {
@@ -15730,6 +15871,10 @@
         "206",
         "209",
         "220"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Martino, Brianna": {
@@ -15739,6 +15884,11 @@
       "courses": [
         "721",
         "763"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Mazella, Julie": {
@@ -15747,6 +15897,10 @@
       "unique_courses": 1,
       "courses": [
         "120"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "McConnell, George": {
@@ -15759,6 +15913,10 @@
         "585",
         "590",
         "591"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "McManus, Brianna": {
@@ -15767,6 +15925,10 @@
       "unique_courses": 1,
       "courses": [
         "521"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Montegari, James": {
@@ -15775,6 +15937,10 @@
       "unique_courses": 1,
       "courses": [
         "720"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Muscat, Nicole": {
@@ -15787,6 +15953,10 @@
         "332",
         "333",
         "352"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Nepolitan, John": {
@@ -15797,6 +15967,10 @@
         "722",
         "731",
         "733"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "New ENGLISH Teacher (TBD)": {
@@ -15808,6 +15982,10 @@
         "132",
         "143",
         "145"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "New ENGLISH Teacher ELENA (TBD)": {
@@ -15816,6 +15994,11 @@
       "unique_courses": 1,
       "courses": [
         "144"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "New LN Teacher (TBD)": {
@@ -15824,6 +16007,10 @@
       "unique_courses": 1,
       "courses": [
         "955"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "New MATH  Teacher OH (TBD)": {
@@ -15833,6 +16020,10 @@
       "courses": [
         "410",
         "422"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "New MATH Teacher HARTMAN (TBD)": {
@@ -15843,6 +16034,11 @@
         "431",
         "440",
         "450"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "New THEATER Teacher (TBD)": {
@@ -15852,6 +16048,10 @@
       "courses": [
         "225",
         "228"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "New THEO 1 Teacher (TBD)": {
@@ -15861,6 +16061,10 @@
       "courses": [
         "810",
         "820"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "New THEO 2 Teacher (TBD)": {
@@ -15870,6 +16074,11 @@
       "courses": [
         "830",
         "849"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Nobilione, Lauren": {
@@ -15880,6 +16089,11 @@
         "120",
         "140",
         "146"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "O'Connor, Paul": {
@@ -15890,6 +16104,11 @@
         "110",
         "121",
         "149"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Ojo, Clement": {
@@ -15898,6 +16117,10 @@
       "unique_courses": 1,
       "courses": [
         "830"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Park, Sam": {
@@ -15910,6 +16133,10 @@
         "2034",
         "2044",
         "2054"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Quast, Richard": {
@@ -15922,6 +16149,11 @@
         "743",
         "744",
         "751"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Ramirez, Jaime": {
@@ -15931,6 +16163,10 @@
       "courses": [
         "330",
         "331"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Sabella, Daniel": {
@@ -15939,7 +16175,9 @@
       "unique_courses": 1,
       "courses": [
         "708"
-      ]
+      ],
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Saggio, Jack": {
       "MTP": 5,
@@ -15949,6 +16187,11 @@
         "710",
         "741",
         "751"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Serra, Carmine": {
@@ -15957,6 +16200,10 @@
       "unique_courses": 1,
       "courses": [
         "110"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Stoller, Timothy": {
@@ -15965,6 +16212,10 @@
       "unique_courses": 1,
       "courses": [
         "551"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Tranate, John": {
@@ -15975,6 +16226,11 @@
         "531",
         "557",
         "558"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Tuesta, David": {
@@ -15983,6 +16239,10 @@
       "unique_courses": 1,
       "courses": [
         "310"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Unassigned": {
@@ -15994,6 +16254,11 @@
         "500",
         "727",
         "732"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Willi, Mary": {
@@ -16003,6 +16268,10 @@
       "courses": [
         "410",
         "411"
+      ],
+      "TSSP": 4,
+      "serving_populations": [
+        "Pathway"
       ]
     },
     "Winters, Jack": {
@@ -16012,6 +16281,11 @@
       "courses": [
         "710",
         "756"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Zawacki, Richard": {
@@ -16022,6 +16296,11 @@
         "732",
         "742",
         "752"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     },
     "Zawiski, Brian": {
@@ -16034,6 +16313,11 @@
         "327",
         "339",
         "359"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "LEO",
+        "Pathway"
       ]
     }
   },

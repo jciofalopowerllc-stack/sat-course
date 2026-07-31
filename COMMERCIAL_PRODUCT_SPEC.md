@@ -90,7 +90,7 @@ Each student-course-section placement is scored across 8 dimensions. Each dimens
 |---|-------|------|-------|--------|
 | 1 | Course File Priority | CFP | 0–5 | Master course profile (stable year-to-year) |
 | 2 | Current Year Course Request Priority | CYRP | 0–5 | Set during pre-scheduling based on current demand and teacher availability |
-| 3 | Student Scheduling Priority | SSP | 0–5 | Based on student population: LEO, Robotics, String Orchestra, special needs |
+| 3 | Student Scheduling Priority | SSP | 0–5 | Based on student population: LEO, Pathway, Academic Support, special needs |
 | 4 | Master Teacher Profile Priority | MTP | 0–5 | Teacher profile: seniority, specialization, replaceability |
 | 5 | Current Year Teacher Assignment Priority | CTAP | 0–5 | How critical this specific teacher-course assignment is this year |
 | 6 | Term Lock | TL | 0 or 5 | Binary: must be a specific semester (5) or flexible (0) |
@@ -258,7 +258,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [ ] 8-input weighted priority scoring per student-course-section placement
 - [ ] Student ranking 1–800 by constraint density
 - [ ] Current year course request priority data input
-- [ ] Student scheduling priority data input (LEO, Robotics, String Orchestra populations)
+- [ ] Student scheduling priority data input (LEO, Pathway, Academic Support populations)
 - [ ] Master teacher profile priority data input
 - [ ] Current year teacher assignment priority data input
 - [ ] Term/period/room lock scoring from existing constraint data
