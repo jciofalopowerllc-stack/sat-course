@@ -54,11 +54,46 @@ for _plevel, _pinfo in _prio_data['scale'].items():
         COURSE_PRIORITY[str(_pc)] = int(_plevel)
 SINGLETON_COURSES = set(str(c) for c in _prio_data.get('singleton_courses', []))
 
+# ── Graduation-Requirement Subject Mapping ──
+# Required departments by grade level (from DON_BOSCO_PREP_REQUIRED_SUBJECTS_AND_CREDITS.xlsx)
+# Priority is DYNAMIC per student: a course's effective priority depends on whether
+# it fulfills a REQUIRED SUBJECT for that student's grade level.
+# Courses in required departments get a graduation-requirement bonus.
+# All other courses are electives regardless of AP/Honors status.
+_grad_req = _prio_data.get('graduation_requirements', {})
+GRAD_REQ_DEPTS = {
+    9:  set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])),
+    10: set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])),
+    11: set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])),
+    12: set(_grad_req.get('grade_12', {}).get('required_departments', []))
+         | set(_grad_req.get('grade_12', {}).get('required_either', [])),
+}
+GRAD_REQ_BONUS = 10
+
 def prio(c):
+    """Static course priority (grade-agnostic). Use student_prio() for bump decisions."""
     return COURSE_PRIORITY.get(str(c), 1)
 
 def is_singleton(c):
     return str(c) in SINGLETON_COURSES
+
+# _course_dept_map populated after course_info is loaded (Template 1)
+_course_dept_map = {}
+
+def _is_grad_req_dept(cid, student_grade):
+    """Check if a course belongs to a department required for the student's grade level."""
+    dept = _course_dept_map.get(str(cid), '')
+    return dept in GRAD_REQ_DEPTS.get(student_grade, set())
+
+def student_prio(pid, cid):
+    """Dynamic per-student priority: static priority + graduation-requirement bonus.
+    A course in a required subject for the student's grade gets GRAD_REQ_BONUS added,
+    making it outrank any elective regardless of AP/Honors status."""
+    base = prio(cid)
+    g = grade.get(str(pid), 0)
+    if g and _is_grad_req_dept(cid, g):
+        return base + GRAD_REQ_BONUS
+    return base
 
 with open(os.path.join(os.path.dirname(__file__) or '.', 'priority_assignments.json')) as _paf:
     PRIO_ASSIGN = json.load(_paf)
@@ -220,6 +255,10 @@ for r in range(2, ws2.max_row + 1):
 print(f"  Sections: {len(sections)}")
 print(f"  Courses: {len(sec_by_code)}")
 print(f"  Teachers: {len(teacher_sections)}")
+
+# Populate course→department map for graduation-requirement priority
+for _cid, _ci in course_info.items():
+    _course_dept_map[_cid] = _ci.get('dept', '')
 
 # ── Template 2: Student Course Requests ──
 t2_path = os.path.join(TEMPLATES, 'Template_2_Student_Course_Requests.xlsx')
@@ -1275,23 +1314,25 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
-# P5 = AP courses only (singleton electives no longer inflate to P5)
+# Dynamic priority: student_prio(pid, c) = prio(c) + GRAD_REQ_BONUS if course is in a required subject for the student's grade.
+# Courses with effective priority >= PROT_THRESHOLD are pinned (never bumped).
+PROT_THRESHOLD = 14  # AP (P5) + grad req bonus (10) = 15; Honors grad req = 13; AP elective = 5
+# Legacy static sets kept for reference but NOT used in bump decisions
 PROT = {str(c) for c, p in COURSE_PRIORITY.items() if p == 5}
-# P4 = graduation requirements — never bumped for electives
 PROT_P4 = {str(c) for c, p in COURSE_PRIORITY.items() if p == 4}
 
 def resolve_student(pid):
     pins = {}
     for pc in assign[pid]:
-        if pc in PROT:
+        if student_prio(pid, pc) >= PROT_THRESHOLD:
             pins[pc] = assign[pid][pc]
     others = [c for c in sreq[pid] if c not in pins and c in assign[pid]]
     used = set()
     for c, sid in pins.items():
         for x in occ_cells(sid):
             used.add(x)
-    # Sort by priority first so graduation requirements get placed before electives
-    others.sort(key=lambda c: (-prio(c), placement_sort_key(pid, c), len(sec_by_code.get(c, []))))
+    # Sort by student-specific priority: graduation requirements placed before electives
+    others.sort(key=lambda c: (-student_prio(pid, c), -int(is_singleton(c)), placement_sort_key(pid, c), len(sec_by_code.get(c, []))))
     res = {}
 
     def rec(i):
@@ -1357,26 +1398,21 @@ for pid in students:
     for x, cs in cells.items():
         cs = [c for c in cs if c not in bump]
         if len(cs) > 1:
-            prot_cs = [c for c in cs if c in PROT]
-            p4_cs = [c for c in cs if c in PROT_P4]
-            # Tiebreaker: within same priority, prefer singletons (no alternative sections)
-            _score_fn = lambda c: (-prio(c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
-            if prot_cs:
-                keep = min(prot_cs, key=_score_fn)
-            elif p4_cs:
-                keep = min(p4_cs, key=_score_fn)
-            else:
-                keep = min(cs, key=_score_fn)
+            _score_fn = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+            keep = min(cs, key=_score_fn)
             for c in cs:
-                if c != keep and c not in PROT:
+                if c != keep and student_prio(pid, c) < PROT_THRESHOLD:
                     bump.add(c)
     for c in bump:
         s = sections[assign[pid][c]]
         _ws, _cc = placement_score(pid, c)
+        _eff_prio = student_prio(pid, c)
         clash.append({
             'student': pid, 'name': students[pid], 'grade': grade[pid],
             'code': c, 'course': course_info.get(c, {}).get('title', c),
             'priority': prio(c),
+            'effective_priority': _eff_prio,
+            'is_grad_req': _eff_prio > prio(c),
             'composite_ws': round(_ws, 1),
             'composite_cc': _cc,
             'lost_period': s['period'],
@@ -1508,25 +1544,21 @@ def full_reseat():
         for x, cs in cm.items():
             cs = [c for c in cs if c not in bmp]
             if len(cs) > 1:
-                pr = [c for c in cs if c in PROT]
-                p4 = [c for c in cs if c in PROT_P4]
-                _sf = lambda c: (-prio(c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
-                if pr:
-                    kp = min(pr, key=_sf)
-                elif p4:
-                    kp = min(p4, key=_sf)
-                else:
-                    kp = min(cs, key=_sf)
+                _sf = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+                kp = min(cs, key=_sf)
                 for c in cs:
-                    if c != kp and c not in PROT:
+                    if c != kp and student_prio(pid, c) < PROT_THRESHOLD:
                         bmp.add(c)
         for c in bmp:
             bs = sections[assign[pid][c]]
             _ws_b, _cc_b = placement_score(pid, c)
+            _eff_prio = student_prio(pid, c)
             nc.append({
                 'student': pid, 'name': students[pid], 'grade': grade[pid],
                 'code': c, 'course': course_info.get(c, {}).get('title', c),
                 'priority': prio(c),
+                'effective_priority': _eff_prio,
+                'is_grad_req': _eff_prio > prio(c),
                 'composite_ws': round(_ws_b, 1),
                 'composite_cc': _cc_b,
                 'lost_period': bs['period'],
@@ -1536,7 +1568,7 @@ def full_reseat():
             rm_place(pid, c)
     for cl_item in list(nc):
         pid, cid = cl_item['student'], cl_item['code']
-        if cid in PROT or cid in assign.get(pid, {}):
+        if student_prio(pid, cid) >= PROT_THRESHOLD or cid in assign.get(pid, {}):
             continue
         used = set()
         for c2, s2 in assign.get(pid, {}).items():
