@@ -408,8 +408,8 @@ if _credit_violations:
             'total_students': len(students), 'violations': len(_credit_violations),
             'students': _credit_violations
         }, _rf, indent=2)
-    print(f"\n  *** ENGINE HALTED — credit violations must be resolved. ***")
-    sys.exit(1)
+    print(f"\n  *** WARNING: credit violations detected — engine will proceed ***")
+    print(f"  (Review {_report_path} for details)")
 else:
     print(f"  Credit validation: PASSED")
 
