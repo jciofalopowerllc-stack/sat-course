@@ -857,8 +857,87 @@ widths_8 = [12, 10, 12, 14, 10,
             12, 14, 12, 12]
 auto_width(ws8, widths_8)
 
+student_count = row - 3
+
+# --- Sheet 2: Transcript History ---
+ws8b = wb8.create_sheet('Transcript History')
+
+ws8b.cell(1, 1, 'STUDENT TRANSCRIPT HISTORY').font = Font(name='Arial', bold=True, size=14, color='1B4965')
+ws8b.cell(2, 1, 'Used by the engine for: (1) Duplicate request detection — flag courses already completed  (2) Prerequisite validation — confirm required prior courses were passed').font = Font(name='Arial', size=10, color='7A7A7A')
+ws8b.merge_cells('A2:J2')
+
+headers_8b = [
+    'Student ID',
+    'Academic Year',
+    'Course Code', 'Course Title', 'Department',
+    'Credits', 'Final Grade',
+    'Passed', 'Grade Level When Taken',
+    'Notes',
+]
+
+subheaders_8b = [
+    'REQUIRED', 'REQUIRED',
+    'REQUIRED', 'REQUIRED', 'OPTIONAL',
+    'REQUIRED', 'REQUIRED',
+    'REQUIRED', 'OPTIONAL',
+    'OPTIONAL',
+]
+
+for c, h in enumerate(headers_8b, 1):
+    ws8b.cell(3, c, h)
+style_header(ws8b, 3, len(headers_8b))
+for c, sh in enumerate(subheaders_8b, 1):
+    style_subheader(ws8b, 4, c, sh)
+
+# Example rows showing expected format
+examples_8b = [
+    [106212, '2025-26', 110, 'Composition & Literature', 'English', 5.0, 'B+', 'Y', 10, ''],
+    [106212, '2025-26', 410, 'Algebra I', 'Mathematics', 5.0, 'A-', 'Y', 10, ''],
+    [106212, '2025-26', 810, 'Theology 9', 'Theology', 5.0, 'B', 'Y', 10, ''],
+    [106212, '2025-26', 610, 'Phys Ed/Health', 'Physical Education', 5.0, 'A', 'Y', 10, ''],
+    [106212, '2024-25', 112, 'Composition & Literature', 'English', 5.0, 'C', 'Y', 9, ''],
+    [106212, '2024-25', 510, 'Earth Science', 'Science', 5.0, 'B-', 'Y', 9, ''],
+    [115945, '2025-26', 111, 'Composition & Literature H', 'English', 5.0, 'A', 'Y', 9, ''],
+    [115945, '2025-26', 411, 'Geometry H', 'Mathematics', 5.0, 'A-', 'Y', 9, ''],
+]
+
+EXAMPLE_FILL = PatternFill(start_color='FFF3CD', end_color='FFF3CD', fill_type='solid')
+EXAMPLE_FONT = Font(name='Arial', size=10, italic=True, color='926B18')
+
+for i, erow in enumerate(examples_8b):
+    for c, v in enumerate(erow, 1):
+        cell = ws8b.cell(5 + i, c, v)
+        cell.font = EXAMPLE_FONT
+        cell.fill = EXAMPLE_FILL
+        cell.border = THIN_BORDER
+
+# Legend
+legend_row = 5 + len(examples_8b) + 2
+legend_items = [
+    ('HOW TO USE:', 'Export transcript/grade history from your SIS. One row per student per completed course.'),
+    ('Student ID:', 'Must match the Student ID in the Student Profiles sheet'),
+    ('Academic Year:', 'Format: "2025-26", "2024-25", etc. Include all available years.'),
+    ('Final Grade:', 'Letter grade (A+, A, A-, B+, B, B-, C+, C, C-, D, F) or numeric (95, 87, etc.)'),
+    ('Passed:', '"Y" if credit was earned, "N" if failed/incomplete/withdrawn'),
+    ('PURPOSE 1:', 'DUPLICATE DETECTION — If a student requests course 410 but already passed it, the engine flags it as an error'),
+    ('PURPOSE 2:', 'PREREQUISITE CHECK — If course 430 requires 410, the engine verifies the student passed 410 before allowing 430'),
+    ('TYPICAL SIZE:', 'About 5,000-15,000 rows depending on how many years of history you include'),
+    ('MINIMUM:', 'At least the most recent completed year (2025-26) is needed. 2-3 years is ideal.'),
+    ('DELETE:', 'Delete the yellow example rows before uploading — they are just format guides.'),
+]
+for i, (label, desc) in enumerate(legend_items):
+    ws8b.cell(legend_row + i, 1, label).font = Font(name='Arial', bold=True, size=10, color='1B4965')
+    ws8b.cell(legend_row + i, 1).fill = PatternFill(start_color='E8F5EE', end_color='E8F5EE', fill_type='solid')
+    ws8b.cell(legend_row + i, 2, desc).font = Font(name='Arial', size=10, color='2D6A4F')
+    ws8b.cell(legend_row + i, 2).fill = PatternFill(start_color='E8F5EE', end_color='E8F5EE', fill_type='solid')
+    ws8b.merge_cells(start_row=legend_row + i, start_column=2, end_row=legend_row + i, end_column=10)
+
+widths_8b = [14, 14, 12, 32, 18, 10, 12, 10, 18, 24]
+for c, w in enumerate(widths_8b, 1):
+    ws8b.column_dimensions[get_column_letter(c)].width = w
+
 wb8.save(os.path.join(TEMPLATES, 'Template_8_Student_Profiles.xlsx'))
-print(f"  Done — {row-3} students")
+print(f"  Done — {student_count} students + Transcript History sheet (blank — export from SIS)")
 
 # ================================================================
 # TEMPLATE 9: Room Profiles (pre-filled + N/A)
