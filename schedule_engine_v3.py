@@ -68,7 +68,15 @@ GRAD_REQ_DEPTS = {
     12: set(_grad_req.get('grade_12', {}).get('required_departments', []))
          | set(_grad_req.get('grade_12', {}).get('required_either', [])),
 }
-GRAD_REQ_BONUS = 10
+# ── Priority Band System ──
+# Band 1 (GRAD_REQ_BAND): courses required for the student's grade-level graduation.
+# Band 2 (ELECTIVE_BAND): all other courses (electives), regardless of AP/Honors/restrictions.
+# Band 1 courses are ALWAYS ranked higher than Band 2 courses for the same student.
+# Within each band, the static course tier (P0-P5) determines relative order.
+# The band offset guarantees separation: the lowest Band 1 score (100 + P0 = 100)
+# always exceeds the highest Band 2 score (0 + P5 = 5).
+GRAD_REQ_BAND = 100
+ELECTIVE_BAND = 0
 
 def prio(c):
     """Static course priority (grade-agnostic). Use student_prio() for bump decisions."""
@@ -86,14 +94,15 @@ def _is_grad_req_dept(cid, student_grade):
     return dept in GRAD_REQ_DEPTS.get(student_grade, set())
 
 def student_prio(pid, cid):
-    """Dynamic per-student priority: static priority + graduation-requirement bonus.
-    A course in a required subject for the student's grade gets GRAD_REQ_BONUS added,
-    making it outrank any elective regardless of AP/Honors status."""
+    """Dynamic per-student priority using the two-band system.
+    Band 1 (100+): graduation-required courses — never bumped in favor of an elective.
+    Band 2 (0-5): electives — scored by course tier within the band.
+    The lowest possible Band 1 score (100) always exceeds the highest Band 2 score (5)."""
     base = prio(cid)
     g = grade.get(str(pid), 0)
     if g and _is_grad_req_dept(cid, g):
-        return base + GRAD_REQ_BONUS
-    return base
+        return GRAD_REQ_BAND + base
+    return ELECTIVE_BAND + base
 
 with open(os.path.join(os.path.dirname(__file__) or '.', 'priority_assignments.json')) as _paf:
     PRIO_ASSIGN = json.load(_paf)
@@ -1314,9 +1323,9 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
-# Dynamic priority: student_prio(pid, c) = prio(c) + GRAD_REQ_BONUS if course is in a required subject for the student's grade.
-# Courses with effective priority >= PROT_THRESHOLD are pinned (never bumped).
-PROT_THRESHOLD = 14  # AP (P5) + grad req bonus (10) = 15; Honors grad req = 13; AP elective = 5
+# Two-band priority: Band 1 (100+) = graduation required, Band 2 (0-5) = electives.
+# Any course in Band 1 is pinned (never bumped in favor of an elective).
+PROT_THRESHOLD = GRAD_REQ_BAND  # 100 — all graduation-required courses are protected
 # Legacy static sets kept for reference but NOT used in bump decisions
 PROT = {str(c) for c, p in COURSE_PRIORITY.items() if p == 5}
 PROT_P4 = {str(c) for c, p in COURSE_PRIORITY.items() if p == 4}
@@ -1412,7 +1421,8 @@ for pid in students:
             'code': c, 'course': course_info.get(c, {}).get('title', c),
             'priority': prio(c),
             'effective_priority': _eff_prio,
-            'is_grad_req': _eff_prio > prio(c),
+            'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else 'elective',
+            'is_grad_req': _eff_prio >= GRAD_REQ_BAND,
             'composite_ws': round(_ws, 1),
             'composite_cc': _cc,
             'lost_period': s['period'],
@@ -1558,7 +1568,8 @@ def full_reseat():
                 'code': c, 'course': course_info.get(c, {}).get('title', c),
                 'priority': prio(c),
                 'effective_priority': _eff_prio,
-                'is_grad_req': _eff_prio > prio(c),
+                'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else 'elective',
+                'is_grad_req': _eff_prio >= GRAD_REQ_BAND,
                 'composite_ws': round(_ws_b, 1),
                 'composite_cc': _cc_b,
                 'lost_period': bs['period'],
