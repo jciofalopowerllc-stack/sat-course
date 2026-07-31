@@ -1946,6 +1946,446 @@ with open(SOLUTION_FILE_ROOT, 'w') as f:
 
 print(f"\n  Solution saved to {SOLUTION_FILE}")
 print(f"  Solution also saved to {SOLUTION_FILE_ROOT}")
+
+# ============================================================
+# 5. POST-RUN: GENERATE INTERACTIVE HTML BOARDS
+# ============================================================
+print("\n" + "=" * 60)
+print("[5] GENERATING INTERACTIVE HTML BOARDS")
+print("=" * 60)
+
+BOARDS_DIR = os.path.join(OUTPUT_DIR, 'boards')
+os.makedirs(BOARDS_DIR, exist_ok=True)
+
+def _inject_data(html_src, marker_pattern, new_data_js):
+    """Replace a JS data constant in an HTML file with new data."""
+    import re
+    m = re.search(marker_pattern, html_src)
+    if not m:
+        return None
+    start = m.start()
+    depth = 0
+    i = m.end() - 1
+    open_ch = html_src[i]
+    close_ch = '}' if open_ch == '{' else ']'
+    while i < len(html_src):
+        if html_src[i] == open_ch:
+            depth += 1
+        elif html_src[i] == close_ch:
+            depth -= 1
+            if depth == 0:
+                end = i + 1
+                while end < len(html_src) and html_src[end] in ' \t':
+                    end += 1
+                if end < len(html_src) and html_src[end] == ';':
+                    end += 1
+                return html_src[:start] + new_data_js + html_src[end:]
+        i += 1
+    return None
+
+_boards_generated = 0
+
+# ── Board 1: Credit Validation Report ──
+try:
+    _cvr_path = os.path.join(OUTPUT_DIR, 'credit_validation_report.html')
+    if os.path.exists(_cvr_path):
+        with open(_cvr_path) as _f:
+            _cvr_html = _f.read()
+        _cvr_data = []
+        for _v in _credit_violations:
+            _cvr_data.append({
+                'id': _v['student_id'],
+                'name': _v['name'],
+                'grade': _v['grade'],
+                'total': _v['total_credits'],
+                'excess': _v['excess'],
+                'count': _v['course_count'],
+                'courses': [{'code': c['code'], 'title': c['title'],
+                             'credits': c['credits'], 'priority': prio(c['code'])}
+                            for c in _v['courses']]
+            })
+        _cvr_js = f"const DATA = {json.dumps(_cvr_data)};"
+        _cvr_out = _inject_data(_cvr_html, r'const DATA\s*=\s*\[', _cvr_js)
+        if _cvr_out:
+            _cvr_dest = os.path.join(BOARDS_DIR, 'credit_validation_report.html')
+            with open(_cvr_dest, 'w') as _f:
+                _f.write(_cvr_out)
+            print(f"  credit_validation_report.html — {len(_cvr_data)} violations")
+            _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: credit_validation_report failed: {_e}")
+
+# ── Board 2: Student Clash Report ──
+try:
+    _scr_path = os.path.join(OUTPUT_DIR, 'student_clash_report.html')
+    if os.path.exists(_scr_path):
+        with open(_scr_path) as _f:
+            _scr_html = _f.read()
+        _scr_sections = []
+        for _s in sections:
+            _h = 3 if len(_s['halves']) == 2 else (1 if _s['halves'][0] == 'S1' else 2)
+            _scr_sections.append([
+                _s['code'], _s['title'], _s['dept'], _s['period'],
+                _h, _s['teacher'], _s['room'], _s['cap'],
+                secfill[_s['sid']], _s['section']
+            ])
+        _clash_by_student = defaultdict(lambda: {'cl': [], 'sc': {}})
+        for _c in clash:
+            _pid = _c['student']
+            _clash_by_student[_pid]['cl'].append([
+                _c['code'], _c['course'], _c['lost_period'], 1
+            ])
+        for _pid in students:
+            if _pid in _clash_by_student or _pid in [_c['student'] for _c in clash]:
+                for _cid, _sid in assign.get(_pid, {}).items():
+                    _s = sections[_sid]
+                    _h = 3 if len(_s['halves']) == 2 else (1 if _s['halves'][0] == 'S1' else 2)
+                    _clash_by_student[_pid]['sc'][_cid] = [
+                        _s['title'], _s['period'], _h,
+                        _s['teacher'], _s['room'], _s['section']
+                    ]
+        _scr_clashes = []
+        for _pid, _data in _clash_by_student.items():
+            if _data['cl']:
+                _scr_clashes.append({
+                    'id': _pid,
+                    'n': students.get(_pid, _pid),
+                    'g': grade.get(_pid, 9),
+                    'cl': _data['cl'],
+                    'sc': _data['sc']
+                })
+        _scr_clashes.sort(key=lambda x: (-len(x['cl']), x['g'], x['n']))
+        _scr_d = json.dumps({'S': _scr_sections, 'C': _scr_clashes})
+        _scr_js = f"const D = {_scr_d};"
+        _scr_out = _inject_data(_scr_html, r'const D\s*=\s*\{', _scr_js)
+        if _scr_out:
+            _scr_dest = os.path.join(BOARDS_DIR, 'student_clash_report.html')
+            with open(_scr_dest, 'w') as _f:
+                _f.write(_scr_out)
+            print(f"  student_clash_report.html — {len(_scr_clashes)} students with clashes")
+            _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: student_clash_report failed: {_e}")
+
+# ── Board 3: Singleton Board ──
+try:
+    _sb_path = os.path.join(OUTPUT_DIR, 'singleton_board.html')
+    if os.path.exists(_sb_path):
+        with open(_sb_path) as _f:
+            _sb_html = _f.read()
+        _singleton_codes = set()
+        _code_section_count = Counter(_s['code'] for _s in sections)
+        for _code, _cnt in _code_section_count.items():
+            if _cnt == 1:
+                _singleton_codes.add(_code)
+        _sb_data = {'s': []}
+        _teacher_groups = defaultdict(list)
+        for _idx, _s in enumerate(sections):
+            _h = 'F' if len(_s['halves']) == 2 else ('1' if _s['halves'][0] == 'S1' else '2')
+            _is_singleton = _s['code'] in _singleton_codes
+            _entry = {
+                'i': _idx, 'c': _s['code'], 'n': _s['title'],
+                'p': _s['period'], 'h': _h, 't': _s['teacher'],
+                'r': _s['room'], 'k': _s['cap'], 'd': _s['dept'],
+                'e': secfill[_s['sid']], 'sn': _s['section'], 'sg': _is_singleton
+            }
+            if _is_singleton:
+                _sb_data['s'].append(_entry)
+            else:
+                _teacher_groups[_s['teacher']].append({
+                    'i': _idx, 'c': _s['code'], 'n': _s['title'],
+                    'p': _s['period'], 'h': _h, 'r': _s['room'],
+                    'e': secfill[_s['sid']], 'sn': _s['section'], 'sg': False
+                })
+        for _teacher, _secs in _teacher_groups.items():
+            _sb_data[_teacher] = _secs
+        _sb_js = f"const D = {json.dumps(_sb_data)};"
+        _sb_out = _inject_data(_sb_html, r'const D\s*=\s*\{', _sb_js)
+        if _sb_out:
+            _sb_dest = os.path.join(BOARDS_DIR, 'singleton_board.html')
+            with open(_sb_dest, 'w') as _f:
+                _f.write(_sb_out)
+            print(f"  singleton_board.html — {len(_sb_data['s'])} singletons, {len(_teacher_groups)} teachers")
+            _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: singleton_board failed: {_e}")
+
+# ── Board 4: Conflict Resolution Console ──
+try:
+    _crc_path = os.path.join(OUTPUT_DIR, 'conflict_resolution_console.html')
+    if os.path.exists(_crc_path):
+        with open(_crc_path) as _f:
+            _crc_html = _f.read()
+        _clash_by_course = defaultdict(lambda: {'count': 0, 'blocking': Counter()})
+        for _c in clash:
+            _ccode = _c['code']
+            _clash_by_course[_ccode]['count'] += 1
+            _pid = _c['student']
+            for _oc, _osid in assign.get(_pid, {}).items():
+                if sections[_osid]['period'] == _c['lost_period']:
+                    _okey = f"{_oc} {course_info.get(_oc, {}).get('title', _oc)}"
+                    _clash_by_course[_ccode]['blocking'][_okey] += 1
+        _crc_data = []
+        for _ccode, _info in sorted(_clash_by_course.items(), key=lambda x: -x[1]['count']):
+            _ci = course_info.get(_ccode, {})
+            _code_secs = [_s for _s in sections if _s['code'] == _ccode]
+            _periods_used = sorted(set(_s['period'] for _s in _code_secs))
+            _gaps = sorted(set(PERIODS) - set(_periods_used))
+            _teachers = sorted(set(_s['teacher'] for _s in _code_secs))
+            _teacher_free = {}
+            for _t in _teachers:
+                _t_secs = [_s for _s in sections if _s['teacher'] == _t]
+                _t_periods_s1 = set()
+                _t_periods_s2 = set()
+                for _ts in _t_secs:
+                    if 'S1' in _ts['halves']:
+                        _t_periods_s1.add(_ts['period'])
+                    if 'S2' in _ts['halves']:
+                        _t_periods_s2.add(_ts['period'])
+                _teacher_free[_t] = {
+                    'free_s1': sorted(set(PERIODS) - _t_periods_s1),
+                    'free_s2': sorted(set(PERIODS) - _t_periods_s2),
+                    'load_s1': len(_t_periods_s1),
+                    'load_s2': len(_t_periods_s2)
+                }
+            _n_clashes = _info['count']
+            _fix_type = 'add_section' if _gaps else ('redistribute' if len(_code_secs) > 1 else 'structural')
+            if _fix_type == 'add_section':
+                _fix_desc = f"Add section in Period {'/'.join(_gaps)}."
+            elif _fix_type == 'redistribute':
+                _fix_desc = f"Redistribute students across {len(_code_secs)} existing sections."
+            else:
+                _fix_desc = "Structural change needed — review period assignment or add section."
+            _crc_data.append({
+                'code': _ccode,
+                'title': _ci.get('title', _ccode),
+                'dept': _ci.get('dept', ''),
+                'clashes': _n_clashes,
+                'sections': len(_code_secs),
+                'periods': _periods_used,
+                'gaps': _gaps,
+                'teachers': _teachers,
+                'teacher_free': _teacher_free,
+                'blocking': dict(_info['blocking'].most_common(10)),
+                'priority': prio(_ccode),
+                'avg_composite_ws': round(-course_composite(_ccode)[1], 1),
+                'max_composite_cc': -course_composite(_ccode)[0],
+                'fix_type': _fix_type,
+                'fix_desc': _fix_desc
+            })
+        _crc_js = f"const DATA = {json.dumps(_crc_data)};"
+        _crc_out = _inject_data(_crc_html, r'const DATA\s*=\s*\[', _crc_js)
+        if _crc_out:
+            _crc_dest = os.path.join(BOARDS_DIR, 'conflict_resolution_console.html')
+            with open(_crc_dest, 'w') as _f:
+                _f.write(_crc_out)
+            print(f"  conflict_resolution_console.html — {len(_crc_data)} courses with clashes")
+            _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: conflict_resolution_console failed: {_e}")
+
+# ── Board 5: Student Request Recommendations ──
+try:
+    _srr_path = os.path.join(OUTPUT_DIR, 'student_request_recommendations.html')
+    if os.path.exists(_srr_path):
+        with open(_srr_path) as _f:
+            _srr_html = _f.read()
+        _srr_data = []
+        for _c in clash:
+            _pid = _c['student']
+            _bumped_code = _c['code']
+            _bumped_period = _c['lost_period']
+            _bumped_dept = course_info.get(_bumped_code, {}).get('dept', '')
+            _assigned_periods = set()
+            for _ac, _asid in assign.get(_pid, {}).items():
+                _assigned_periods.add(sections[_asid]['period'])
+            _free_periods = sorted(set(PERIODS) - _assigned_periods)
+            _blocking_code = ''
+            _blocking_title = ''
+            for _ac, _asid in assign.get(_pid, {}).items():
+                if sections[_asid]['period'] == _bumped_period:
+                    _blocking_code = _ac
+                    _blocking_title = course_info.get(_ac, {}).get('title', _ac)
+                    break
+            _opts = []
+            for _fp in _free_periods:
+                _available = [_s for _s in sections if _s['period'] == _fp
+                              and _s['dept'] == _bumped_dept
+                              and _s['code'] not in assign.get(_pid, {})
+                              and _s['code'] not in [_cx['code'] for _cx in clash if _cx['student'] == _pid]
+                              and secfill[_s['sid']] < _s['cap']]
+                for _av in _available[:3]:
+                    _opts.append({
+                        't': 'add', 'c': _av['code'], 'n': _av['title'],
+                        'd': _av['dept'], 'p': _av['period'], 'tc': _av['teacher'],
+                        'f': secfill[_av['sid']], 'cp': _av['cap'],
+                        'sd': _av['dept'] == _bumped_dept
+                    })
+            if not _opts:
+                for _fp in _free_periods:
+                    _available = [_s for _s in sections if _s['period'] == _fp
+                                  and _s['code'] not in assign.get(_pid, {})
+                                  and _s['code'] not in [_cx['code'] for _cx in clash if _cx['student'] == _pid]
+                                  and secfill[_s['sid']] < _s['cap']]
+                    for _av in _available[:2]:
+                        _opts.append({
+                            't': 'add', 'c': _av['code'], 'n': _av['title'],
+                            'd': _av['dept'], 'p': _av['period'], 'tc': _av['teacher'],
+                            'f': secfill[_av['sid']], 'cp': _av['cap'],
+                            'sd': _av['dept'] == _bumped_dept
+                        })
+            _cat = 'add_alternative' if _opts else 'no_resolution'
+            _srr_data.append({
+                's': _pid, 'g': grade.get(_pid, 9),
+                'bc': _bumped_code, 'bt': _c['course'], 'bp': _bumped_period, 'bd': _bumped_dept,
+                'xc': _blocking_code, 'xt': _blocking_title,
+                'fp': _free_periods, 'nc': len(assign.get(_pid, {})),
+                'cat': _cat, 'opts': _opts[:8]
+            })
+        _srr_js = f"const R = {json.dumps(_srr_data)};"
+        _srr_out = _inject_data(_srr_html, r'const R\s*=\s*\[', _srr_js)
+        if _srr_out:
+            _srr_dest = os.path.join(BOARDS_DIR, 'student_request_recommendations.html')
+            with open(_srr_dest, 'w') as _f:
+                _f.write(_srr_out)
+            print(f"  student_request_recommendations.html — {len(_srr_data)} recommendations")
+            _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: student_request_recommendations failed: {_e}")
+
+# ── Board 6: Data Source Audit Report ──
+try:
+    _dsa_path = os.path.join(OUTPUT_DIR, 'data_source_audit_report.html')
+    if os.path.exists(_dsa_path):
+        import shutil
+        shutil.copy2(_dsa_path, os.path.join(BOARDS_DIR, 'data_source_audit_report.html'))
+        print(f"  data_source_audit_report.html — copied (static report)")
+        _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: data_source_audit_report failed: {_e}")
+
+# ── Board 7: Constraint Builder ──
+try:
+    _cb_path = os.path.join(OUTPUT_DIR, 'constraint_builder.html')
+    if os.path.exists(_cb_path):
+        with open(_cb_path) as _f:
+            _cb_html = _f.read()
+        _cb_courses = []
+        _seen_codes = set()
+        for _s in sections:
+            if _s['code'] not in _seen_codes:
+                _seen_codes.add(_s['code'])
+                _cb_courses.append({
+                    'code': _s['code'], 'title': _s['title'],
+                    'dept': _s['dept'],
+                    'sections': len(sec_by_code.get(_s['code'], []))
+                })
+        _cb_courses.sort(key=lambda x: (x['dept'], x['title']))
+        _cb_js = f"const COURSES = {json.dumps(_cb_courses)};"
+        _cb_out = _inject_data(_cb_html, r'const COURSES\s*=\s*\[', _cb_js)
+        if _cb_out:
+            _cb_dest = os.path.join(BOARDS_DIR, 'constraint_builder.html')
+            with open(_cb_dest, 'w') as _f:
+                _f.write(_cb_out)
+            print(f"  constraint_builder.html — {len(_cb_courses)} courses")
+            _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: constraint_builder failed: {_e}")
+
+# ── Board 8: Master Schedule Builder ──
+try:
+    _msb_path = os.path.join(OUTPUT_DIR, 'master_schedule_builder.html')
+    if os.path.exists(_msb_path):
+        with open(_msb_path) as _f:
+            _msb_html = _f.read()
+        _msb_catalog = []
+        for _cid, _ci in course_info.items():
+            _gl_raw = course_grade_levels.get(_cid, set())
+            _gl_str = ','.join(str(g) for g in sorted(_gl_raw)) if _gl_raw else ''
+            _pr = course_prereqs.get(_cid, {})
+            _prereq_codes = _pr.get('prereqs', [])
+            _msb_catalog.append({
+                'id': _cid, 'name': _ci.get('title', _cid),
+                'dept': _ci.get('dept', ''), 'credits': _ci.get('credits', 0),
+                'grade': _gl_str,
+                'prereq': _prereq_codes[0] if _prereq_codes else '',
+                'prereqGrade': ''
+            })
+        _msb_catalog.sort(key=lambda x: (x['dept'], x['name']))
+        _msb_js = f"const COURSE_CATALOG = {json.dumps(_msb_catalog)};"
+        _msb_out = _inject_data(_msb_html, r'const COURSE_CATALOG\s*=\s*\[', _msb_js)
+        if _msb_out:
+            _msb_dest = os.path.join(BOARDS_DIR, 'master_schedule_builder.html')
+            with open(_msb_dest, 'w') as _f:
+                _f.write(_msb_out)
+            print(f"  master_schedule_builder.html — {len(_msb_catalog)} courses in catalog")
+            _boards_generated += 1
+except Exception as _e:
+    print(f"  WARNING: master_schedule_builder failed: {_e}")
+
+# ── Generate index.html for boards directory ──
+try:
+    _index_html = f"""<title>Schedule Engine v3 — Dashboard Index</title>
+<style>
+:root{{--bg:#f5f2ee;--surface:#fff;--text:#1a1412;--text2:#5c4f44;--border:#d6cec6;
+  --maroon:#7B1E28;--font:'Segoe UI',system-ui,sans-serif}}
+@media(prefers-color-scheme:dark){{:root{{--bg:#1a1412;--surface:#242018;--text:#e8e2db;--text2:#b0a598;--border:#3e362e;--maroon:#A0333E}}}}
+:root[data-theme="dark"]{{--bg:#1a1412;--surface:#242018;--text:#e8e2db;--text2:#b0a598;--border:#3e362e;--maroon:#A0333E}}
+:root[data-theme="light"]{{--bg:#f5f2ee;--surface:#fff;--text:#1a1412;--text2:#5c4f44;--border:#d6cec6;--maroon:#7B1E28}}
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{font-family:var(--font);background:var(--bg);color:var(--text);padding:40px 20px}}
+.container{{max-width:900px;margin:0 auto}}
+h1{{color:var(--maroon);font-size:28px;margin-bottom:8px}}
+.subtitle{{color:var(--text2);margin-bottom:32px;font-size:14px}}
+.stats{{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}}
+.stat{{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 24px;text-align:center}}
+.stat .val{{font-size:28px;font-weight:700;color:var(--maroon)}}
+.stat .lbl{{font-size:12px;color:var(--text2);margin-top:4px}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}}
+.card{{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;
+  text-decoration:none;color:var(--text);transition:all .15s}}
+.card:hover{{border-color:var(--maroon);box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}}
+.card h3{{font-size:15px;margin-bottom:6px;color:var(--maroon)}}
+.card p{{font-size:13px;color:var(--text2);line-height:1.5}}
+</style>
+<div class="container">
+<h1>Don Bosco Prep 2026-27</h1>
+<p class="subtitle">Schedule Engine v3 — Interactive Dashboard Suite</p>
+<div class="stats">
+<div class="stat"><div class="val">{len(clash)}</div><div class="lbl">Clashes</div></div>
+<div class="stat"><div class="val">{placement_rate:.1f}%</div><div class="lbl">Placement</div></div>
+<div class="stat"><div class="val">{len(students)}</div><div class="lbl">Students</div></div>
+<div class="stat"><div class="val">{len(sections)}</div><div class="lbl">Sections</div></div>
+<div class="stat"><div class="val">{len(p4_clashes)}</div><div class="lbl">P4 Clashes</div></div>
+</div>
+<div class="grid">
+<a class="card" href="student_clash_report.html"><h3>Student Clash Report</h3>
+<p>Drag-and-drop schedule grid for {len(_scr_clashes)} students with conflicts. Visual period/semester layout.</p></a>
+<a class="card" href="conflict_resolution_console.html"><h3>Conflict Resolution Console</h3>
+<p>Course-level clash analysis with fix recommendations for {len(_crc_data)} affected courses.</p></a>
+<a class="card" href="credit_validation_report.html"><h3>Credit Validation Report</h3>
+<p>{len(_cvr_data)} students exceeding the 35-credit cap. Priority-ranked drop candidates.</p></a>
+<a class="card" href="student_request_recommendations.html"><h3>Request Recommendations</h3>
+<p>Alternative course options for {len(_srr_data)} bumped requests with availability details.</p></a>
+<a class="card" href="singleton_board.html"><h3>Singleton Board</h3>
+<p>Scheduling grid for {len(_sb_data['s'])} singleton courses. Teacher-period conflict view.</p></a>
+<a class="card" href="constraint_builder.html"><h3>Constraint Builder</h3>
+<p>Configure semester locks, period locks, and co-schedule constraints for {len(_cb_courses)} courses.</p></a>
+<a class="card" href="master_schedule_builder.html"><h3>Master Schedule Builder</h3>
+<p>Full course catalog ({len(_msb_catalog)} courses) with student request management and validation.</p></a>
+<a class="card" href="data_source_audit_report.html"><h3>Data Source Audit</h3>
+<p>Cross-file integrity checks and data quality findings.</p></a>
+</div>
+</div>"""
+    with open(os.path.join(BOARDS_DIR, 'index.html'), 'w') as _f:
+        _f.write(_index_html)
+    _boards_generated += 1
+    print(f"  index.html — dashboard hub")
+except Exception as _e:
+    print(f"  WARNING: index.html failed: {_e}")
+
+print(f"\n  {_boards_generated} boards generated in {BOARDS_DIR}/")
+
 print("=" * 60)
 print(f"DONE — v3 Enhanced Engine: {len(clash)} clashes, {placement_rate:.1f}% placement")
 print("=" * 60)
