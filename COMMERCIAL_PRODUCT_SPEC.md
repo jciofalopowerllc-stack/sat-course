@@ -37,7 +37,7 @@ Don Bosco Preparatory High School serves as the pilot implementation for the 202
 
 ## 2. System Architecture
 
-### 2.1 Scheduling Engine (`schedule_engine_final.py`)
+### 2.1 Scheduling Engine (`schedule_engine_v3.py`)
 
 The core algorithm runs in four phases:
 
@@ -61,6 +61,8 @@ The core algorithm runs in four phases:
 | Semester Designations | S1/S2 locks, full freedom courses, split rules |
 | Course Priorities | 0–5 priority scale for 141 courses |
 | Co-Schedule Groups | Course groups that must share a period (AP Art, Guitar, Theater, etc.) |
+| Teacher Profiles (Template 6) | 51 columns: departments, load caps, per-semester 6-period approval, period availability, TSSP, SSP population flags |
+| Student Profiles (Template 8) | 21 columns: grade, SSP, multi-membership flags (LEO, Pathway, Academic Support), IEP, cohort |
 
 ### 2.3 Constraint System
 
@@ -82,20 +84,22 @@ The core algorithm runs in four phases:
 
 The scheduling engine builds the master schedule in order of constraint density. Placements with the most restrictions are locked in first, while the grid is wide open and conflict-free. Flexible placements go last, absorbing whatever periods remain. The goal is a zero-conflict master schedule.
 
-### 3.2 Eight Raw Inputs
+### 3.2 Ten Raw Inputs
 
-Each student-course-section placement is scored across 8 dimensions. Each dimension is scored 0–5.
+Each student-course-section placement is scored across 10 dimensions. Each dimension is scored 0–5.
 
 | # | Input | Code | Scale | Source |
 |---|-------|------|-------|--------|
 | 1 | Course File Priority | CFP | 0–5 | Master course profile (stable year-to-year) |
 | 2 | Current Year Course Request Priority | CYRP | 0–5 | Set during pre-scheduling based on current demand and teacher availability |
-| 3 | Student Scheduling Priority | SSP | 0–5 | Based on student population: LEO, Pathway, Academic Support, special needs |
+| 3 | Student Scheduling Priority | SSP | 0–5 | Based on student population: LEO, Pathway, Academic Support (multi-membership allowed) |
 | 4 | Master Teacher Profile Priority | MTP | 0–5 | Teacher profile: seniority, specialization, replaceability |
 | 5 | Current Year Teacher Assignment Priority | CTAP | 0–5 | How critical this specific teacher-course assignment is this year |
 | 6 | Term Lock | TL | 0 or 5 | Binary: must be a specific semester (5) or flexible (0) |
 | 7 | Period Lock | PL | 0 or 5 | Binary: must be a specific period (5) or flexible (0) |
 | 8 | Room Lock | RL | 0 or 5 | Binary: must be a specific room (5) or flexible (0) |
+| 9 | Scarcity | SC | 0–5 | Computed: fewer sections = higher score (1 section=5, 2=4, 3=3, 4-5=2, 6+=1) |
+| 10 | Conflict Risk | CR | 0–5 | Computed: count of student's other requests sharing period slots with this course |
 
 ### 3.3 Priority Scale Definitions
 
@@ -122,8 +126,36 @@ Not all inputs are equally important. Weights reflect how hard each constraint i
 | 6 | Term Lock | ×2.0 | Binary hard constraint — no alternative semester |
 | 7 | Period Lock | ×2.0 | Binary hard constraint — no alternative period |
 | 8 | Room Lock | ×1.5 | Hard but rooms can sometimes flex |
+| 9 | Scarcity | ×1.5 | Fewer available sections = harder to place |
+| 10 | Conflict Risk | ×1.5 | More period overlaps with other requests = higher risk |
 
-**Maximum Weighted Sum:** 62.5 (all inputs at 5 with maximum weights)
+**Maximum Weighted Sum:** 77.5 (all inputs at 5 with maximum weights)
+
+### 3.4a SSP (Student Special Priority) — Multi-Membership
+
+Students can belong to 1, 2, or all 3 special populations simultaneously. The SSP score is the MAX of their memberships:
+
+| Population | SSP Score | Description |
+|------------|-----------|-------------|
+| LEO | 5 | LEO II learning community cohort members |
+| Pathway | 4 | Pathway program students |
+| Academic Support | 3 | Students receiving academic support services |
+| Standard | 1 | No special population membership |
+
+A student who is both LEO (5) and Pathway (4) receives SSP = 5 (the maximum). Template 8 records each membership as a separate Y/N flag (LEO II, Pathway, Academic Support).
+
+### 3.4b TSSP (Teacher Special Population Priority)
+
+TSSP mirrors SSP on the teacher side. Teachers who serve special populations receive higher priority in scheduling to protect those students' access. The TSSP score is the MAX of populations served:
+
+| Population Served | TSSP Score | Description |
+|-------------------|------------|-------------|
+| Teaches LEO courses | 5 | Teacher assigned to LEO cohort courses |
+| Teaches Pathway courses | 4 | Teacher assigned to Pathway program courses |
+| Teaches Academic Support courses | 3 | Teacher assigned to academic support courses |
+| Standard | 1 | No special population courses |
+
+A teacher who teaches both LEO (5) and Pathway (4) courses receives TSSP = 5. Template 6 records each membership as a separate Y/N flag (Teaches LEO, Teaches Pathway, Teaches Acad Support) and stores the computed TSSP.
 
 ### 3.5 Constraint Count
 
@@ -161,8 +193,10 @@ The same course section produces different composite scores for different studen
 | Term Lock | 5 (locked S1) | 5 (locked S1) |
 | Period Lock | 5 (locked B) | 5 (locked B) |
 | Room Lock | 0 (flexible) | 0 (flexible) |
-| **Weighted Sum** | **52.0** | **44.0** |
-| **Constraint Count** | **6** | **5** |
+| Scarcity | 5 (singleton) | 5 (singleton) |
+| Conflict Risk | 2 (some overlap) | 2 (some overlap) |
+| **Weighted Sum** | **62.5** | **54.5** |
+| **Constraint Count** | **7** | **6** |
 
 The LEO student ranks higher and gets placed first — their seat is guaranteed before the regular student is considered.
 
@@ -255,19 +289,24 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 ### 6.2 In Progress (v2.0 — Student Rank Score)
 
-- [ ] 8-input weighted priority scoring per student-course-section placement
-- [ ] Student ranking 1–800 by constraint density
-- [ ] Current year course request priority data input
-- [ ] Student scheduling priority data input (LEO, Pathway, Academic Support populations)
-- [ ] Master teacher profile priority data input
-- [ ] Current year teacher assignment priority data input
-- [ ] Term/period/room lock scoring from existing constraint data
+- [x] 10-input weighted priority scoring per student-course-section placement (CFP, CYRP, SSP, MTP, CTAP, TL, PL, RL, SC, CR)
+- [x] Student ranking 1–800 by constraint density
+- [x] SSP multi-membership: students belong to 1, 2, or all 3 populations (LEO, Pathway, Academic Support)
+- [x] TSSP (Teacher Special Population Priority): mirrors SSP for teachers serving special populations
+- [x] Per-semester approved 6-period load (Full-Year, S1-only, S2-only)
+- [x] Template 6 header-based column lookup (no hardcoded indices)
+- [x] Template 8 student profiles reading (LEO, Pathway, Academic Support flags)
+- [x] Engine reads TSSP from Template 6 and SSP from Template 8
+- [x] Course-Teacher Lock codes read from Template 6 instead of hardcoded
+- [ ] Current year course request priority data input (CYRP fine-tuning)
+- [ ] Master teacher profile priority data input (MTP fine-tuning)
+- [ ] Current year teacher assignment priority data input (CTAP fine-tuning)
 - [ ] Engine refactor: replace single-tier `prio(c)` with composite placement scoring
 - [ ] Most-constrained-first scheduling order (students ranked, then placements within each student)
 
 ### 6.3 Future
 
-- [ ] Admin interface for entering/adjusting all 8 priority inputs
+- [ ] Admin interface for entering/adjusting all 10 priority inputs
 - [ ] Real-time constraint count and weighted sum display during data entry
 - [ ] Student rank score dashboard — visual ranking of all 800 students
 - [ ] What-if analysis: preview ranking impact of priority changes before committing

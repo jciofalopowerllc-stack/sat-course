@@ -351,40 +351,84 @@ t6_path = os.path.join(TEMPLATES, 'Template_6_Teacher_Profiles.xlsx')
 try:
     t6wb = openpyxl.load_workbook(t6_path, data_only=True)
     t6ws = t6wb.active
-    for r in range(3, t6ws.max_row + 1):
-        tid = t6ws.cell(r, 1).value
-        last = t6ws.cell(r, 2).value
-        first = t6ws.cell(r, 3).value
+    # Build header map from row 3 (or row 1) so column indices are never hardcoded
+    t6_hdr = {}
+    hdr_row = 3 if t6ws.cell(3, 1).value and 'ID' in str(t6ws.cell(3, 1).value) else 1
+    for c in range(1, t6ws.max_column + 1):
+        v = t6ws.cell(hdr_row, c).value
+        if v:
+            t6_hdr[str(v).strip()] = c
+    data_start = hdr_row + 2 if hdr_row == 3 else hdr_row + 1
+
+    def t6col(name, default=None):
+        return t6_hdr.get(name, default)
+
+    for r in range(data_start, t6ws.max_row + 1):
+        last = t6ws.cell(r, t6col('Last Name', 2)).value
+        first = t6ws.cell(r, t6col('First Name', 3)).value
         if not last:
             continue
         tname = f"{last}, {first}" if first else str(last)
-        max_periods = t6ws.cell(r, 9).value
-        max_consec = t6ws.cell(r, 10).value
-        prep_req = t6ws.cell(r, 11).value
-        duty = t6ws.cell(r, 12).value
+
+        def _read(col_name, fallback_col=None):
+            c = t6col(col_name, fallback_col)
+            return t6ws.cell(r, c).value if c else None
+
+        max_periods = _read('Max Teaching Periods')
+        max_consec = _read('Max Consec Periods')
+        prep_req = _read('Prep Periods Required')
+        duty = _read('Duty Periods')
+        req_2consec = str(_read('Requires 2 Consec Free') or 'N').upper() == 'Y'
+
         avail = {}
-        for pi, period in enumerate(PERIODS):
-            v = t6ws.cell(r, 14 + pi).value
+        for period in PERIODS:
+            v = _read(f'Avail Per {period}')
             avail[period] = str(v).upper() != 'N' if v else True
-        approved_6 = str(t6ws.cell(r, 21).value or '').upper() == 'Y'
-        pref_room = t6ws.cell(r, 22).value
-        pref_wing = t6ws.cell(r, 23).value
-        pref_periods = str(t6ws.cell(r, 24).value or '')
-        avoid_periods = str(t6ws.cell(r, 25).value or '')
-        contract = str(t6ws.cell(r, 6).value or 'Standard')
+
+        approved_6_fy = str(_read('Approved 6-Period Full-Year') or 'N').upper() == 'Y'
+        approved_6_s1 = str(_read('Approved 6-Period Semester 1') or 'N').upper() == 'Y'
+        approved_6_s2 = str(_read('Approved 6-Period Semester 2') or 'N').upper() == 'Y'
+
+        pref_room = _read('Preferred Room')
+        pref_wing = _read('Preferred Wing')
+        pref_periods = str(_read('Preferred Periods') or '')
+        avoid_periods_str = str(_read('Avoid Periods') or '')
+        contract = str(_read('Contract Type') or 'Standard')
+        dept1 = str(_read('Department 1') or '')
+        dept2 = str(_read('Department 2') or '')
+
+        teaches_leo = str(_read('Teaches LEO') or 'N').upper() == 'Y'
+        teaches_pathway = str(_read('Teaches Pathway') or 'N').upper() == 'Y'
+        teaches_acad_support = str(_read('Teaches Acad Support') or 'N').upper() == 'Y'
+
+        ct_lock_raw = _read('Course-Teacher Lock')
+        ct_lock = str(ct_lock_raw).strip() if ct_lock_raw and str(ct_lock_raw).strip() not in ('N/A', 'None', '') else ''
+
+        computed_tssp_raw = _read('Computed TSSP')
+        computed_tssp = int(computed_tssp_raw) if computed_tssp_raw and str(computed_tssp_raw).strip().isdigit() else None
 
         teacher_profiles[tname] = {
             'max_periods': int(max_periods) if max_periods and str(max_periods) != 'N/A' else 5,
             'max_consecutive': int(max_consec) if max_consec and str(max_consec) != 'N/A' else 3,
-            'prep_required': int(prep_req) if prep_req and str(prep_req) != 'N/A' else 1,
-            'duty_periods': int(duty) if duty and str(duty) != 'N/A' else 1,
+            'prep_required': int(prep_req) if prep_req and str(prep_req) != 'N/A' else 2,
+            'duty_periods': int(duty) if duty and str(duty) != 'N/A' else 0,
             'availability': avail,
-            'approved_6': approved_6,
+            'approved_6_fy': approved_6_fy,
+            'approved_6_s1': approved_6_s1,
+            'approved_6_s2': approved_6_s2,
+            'requires_2_consec_free': req_2consec,
             'preferred_room': str(pref_room) if pref_room and str(pref_room) != 'N/A' else '',
             'preferred_wing': str(pref_wing) if pref_wing and str(pref_wing) != 'N/A' else '',
             'preferred_periods': [p.strip() for p in pref_periods.split(',') if p.strip() and p.strip() in PERIODS],
-            'avoid_periods': [p.strip() for p in avoid_periods.split(',') if p.strip() and p.strip() in PERIODS],
+            'avoid_periods': [p.strip() for p in avoid_periods_str.split(',') if p.strip() and p.strip() in PERIODS],
             'contract': contract,
+            'department_1': dept1,
+            'department_2': dept2,
+            'teaches_leo': teaches_leo,
+            'teaches_pathway': teaches_pathway,
+            'teaches_acad_support': teaches_acad_support,
+            'course_teacher_locks': ct_lock,
+            'computed_tssp': computed_tssp,
         }
     t6wb.close()
     print(f"  Teacher profiles loaded: {len(teacher_profiles)}")
@@ -416,6 +460,67 @@ try:
     print(f"  Transcript records loaded: {total_transcript} ({len(transcript)} students)")
 except FileNotFoundError:
     print("  Template 8 not found — skipping transcript validation")
+
+# ── Template 8: Student Profiles (SSP, LEO, Pathway, Academic Support) ──
+student_profiles = {}
+try:
+    t8wb2 = openpyxl.load_workbook(t8_path, data_only=True)
+    t8_profile_sheet = None
+    for _sn in ('Student Profiles', 'Profiles', 'Sheet1'):
+        if _sn in t8wb2.sheetnames:
+            t8_profile_sheet = t8wb2[_sn]
+            break
+    if t8_profile_sheet is None:
+        t8_profile_sheet = t8wb2[t8wb2.sheetnames[0]]
+    t8_hdr = {}
+    for c in range(1, t8_profile_sheet.max_column + 1):
+        v = t8_profile_sheet.cell(1, c).value
+        if v:
+            t8_hdr[str(v).strip()] = c
+    def _t8col(name):
+        return t8_hdr.get(name)
+    for r in range(2, t8_profile_sheet.max_row + 1):
+        sid_col = _t8col('Student ID') or 1
+        sid = t8_profile_sheet.cell(r, sid_col).value
+        if not sid:
+            continue
+        sid_str = str(sid).strip()
+        _leo_col = _t8col('LEO II')
+        _pathway_col = _t8col('Pathway')
+        _acad_col = _t8col('Academic Support')
+        _ssp_col = _t8col('SSP')
+        _grade_col = _t8col('Grade Level')
+        is_leo = str(t8_profile_sheet.cell(r, _leo_col).value or 'N').upper() == 'Y' if _leo_col else False
+        is_pathway = str(t8_profile_sheet.cell(r, _pathway_col).value or 'N').upper() == 'Y' if _pathway_col else False
+        is_acad_support = str(t8_profile_sheet.cell(r, _acad_col).value or 'N').upper() == 'Y' if _acad_col else False
+        ssp_val = t8_profile_sheet.cell(r, _ssp_col).value if _ssp_col else None
+        ssp_score = int(ssp_val) if ssp_val and str(ssp_val).strip().isdigit() else None
+        grade_val = t8_profile_sheet.cell(r, _grade_col).value if _grade_col else None
+        if ssp_score is None:
+            if is_leo:
+                ssp_score = 5
+            elif is_pathway:
+                ssp_score = 4
+            elif is_acad_support:
+                ssp_score = 3
+            else:
+                ssp_score = 1
+        student_profiles[sid_str] = {
+            'is_leo': is_leo,
+            'is_pathway': is_pathway,
+            'is_acad_support': is_acad_support,
+            'ssp': ssp_score,
+            'grade': str(grade_val or ''),
+        }
+    t8wb2.close()
+    _leo_count = sum(1 for sp in student_profiles.values() if sp['is_leo'])
+    _pathway_count = sum(1 for sp in student_profiles.values() if sp['is_pathway'])
+    _acad_count = sum(1 for sp in student_profiles.values() if sp['is_acad_support'])
+    print(f"  Student profiles loaded: {len(student_profiles)} (LEO={_leo_count}, Pathway={_pathway_count}, AcadSupport={_acad_count})")
+except FileNotFoundError:
+    print("  Template 8 not found — skipping student profiles")
+except Exception as _e:
+    print(f"  Warning: Could not read Student Profiles sheet: {_e}")
 
 # ── Template 7: Course Profiles (prerequisites + grade eligibility) ──
 course_prereqs = {}
@@ -930,30 +1035,43 @@ print(f"  Prior-year entries: {len(prior_entries)}")
 
 
 # ── Teacher Load Rules (enhanced with profiles + contracts) ──
-APPROVED_6 = {'Dennehy, Sheri', 'Zawiski, Brian', 'Muscat, Nicole',
-              'Calidas, Riddhi', 'Janeczko, Douglas', 'Tranate, John', 'McConnell, George'}
 
-def get_max_load(teacher):
+def get_max_load(teacher, semester=None):
+    """Return (max_s1, max_s2) teaching-period caps for a teacher.
+    If semester='S1' or 'S2', the returned tuple still has both values
+    but the per-semester approved-6 flags are applied correctly.
+    Approved-6 can be Full-Year (both semesters), S1-only, or S2-only."""
     tp = teacher_profiles.get(teacher, {})
     if tp:
-        max_p = tp.get('max_periods', 5)
-        if tp.get('approved_6'):
-            max_p = max(max_p, 6)
+        base = tp.get('max_periods', 5)
         contract_code = tp.get('contract', 'Standard')
         ct = contracts.get(contract_code, contracts.get('STD', {}))
         if ct:
-            max_p = min(max_p, ct.get('max_teaching', max_p))
-        return (max_p, max_p)
+            base = min(base, ct.get('max_teaching', base))
+        max_s1 = base
+        max_s2 = base
+        if tp.get('approved_6_fy'):
+            max_s1 = max(max_s1, 6)
+            max_s2 = max(max_s2, 6)
+        else:
+            if tp.get('approved_6_s1'):
+                max_s1 = max(max_s1, 6)
+            if tp.get('approved_6_s2'):
+                max_s2 = max(max_s2, 6)
+        return (max_s1, max_s2)
     if 'konopelski' in teacher.lower():
         return (3, 3)
-    if teacher in APPROVED_6:
-        return (6, 6)
     return (5, 5)
 
-COURSE_TEACHER_LOCKS = {
-    '620': 'Daniels, Torrence',
-    '631': 'Chiaravalloti, Michael'
-}
+# Build COURSE_TEACHER_LOCKS from Template 6 "Course-Teacher Lock" column
+COURSE_TEACHER_LOCKS = {}
+for _tname, _tp in teacher_profiles.items():
+    _lock_codes = _tp.get('course_teacher_locks', '')
+    if _lock_codes:
+        for _lc in str(_lock_codes).split(','):
+            _lc = _lc.strip()
+            if _lc:
+                COURSE_TEACHER_LOCKS[_lc] = _tname
 
 # Pre-compute scarcity scores (Item 5) and conflict risk (Item 5)
 _compute_scarcity()
@@ -1005,6 +1123,48 @@ _course_demand = Counter()
 for _pid in students:
     for _cid in sreq[_pid]:
         _course_demand[_cid] += 1
+
+# ── Merge Template 8 SSP into priority system ──
+# Template 8 student profiles SSP overrides the JSON-based SSP when available
+_ssp_overrides = 0
+for _sid, _sprof in student_profiles.items():
+    if _sid in _STUDENT_PRIO:
+        _STUDENT_PRIO[_sid]['SSP'] = _sprof['ssp']
+        _ssp_overrides += 1
+    else:
+        _STUDENT_PRIO[_sid] = {'SSP': _sprof['ssp'], 'populations': [], 'courses': list(sreq.get(_sid, []))}
+if _ssp_overrides:
+    print(f"  SSP scores merged from Template 8: {_ssp_overrides} students updated")
+
+# ── Merge Template 6 TSSP into teacher priority system ──
+_tssp_overrides = 0
+for _tname, _tp in teacher_profiles.items():
+    tssp_val = _tp.get('computed_tssp')
+    if tssp_val is not None:
+        if _tname in _TEACHER_PRIO:
+            _TEACHER_PRIO[_tname]['TSSP'] = tssp_val
+        else:
+            _TEACHER_PRIO[_tname] = {'MTP': 1, 'TSSP': tssp_val}
+        _tssp_overrides += 1
+    else:
+        if _tp.get('teaches_leo'):
+            _tssp = 5
+        elif _tp.get('teaches_pathway'):
+            _tssp = 4
+        elif _tp.get('teaches_acad_support'):
+            _tssp = 3
+        else:
+            _tssp = 1
+        if _tname in _TEACHER_PRIO:
+            _TEACHER_PRIO[_tname].setdefault('TSSP', _tssp)
+        else:
+            _TEACHER_PRIO[_tname] = {'MTP': 1, 'TSSP': _tssp}
+if _tssp_overrides:
+    print(f"  TSSP scores merged from Template 6: {_tssp_overrides} teachers updated")
+
+# Clear placement cache since SSP/TSSP values may have changed
+_placement_cache.clear()
+_course_composite_cache.clear()
 
 # Pre-compute student rank scores
 _compute_student_ranks()

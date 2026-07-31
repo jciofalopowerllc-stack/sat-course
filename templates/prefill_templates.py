@@ -477,31 +477,42 @@ ws6.title = 'Teacher Profiles'
 
 headers_6 = [
     'Teacher ID', 'Last Name', 'First Name',
-    'Department', 'Employment Status',
+    'Department 1', 'Department 2', 'Employment Status',
     'Contract Type', 'Hire Year', 'Seniority Rank',
-    'Max Teaching Periods', 'Max Consecutive Periods', 'Prep Periods Required',
-    'Duty Periods', 'Total Periods Available',
-    'Avail Period A', 'Avail Period B', 'Avail Period C', 'Avail Period D',
-    'Avail Period E', 'Avail Period F', 'Avail Period G',
-    'Approved for 6-Period Load',
-    'Preferred Room', 'Preferred Wing', 'Preferred Periods (comma-sep)', 'Avoid Periods (comma-sep)',
-    'Primary Subjects (comma-sep)', 'Secondary Subjects (comma-sep)',
-    'Master Teacher', 'Course-Teacher Lock (course codes)',
-    'Certification Type', 'Certification Subject', 'Certification Expiry',
-    'Prior Year Periods Taught', 'Prior Year Room',
+    'Max Teaching Periods', 'Max Consecutive Periods', 'Requires 2 Consec Free',
+    'Prep Periods', 'Duty Periods',
+    'Approved 6-Period Full-Year', 'Approved 6-Period Semester 1', 'Approved 6-Period Semester 2',
+    'Avail Per A', 'Avail Per B', 'Avail Per C', 'Avail Per D',
+    'Avail Per E', 'Avail Per F', 'Avail Per G',
+    'Preferred Periods', 'Avoid Periods',
+    'Preferred Room', 'Preferred Wing',
+    'Primary Subjects', 'Secondary Subjects',
+    'Master Teacher', 'AP/Honors Qualified',
+    'Certification 1', 'Certification 2', 'Certification 3',
+    'Course-Teacher Lock', 'Sole Teacher',
+    'Prior Year Periods', 'Prior Year Room',
+    'Sections Assigned', 'Unique Courses', 'Full-Year Load', 'S1 Load', 'S2 Load',
+    'Singleton Courses', 'Computed MTP', 'Computed TSSP',
+    'Teaches LEO', 'Teaches Pathway', 'Teaches Acad Support',
+    'Courses Assigned',
 ]
 
 subheaders_6 = [
     'REQUIRED', 'REQUIRED', 'REQUIRED',
-    'REQUIRED', 'REQUIRED',
+    'REQUIRED', 'OPTIONAL', 'REQUIRED',
     'REQUIRED', 'OPTIONAL', 'OPTIONAL',
-    'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED',
+    'REQUIRED', 'REQUIRED', 'Y/N', 'REQUIRED', 'REQUIRED',
+    'Y/N', 'Y/N', 'Y/N',
     'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED',
-    'REQUIRED',
     'OPTIONAL', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
-    'REQUIRED', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
+    'REQUIRED', 'OPTIONAL', 'Y/N', 'Y/N',
     'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
+    'OPTIONAL', 'Y/N',
     'OPTIONAL', 'OPTIONAL',
+    'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED',
+    'DERIVED', 'DERIVED', 'DERIVED',
+    'Y/N', 'Y/N', 'Y/N',
+    'DERIVED',
 ]
 
 for c, h in enumerate(headers_6, 1):
@@ -520,13 +531,13 @@ for t in sorted(teachers_data, key=lambda x: x['name']):
     parts = t['name'].split(', ')
     last = parts[0] if parts else t['name']
     first = parts[1] if len(parts) > 1 else ''
-    tid = f"T_{last.upper()[:6]}"
-    dept = t['departments'][0] if t['departments'] else ''
+    tid = t.get('person_id', f"T_{last.upper()[:6]}")
+    dept1 = t['departments'][0] if t['departments'] else ''
+    dept2 = t['departments'][1] if len(t.get('departments', [])) > 1 else ''
     max_s1, max_s2 = t['max_load']
     is_part_time = 'konopelski' in t['name'].lower()
-    is_approved6 = t['approved_6']
+    is_approved6 = t.get('approved_6', False)
 
-    # Determine status
     if is_part_time:
         status = 'Part-Time'
         contract = 'Part-Time'
@@ -534,23 +545,19 @@ for t in sorted(teachers_data, key=lambda x: x['name']):
         status = 'Active'
         contract = 'Standard'
 
-    # Determine primary subjects from courses taught
     subjects = set()
     for cid in t.get('courses', []):
         ci = course_by_code.get(cid, {})
         if ci:
             subjects.add(ci.get('dept', ''))
-    primary_subj = ', '.join(sorted(subjects)) if subjects else dept
+    primary_subj = ', '.join(sorted(subjects)) if subjects else dept1
 
-    # Master teacher
     mtp = t.get('MTP', 1)
     is_master = 'Y' if mtp >= 4 else 'N'
 
-    # Course-teacher locks
     locks = teacher_locks.get(t['name'], [])
-    lock_str = ', '.join(locks) if locks else 'N/A'
+    lock_str = ', '.join(locks) if locks else ''
 
-    # Find rooms used by this teacher from sections
     teacher_rooms = set()
     for course in courses_data:
         for sec in course.get('section_details', []):
@@ -560,41 +567,64 @@ for t in sorted(teachers_data, key=lambda x: x['name']):
     pref_room = list(teacher_rooms)[0] if len(teacher_rooms) == 1 else ''
     pref_wing = extract_wing(pref_room) if pref_room else ''
 
-    write_cell(ws6, row, 1, tid)
-    write_cell(ws6, row, 2, last)
-    write_cell(ws6, row, 3, first)
-    write_cell(ws6, row, 4, dept)
-    write_cell(ws6, row, 5, status)
-    write_cell(ws6, row, 6, contract)
-    write_cell(ws6, row, 7, 'N/A', is_na=True)  # Hire year - not in data
-    write_cell(ws6, row, 8, 'N/A', is_na=True)  # Seniority rank - not in data
-    write_cell(ws6, row, 9, max_s1)
-    write_cell(ws6, row, 10, 3)  # Max consecutive - standard rule
-    write_cell(ws6, row, 11, 1)  # Prep periods - standard
-    write_cell(ws6, row, 12, 1 if not is_part_time else 0)  # Duty periods
-    write_cell(ws6, row, 13, 7)  # Total periods available
-    # All periods available unless part-time
-    for p in range(14, 21):
-        write_cell(ws6, row, p, 'Y')
-    write_cell(ws6, row, 21, 'Y' if is_approved6 else 'N')
-    write_cell(ws6, row, 22, pref_room if pref_room else '')
-    write_cell(ws6, row, 23, pref_wing if pref_wing else '')
-    write_cell(ws6, row, 24, '')  # Preferred periods - not in data
-    write_cell(ws6, row, 25, '')  # Avoid periods - not in data
-    write_cell(ws6, row, 26, primary_subj)
-    write_cell(ws6, row, 27, 'N/A', is_na=True)  # Secondary subjects - single dept school
-    write_cell(ws6, row, 28, is_master)
-    write_cell(ws6, row, 29, lock_str)
-    write_cell(ws6, row, 30, 'N/A', is_na=True)  # Cert type - not tracked
-    write_cell(ws6, row, 31, 'N/A', is_na=True)  # Cert subject - not tracked
-    write_cell(ws6, row, 32, 'N/A', is_na=True)  # Cert expiry - not tracked
-    write_cell(ws6, row, 33, t.get('total_sections', ''))
-    write_cell(ws6, row, 34, pref_room if pref_room else '')
+    col = 1
+    write_cell(ws6, row, col, tid); col += 1
+    write_cell(ws6, row, col, last); col += 1
+    write_cell(ws6, row, col, first); col += 1
+    write_cell(ws6, row, col, dept1); col += 1
+    write_cell(ws6, row, col, dept2); col += 1
+    write_cell(ws6, row, col, status); col += 1
+    write_cell(ws6, row, col, contract); col += 1
+    write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws6, row, col, max_s1); col += 1
+    write_cell(ws6, row, col, 3); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
+    write_cell(ws6, row, col, 2); col += 1
+    write_cell(ws6, row, col, 0); col += 1
+    write_cell(ws6, row, col, 'Y' if is_approved6 else 'N'); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
+    for _p in range(7):
+        write_cell(ws6, row, col, 'Y'); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, pref_room if pref_room else ''); col += 1
+    write_cell(ws6, row, col, pref_wing if pref_wing else ''); col += 1
+    write_cell(ws6, row, col, primary_subj); col += 1
+    write_cell(ws6, row, col, dept2 if dept2 else ''); col += 1
+    write_cell(ws6, row, col, is_master); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
+    write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws6, row, col, lock_str); col += 1
+    write_cell(ws6, row, col, 'Y' if len(t.get('courses', [])) == 1 else 'N'); col += 1
+    write_cell(ws6, row, col, t.get('total_sections', '')); col += 1
+    write_cell(ws6, row, col, pref_room if pref_room else ''); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, len(t.get('courses', []))); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, mtp); col += 1
+    write_cell(ws6, row, col, ''); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
+    write_cell(ws6, row, col, ', '.join(t.get('courses', []))); col += 1
     row += 1
 
-widths_6 = [12, 14, 14, 18, 14, 14, 10, 12, 12, 14, 14, 12, 14,
-            10, 10, 10, 10, 10, 10, 10, 14, 18, 12, 20, 18,
-            24, 18, 12, 22, 14, 18, 16, 14, 18]
+widths_6 = [12, 14, 14, 18, 18, 14, 14, 10, 12, 14, 14, 14, 12, 12,
+            14, 14, 14,
+            10, 10, 10, 10, 10, 10, 10,
+            14, 14, 18, 12,
+            24, 18, 12, 12,
+            14, 14, 14,
+            18, 12, 14, 14,
+            12, 12, 12, 10, 10, 12, 12, 12,
+            10, 10, 14, 30]
 auto_width(ws6, widths_6)
 
 wb6.save(os.path.join(TEMPLATES, 'Template_6_Teacher_Profiles.xlsx'))
@@ -747,9 +777,10 @@ headers_8 = [
     'Student ID',
     'Grade Level', 'Credits Earned', 'Credits Required', 'GPA Band',
     'Priority Level (P0-P5)',
-    'SSP (Student Special Priority)',
-    'Has IEP', 'IEP Max Class Size', 'IEP Required Periods (comma-sep)',
-    'LEO II', 'Honors Track', 'AP Track',
+    'SSP',
+    'Has IEP', 'IEP Max Class Size', 'IEP Required Periods',
+    'LEO II', 'Pathway', 'Academic Support',
+    'Honors Track', 'AP Track',
     'Cohort Name', 'Cohort Locked',
     'Requests Total', 'Requests Fulfilled', 'Placement Rate',
     'Conflicts Active',
@@ -760,7 +791,8 @@ subheaders_8 = [
     'REQUIRED', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
     'REQUIRED', 'SCORING 0-5',
     'CONDITIONAL', 'CONDITIONAL', 'CONDITIONAL',
-    'Y/N', 'Y/N', 'Y/N', 'OPTIONAL', 'Y/N',
+    'Y/N', 'Y/N', 'Y/N',
+    'Y/N', 'Y/N', 'OPTIONAL', 'Y/N',
     'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED',
 ]
 
@@ -828,32 +860,38 @@ for student in sorted(students_data['all_students'], key=lambda s: (s.get('grade
     # Credits required is standard for NJ
     credits_req = 120.0
 
-    write_cell(ws8, row, 1, int(sid) if sid.isdigit() else sid)
-    write_cell(ws8, row, 2, grade_num)
-    write_cell(ws8, row, 3, 'N/A', is_na=True)  # Credits earned - not in scheduling data
-    write_cell(ws8, row, 4, credits_req)
-    write_cell(ws8, row, 5, 'N/A', is_na=True)  # GPA band - not in scheduling data
-    write_cell(ws8, row, 6, prio)
-    write_cell(ws8, row, 7, ssp)
-    write_cell(ws8, row, 8, 'N/A', is_na=True)  # Has IEP - not tracked in engine
-    write_cell(ws8, row, 9, 'N/A', is_na=True)  # IEP max class size
-    write_cell(ws8, row, 10, 'N/A', is_na=True)  # IEP required periods
-    write_cell(ws8, row, 11, 'Y' if is_leo else 'N')
-    write_cell(ws8, row, 12, 'Y' if honors else 'N')
-    write_cell(ws8, row, 13, 'Y' if ap else 'N')
-    write_cell(ws8, row, 14, cohort_name if cohort_name else 'N/A')
-    write_cell(ws8, row, 15, cohort_locked)
-    # Derived fields - leave blank for engine
-    write_cell(ws8, row, 16, len(courses))
-    write_cell(ws8, row, 17, '')  # Derived
-    write_cell(ws8, row, 18, '')  # Derived
-    write_cell(ws8, row, 19, '')  # Derived
+    is_pathway = student.get('is_pathway', False)
+    is_acad_support = student.get('is_acad_support', False)
+
+    col = 1
+    write_cell(ws8, row, col, int(sid) if sid.isdigit() else sid); col += 1
+    write_cell(ws8, row, col, grade_num); col += 1
+    write_cell(ws8, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws8, row, col, credits_req); col += 1
+    write_cell(ws8, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws8, row, col, prio); col += 1
+    write_cell(ws8, row, col, ssp); col += 1
+    write_cell(ws8, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws8, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws8, row, col, 'N/A', is_na=True); col += 1
+    write_cell(ws8, row, col, 'Y' if is_leo else 'N'); col += 1
+    write_cell(ws8, row, col, 'Y' if is_pathway else 'N'); col += 1
+    write_cell(ws8, row, col, 'Y' if is_acad_support else 'N'); col += 1
+    write_cell(ws8, row, col, 'Y' if honors else 'N'); col += 1
+    write_cell(ws8, row, col, 'Y' if ap else 'N'); col += 1
+    write_cell(ws8, row, col, cohort_name if cohort_name else 'N/A'); col += 1
+    write_cell(ws8, row, col, cohort_locked); col += 1
+    write_cell(ws8, row, col, len(courses)); col += 1
+    write_cell(ws8, row, col, ''); col += 1
+    write_cell(ws8, row, col, ''); col += 1
+    write_cell(ws8, row, col, ''); col += 1
     row += 1
 
 widths_8 = [12, 10, 12, 14, 10,
-            14, 12,
-            10, 14, 22,
-            8, 12, 8, 18, 12,
+            14, 10,
+            10, 14, 18,
+            8, 10, 14,
+            12, 8, 18, 12,
             12, 14, 12, 12]
 auto_width(ws8, widths_8)
 

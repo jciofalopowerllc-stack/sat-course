@@ -249,7 +249,7 @@ ws4.cell(2, 1, 'Courses that must be scheduled in the same period').font = Font(
 examples_4 = [
     ['AP Art', '253, 254, 255, 764', 'AP Art courses share one period', 4, 4, 'High', '', ''],
     ['Studio Art II-III', '242, 243', 'Studio Art upper levels together', 2, 2, 'Medium', 3, ''],
-    ['Robotics Project', '590, 591', 'Robotics paired sections', 2, 2, 'Medium', 'C', ''],
+    ['Pathway Project', '590, 591', 'Pathway paired sections', 2, 2, 'Medium', 'C', ''],
     ['Italian III/AP', '333, 352', 'Italian upper levels co-scheduled', 2, 2, 'Medium', 'G', ''],
     ['Guitar', '201, 203', 'Guitar levels together', 2, 2, 'Low', '', ''],
     ['Theater', '227, 228', 'Theater levels together', 1, 2, 'Low', '', ''],

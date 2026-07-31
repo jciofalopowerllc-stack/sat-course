@@ -68,40 +68,55 @@ headers_6 = [
     # Identity (Required)
     'Teacher ID', 'Last Name', 'First Name',
     # Organizational (Required)
-    'Department', 'Employment Status',
-    # Contract (Required)
+    'Department 1', 'Department 2', 'Employment Status',
+    # Contract (Required — Hire Year/Seniority optional for Don Bosco)
     'Contract Type', 'Hire Year', 'Seniority Rank',
     # Scheduling Constraints (Required)
-    'Max Teaching Periods', 'Max Consecutive Periods', 'Prep Periods Required',
-    'Duty Periods', 'Total Periods Available',
+    'Max Teaching Periods', 'Max Consecutive Periods', 'Requires 2 Consec Free',
+    'Prep Periods', 'Duty Periods',
+    # Approved Overload (3-column split: Full-Year, S1, S2)
+    'Approved 6-Period Full-Year', 'Approved 6-Period Semester 1', 'Approved 6-Period Semester 2',
     # Period Availability (Required — Y/N for each)
-    'Avail Period A', 'Avail Period B', 'Avail Period C', 'Avail Period D',
-    'Avail Period E', 'Avail Period F', 'Avail Period G',
-    # Approved Overload
-    'Approved for 6-Period Load',
+    'Avail Per A', 'Avail Per B', 'Avail Per C', 'Avail Per D',
+    'Avail Per E', 'Avail Per F', 'Avail Per G',
     # Preferences (Optional)
-    'Preferred Room', 'Preferred Wing', 'Preferred Periods (comma-sep)', 'Avoid Periods (comma-sep)',
+    'Preferred Periods', 'Avoid Periods',
+    'Preferred Room', 'Preferred Wing',
     # Subject Affinities (Required)
-    'Primary Subjects (comma-sep)', 'Secondary Subjects (comma-sep)',
-    'Master Teacher', 'Course-Teacher Lock (course codes)',
+    'Primary Subjects', 'Secondary Subjects',
+    'Master Teacher', 'AP/Honors Qualified',
     # Certifications (Optional)
-    'Certification Type', 'Certification Subject', 'Certification Expiry',
-    # Prior Year (Optional — for alignment)
-    'Prior Year Periods Taught', 'Prior Year Room',
+    'Certification 1', 'Certification 2', 'Certification 3',
+    # Course-Teacher Lock
+    'Course-Teacher Lock', 'Sole Teacher',
+    # Prior Year (Optional)
+    'Prior Year Periods', 'Prior Year Room',
+    # Computed / Derived
+    'Sections Assigned', 'Unique Courses', 'Full-Year Load', 'S1 Load', 'S2 Load',
+    'Singleton Courses', 'Computed MTP', 'Computed TSSP',
+    # SSP Populations (Y/N flags)
+    'Teaches LEO', 'Teaches Pathway', 'Teaches Acad Support',
+    # Reference
+    'Courses Assigned',
 ]
 
 # Sub-header row showing Required vs Optional
 subheaders_6 = [
     'REQUIRED', 'REQUIRED', 'REQUIRED',
-    'REQUIRED', 'REQUIRED',
+    'REQUIRED', 'OPTIONAL', 'REQUIRED',
     'REQUIRED', 'OPTIONAL', 'OPTIONAL',
-    'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED',
+    'REQUIRED', 'REQUIRED', 'Y/N', 'REQUIRED', 'REQUIRED',
+    'Y/N', 'Y/N', 'Y/N',
     'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED',
-    'REQUIRED',
     'OPTIONAL', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
-    'REQUIRED', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
+    'REQUIRED', 'OPTIONAL', 'Y/N', 'Y/N',
     'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
+    'OPTIONAL', 'Y/N',
     'OPTIONAL', 'OPTIONAL',
+    'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED',
+    'DERIVED', 'DERIVED', 'DERIVED',
+    'Y/N', 'Y/N', 'Y/N',
+    'DERIVED',
 ]
 
 for c, h in enumerate(headers_6, 1):
@@ -303,11 +318,13 @@ headers_8 = [
     'Grade Level', 'Credits Earned', 'Credits Required', 'GPA Band',
     # Priority (Required)
     'Priority Level (P0-P5)',
-    'SSP (Student Special Priority)',
+    'SSP',
     # Special Needs (Conditional)
-    'Has IEP', 'IEP Max Class Size', 'IEP Required Periods (comma-sep)',
+    'Has IEP', 'IEP Max Class Size', 'IEP Required Periods',
+    # SSP Population Memberships (Y/N — multi-membership allowed)
+    'LEO II', 'Pathway', 'Academic Support',
     # Program Flags
-    'LEO II', 'Honors Track', 'AP Track',
+    'Honors Track', 'AP Track',
     'Cohort Name', 'Cohort Locked',
     # Derived (leave blank — engine fills)
     'Requests Total', 'Requests Fulfilled', 'Placement Rate',
@@ -323,7 +340,8 @@ subheaders_8 = [
     'REQUIRED', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
     'REQUIRED', 'SCORING 0-5',
     'CONDITIONAL', 'CONDITIONAL', 'CONDITIONAL',
-    'Y/N', 'Y/N', 'Y/N', 'OPTIONAL', 'Y/N',
+    'Y/N', 'Y/N', 'Y/N',
+    'Y/N', 'Y/N', 'OPTIONAL', 'Y/N',
     'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED',
 ]
 for c, sh in enumerate(subheaders_8, 1):
