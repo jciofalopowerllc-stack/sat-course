@@ -52,9 +52,13 @@ COURSE_PRIORITY = {}
 for _plevel, _pinfo in _prio_data['scale'].items():
     for _pc in _pinfo.get('courses', []):
         COURSE_PRIORITY[str(_pc)] = int(_plevel)
+SINGLETON_COURSES = set(str(c) for c in _prio_data.get('singleton_courses', []))
 
 def prio(c):
     return COURSE_PRIORITY.get(str(c), 1)
+
+def is_singleton(c):
+    return str(c) in SINGLETON_COURSES
 
 with open(os.path.join(os.path.dirname(__file__) or '.', 'priority_assignments.json')) as _paf:
     PRIO_ASSIGN = json.load(_paf)
@@ -1271,8 +1275,9 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
+# P5 = AP courses only (singleton electives no longer inflate to P5)
 PROT = {str(c) for c, p in COURSE_PRIORITY.items() if p == 5}
-# v3: Also protect P4 (Required Core) from being bumped by P1/P0
+# P4 = graduation requirements — never bumped for electives
 PROT_P4 = {str(c) for c, p in COURSE_PRIORITY.items() if p == 4}
 
 def resolve_student(pid):
@@ -1285,7 +1290,8 @@ def resolve_student(pid):
     for c, sid in pins.items():
         for x in occ_cells(sid):
             used.add(x)
-    others.sort(key=lambda c: (placement_sort_key(pid, c), len(sec_by_code.get(c, []))))
+    # Sort by priority first so graduation requirements get placed before electives
+    others.sort(key=lambda c: (-prio(c), placement_sort_key(pid, c), len(sec_by_code.get(c, []))))
     res = {}
 
     def rec(i):
@@ -1353,7 +1359,8 @@ for pid in students:
         if len(cs) > 1:
             prot_cs = [c for c in cs if c in PROT]
             p4_cs = [c for c in cs if c in PROT_P4]
-            _score_fn = lambda c: (-prio(c), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+            # Tiebreaker: within same priority, prefer singletons (no alternative sections)
+            _score_fn = lambda c: (-prio(c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
             if prot_cs:
                 keep = min(prot_cs, key=_score_fn)
             elif p4_cs:
@@ -1503,7 +1510,7 @@ def full_reseat():
             if len(cs) > 1:
                 pr = [c for c in cs if c in PROT]
                 p4 = [c for c in cs if c in PROT_P4]
-                _sf = lambda c: (-prio(c), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+                _sf = lambda c: (-prio(c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
                 if pr:
                     kp = min(pr, key=_sf)
                 elif p4:
@@ -2072,7 +2079,7 @@ try:
                 _h = 3 if len(_s['halves']) == 2 else (1 if _s['halves'][0] == 'S1' else 2)
                 _entries.append([_cid, _s['title'], _s['period'], _s['section']])
             _scr_occ[_pid] = _entries
-        _total_requests = len(requests)
+        _total_requests = total_requested
         _total_placed = sum(len(v) for v in assign.values())
         _scr_stats = {
             'placed': _total_placed,
