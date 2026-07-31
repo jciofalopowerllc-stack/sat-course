@@ -9,13 +9,24 @@ Incorporates all 11 template inputs from the product spec:
   - Template 11: Priority Scoring Reference (read-only)
 
 Enhancements over v2 (schedule_engine_final.py):
-  1. Pre-flight validation: duplicate request detection + prerequisite checks
+  1. Pre-flight validation: duplicate detection + prerequisite + grade eligibility
+     - Transcript-based duplicate detection (students re-requesting passed courses)
+     - Prerequisite chain validation with has_transcript flag
+     - Grade-level eligibility check (student grade vs. course approved grades)
+     - Auto-generates Preflight_Validation_Report.xlsx for review
   2. Contract cascade: load limits from contract types
   3. Teacher profile constraints: period availability, preferences
   4. Room profile awareness: type matching, capacity enforcement
   5. Improved Phase D: 16 restart seeds, deeper search (40 iterations)
   6. Constraint chain analysis: detect unavoidable conflicts early
   7. Priority-weighted bump decisions with P4 protection
+
+Outputs:
+  - schedule_solution_v3.json: full solution with assignments, clashes, stats
+  - Preflight_Validation_Report.xlsx: review spreadsheet (Summary, Duplicates,
+    Prereq-With Transcript, Prereq-No Transcript tabs with ACTION column)
+  - preflight_report.json: machine-readable pre-flight warnings (in scratchpad)
+  - credit_violations.json: credit cap violations detail (in scratchpad)
 """
 import sys
 _print = print
@@ -29,6 +40,7 @@ from collections import defaultdict, Counter
 UPLOAD = "/root/.claude/uploads/a04b5f0d-60df-588f-8acb-79549aab48c5"
 TEMPLATES = os.path.join(os.path.dirname(__file__) or '.', 'templates')
 SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab48c5/scratchpad"
+OUTPUT_DIR = os.path.dirname(__file__) or '.'
 PERIODS = list('ABCDEFG')
 
 # ============================================================
@@ -295,7 +307,7 @@ try:
     t8wb = openpyxl.load_workbook(t8_path, data_only=True)
     if 'Transcript History' in t8wb.sheetnames:
         t8ws = t8wb['Transcript History']
-        for r in range(5, t8ws.max_row + 1):
+        for r in range(2, t8ws.max_row + 1):
             sid = t8ws.cell(r, 1).value
             year = t8ws.cell(r, 2).value
             ccode = t8ws.cell(r, 3).value
@@ -314,8 +326,9 @@ try:
 except FileNotFoundError:
     print("  Template 8 not found — skipping transcript validation")
 
-# ── Template 7: Course Profiles (prerequisites) ──
+# ── Template 7: Course Profiles (prerequisites + grade eligibility) ──
 course_prereqs = {}
+course_grade_levels = {}
 t7_path = os.path.join(TEMPLATES, 'Template_7_Course_Profiles.xlsx')
 try:
     t7wb = openpyxl.load_workbook(t7_path, data_only=True)
@@ -324,6 +337,7 @@ try:
         ccode = t7ws.cell(r, 1).value
         prereqs = t7ws.cell(r, 20).value
         coreqs = t7ws.cell(r, 21).value
+        grade_levels_raw = t7ws.cell(r, 7).value
         if ccode:
             cid = str(ccode).strip()
             prereq_list = []
@@ -334,8 +348,17 @@ try:
                 coreq_list = [p.strip() for p in str(coreqs).split(',') if p.strip()]
             if prereq_list or coreq_list:
                 course_prereqs[cid] = {'prereqs': prereq_list, 'coreqs': coreq_list}
+            if grade_levels_raw and str(grade_levels_raw).strip() not in ('N/A', ''):
+                gl_set = set()
+                for g in str(grade_levels_raw).split(','):
+                    g = g.strip()
+                    if g.isdigit():
+                        gl_set.add(int(g))
+                if gl_set:
+                    course_grade_levels[cid] = gl_set
     t7wb.close()
     print(f"  Course prerequisites loaded: {len(course_prereqs)} courses with prereqs/coreqs")
+    print(f"  Grade-level eligibility loaded: {len(course_grade_levels)} courses")
 except FileNotFoundError:
     print("  Template 7 not found — skipping prerequisite data")
 
@@ -455,8 +478,11 @@ else:
 # ── Prerequisite Validation ──
 if transcript and course_prereqs:
     prereq_fails = 0
+    prereq_with_transcript = 0
+    prereq_no_transcript = 0
     for pid in sreq:
         completed = {t['code'] for t in transcript.get(pid, []) if t['passed']}
+        has_transcript = pid in transcript
         for cid in sreq[pid]:
             pr = course_prereqs.get(cid, {})
             for prereq in pr.get('prereqs', []):
@@ -467,22 +493,66 @@ if transcript and course_prereqs:
                         'type': 'PREREQ_MISSING',
                         'student': pid,
                         'name': students.get(pid, pid),
+                        'grade': grade.get(pid, 0),
                         'course': cid,
                         'course_title': ci.get('title', cid),
                         'prereq': prereq,
                         'prereq_title': pi.get('title', prereq),
+                        'has_transcript': has_transcript,
                         'message': f"Student {pid} requests {cid} ({ci.get('title', cid)}) but missing prereq {prereq} ({pi.get('title', prereq)})"
                     })
                     prereq_fails += 1
+                    if has_transcript:
+                        prereq_with_transcript += 1
+                    else:
+                        prereq_no_transcript += 1
     print(f"  Prerequisite check: {prereq_fails} missing prerequisites found")
     if prereq_fails:
-        for w in preflight_warnings[:5]:
-            if w['type'] == 'PREREQ_MISSING':
+        print(f"    With transcript (review needed): {prereq_with_transcript}")
+        print(f"    No transcript (freshmen/transfer): {prereq_no_transcript}")
+        _shown = 0
+        for w in preflight_warnings:
+            if w['type'] == 'PREREQ_MISSING' and _shown < 5:
                 print(f"    {w['message']}")
+                _shown += 1
         if prereq_fails > 5:
             print(f"    ... and {prereq_fails - 5} more")
 else:
     print("  Prerequisite check: SKIPPED (no transcript or prereq data)")
+
+# ── Grade-Level Eligibility Check ──
+if course_grade_levels:
+    grade_ineligible = 0
+    for pid in sreq:
+        student_grade = grade.get(pid, 0)
+        if not student_grade:
+            continue
+        for cid in sreq[pid]:
+            eligible_grades = course_grade_levels.get(cid)
+            if eligible_grades and student_grade not in eligible_grades:
+                ci = course_info.get(cid, {})
+                preflight_warnings.append({
+                    'type': 'GRADE_INELIGIBLE',
+                    'student': pid,
+                    'name': students.get(pid, pid),
+                    'grade': student_grade,
+                    'course': cid,
+                    'course_title': ci.get('title', cid),
+                    'eligible_grades': sorted(eligible_grades),
+                    'message': f"Student {pid} ({students.get(pid, pid)}, Gr{student_grade}) requests {cid} ({ci.get('title', cid)}) but course is for grades {sorted(eligible_grades)}"
+                })
+                grade_ineligible += 1
+    print(f"  Grade-level eligibility check: {grade_ineligible} ineligible requests found")
+    if grade_ineligible:
+        _shown = 0
+        for w in preflight_warnings:
+            if w['type'] == 'GRADE_INELIGIBLE' and _shown < 5:
+                print(f"    {w['message']}")
+                _shown += 1
+        if grade_ineligible > 5:
+            print(f"    ... and {grade_ineligible - 5} more")
+else:
+    print("  Grade-level eligibility check: SKIPPED (no grade-level data)")
 
 # ── Constraint Chain Analysis ──
 constraint_warnings = 0
@@ -512,17 +582,170 @@ for pid in sreq:
 if constraint_warnings:
     print(f"  Constraint chain analysis: {constraint_warnings} unavoidable conflicts detected")
 
-# Save pre-flight report
+# Save pre-flight report (JSON)
+_dup_warnings = [w for w in preflight_warnings if w['type'] == 'DUPLICATE_REQUEST']
+_prereq_warnings = [w for w in preflight_warnings if w['type'] == 'PREREQ_MISSING']
+_chain_warnings = [w for w in preflight_warnings if w['type'] == 'CONSTRAINT_CHAIN']
+_grade_warnings = [w for w in preflight_warnings if w['type'] == 'GRADE_INELIGIBLE']
+_prereq_with_trans = [w for w in _prereq_warnings if w.get('has_transcript')]
+_prereq_no_trans = [w for w in _prereq_warnings if not w.get('has_transcript')]
+
 preflight_report = {
     'total_warnings': len(preflight_warnings),
-    'duplicates': len([w for w in preflight_warnings if w['type'] == 'DUPLICATE_REQUEST']),
-    'prereq_missing': len([w for w in preflight_warnings if w['type'] == 'PREREQ_MISSING']),
-    'constraint_chains': len([w for w in preflight_warnings if w['type'] == 'CONSTRAINT_CHAIN']),
+    'duplicates': len(_dup_warnings),
+    'prereq_missing': len(_prereq_warnings),
+    'prereq_with_transcript': len(_prereq_with_trans),
+    'prereq_no_transcript': len(_prereq_no_trans),
+    'grade_ineligible': len(_grade_warnings),
+    'constraint_chains': len(_chain_warnings),
     'warnings': preflight_warnings,
 }
 with open(os.path.join(SCRATCHPAD, 'preflight_report.json'), 'w') as pf:
     json.dump(preflight_report, pf, indent=2)
 print(f"  Pre-flight report saved: {len(preflight_warnings)} total warnings")
+
+# Auto-generate pre-flight review spreadsheet
+_report_xlsx_path = os.path.join(OUTPUT_DIR, 'Preflight_Validation_Report.xlsx')
+try:
+    from openpyxl.styles import Font as _Font, PatternFill as _Fill, Alignment as _Align, Border as _Border, Side as _Side
+    _rwb = openpyxl.Workbook()
+    _hfont = _Font(name='Arial', bold=True, size=11, color='FFFFFF')
+    _hfill = _Fill(start_color='2F5496', end_color='2F5496', fill_type='solid')
+    _dfont = _Font(name='Arial', size=10)
+    _afill = _Fill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+    _afont = _Font(name='Arial', size=10, bold=True, color='0000FF')
+    _alert = _Fill(start_color='FFC7CE', end_color='FFC7CE', fill_type='solid')
+    _tbord = _Border(left=_Side(style='thin'), right=_Side(style='thin'),
+                     top=_Side(style='thin'), bottom=_Side(style='thin'))
+
+    def _style_hdr(ws, cols):
+        for c, t in enumerate(cols, 1):
+            cell = ws.cell(1, c, t)
+            cell.font, cell.fill, cell.border = _hfont, _hfill, _tbord
+            cell.alignment = _Align(horizontal='center', wrap_text=True)
+
+    # ── Summary tab ──
+    _ws_sum = _rwb.active
+    _ws_sum.title = 'Summary'
+    _ws_sum.sheet_properties.tabColor = '00B050'
+    _ws_sum.cell(1, 1, 'PRE-FLIGHT VALIDATION REPORT').font = _Font(name='Arial', bold=True, size=14)
+    _ws_sum.cell(2, 1, 'Don Bosco Prep 2026-27 Master Schedule').font = _Font(name='Arial', size=11)
+    _ws_sum.cell(3, 1, 'Generated by Schedule Engine v3').font = _Font(name='Arial', size=10, italic=True)
+    _style_hdr(_ws_sum, ['', '', ''])
+    _ws_sum.cell(5, 1).value, _ws_sum.cell(5, 2).value, _ws_sum.cell(5, 3).value = 'CATEGORY', 'COUNT', 'DESCRIPTION'
+    for c in range(1, 4):
+        _ws_sum.cell(5, c).font, _ws_sum.cell(5, c).fill, _ws_sum.cell(5, c).border = _hfont, _hfill, _tbord
+    _sum_rows = [
+        ('Duplicate Requests', len(_dup_warnings), 'Students requesting courses they already passed'),
+        ('Grade-Level Ineligible', len(_grade_warnings), 'Students requesting courses outside their approved grade level'),
+        ('Prereq Warnings (with transcript)', len(_prereq_with_trans), 'Students with history missing a prerequisite — REVIEW NEEDED'),
+        ('Prereq Warnings (no transcript)', len(_prereq_no_trans), 'Freshmen/transfers with no prior history — likely OK'),
+        ('Constraint Chain Conflicts', len(_chain_warnings), 'Unavoidable period conflicts from locked sections'),
+        ('TOTAL', len(preflight_warnings), ''),
+    ]
+    for i, (cat, cnt, desc) in enumerate(_sum_rows, 6):
+        _ws_sum.cell(i, 1, cat).font = _Font(name='Arial', size=10, bold=(cat == 'TOTAL'))
+        _ws_sum.cell(i, 2, cnt).font = _Font(name='Arial', size=10, bold=(cat == 'TOTAL'))
+        _ws_sum.cell(i, 3, desc).font = _dfont
+        for c in range(1, 4):
+            _ws_sum.cell(i, c).border = _tbord
+    _ws_sum.cell(13, 1, 'HOW TO USE THIS REPORT:').font = _Font(name='Arial', bold=True, size=11, color='2F5496')
+    _instructions = [
+        '1. Review each tab — yellow ACTION column is yours to fill in.',
+        '2. For DUPLICATES: type KEEP (retaking intentionally) or REMOVE (erroneous).',
+        '3. For GRADE INELIGIBLE: type OK (counselor override) or REMOVE (block the request).',
+        '4. For PREREQ WARNINGS: type OK (override/waiver), REMOVE (block), or TRANSFER (took equivalent elsewhere).',
+        '5. The "No Transcript" tab is mostly freshmen — mark OK for legitimate enrollments.',
+        '6. Return this file and the engine will apply your decisions on the next run.',
+    ]
+    for i, line in enumerate(_instructions, 13):
+        _ws_sum.cell(i, 1, line).font = _dfont
+    _ws_sum.column_dimensions['A'].width = 45
+    _ws_sum.column_dimensions['B'].width = 12
+    _ws_sum.column_dimensions['C'].width = 60
+
+    # ── Duplicates tab ──
+    _ws_dup = _rwb.create_sheet('Duplicate Requests')
+    _dup_cols = ['Student ID', 'Student Name', 'Grade', 'Course Code', 'Course Title', 'Issue', 'ACTION (Your Decision)']
+    _style_hdr(_ws_dup, _dup_cols)
+    _sorted_dupes = sorted(_dup_warnings, key=lambda x: (x.get('grade', 0), x.get('name', '')))
+    for i, d in enumerate(_sorted_dupes, 2):
+        _ws_dup.cell(i, 1, int(d['student'])).font = _dfont
+        _ws_dup.cell(i, 2, d.get('name', '')).font = _dfont
+        _ws_dup.cell(i, 3, d.get('grade', '')).font = _dfont
+        _ws_dup.cell(i, 4, d.get('course', '')).font = _dfont
+        _ws_dup.cell(i, 5, d.get('course_title', '')).font = _dfont
+        _ws_dup.cell(i, 6, 'Already passed this course').font = _dfont
+        _ws_dup.cell(i, 6).fill = _alert
+        _ws_dup.cell(i, 7, '').font, _ws_dup.cell(i, 7).fill = _afont, _afill
+        for c in range(1, 8):
+            _ws_dup.cell(i, c).border = _tbord
+    for col, w in [('A',12),('B',22),('C',8),('D',12),('E',32),('F',24),('G',30)]:
+        _ws_dup.column_dimensions[col].width = w
+
+    # ── Grade-Level Ineligible tab ──
+    _ws_gl = _rwb.create_sheet('Grade-Level Ineligible')
+    _gl_cols = ['Student ID', 'Student Name', 'Student Grade', 'Course Code', 'Course Title',
+                'Eligible Grades', 'Issue', 'ACTION (Your Decision)']
+    _style_hdr(_ws_gl, _gl_cols)
+    _sorted_gl = sorted(_grade_warnings, key=lambda x: (x.get('grade', 0), x.get('name', ''), x.get('course_title', '')))
+    for i, g in enumerate(_sorted_gl, 2):
+        _ws_gl.cell(i, 1, int(g['student'])).font = _dfont
+        _ws_gl.cell(i, 2, g.get('name', '')).font = _dfont
+        _ws_gl.cell(i, 3, g.get('grade', '')).font = _dfont
+        _ws_gl.cell(i, 4, g.get('course', '')).font = _dfont
+        _ws_gl.cell(i, 5, g.get('course_title', '')).font = _dfont
+        _ws_gl.cell(i, 6, ', '.join(str(x) for x in g.get('eligible_grades', []))).font = _dfont
+        _ws_gl.cell(i, 7, f"Gr{g.get('grade','')} not in eligible grades").font = _dfont
+        _ws_gl.cell(i, 7).fill = _alert
+        _ws_gl.cell(i, 8, '').font, _ws_gl.cell(i, 8).fill = _afont, _afill
+        for c in range(1, 9):
+            _ws_gl.cell(i, c).border = _tbord
+    for col, w in [('A',12),('B',22),('C',14),('D',12),('E',32),('F',16),('G',28),('H',30)]:
+        _ws_gl.column_dimensions[col].width = w
+
+    # ── Prereq with transcript tab ──
+    _ws_pt = _rwb.create_sheet('Prereq - With Transcript')
+    _prereq_cols = ['Student ID', 'Student Name', 'Grade', 'Requested Code', 'Requested Course',
+                    'Missing Prereq Code', 'Missing Prereq Course', 'ACTION (Your Decision)']
+    _style_hdr(_ws_pt, _prereq_cols)
+    _sorted_pt = sorted(_prereq_with_trans, key=lambda x: (x.get('course_title', ''), x.get('grade', 0), x.get('name', '')))
+    for i, p in enumerate(_sorted_pt, 2):
+        _ws_pt.cell(i, 1, int(p['student'])).font = _dfont
+        _ws_pt.cell(i, 2, p.get('name', '')).font = _dfont
+        _ws_pt.cell(i, 3, p.get('grade', '')).font = _dfont
+        _ws_pt.cell(i, 4, p.get('course', '')).font = _dfont
+        _ws_pt.cell(i, 5, p.get('course_title', '')).font = _dfont
+        _ws_pt.cell(i, 6, p.get('prereq', '')).font = _dfont
+        _ws_pt.cell(i, 7, p.get('prereq_title', '')).font = _dfont
+        _ws_pt.cell(i, 8, '').font, _ws_pt.cell(i, 8).fill = _afont, _afill
+        for c in range(1, 9):
+            _ws_pt.cell(i, c).border = _tbord
+    for col, w in [('A',12),('B',22),('C',8),('D',14),('E',30),('F',16),('G',30),('H',30)]:
+        _ws_pt.column_dimensions[col].width = w
+
+    # ── Prereq no transcript tab ──
+    _ws_pn = _rwb.create_sheet('Prereq - No Transcript')
+    _style_hdr(_ws_pn, _prereq_cols)
+    _sorted_pn = sorted(_prereq_no_trans, key=lambda x: (x.get('grade', 0), x.get('name', ''), x.get('course_title', '')))
+    for i, p in enumerate(_sorted_pn, 2):
+        _ws_pn.cell(i, 1, int(p['student'])).font = _dfont
+        _ws_pn.cell(i, 2, p.get('name', '')).font = _dfont
+        _ws_pn.cell(i, 3, p.get('grade', '')).font = _dfont
+        _ws_pn.cell(i, 4, p.get('course', '')).font = _dfont
+        _ws_pn.cell(i, 5, p.get('course_title', '')).font = _dfont
+        _ws_pn.cell(i, 6, p.get('prereq', '')).font = _dfont
+        _ws_pn.cell(i, 7, p.get('prereq_title', '')).font = _dfont
+        _ws_pn.cell(i, 8, '').font, _ws_pn.cell(i, 8).fill = _afont, _afill
+        for c in range(1, 9):
+            _ws_pn.cell(i, c).border = _tbord
+    for col, w in [('A',12),('B',22),('C',8),('D',14),('E',30),('F',16),('G',30),('H',30)]:
+        _ws_pn.column_dimensions[col].width = w
+
+    _rwb.save(_report_xlsx_path)
+    print(f"  Pre-flight review spreadsheet: {_report_xlsx_path}")
+except Exception as _e:
+    print(f"  WARNING: could not generate review spreadsheet: {_e}")
 
 
 # ── Template 3: LEO II Cohorts ──
@@ -1644,10 +1867,13 @@ output = {
     'assignments': {},
     'clashes': clash,
     'preflight': {
-        'duplicates': len([w for w in preflight_warnings if w['type'] == 'DUPLICATE_REQUEST']),
-        'prereq_missing': len([w for w in preflight_warnings if w['type'] == 'PREREQ_MISSING']),
-        'constraint_chains': len([w for w in preflight_warnings if w['type'] == 'CONSTRAINT_CHAIN']),
-        'warnings': preflight_warnings[:50],
+        'duplicates': len(_dup_warnings),
+        'grade_ineligible': len(_grade_warnings),
+        'prereq_missing': len(_prereq_warnings),
+        'prereq_with_transcript': len(_prereq_with_trans),
+        'prereq_no_transcript': len(_prereq_no_trans),
+        'constraint_chains': len(_chain_warnings),
+        'warnings': preflight_warnings,
     },
     'stats': {
         'students': len(students),
