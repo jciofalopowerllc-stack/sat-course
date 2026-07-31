@@ -1,0 +1,52 @@
+<title>Schedule Engine v3 — Dashboard Index</title>
+<style>
+:root{--bg:#f5f2ee;--surface:#fff;--text:#1a1412;--text2:#5c4f44;--border:#d6cec6;
+  --maroon:#7B1E28;--font:'Segoe UI',system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1412;--surface:#242018;--text:#e8e2db;--text2:#b0a598;--border:#3e362e;--maroon:#A0333E}}
+:root[data-theme="dark"]{--bg:#1a1412;--surface:#242018;--text:#e8e2db;--text2:#b0a598;--border:#3e362e;--maroon:#A0333E}
+:root[data-theme="light"]{--bg:#f5f2ee;--surface:#fff;--text:#1a1412;--text2:#5c4f44;--border:#d6cec6;--maroon:#7B1E28}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);padding:40px 20px}
+.container{max-width:900px;margin:0 auto}
+h1{color:var(--maroon);font-size:28px;margin-bottom:8px}
+.subtitle{color:var(--text2);margin-bottom:32px;font-size:14px}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 24px;text-align:center}
+.stat .val{font-size:28px;font-weight:700;color:var(--maroon)}
+.stat .lbl{font-size:12px;color:var(--text2);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;
+  text-decoration:none;color:var(--text);transition:all .15s}
+.card:hover{border-color:var(--maroon);box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-2px)}
+.card h3{font-size:15px;margin-bottom:6px;color:var(--maroon)}
+.card p{font-size:13px;color:var(--text2);line-height:1.5}
+</style>
+<div class="container">
+<h1>Don Bosco Prep 2026-27</h1>
+<p class="subtitle">Schedule Engine v3 — Interactive Dashboard Suite</p>
+<div class="stats">
+<div class="stat"><div class="val">221</div><div class="lbl">Clashes</div></div>
+<div class="stat"><div class="val">96.6%</div><div class="lbl">Placement</div></div>
+<div class="stat"><div class="val">802</div><div class="lbl">Students</div></div>
+<div class="stat"><div class="val">350</div><div class="lbl">Sections</div></div>
+<div class="stat"><div class="val">14</div><div class="lbl">P4 Clashes</div></div>
+</div>
+<div class="grid">
+<a class="card" href="student_clash_report.html"><h3>Student Clash Report</h3>
+<p>Drag-and-drop schedule grid for 159 students with conflicts. Visual period/semester layout.</p></a>
+<a class="card" href="conflict_resolution_console.html"><h3>Conflict Resolution Console</h3>
+<p>Course-level clash analysis with fix recommendations for 53 affected courses.</p></a>
+<a class="card" href="credit_validation_report.html"><h3>Credit Validation Report</h3>
+<p>478 students exceeding the 35-credit cap. Priority-ranked drop candidates.</p></a>
+<a class="card" href="student_request_recommendations.html"><h3>Request Recommendations</h3>
+<p>Alternative course options for 221 bumped requests with availability details.</p></a>
+<a class="card" href="singleton_board.html"><h3>Singleton Board</h3>
+<p>Scheduling grid for 59 singleton courses. Teacher-period conflict view.</p></a>
+<a class="card" href="constraint_builder.html"><h3>Constraint Builder</h3>
+<p>Configure semester locks, period locks, and co-schedule constraints for 141 courses.</p></a>
+<a class="card" href="master_schedule_builder.html"><h3>Master Schedule Builder</h3>
+<p>Full course catalog (141 courses) with student request management and validation.</p></a>
+<a class="card" href="data_source_audit_report.html"><h3>Data Source Audit</h3>
+<p>Cross-file integrity checks and data quality findings.</p></a>
+</div>
+</div>

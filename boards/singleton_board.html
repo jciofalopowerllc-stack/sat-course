@@ -1,0 +1,1327 @@
+<title>Singleton Scheduling Board — Don Bosco Prep 2026-27</title>
+<style>
+:root {
+  --bg: #f5f2ee;
+  --surface: #fff;
+  --surface2: #f8f6f3;
+  --text: #1a1412;
+  --text2: #5c4f44;
+  --text3: #8c7e73;
+  --border: #d6cec6;
+  --border2: #e8e2db;
+  --maroon: #7B1E28;
+  --maroon-light: #A0333E;
+  --red: #c0392b;
+  --red-bg: #fde8e8;
+  --red-cell: #e74c3c;
+  --green: #27ae60;
+  --green-bg: #e8f5e9;
+  --green-cell: #2ecc71;
+  --amber: #f39c12;
+  --amber-bg: #fef9e7;
+  --blue: #2980b9;
+  --blue-bg: #e8f4fd;
+  --header-bg: #7B1E28;
+  --subheader-bg: #A0333E;
+  --header-text: #fff;
+  --locked-bg: #d5f5e3;
+  --locked-border: #27ae60;
+  --drag-shadow: rgba(0,0,0,0.25);
+  --popover-bg: #fff;
+  --popover-border: #ccc;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1412;
+    --surface: #242018;
+    --surface2: #2e2820;
+    --text: #e8e2db;
+    --text2: #b0a598;
+    --text3: #7c7068;
+    --border: #3e362e;
+    --border2: #342e26;
+    --maroon: #A0333E;
+    --maroon-light: #c04858;
+    --red-bg: #3a1c1c;
+    --red-cell: #e74c3c;
+    --green-bg: #1c2e1c;
+    --green-cell: #2ecc71;
+    --amber-bg: #3a2e1c;
+    --blue-bg: #1c2a3a;
+    --header-bg: #5a1520;
+    --subheader-bg: #7a2530;
+    --locked-bg: #1e3a28;
+    --locked-border: #2ecc71;
+    --drag-shadow: rgba(0,0,0,0.5);
+    --popover-bg: #2e2820;
+    --popover-border: #4e463e;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a1412;
+  --surface: #242018;
+  --surface2: #2e2820;
+  --text: #e8e2db;
+  --text2: #b0a598;
+  --text3: #7c7068;
+  --border: #3e362e;
+  --border2: #342e26;
+  --maroon: #A0333E;
+  --maroon-light: #c04858;
+  --red-bg: #3a1c1c;
+  --red-cell: #e74c3c;
+  --green-bg: #1c2e1c;
+  --green-cell: #2ecc71;
+  --amber-bg: #3a2e1c;
+  --blue-bg: #1c2a3a;
+  --header-bg: #5a1520;
+  --subheader-bg: #7a2530;
+  --locked-bg: #1e3a28;
+  --locked-border: #2ecc71;
+  --drag-shadow: rgba(0,0,0,0.5);
+  --popover-bg: #2e2820;
+  --popover-border: #4e463e;
+}
+:root[data-theme="light"] {
+  --bg: #f5f2ee;
+  --surface: #fff;
+  --surface2: #f8f6f3;
+  --text: #1a1412;
+  --text2: #5c4f44;
+  --text3: #8c7e73;
+  --border: #d6cec6;
+  --border2: #e8e2db;
+  --maroon: #7B1E28;
+  --maroon-light: #A0333E;
+  --red-bg: #fde8e8;
+  --red-cell: #e74c3c;
+  --green-bg: #e8f5e9;
+  --green-cell: #2ecc71;
+  --amber-bg: #fef9e7;
+  --blue-bg: #e8f4fd;
+  --header-bg: #7B1E28;
+  --subheader-bg: #A0333E;
+  --locked-bg: #d5f5e3;
+  --locked-border: #27ae60;
+  --drag-shadow: rgba(0,0,0,0.25);
+  --popover-bg: #fff;
+  --popover-border: #ccc;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); }
+
+.toolbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--header-bg);
+  color: var(--header-text);
+  padding: 10px 20px;
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.toolbar h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; }
+.toolbar .stats { font-size: 12px; opacity: 0.85; display: flex; gap: 14px; flex-wrap: wrap; }
+.toolbar .stats span { white-space: nowrap; }
+.toolbar .actions { margin-left: auto; display: flex; gap: 8px; }
+.btn {
+  padding: 6px 14px; border: none; border-radius: 4px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-save { background: var(--amber); color: #fff; }
+.btn-save:hover { background: #e67e22; }
+.btn-commit { background: var(--green); color: #fff; }
+.btn-commit:hover { background: #219a52; }
+.btn-reset { background: var(--text3); color: #fff; }
+.btn-reset:hover { background: var(--text2); }
+.btn-export { background: var(--blue); color: #fff; }
+.btn-export:hover { background: #2471a3; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.filter-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  font-size: 12px;
+}
+.filter-bar label { color: var(--text2); font-weight: 600; }
+.filter-bar select, .filter-bar input {
+  padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px;
+  font-size: 12px; background: var(--surface); color: var(--text);
+}
+.legend { display: flex; gap: 12px; margin-left: auto; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text2); }
+.legend-swatch {
+  width: 14px; height: 14px; border-radius: 2px; border: 1px solid var(--border);
+}
+
+.board-wrap {
+  overflow-x: auto; overflow-y: auto;
+  max-height: calc(100vh - 110px);
+  padding: 0;
+}
+.board {
+  display: grid;
+  grid-template-columns: 160px 26px repeat(21, minmax(100px, 1fr));
+  min-width: 2400px;
+  border-collapse: collapse;
+}
+
+.cell {
+  border: 1px solid var(--border2);
+  padding: 2px;
+  min-height: 52px;
+  font-size: 11px;
+  position: relative;
+  transition: background 0.15s;
+}
+.cell-header {
+  background: var(--header-bg);
+  color: var(--header-text);
+  font-weight: 700;
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  border-color: var(--header-bg);
+  min-height: 32px;
+}
+.cell-subheader {
+  background: var(--subheader-bg);
+  color: var(--header-text);
+  font-weight: 600;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  border-color: var(--subheader-bg);
+  min-height: 26px;
+}
+.cell-teacher {
+  background: var(--surface);
+  font-weight: 600;
+  font-size: 12px;
+  display: flex; align-items: center;
+  padding: 4px 6px;
+  position: sticky; left: 0; z-index: 10;
+  border-right: 2px solid var(--border);
+}
+.cell-dept {
+  background: var(--surface2);
+  font-size: 10px;
+  color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  position: sticky; left: 160px; z-index: 10;
+  border-right: 2px solid var(--border);
+}
+.cell-slot {
+  background: var(--surface);
+  position: relative;
+  vertical-align: top;
+  overflow: visible;
+}
+.cell-slot.drop-target { background: var(--blue-bg); outline: 2px dashed var(--blue); }
+.cell-slot.drop-invalid { background: var(--red-bg); outline: 2px dashed var(--red); }
+
+.course-card {
+  border-radius: 4px;
+  padding: 3px 5px;
+  font-size: 10px;
+  line-height: 1.3;
+  cursor: default;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  transition: all 0.15s;
+  border: 2px solid transparent;
+}
+.course-card.singleton {
+  background: var(--red-cell);
+  color: #fff;
+  cursor: grab;
+  border-color: #c0392b;
+  font-weight: 600;
+}
+.course-card.singleton:active { cursor: grabbing; }
+.course-card.singleton.dragging {
+  opacity: 0.4;
+  transform: scale(0.95);
+}
+.course-card.singleton.green {
+  background: var(--green-cell);
+  border-color: var(--green);
+}
+.course-card.singleton.locked {
+  background: var(--locked-bg);
+  border-color: var(--locked-border);
+  color: var(--text);
+  cursor: default;
+}
+.course-card.singleton.locked::after {
+  content: '\1F512';
+  position: absolute; top: 2px; right: 3px; font-size: 10px;
+}
+.course-card.regular {
+  background: var(--green-bg);
+  color: var(--text);
+  border-color: var(--border);
+  font-size: 9px;
+  min-height: 36px;
+  opacity: 0.7;
+}
+.course-card .code { font-weight: 700; font-size: 11px; }
+.course-card .title { font-size: 9px; line-height: 1.2; }
+.course-card .teacher-name { font-size: 8px; opacity: 0.85; font-style: italic; }
+.course-card .enroll { font-size: 8px; position: absolute; bottom: 2px; right: 4px; opacity: 0.8; }
+
+.ghost-card {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  border-radius: 4px;
+  padding: 4px 6px;
+  background: var(--red-cell);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px var(--drag-shadow);
+  opacity: 0.92;
+  transform: translate(-50%, -50%);
+  min-width: 90px;
+  text-align: center;
+}
+
+/* Popover */
+.popover-overlay {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 200; background: rgba(0,0,0,0.3);
+}
+.popover-overlay.active { display: block; }
+.popover {
+  position: fixed; z-index: 201;
+  background: var(--popover-bg);
+  border: 1px solid var(--popover-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  max-width: 520px; width: 90vw;
+  max-height: 80vh; overflow-y: auto;
+  padding: 0;
+  font-size: 12px;
+}
+.popover .pop-header {
+  background: var(--header-bg);
+  color: var(--header-text);
+  padding: 12px 16px;
+  border-radius: 8px 8px 0 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.popover .pop-header h3 { font-size: 14px; }
+.popover .pop-close { background: none; border: none; color: var(--header-text); font-size: 18px; cursor: pointer; padding: 0 4px; }
+.popover .pop-body { padding: 12px 16px; }
+.popover .pop-section { margin-bottom: 12px; }
+.popover .pop-section h4 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text3); margin-bottom: 6px; border-bottom: 1px solid var(--border2); padding-bottom: 3px;
+}
+.popover table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.popover th { text-align: left; padding: 3px 6px; background: var(--surface2); color: var(--text2); font-weight: 600; border: 1px solid var(--border2); }
+.popover td { padding: 3px 6px; border: 1px solid var(--border2); }
+.popover .conflict-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.popover .conflict-tag.yes { background: var(--red-bg); color: var(--red); }
+.popover .conflict-tag.no { background: var(--green-bg); color: var(--green); }
+.popover .pop-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 20px; right: 20px; z-index: 300;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  font-size: 13px; font-weight: 600;
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error { border-color: var(--red); color: var(--red); }
+.toast.info { border-color: var(--blue); color: var(--blue); }
+
+/* Conflict summary panel */
+.conflict-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 12px 20px;
+  padding: 12px 16px;
+  font-size: 12px;
+}
+.conflict-panel h3 { font-size: 13px; margin-bottom: 8px; }
+.conflict-panel .conflict-list { max-height: 200px; overflow-y: auto; }
+.conflict-panel .conflict-item {
+  padding: 4px 0; border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 8px;
+}
+.conflict-panel .conflict-item:last-child { border-bottom: none; }
+
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  font-size: 10px; font-weight: 700; padding: 0 5px;
+}
+.badge-red { background: var(--red); color: #fff; }
+.badge-green { background: var(--green); color: #fff; }
+.badge-amber { background: var(--amber); color: #fff; }
+
+@media (max-width: 768px) {
+  .toolbar { padding: 8px 12px; }
+  .toolbar h1 { font-size: 14px; }
+  .board { min-width: 1800px; }
+}
+</style>
+
+<div class="toolbar">
+  <h1>Singleton Scheduling Board</h1>
+  <div class="stats">
+    <span>Singletons: <strong id="stat-total">59</strong></span>
+    <span>Moved: <strong id="stat-moved">0</strong></span>
+    <span>Conflict-free: <strong id="stat-green">0</strong></span>
+    <span>Locked: <strong id="stat-locked">0</strong></span>
+    <span>Conflicts: <strong id="stat-conflicts">0</strong></span>
+  </div>
+  <div class="actions">
+    <button class="btn btn-reset" id="btn-reset" disabled>Reset All</button>
+    <button class="btn btn-save" id="btn-save" disabled>Save Changes</button>
+    <button class="btn btn-commit" id="btn-commit" disabled>Commit</button>
+    <button class="btn btn-export" id="btn-export">Export</button>
+    <span style="display:flex;align-items:center;gap:4px;margin-left:8px;border-left:1px solid rgba(255,255,255,0.3);padding-left:12px;">
+      <label style="font-size:11px;opacity:0.85;white-space:nowrap;">Zoom:</label>
+      <button class="btn" id="zoom-out" style="padding:3px 8px;background:rgba(255,255,255,0.15);font-size:14px;line-height:1;">−</button>
+      <span id="zoom-label" style="font-size:11px;min-width:32px;text-align:center;opacity:0.85;">100%</span>
+      <button class="btn" id="zoom-in" style="padding:3px 8px;background:rgba(255,255,255,0.15);font-size:14px;line-height:1;">+</button>
+      <button class="btn" id="zoom-fit" style="padding:3px 8px;background:rgba(255,255,255,0.15);font-size:10px;">Fit</button>
+    </span>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <label>Filter:</label>
+  <select id="filter-dept">
+    <option value="">All Departments</option>
+  </select>
+  <select id="filter-status">
+    <option value="">All Status</option>
+    <option value="unmoved">Unmoved</option>
+    <option value="moved">Moved</option>
+    <option value="green">Conflict-free</option>
+    <option value="locked">Locked</option>
+  </select>
+  <input type="text" id="filter-search" placeholder="Search teacher or course..." style="width:180px;">
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--red-cell);"></div>Singleton (has conflicts)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--green-cell);"></div>Conflict-free</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--locked-bg);border-color:var(--locked-border);"></div>Locked</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--green-bg);border-color:var(--border);"></div>Regular section</div>
+  </div>
+</div>
+
+<div class="board-wrap">
+  <div class="board" id="board"></div>
+</div>
+
+<div class="popover-overlay" id="popover-overlay">
+  <div class="popover" id="popover"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA EMBED =====
+const D = {"s": [{"i": 9, "c": "112", "n": "Composition & Literature", "p": "G", "h": "F", "t": "Judge, Michelle", "r": "Classroom D-102", "k": 25, "d": "English", "e": 11, "sn": 1, "sg": true}, {"i": 18, "c": "122", "n": "American Literature", "p": "C", "h": "F", "t": "Judge, Michelle", "r": "Classroom D-101", "k": 25, "d": "English", "e": 7, "sn": 1, "sg": true}, {"i": 29, "c": "132", "n": "British Literature", "p": "B", "h": "F", "t": "New ENGLISH Teacher (TBD)", "r": "Classroom D-101", "k": 25, "d": "English", "e": 10, "sn": 1, "sg": true}, {"i": 38, "c": "143", "n": "Creative Writing", "p": "G", "h": "1", "t": "New ENGLISH Teacher (TBD)", "r": "Classroom S-234", "k": 25, "d": "English", "e": 18, "sn": 1, "sg": true}, {"i": 42, "c": "145", "n": "Journalism", "p": "A", "h": "1", "t": "New ENGLISH Teacher (TBD)", "r": "TBD", "k": 25, "d": "English", "e": 6, "sn": 1, "sg": true}, {"i": 43, "c": "146", "n": "World Literature", "p": "F", "h": "F", "t": "Nobilione, Lauren", "r": "Classroom D-104", "k": 25, "d": "English", "e": 7, "sn": 1, "sg": true}, {"i": 46, "c": "201", "n": "Introduction to Guitar", "p": "B", "h": "1", "t": "Lopez, Enrique", "r": "Auditorium Audit.", "k": 25, "d": "Music/Art", "e": 3, "sn": 1, "sg": true}, {"i": 47, "c": "203", "n": "Guitar Ensemble", "p": "B", "h": "F", "t": "Lopez, Enrique", "r": "Classroom D-106", "k": 25, "d": "Music/Art", "e": 2, "sn": 1, "sg": true}, {"i": 48, "c": "206", "n": "Band", "p": "G", "h": "F", "t": "Lopez, Enrique", "r": "Band Room Band", "k": 25, "d": "Music/Art", "e": 23, "sn": 1, "sg": true}, {"i": 49, "c": "209", "n": "String Orchestra", "p": "F", "h": "F", "t": "Lopez, Enrique", "r": "Band Room Band", "k": 25, "d": "Music/Art", "e": 4, "sn": 1, "sg": true}, {"i": 50, "c": "220", "n": "Music Theory", "p": "D", "h": "1", "t": "Lopez, Enrique", "r": "Band Room Band", "k": 25, "d": "Music/Art", "e": 6, "sn": 1, "sg": true}, {"i": 51, "c": "225", "n": "Tech Theater Level 1", "p": "G", "h": "1", "t": "New THEATER Teacher (TBD)", "r": "Auditorium Audit.", "k": 25, "d": "Theater Arts", "e": 8, "sn": 1, "sg": true}, {"i": 52, "c": "228", "n": "Adv Theater Production", "p": "F", "h": "1", "t": "New THEATER Teacher (TBD)", "r": "Auditorium Audit.", "k": 25, "d": "Theater Arts", "e": 2, "sn": 1, "sg": true}, {"i": 55, "c": "242", "n": "Studio Art II", "p": "F", "h": "1", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Music/Art", "e": 15, "sn": 1, "sg": true}, {"i": 56, "c": "243", "n": "Studio Art III", "p": "B", "h": "1", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Music/Art", "e": 5, "sn": 1, "sg": true}, {"i": 57, "c": "248", "n": "Adv Drawing", "p": "G", "h": "1", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Music/Art", "e": 5, "sn": 1, "sg": true}, {"i": 58, "c": "249", "n": "Adv Painting", "p": "D", "h": "1", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Music/Art", "e": 4, "sn": 1, "sg": true}, {"i": 59, "c": "253", "n": "AP Drawing", "p": "A", "h": "F", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Music/Art", "e": 2, "sn": 1, "sg": true}, {"i": 60, "c": "254", "n": "AP 2-D Art and Design", "p": "A", "h": "F", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Music/Art", "e": 2, "sn": 1, "sg": true}, {"i": 61, "c": "255", "n": "AP 3-D Art and Design", "p": "A", "h": "F", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Music/Art", "e": 2, "sn": 1, "sg": true}, {"i": 67, "c": "311", "n": "Spanish I H", "p": "E", "h": "F", "t": "Carr, Lynette", "r": "Classroom S-231", "k": 25, "d": "Language", "e": 24, "sn": 1, "sg": true}, {"i": 70, "c": "315", "n": "Latin I H", "p": "E", "h": "F", "t": "Zawiski, Brian", "r": "Classroom S-236", "k": 25, "d": "Language", "e": 23, "sn": 1, "sg": true}, {"i": 79, "c": "323", "n": "Italian II H", "p": "C", "h": "F", "t": "Muscat, Nicole", "r": "Classroom S-237", "k": 25, "d": "Language", "e": 17, "sn": 1, "sg": true}, {"i": 80, "c": "327", "n": "Latin II H", "p": "A", "h": "F", "t": "Zawiski, Brian", "r": "Classroom S-236", "k": 25, "d": "Language", "e": 25, "sn": 1, "sg": true}, {"i": 87, "c": "332", "n": "Italian III", "p": "D", "h": "F", "t": "Muscat, Nicole", "r": "Classroom S-237", "k": 25, "d": "Language", "e": 21, "sn": 1, "sg": true}, {"i": 88, "c": "333", "n": "Italian III H", "p": "E", "h": "F", "t": "Muscat, Nicole", "r": "Classroom S-237", "k": 25, "d": "Language", "e": 8, "sn": 1, "sg": true}, {"i": 89, "c": "339", "n": "Latin III H", "p": "C", "h": "F", "t": "Zawiski, Brian", "r": "Classroom S-236", "k": 31, "d": "Language", "e": 31, "sn": 1, "sg": true}, {"i": 92, "c": "352", "n": "AP Italian", "p": "F", "h": "F", "t": "Muscat, Nicole", "r": "Classroom S-237", "k": 25, "d": "Language", "e": 6, "sn": 1, "sg": true}, {"i": 93, "c": "359", "n": "AP Latin", "p": "B", "h": "F", "t": "Zawiski, Brian", "r": "Classroom S-236", "k": 25, "d": "Language", "e": 23, "sn": 1, "sg": true}, {"i": 114, "c": "425", "n": "Adv Geometry H", "p": "D", "h": "F", "t": "Ahn, Keun", "r": "Classroom D-106", "k": 25, "d": "Mathematics", "e": 25, "sn": 1, "sg": true}, {"i": 124, "c": "435", "n": "Adv Algebra II / Trig H", "p": "C", "h": "F", "t": "Gettler, Mary", "r": "Classroom D-105", "k": 25, "d": "Mathematics", "e": 18, "sn": 1, "sg": true}, {"i": 133, "c": "445", "n": "Adv Precalculus H", "p": "A", "h": "F", "t": "Ahn, Keun", "r": "Classroom D-202", "k": 25, "d": "Mathematics", "e": 19, "sn": 1, "sg": true}, {"i": 136, "c": "450", "n": "Calculus H", "p": "F", "h": "F", "t": "New MATH Teacher HARTMAN (TBD)", "r": "Classroom D-110", "k": 25, "d": "Mathematics", "e": 25, "sn": 1, "sg": true}, {"i": 139, "c": "455", "n": "AP Calc BC", "p": "A", "h": "F", "t": "Campbell, Scott", "r": "Classroom D-109", "k": 25, "d": "Mathematics", "e": 16, "sn": 1, "sg": true}, {"i": 140, "c": "456", "n": "AP Statistics", "p": "C", "h": "F", "t": "Konopelski, Louis", "r": "Lecture Hall D-206", "k": 25, "d": "Mathematics", "e": 16, "sn": 1, "sg": true}, {"i": 141, "c": "472", "n": "Web Design", "p": "D", "h": "1", "t": "Calidas, Riddhi", "r": "Computer Lab J-223", "k": 25, "d": "Computer Science", "e": 17, "sn": 1, "sg": true}, {"i": 144, "c": "490", "n": "AP Computer Science A", "p": "F", "h": "F", "t": "Calidas, Riddhi", "r": "Computer Lab J-223", "k": 25, "d": "Computer Science", "e": 6, "sn": 1, "sg": true}, {"i": 145, "c": "491", "n": "AP Computer Science Principles", "p": "E", "h": "F", "t": "Calidas, Riddhi", "r": "Computer Lab J-223", "k": 25, "d": "Computer Science", "e": 8, "sn": 1, "sg": true}, {"i": 146, "c": "494", "n": "Applied Programming", "p": "A", "h": "1", "t": "Calidas, Riddhi", "r": "Computer Lab J-223", "k": 25, "d": "Computer Science", "e": 5, "sn": 1, "sg": true}, {"i": 147, "c": "496", "n": "AP Cybersecurity", "p": "C", "h": "F", "t": "Calidas, Riddhi", "r": "Computer Lab J-223", "k": 25, "d": "Computer Science", "e": 11, "sn": 1, "sg": true}, {"i": 176, "c": "542", "n": "Anatomy/Physiology", "p": "E", "h": "F", "t": "Guy, Libbie", "r": "Auditorium Audit.", "k": 25, "d": "Science", "e": 12, "sn": 1, "sg": true}, {"i": 179, "c": "544", "n": "Sports Medicine", "p": "D", "h": "F", "t": "Connelly, Tiffany", "r": "Lecture Hall D-206", "k": 25, "d": "Science", "e": 24, "sn": 1, "sg": true}, {"i": 182, "c": "551", "n": "AP Biology", "p": "D", "h": "F", "t": "Stoller, Timothy", "r": "Classroom D-109", "k": 25, "d": "Science", "e": 13, "sn": 1, "sg": true}, {"i": 183, "c": "553", "n": "AP Chemistry", "p": "E", "h": "F", "t": "Kilduff, Kevin", "r": "Classroom D-201", "k": 25, "d": "Science", "e": 20, "sn": 1, "sg": true}, {"i": 186, "c": "558", "n": "AP Physics C", "p": "C", "h": "F", "t": "Tranate, John", "r": "Classroom D-210", "k": 25, "d": "Science", "e": 20, "sn": 1, "sg": true}, {"i": 193, "c": "585", "n": "Robotics Design", "p": "G", "h": "1", "t": "McConnell, George", "r": "Classroom S-338", "k": 25, "d": "Engineering", "e": 17, "sn": 1, "sg": true}, {"i": 194, "c": "590", "n": "Robotics Project", "p": "E", "h": "1", "t": "McConnell, George", "r": "Classroom S-338", "k": 25, "d": "Engineering", "e": 20, "sn": 1, "sg": true}, {"i": 195, "c": "591", "n": "Robotics Project II", "p": "D", "h": "1", "t": "McConnell, George", "r": "Classroom S-338", "k": 25, "d": "Engineering", "e": 3, "sn": 1, "sg": true}, {"i": 196, "c": "595", "n": "Engineering Design", "p": "C", "h": "1", "t": "Kozak, Bernadette", "r": "Classroom D-205", "k": 25, "d": "Engineering", "e": 13, "sn": 1, "sg": true}, {"i": 239, "c": "713", "n": "AP World History", "p": "F", "h": "F", "t": "Quast, Richard", "r": "Classroom I-117", "k": 30, "d": "Social Studies", "e": 28, "sn": 1, "sg": true}, {"i": 248, "c": "722", "n": "Adv U.S. History I H", "p": "E", "h": "F", "t": "Nepolitan, John", "r": "Classroom I-119", "k": 30, "d": "Social Studies", "e": 29, "sn": 1, "sg": true}, {"i": 274, "c": "743", "n": "AP European History", "p": "G", "h": "F", "t": "Quast, Richard", "r": "Classroom I-117", "k": 25, "d": "Social Studies", "e": 20, "sn": 1, "sg": true}, {"i": 275, "c": "744", "n": "Sociology", "p": "B", "h": "1", "t": "Quast, Richard", "r": "Classroom I-117", "k": 35, "d": "Social Studies", "e": 33, "sn": 1, "sg": true}, {"i": 282, "c": "756", "n": "Introduction to Law", "p": "B", "h": "1", "t": "Winters, Jack", "r": "Classroom I-012", "k": 25, "d": "Social Studies", "e": 9, "sn": 1, "sg": true}, {"i": 288, "c": "761", "n": "AP Psychology", "p": "E", "h": "F", "t": "Harris, Megan", "r": "Classroom I-113", "k": 25, "d": "Social Studies", "e": 20, "sn": 1, "sg": true}, {"i": 291, "c": "764", "n": "AP Art History", "p": "A", "h": "F", "t": "Dennehy, Sheri", "r": "Art Room J-322", "k": 25, "d": "Social Studies", "e": 1, "sn": 1, "sg": true}, {"i": 292, "c": "765", "n": "AP Macroeconomics", "p": "G", "h": "2", "t": "Konopelski, Louis", "r": "Classroom D-210", "k": 37, "d": "Social Studies", "e": 37, "sn": 2, "sg": true}, {"i": 293, "c": "766", "n": "AP Microeconomics", "p": "B", "h": "1", "t": "Konopelski, Louis", "r": "Classroom D-210", "k": 37, "d": "Social Studies", "e": 37, "sn": 2, "sg": true}, {"i": 341, "c": "2014", "n": "Multi-Media Production", "p": "F", "h": "1", "t": "Park, Sam", "r": "Classroom I-111", "k": 25, "d": "Communication Arts", "e": 10, "sn": 1, "sg": true}], "O'Connor, Paul": [{"i": 0, "c": "110", "n": "Composition & Literature", "p": "G", "h": "F", "r": "Classroom D-101", "e": 23, "sn": 1, "sg": false}, {"i": 16, "c": "121", "n": "American Literature H", "p": "E", "h": "F", "r": "Classroom D-101", "e": 28, "sn": 1, "sg": false}, {"i": 17, "c": "121", "n": "American Literature H", "p": "F", "h": "F", "r": "Classroom D-101", "e": 27, "sn": 2, "sg": false}, {"i": 44, "c": "149", "n": "AP English Literature", "p": "A", "h": "F", "r": "Classroom D-101", "e": 20, "sn": 1, "sg": false}, {"i": 45, "c": "149", "n": "AP English Literature", "p": "D", "h": "F", "r": "Classroom D-101", "e": 23, "sn": 2, "sg": false}], "Serra, Carmine": [{"i": 1, "c": "110", "n": "Composition & Literature", "p": "C", "h": "F", "r": "Classroom D-102", "e": 24, "sn": 2, "sg": false}, {"i": 2, "c": "110", "n": "Composition & Literature", "p": "A", "h": "F", "r": "Classroom D-102", "e": 24, "sn": 3, "sg": false}, {"i": 3, "c": "110", "n": "Composition & Literature", "p": "B", "h": "F", "r": "Classroom D-102", "e": 23, "sn": 4, "sg": false}, {"i": 4, "c": "110", "n": "Composition & Literature", "p": "D", "h": "F", "r": "Classroom D-102", "e": 23, "sn": 5, "sg": false}, {"i": 5, "c": "110", "n": "Composition & Literature", "p": "F", "h": "F", "r": "Classroom D-102", "e": 23, "sn": 6, "sg": false}], "Delmonico, Marisa": [{"i": 6, "c": "111", "n": "Composition & Literature H", "p": "E", "h": "F", "r": "Classroom I-011", "e": 21, "sn": 1, "sg": false}, {"i": 7, "c": "111", "n": "Composition & Literature H", "p": "A", "h": "F", "r": "Classroom I-011", "e": 22, "sn": 2, "sg": false}, {"i": 8, "c": "111", "n": "Composition & Literature H", "p": "D", "h": "F", "r": "Classroom I-011", "e": 21, "sn": 3, "sg": false}, {"i": 19, "c": "129", "n": "AP Seminar", "p": "F", "h": "F", "r": "Classroom I-011", "e": 17, "sn": 1, "sg": false}, {"i": 20, "c": "129", "n": "AP Seminar", "p": "G", "h": "F", "r": "Classroom I-011", "e": 19, "sn": 2, "sg": false}], "Mazella, Julie": [{"i": 10, "c": "120", "n": "American Literature", "p": "A", "h": "F", "r": "Classroom D-103", "e": 21, "sn": 2, "sg": false}, {"i": 11, "c": "120", "n": "American Literature", "p": "B", "h": "F", "r": "Classroom D-103", "e": 20, "sn": 3, "sg": false}, {"i": 12, "c": "120", "n": "American Literature", "p": "G", "h": "F", "r": "Classroom D-103", "e": 19, "sn": 4, "sg": false}, {"i": 13, "c": "120", "n": "American Literature", "p": "F", "h": "F", "r": "Classroom D-103", "e": 21, "sn": 5, "sg": false}, {"i": 14, "c": "120", "n": "American Literature", "p": "D", "h": "F", "r": "Classroom D-103", "e": 20, "sn": 6, "sg": false}], "Nobilione, Lauren": [{"i": 15, "c": "120", "n": "American Literature", "p": "E", "h": "F", "r": "Classroom D-104", "e": 20, "sn": 1, "sg": false}, {"i": 32, "c": "140", "n": "World Literature", "p": "C", "h": "F", "r": "Classroom D-104", "e": 17, "sn": 1, "sg": false}, {"i": 33, "c": "140", "n": "World Literature", "p": "A", "h": "F", "r": "Classroom D-104", "e": 11, "sn": 2, "sg": false}, {"i": 34, "c": "140", "n": "World Literature", "p": "D", "h": "F", "r": "Classroom D-104", "e": 14, "sn": 3, "sg": false}], "Dwyer, Kevin": [{"i": 21, "c": "130", "n": "British Literature", "p": "E", "h": "F", "r": "Classroom I-115", "e": 15, "sn": 1, "sg": false}, {"i": 22, "c": "130", "n": "British Literature", "p": "F", "h": "F", "r": "Classroom I-115", "e": 15, "sn": 2, "sg": false}, {"i": 35, "c": "141", "n": "College English Honors", "p": "B", "h": "F", "r": "Classroom I-115", "e": 13, "sn": 1, "sg": false}, {"i": 36, "c": "141", "n": "College English Honors", "p": "D", "h": "F", "r": "Classroom I-115", "e": 24, "sn": 2, "sg": false}, {"i": 37, "c": "141", "n": "College English Honors", "p": "A", "h": "F", "r": "Classroom I-115", "e": 23, "sn": 3, "sg": false}], "New ENGLISH Teacher (TBD)": [{"i": 23, "c": "130", "n": "British Literature", "p": "C", "h": "F", "r": "Classroom I-115", "e": 25, "sn": 3, "sg": false}, {"i": 24, "c": "130", "n": "British Literature", "p": "D", "h": "F", "r": "Classroom I-012", "e": 13, "sn": 4, "sg": false}, {"i": 25, "c": "130", "n": "British Literature", "p": "E", "h": "F", "r": "Art Room J-322", "e": 15, "sn": 5, "sg": false}], "Fisk, Mary Pat": [{"i": 26, "c": "131", "n": "British Literature H", "p": "E", "h": "F", "r": "Classroom I-116", "e": 21, "sn": 1, "sg": false}, {"i": 27, "c": "131", "n": "British Literature H", "p": "A", "h": "F", "r": "Classroom I-116", "e": 20, "sn": 2, "sg": false}, {"i": 28, "c": "131", "n": "British Literature H", "p": "F", "h": "F", "r": "Classroom I-116", "e": 22, "sn": 3, "sg": false}, {"i": 30, "c": "139", "n": "AP English Language", "p": "C", "h": "F", "r": "Classroom I-116", "e": 22, "sn": 1, "sg": false}, {"i": 31, "c": "139", "n": "AP English Language", "p": "B", "h": "F", "r": "Classroom I-116", "e": 21, "sn": 2, "sg": false}], "New ENGLISH Teacher ELENA (TBD)": [{"i": 39, "c": "144", "n": "Public Speaking", "p": "B", "h": "1", "r": "Classroom I-118", "e": 10, "sn": 1, "sg": false}, {"i": 40, "c": "144", "n": "Public Speaking", "p": "C", "h": "2", "r": "Classroom I-118", "e": 19, "sn": 2, "sg": false}, {"i": 41, "c": "144", "n": "Public Speaking", "p": "E", "h": "1", "r": "Classroom I-118", "e": 17, "sn": 3, "sg": false}], "Dennehy, Sheri": [{"i": 53, "c": "241", "n": "Studio Art I", "p": "C", "h": "1", "r": "Art Room J-322", "e": 12, "sn": 1, "sg": false}, {"i": 54, "c": "241", "n": "Studio Art I", "p": "B", "h": "2", "r": "Art Room J-322", "e": 8, "sn": 2, "sg": false}], "Tuesta, David": [{"i": 62, "c": "310", "n": "Spanish I", "p": "G", "h": "F", "r": "Classroom S-235", "e": 4, "sn": 1, "sg": false}, {"i": 63, "c": "310", "n": "Spanish I", "p": "C", "h": "F", "r": "Classroom S-235", "e": 34, "sn": 2, "sg": false}, {"i": 64, "c": "310", "n": "Spanish I", "p": "D", "h": "F", "r": "Classroom S-235", "e": 27, "sn": 3, "sg": false}, {"i": 65, "c": "310", "n": "Spanish I", "p": "A", "h": "F", "r": "Classroom S-235", "e": 27, "sn": 4, "sg": false}, {"i": 66, "c": "310", "n": "Spanish I", "p": "E", "h": "F", "r": "Classroom S-235", "e": 29, "sn": 5, "sg": false}], "Zawiski, Brian": [{"i": 68, "c": "312", "n": "Italian I", "p": "G", "h": "F", "r": "Classroom S-236", "e": 20, "sn": 1, "sg": false}, {"i": 69, "c": "312", "n": "Italian I", "p": "D", "h": "F", "r": "Classroom S-236", "e": 20, "sn": 2, "sg": false}], "Carr, Lynette": [{"i": 71, "c": "320", "n": "Spanish II", "p": "D", "h": "F", "r": "Classroom S-231", "e": 21, "sn": 1, "sg": false}, {"i": 72, "c": "320", "n": "Spanish II", "p": "C", "h": "F", "r": "Classroom S-231", "e": 23, "sn": 2, "sg": false}, {"i": 73, "c": "320", "n": "Spanish II", "p": "G", "h": "F", "r": "Classroom S-231", "e": 18, "sn": 3, "sg": false}, {"i": 74, "c": "320", "n": "Spanish II", "p": "B", "h": "F", "r": "Classroom S-231", "e": 20, "sn": 4, "sg": false}], "Angotti, Sylvia": [{"i": 75, "c": "321", "n": "Spanish II H", "p": "C", "h": "F", "r": "Classroom D-106", "e": 24, "sn": 1, "sg": false}, {"i": 76, "c": "321", "n": "Spanish II H", "p": "A", "h": "F", "r": "Classroom S-231", "e": 25, "sn": 2, "sg": false}, {"i": 81, "c": "330", "n": "Spanish III", "p": "D", "h": "F", "r": "Classroom J-221", "e": 6, "sn": 3, "sg": false}, {"i": 90, "c": "351", "n": "AP Spanish", "p": "F", "h": "F", "r": "Classroom S-231", "e": 16, "sn": 1, "sg": false}, {"i": 91, "c": "351", "n": "AP Spanish", "p": "B", "h": "F", "r": "Classroom S-232", "e": 16, "sn": 2, "sg": false}], "Muscat, Nicole": [{"i": 77, "c": "322", "n": "Italian II", "p": "G", "h": "F", "r": "Classroom S-237", "e": 14, "sn": 1, "sg": false}, {"i": 78, "c": "322", "n": "Italian II", "p": "B", "h": "F", "r": "Classroom S-237", "e": 22, "sn": 2, "sg": false}], "Ramirez, Jaime": [{"i": 82, "c": "330", "n": "Spanish III", "p": "G", "h": "F", "r": "Classroom S-232", "e": 17, "sn": 1, "sg": false}, {"i": 83, "c": "330", "n": "Spanish III", "p": "E", "h": "F", "r": "Classroom S-232", "e": 17, "sn": 2, "sg": false}, {"i": 84, "c": "331", "n": "Spanish III H", "p": "C", "h": "F", "r": "Classroom S-232", "e": 18, "sn": 1, "sg": false}, {"i": 85, "c": "331", "n": "Spanish III H", "p": "D", "h": "F", "r": "Classroom S-232", "e": 20, "sn": 2, "sg": false}, {"i": 86, "c": "331", "n": "Spanish III H", "p": "F", "h": "F", "r": "Classroom S-232", "e": 25, "sn": 3, "sg": false}], "New MATH  Teacher OH (TBD)": [{"i": 94, "c": "410", "n": "Algebra I", "p": "B", "h": "F", "r": "Classroom D-107", "e": 26, "sn": 4, "sg": false}, {"i": 95, "c": "410", "n": "Algebra I", "p": "A", "h": "F", "r": "Classroom D-106", "e": 28, "sn": 5, "sg": false}, {"i": 111, "c": "422", "n": "Geometry", "p": "F", "h": "F", "r": "Classroom D-107", "e": 10, "sn": 1, "sg": false}, {"i": 112, "c": "422", "n": "Geometry", "p": "D", "h": "F", "r": "Auditorium Audit.", "e": 13, "sn": 2, "sg": false}, {"i": 113, "c": "422", "n": "Geometry", "p": "G", "h": "F", "r": "Classroom D-205", "e": 3, "sn": 3, "sg": false}], "Willi, Mary": [{"i": 96, "c": "410", "n": "Algebra I", "p": "C", "h": "F", "r": "Classroom D-110", "e": 25, "sn": 1, "sg": false}, {"i": 97, "c": "410", "n": "Algebra I", "p": "G", "h": "F", "r": "Classroom D-110", "e": 1, "sn": 2, "sg": false}, {"i": 98, "c": "410", "n": "Algebra I", "p": "E", "h": "F", "r": "Classroom D-110", "e": 25, "sn": 3, "sg": false}, {"i": 99, "c": "411", "n": "Algebra I H", "p": "A", "h": "F", "r": "Classroom D-110", "e": 5, "sn": 1, "sg": false}, {"i": 100, "c": "411", "n": "Algebra I H", "p": "B", "h": "F", "r": "Classroom D-110", "e": 10, "sn": 2, "sg": false}], "DeLeon, Marco": [{"i": 101, "c": "412", "n": "Algebra I", "p": "E", "h": "F", "r": "Classroom D-102", "e": 11, "sn": 1, "sg": false}, {"i": 102, "c": "412", "n": "Algebra I", "p": "A", "h": "F", "r": "Lecture Hall D-206", "e": 11, "sn": 2, "sg": false}, {"i": 103, "c": "412", "n": "Algebra I", "p": "C", "h": "F", "r": "Classroom D-103", "e": 9, "sn": 3, "sg": false}, {"i": 122, "c": "432", "n": "Algebra II/Trig", "p": "F", "h": "F", "r": "Classroom D-105", "e": 13, "sn": 1, "sg": false}, {"i": 123, "c": "432", "n": "Algebra II/Trig", "p": "G", "h": "F", "r": "Lecture Hall D-206", "e": 6, "sn": 2, "sg": false}], "Gerlach, Reese": [{"i": 104, "c": "420", "n": "Geometry", "p": "G", "h": "F", "r": "Classroom D-107", "e": 23, "sn": 1, "sg": false}, {"i": 105, "c": "420", "n": "Geometry", "p": "A", "h": "F", "r": "Classroom D-107", "e": 24, "sn": 2, "sg": false}, {"i": 106, "c": "420", "n": "Geometry", "p": "E", "h": "F", "r": "Classroom D-107", "e": 23, "sn": 3, "sg": false}, {"i": 107, "c": "420", "n": "Geometry", "p": "D", "h": "F", "r": "Classroom D-107", "e": 23, "sn": 4, "sg": false}, {"i": 125, "c": "440", "n": "Precalculus", "p": "C", "h": "F", "r": "Classroom D-107", "e": 12, "sn": 3, "sg": false}], "Ahn, Keun": [{"i": 108, "c": "421", "n": "Geometry H", "p": "G", "h": "F", "r": "Classroom D-106", "e": 24, "sn": 1, "sg": false}, {"i": 109, "c": "421", "n": "Geometry H", "p": "E", "h": "F", "r": "Classroom D-106", "e": 20, "sn": 2, "sg": false}, {"i": 110, "c": "421", "n": "Geometry H", "p": "F", "h": "F", "r": "Classroom D-106", "e": 22, "sn": 3, "sg": false}], "Hampson, Elizabeth": [{"i": 115, "c": "430", "n": "Algebra II/Trig", "p": "F", "h": "F", "r": "Classroom D-108", "e": 30, "sn": 1, "sg": false}, {"i": 116, "c": "430", "n": "Algebra II/Trig", "p": "E", "h": "F", "r": "Classroom D-108", "e": 14, "sn": 2, "sg": false}, {"i": 130, "c": "443", "n": "AP Precalculus", "p": "C", "h": "F", "r": "Classroom D-108", "e": 15, "sn": 1, "sg": false}, {"i": 131, "c": "443", "n": "AP Precalculus", "p": "A", "h": "F", "r": "Classroom D-108", "e": 15, "sn": 2, "sg": false}, {"i": 132, "c": "443", "n": "AP Precalculus", "p": "G", "h": "F", "r": "Classroom D-108", "e": 14, "sn": 3, "sg": false}], "Unassigned": [{"i": 117, "c": "430", "n": "Algebra II/Trig", "p": "D", "h": "F", "r": "Classroom D-108", "e": 6, "sn": 3, "sg": false}, {"i": 118, "c": "430", "n": "Algebra II/Trig", "p": "G", "h": "F", "r": "Classroom D-204", "e": 32, "sn": 4, "sg": false}, {"i": 148, "c": "500", "n": "Earth Science", "p": "A", "h": "F", "r": "Unassigned", "e": 11, "sn": 1, "sg": false}, {"i": 253, "c": "727", "n": "Sports and Entertainment Marketing", "p": "B", "h": "1", "r": "Unassigned", "e": 19, "sn": 3, "sg": false}, {"i": 261, "c": "732", "n": "Business Law", "p": "F", "h": "1", "r": "Unassigned", "e": 5, "sn": 1, "sg": false}], "Campbell, Scott": [{"i": 119, "c": "431", "n": "Algebra II/Trig H", "p": "C", "h": "F", "r": "Classroom D-109", "e": 19, "sn": 1, "sg": false}, {"i": 120, "c": "431", "n": "Algebra II/Trig H", "p": "B", "h": "F", "r": "Classroom D-109", "e": 20, "sn": 2, "sg": false}, {"i": 137, "c": "453", "n": "AP Calc AB", "p": "F", "h": "F", "r": "Classroom D-109", "e": 13, "sn": 1, "sg": false}, {"i": 138, "c": "453", "n": "AP Calc AB", "p": "E", "h": "F", "r": "Classroom D-109", "e": 8, "sn": 2, "sg": false}], "New MATH Teacher HARTMAN (TBD)": [{"i": 121, "c": "431", "n": "Algebra II/Trig H", "p": "G", "h": "F", "r": "Classroom D-109", "e": 22, "sn": 3, "sg": false}, {"i": 128, "c": "440", "n": "Precalculus", "p": "D", "h": "F", "r": "Classroom D-105", "e": 24, "sn": 4, "sg": false}, {"i": 129, "c": "440", "n": "Precalculus", "p": "B", "h": "F", "r": "Classroom D-108", "e": 13, "sn": 5, "sg": false}], "Gettler, Mary": [{"i": 126, "c": "440", "n": "Precalculus", "p": "A", "h": "F", "r": "Classroom D-105", "e": 16, "sn": 1, "sg": false}, {"i": 127, "c": "440", "n": "Precalculus", "p": "E", "h": "F", "r": "Classroom D-105", "e": 24, "sn": 2, "sg": false}, {"i": 134, "c": "448", "n": "Pre-college Math", "p": "G", "h": "F", "r": "Classroom D-105", "e": 11, "sn": 1, "sg": false}, {"i": 135, "c": "448", "n": "Pre-college Math", "p": "B", "h": "F", "r": "Classroom D-105", "e": 7, "sn": 2, "sg": false}], "Calidas, Riddhi": [{"i": 142, "c": "473", "n": "Introduction to Programming", "p": "B", "h": "1", "r": "Computer Lab J-223", "e": 1, "sn": 1, "sg": false}, {"i": 143, "c": "473", "n": "Introduction to Programming", "p": "D", "h": "2", "r": "Computer Lab J-223", "e": 16, "sn": 2, "sg": false}], "Janeczko, Douglas": [{"i": 149, "c": "500", "n": "Earth Science", "p": "D", "h": "F", "r": "Classroom D-202", "e": 19, "sn": 2, "sg": false}, {"i": 150, "c": "510", "n": "Biology", "p": "G", "h": "F", "r": "Classroom D-202", "e": 25, "sn": 1, "sg": false}, {"i": 151, "c": "510", "n": "Biology", "p": "E", "h": "F", "r": "Classroom D-202", "e": 25, "sn": 2, "sg": false}, {"i": 152, "c": "510", "n": "Biology", "p": "F", "h": "F", "r": "Classroom D-202", "e": 23, "sn": 3, "sg": false}, {"i": 153, "c": "510", "n": "Biology", "p": "C", "h": "F", "r": "Classroom D-202", "e": 24, "sn": 4, "sg": false}, {"i": 154, "c": "510", "n": "Biology", "p": "B", "h": "F", "r": "Classroom D-202", "e": 24, "sn": 5, "sg": false}], "Kilduff, Kevin": [{"i": 155, "c": "511", "n": "Biology H", "p": "G", "h": "F", "r": "Classroom D-201", "e": 18, "sn": 1, "sg": false}, {"i": 156, "c": "511", "n": "Biology H", "p": "B", "h": "F", "r": "Classroom D-201", "e": 25, "sn": 2, "sg": false}, {"i": 157, "c": "511", "n": "Biology H", "p": "A", "h": "F", "r": "Classroom D-201", "e": 24, "sn": 3, "sg": false}, {"i": 158, "c": "511", "n": "Biology H", "p": "C", "h": "F", "r": "Band Room Band", "e": 25, "sn": 4, "sg": false}], "Doughty, Chelsea": [{"i": 159, "c": "520", "n": "Chemistry", "p": "E", "h": "F", "r": "Classroom D-203", "e": 20, "sn": 1, "sg": false}, {"i": 160, "c": "520", "n": "Chemistry", "p": "D", "h": "F", "r": "Classroom D-203", "e": 16, "sn": 2, "sg": false}, {"i": 161, "c": "520", "n": "Chemistry", "p": "C", "h": "F", "r": "Classroom D-203", "e": 22, "sn": 3, "sg": false}, {"i": 162, "c": "520", "n": "Chemistry", "p": "B", "h": "F", "r": "Classroom D-203", "e": 20, "sn": 4, "sg": false}, {"i": 163, "c": "520", "n": "Chemistry", "p": "G", "h": "F", "r": "Classroom D-203", "e": 14, "sn": 5, "sg": false}], "McManus, Brianna": [{"i": 164, "c": "521", "n": "Chemistry H", "p": "B", "h": "F", "r": "Classroom D-204", "e": 18, "sn": 1, "sg": false}, {"i": 165, "c": "521", "n": "Chemistry H", "p": "F", "h": "F", "r": "Classroom D-204", "e": 10, "sn": 2, "sg": false}, {"i": 166, "c": "521", "n": "Chemistry H", "p": "D", "h": "F", "r": "Classroom D-204", "e": 42, "sn": 3, "sg": false}, {"i": 167, "c": "521", "n": "Chemistry H", "p": "C", "h": "F", "r": "Classroom D-204", "e": 15, "sn": 4, "sg": false}, {"i": 168, "c": "521", "n": "Chemistry H", "p": "E", "h": "F", "r": "Classroom D-204", "e": 6, "sn": 5, "sg": false}], "Kozak, Bernadette": [{"i": 169, "c": "530", "n": "Physics", "p": "D", "h": "F", "r": "Classroom D-205", "e": 22, "sn": 1, "sg": false}, {"i": 170, "c": "530", "n": "Physics", "p": "E", "h": "F", "r": "Classroom D-205", "e": 27, "sn": 2, "sg": false}, {"i": 171, "c": "530", "n": "Physics", "p": "F", "h": "F", "r": "Classroom D-205", "e": 22, "sn": 3, "sg": false}, {"i": 172, "c": "530", "n": "Physics", "p": "A", "h": "F", "r": "Classroom D-205", "e": 28, "sn": 4, "sg": false}], "Tranate, John": [{"i": 173, "c": "531", "n": "Physics H", "p": "F", "h": "F", "r": "Classroom D-210", "e": 24, "sn": 1, "sg": false}, {"i": 174, "c": "531", "n": "Physics H", "p": "D", "h": "F", "r": "Classroom D-210", "e": 20, "sn": 2, "sg": false}, {"i": 175, "c": "531", "n": "Physics H", "p": "B", "h": "F", "r": "Classroom D-205", "e": 19, "sn": 3, "sg": false}, {"i": 184, "c": "557", "n": "AP Physics 1", "p": "A", "h": "F", "r": "Classroom D-210", "e": 16, "sn": 1, "sg": false}, {"i": 185, "c": "557", "n": "AP Physics 1", "p": "E", "h": "F", "r": "Classroom D-210", "e": 15, "sn": 1, "sg": false}], "Guy, Libbie": [{"i": 177, "c": "543", "n": "Anatomy/Physiology H", "p": "A", "h": "F", "r": "Classroom S-232", "e": 14, "sn": 1, "sg": false}, {"i": 178, "c": "543", "n": "Anatomy/Physiology H", "p": "C", "h": "F", "r": "Auditorium Audit.", "e": 15, "sn": 2, "sg": false}], "Connelly, Tiffany": [{"i": 180, "c": "546", "n": "Forensics", "p": "E", "h": "F", "r": "Lecture Hall D-206", "e": 16, "sn": 1, "sg": false}, {"i": 181, "c": "546", "n": "Forensics", "p": "F", "h": "F", "r": "Lecture Hall D-206", "e": 12, "sn": 2, "sg": false}], "McConnell, George": [{"i": 187, "c": "570", "n": "Introduction to Robotics", "p": "F", "h": "1", "r": "Classroom S-338", "e": 1, "sn": 1, "sg": false}, {"i": 188, "c": "570", "n": "Introduction to Robotics", "p": "B", "h": "2", "r": "Classroom S-338", "e": 16, "sn": 2, "sg": false}, {"i": 189, "c": "580", "n": "Robotics Engineering", "p": "A", "h": "1", "r": "Classroom S-338", "e": 1, "sn": 1, "sg": false}, {"i": 190, "c": "580", "n": "Robotics Engineering", "p": "G", "h": "2", "r": "Classroom S-338", "e": 18, "sn": 2, "sg": false}, {"i": 191, "c": "580", "n": "Robotics Engineering", "p": "B", "h": "1", "r": "Classroom S-338", "e": 2, "sn": 3, "sg": false}, {"i": 192, "c": "580", "n": "Robotics Engineering", "p": "D", "h": "2", "r": "Classroom S-338", "e": 23, "sn": 4, "sg": false}], "Biggs, Tyrell": [{"i": 197, "c": "610", "n": "Health/PE", "p": "G", "h": "1", "r": "Gymnasium", "e": 67, "sn": 1, "sg": false}, {"i": 198, "c": "610", "n": "Health/PE", "p": "D", "h": "2", "r": "Gymnasium", "e": 0, "sn": 2, "sg": false}, {"i": 199, "c": "610", "n": "Health/PE", "p": "F", "h": "1", "r": "Gymnasium", "e": 0, "sn": 3, "sg": false}, {"i": 200, "c": "610", "n": "Health/PE", "p": "C", "h": "2", "r": "Gymnasium", "e": 11, "sn": 4, "sg": false}, {"i": 201, "c": "610", "n": "Health/PE", "p": "B", "h": "1", "r": "Gymnasium", "e": 23, "sn": 5, "sg": false}, {"i": 202, "c": "610", "n": "Health/PE", "p": "E", "h": "2", "r": "Gymnasium", "e": 9, "sn": 6, "sg": false}, {"i": 203, "c": "610", "n": "Health/PE", "p": "A", "h": "1", "r": "Gymnasium", "e": 0, "sn": 7, "sg": false}, {"i": 204, "c": "610", "n": "Health/PE", "p": "G", "h": "2", "r": "Gymnasium", "e": 11, "sn": 8, "sg": false}, {"i": 205, "c": "610", "n": "Health/PE", "p": "D", "h": "1", "r": "Gymnasium", "e": 14, "sn": 9, "sg": false}, {"i": 206, "c": "610", "n": "Health/PE", "p": "F", "h": "2", "r": "Gymnasium", "e": 66, "sn": 10, "sg": false}], "Daniels, Torrence": [{"i": 207, "c": "620", "n": "Driver's Ed/PE", "p": "D", "h": "1", "r": "Gymnasium", "e": 24, "sn": 1, "sg": false}, {"i": 208, "c": "620", "n": "Driver's Ed/PE", "p": "G", "h": "2", "r": "Gymnasium", "e": 12, "sn": 2, "sg": false}, {"i": 209, "c": "620", "n": "Driver's Ed/PE", "p": "F", "h": "1", "r": "Gymnasium", "e": 3, "sn": 3, "sg": false}, {"i": 210, "c": "620", "n": "Driver's Ed/PE", "p": "A", "h": "2", "r": "Gymnasium", "e": 28, "sn": 4, "sg": false}, {"i": 211, "c": "620", "n": "Driver's Ed/PE", "p": "E", "h": "1", "r": "Gymnasium", "e": 29, "sn": 5, "sg": false}, {"i": 212, "c": "620", "n": "Driver's Ed/PE", "p": "C", "h": "2", "r": "Gymnasium", "e": 3, "sn": 6, "sg": false}, {"i": 213, "c": "620", "n": "Driver's Ed/PE", "p": "B", "h": "1", "r": "Gymnasium", "e": 9, "sn": 7, "sg": false}, {"i": 214, "c": "620", "n": "Driver's Ed/PE", "p": "D", "h": "2", "r": "Gymnasium", "e": 20, "sn": 8, "sg": false}, {"i": 215, "c": "620", "n": "Driver's Ed/PE", "p": "G", "h": "1", "r": "Gymnasium", "e": 23, "sn": 9, "sg": false}, {"i": 216, "c": "620", "n": "Driver's Ed/PE", "p": "F", "h": "2", "r": "Gymnasium", "e": 11, "sn": 10, "sg": false}], "Chiaravalloti, Michael": [{"i": 217, "c": "631", "n": "CPR-AED Training/PE", "p": "E", "h": "1", "r": "Gymnasium", "e": 5, "sn": 1, "sg": false}, {"i": 218, "c": "631", "n": "CPR-AED Training/PE", "p": "B", "h": "2", "r": "Gymnasium", "e": 17, "sn": 2, "sg": false}, {"i": 219, "c": "631", "n": "CPR-AED Training/PE", "p": "C", "h": "1", "r": "Gymnasium", "e": 6, "sn": 3, "sg": false}, {"i": 220, "c": "631", "n": "CPR-AED Training/PE", "p": "A", "h": "2", "r": "Gymnasium", "e": 6, "sn": 4, "sg": false}, {"i": 221, "c": "631", "n": "CPR-AED Training/PE", "p": "G", "h": "1", "r": "Gymnasium", "e": 19, "sn": 5, "sg": false}, {"i": 222, "c": "642", "n": "Nutrition & Fitness/PE", "p": "D", "h": "1", "r": "Gymnasium", "e": 12, "sn": 1, "sg": false}, {"i": 223, "c": "642", "n": "Nutrition & Fitness/PE", "p": "C", "h": "2", "r": "Gymnasium", "e": 16, "sn": 2, "sg": false}, {"i": 224, "c": "642", "n": "Nutrition & Fitness/PE", "p": "F", "h": "1", "r": "Gymnasium", "e": 5, "sn": 3, "sg": false}, {"i": 225, "c": "642", "n": "Nutrition & Fitness/PE", "p": "G", "h": "2", "r": "Gymnasium", "e": 22, "sn": 4, "sg": false}, {"i": 226, "c": "642", "n": "Nutrition & Fitness/PE", "p": "B", "h": "1", "r": "Gymnasium", "e": 6, "sn": 5, "sg": false}], "Sabella, Daniel": [{"i": 227, "c": "708", "n": "Introduction to Business", "p": "F", "h": "1", "r": "Classroom J-320", "e": 63, "sn": 1, "sg": false}, {"i": 228, "c": "708", "n": "Introduction to Business", "p": "G", "h": "2", "r": "Art Room J-322", "e": 65, "sn": 2, "sg": false}, {"i": 229, "c": "708", "n": "Introduction to Business", "p": "A", "h": "1", "r": "Classroom J-020", "e": 1, "sn": 3, "sg": false}, {"i": 230, "c": "708", "n": "Introduction to Business", "p": "C", "h": "2", "r": "Art Room J-322", "e": 1, "sn": 4, "sg": false}, {"i": 231, "c": "708", "n": "Introduction to Business", "p": "B", "h": "1", "r": "Classroom J-323", "e": 0, "sn": 5, "sg": false}], "Saggio, Jack": [{"i": 232, "c": "710", "n": "World History", "p": "G", "h": "F", "r": "Classroom D-104", "e": 23, "sn": 1, "sg": false}, {"i": 233, "c": "710", "n": "World History", "p": "B", "h": "F", "r": "Classroom D-104", "e": 34, "sn": 2, "sg": false}, {"i": 234, "c": "710", "n": "World History", "p": "D", "h": "F", "r": "Classroom D-110", "e": 32, "sn": 3, "sg": false}, {"i": 269, "c": "741", "n": "Psychology", "p": "F", "h": "1", "r": "Classroom D-203", "e": 12, "sn": 1, "sg": false}, {"i": 270, "c": "741", "n": "Psychology", "p": "A", "h": "2", "r": "Classroom I-117", "e": 21, "sn": 2, "sg": false}, {"i": 271, "c": "741", "n": "Psychology", "p": "C", "h": "1", "r": "Classroom D-201", "e": 18, "sn": 3, "sg": false}, {"i": 279, "c": "751", "n": "American Government & Politics", "p": "F", "h": "2", "r": "Classroom D-201", "e": 12, "sn": 1, "sg": false}], "Winters, Jack": [{"i": 235, "c": "710", "n": "World History", "p": "E", "h": "F", "r": "Classroom I-012", "e": 33, "sn": 4, "sg": false}, {"i": 236, "c": "710", "n": "World History", "p": "A", "h": "F", "r": "Classroom I-012", "e": 30, "sn": 5, "sg": false}], "Quast, Richard": [{"i": 237, "c": "711", "n": "World History H", "p": "C", "h": "F", "r": "Classroom I-117", "e": 27, "sn": 1, "sg": false}, {"i": 238, "c": "711", "n": "World History H", "p": "D", "h": "F", "r": "Classroom I-117", "e": 9, "sn": 2, "sg": false}, {"i": 278, "c": "751", "n": "American Government & Politics", "p": "A", "h": "1", "r": "Classroom I-117", "e": 8, "sn": 2, "sg": false}], "Montegari, James": [{"i": 240, "c": "720", "n": "U.S. History I", "p": "F", "h": "F", "r": "Classroom I-114", "e": 28, "sn": 1, "sg": false}, {"i": 241, "c": "720", "n": "U.S. History I", "p": "D", "h": "F", "r": "Classroom I-114", "e": 22, "sn": 2, "sg": false}, {"i": 242, "c": "720", "n": "U.S. History I", "p": "E", "h": "F", "r": "Classroom I-114", "e": 25, "sn": 3, "sg": false}, {"i": 243, "c": "720", "n": "U.S. History I", "p": "C", "h": "F", "r": "Classroom I-114", "e": 27, "sn": 4, "sg": false}, {"i": 244, "c": "720", "n": "U.S. History I", "p": "A", "h": "F", "r": "Classroom I-114", "e": 26, "sn": 5, "sg": false}], "Martino, Brianna": [{"i": 245, "c": "721", "n": "U.S. History I H", "p": "A", "h": "F", "r": "Classroom I-119", "e": 22, "sn": 1, "sg": false}, {"i": 246, "c": "721", "n": "U.S. History I H", "p": "F", "h": "F", "r": "Classroom I-113", "e": 18, "sn": 2, "sg": false}, {"i": 247, "c": "721", "n": "U.S. History I H", "p": "E", "h": "F", "r": "Classroom I-117", "e": 21, "sn": 3, "sg": false}, {"i": 289, "c": "763", "n": "AP U.S. Government & Politics", "p": "B", "h": "F", "r": "Classroom I-114", "e": 17, "sn": 1, "sg": false}, {"i": 290, "c": "763", "n": "AP U.S. Government & Politics", "p": "G", "h": "F", "r": "Classroom I-114", "e": 15, "sn": 2, "sg": false}], "Esposito, John": [{"i": 249, "c": "726", "n": "Business Concepts", "p": "A", "h": "1", "r": "Classroom S-234", "e": 26, "sn": 1, "sg": false}, {"i": 250, "c": "726", "n": "Business Concepts", "p": "E", "h": "2", "r": "Classroom S-234", "e": 33, "sn": 2, "sg": false}, {"i": 254, "c": "729", "n": "AP Business with Personal Finance", "p": "F", "h": "F", "r": "Classroom S-234", "e": 22, "sn": 1, "sg": false}, {"i": 255, "c": "729", "n": "AP Business with Personal Finance", "p": "B", "h": "F", "r": "Classroom S-234", "e": 21, "sn": 2, "sg": false}, {"i": 267, "c": "734", "n": "Leadership, Entrepreneurship and Opportunity Program I", "p": "C", "h": "2", "r": "Classroom S-234", "e": 20, "sn": 1, "sg": false}, {"i": 268, "c": "734", "n": "Leadership, Entrepreneurship and Opportunity Program I", "p": "D", "h": "2", "r": "Classroom S-234", "e": 20, "sn": 2, "sg": false}, {"i": 276, "c": "745", "n": "Leadership, Entrepreneurship and Opportunity Program II", "p": "C", "h": "1", "r": "Classroom S-234", "e": 18, "sn": 1, "sg": false}, {"i": 277, "c": "745", "n": "Leadership, Entrepreneurship and Opportunity Program II", "p": "E", "h": "1", "r": "Classroom S-234", "e": 18, "sn": 2, "sg": false}], "Corcoran, Kevin": [{"i": 251, "c": "727", "n": "Sports and Entertainment Marketing", "p": "E", "h": "1", "r": "Classroom S-238", "e": 8, "sn": 1, "sg": false}, {"i": 252, "c": "727", "n": "Sports and Entertainment Marketing", "p": "G", "h": "2", "r": "Classroom S-238", "e": 29, "sn": 2, "sg": false}, {"i": 283, "c": "757", "n": "International Business Strategies", "p": "A", "h": "F", "r": "Classroom S-238", "e": 21, "sn": 1, "sg": false}, {"i": 284, "c": "757", "n": "International Business Strategies", "p": "C", "h": "F", "r": "Classroom S-238", "e": 14, "sn": 2, "sg": false}, {"i": 285, "c": "757", "n": "International Business Strategies", "p": "B", "h": "F", "r": "Classroom S-238", "e": 19, "sn": 3, "sg": false}, {"i": 286, "c": "758", "n": "Bloomberg Market Concepts", "p": "D", "h": "1", "r": "Classroom S-238", "e": 13, "sn": 1, "sg": false}, {"i": 287, "c": "758", "n": "Bloomberg Market Concepts", "p": "E", "h": "2", "r": "Classroom S-238", "e": 17, "sn": 2, "sg": false}], "Harris, Megan": [{"i": 256, "c": "730", "n": "U.S. History II", "p": "A", "h": "F", "r": "Classroom I-113", "e": 26, "sn": 1, "sg": false}, {"i": 257, "c": "730", "n": "U.S. History II", "p": "G", "h": "F", "r": "Classroom I-113", "e": 29, "sn": 2, "sg": false}, {"i": 258, "c": "730", "n": "U.S. History II", "p": "B", "h": "F", "r": "Classroom I-113", "e": 24, "sn": 3, "sg": false}, {"i": 259, "c": "731", "n": "U.S. History II H", "p": "D", "h": "F", "r": "Classroom I-113", "e": 21, "sn": 2, "sg": false}], "Nepolitan, John": [{"i": 260, "c": "731", "n": "U.S. History II H", "p": "C", "h": "F", "r": "Classroom I-119", "e": 27, "sn": 1, "sg": false}, {"i": 264, "c": "733", "n": "AP U.S. History", "p": "B", "h": "F", "r": "Classroom I-119", "e": 23, "sn": 1, "sg": false}, {"i": 265, "c": "733", "n": "AP U.S. History", "p": "F", "h": "F", "r": "Classroom I-119", "e": 23, "sn": 2, "sg": false}, {"i": 266, "c": "733", "n": "AP U.S. History", "p": "D", "h": "F", "r": "Classroom I-119", "e": 23, "sn": 3, "sg": false}], "Zawacki, Richard": [{"i": 262, "c": "732", "n": "Business Law", "p": "B", "h": "2", "r": "Classroom S-233", "e": 26, "sn": 2, "sg": false}, {"i": 263, "c": "732", "n": "Business Law", "p": "G", "h": "1", "r": "Classroom S-233", "e": 30, "sn": 3, "sg": false}, {"i": 272, "c": "742", "n": "Economics", "p": "A", "h": "F", "r": "Classroom S-233", "e": 14, "sn": 1, "sg": false}, {"i": 273, "c": "742", "n": "Economics", "p": "F", "h": "F", "r": "Classroom S-233", "e": 11, "sn": 2, "sg": false}, {"i": 280, "c": "752", "n": "Economics H", "p": "C", "h": "F", "r": "Classroom S-233", "e": 7, "sn": 1, "sg": false}, {"i": 281, "c": "752", "n": "Economics H", "p": "E", "h": "F", "r": "Classroom S-233", "e": 12, "sn": 2, "sg": false}], "Arcede, Francis": [{"i": 294, "c": "810", "n": "Theology 9", "p": "A", "h": "F", "r": "Classroom J-321", "e": 24, "sn": 2, "sg": false}, {"i": 295, "c": "810", "n": "Theology 9", "p": "C", "h": "F", "r": "Classroom J-321", "e": 39, "sn": 3, "sg": false}, {"i": 296, "c": "810", "n": "Theology 9", "p": "G", "h": "F", "r": "Classroom J-321", "e": 1, "sn": 4, "sg": false}, {"i": 297, "c": "810", "n": "Theology 9", "p": "B", "h": "F", "r": "Classroom J-321", "e": 49, "sn": 5, "sg": false}, {"i": 298, "c": "810", "n": "Theology 9", "p": "E", "h": "F", "r": "Classroom J-321", "e": 4, "sn": 6, "sg": false}], "Lomascolo, Frank": [{"i": 299, "c": "810", "n": "Theology 9", "p": "D", "h": "F", "r": "Classroom J-320", "e": 12, "sn": 1, "sg": false}, {"i": 306, "c": "820", "n": "Theology 10", "p": "A", "h": "F", "r": "Classroom J-320", "e": 28, "sn": 1, "sg": false}, {"i": 307, "c": "820", "n": "Theology 10", "p": "G", "h": "F", "r": "Classroom J-320", "e": 16, "sn": 2, "sg": false}, {"i": 308, "c": "820", "n": "Theology 10", "p": "B", "h": "F", "r": "Classroom J-320", "e": 55, "sn": 3, "sg": false}, {"i": 309, "c": "820", "n": "Theology 10", "p": "E", "h": "F", "r": "Classroom J-320", "e": 7, "sn": 4, "sg": false}], "New THEO 1 Teacher (TBD)": [{"i": 300, "c": "810", "n": "Theology 9", "p": "F", "h": "F", "r": "Classroom J-321", "e": 69, "sn": 6, "sg": false}, {"i": 301, "c": "810", "n": "Theology 9", "p": "D", "h": "F", "r": "Classroom J-321", "e": 13, "sn": 7, "sg": false}, {"i": 302, "c": "810", "n": "Theology 9", "p": "E", "h": "F", "r": "Classroom J-221", "e": 4, "sn": 7, "sg": false}, {"i": 310, "c": "820", "n": "Theology 10", "p": "C", "h": "F", "r": "Classroom J-320", "e": 22, "sn": 5, "sg": false}, {"i": 311, "c": "820", "n": "Theology 10", "p": "A", "h": "F", "r": "Classroom J-323", "e": 26, "sn": 6, "sg": false}], "Langan, John": [{"i": 303, "c": "820", "n": "Theology 10", "p": "F", "h": "F", "r": "Classroom J-323", "e": 28, "sn": 7, "sg": false}, {"i": 304, "c": "820", "n": "Theology 10", "p": "G", "h": "F", "r": "Classroom J-323", "e": 18, "sn": 8, "sg": false}, {"i": 305, "c": "820", "n": "Theology 10", "p": "C", "h": "F", "r": "Classroom J-323", "e": 20, "sn": 9, "sg": false}, {"i": 312, "c": "830", "n": "Theology 11", "p": "E", "h": "F", "r": "Classroom J-323", "e": 23, "sn": 7, "sg": false}, {"i": 313, "c": "830", "n": "Theology 11", "p": "D", "h": "F", "r": "Classroom J-323", "e": 22, "sn": 8, "sg": false}], "Laracy, John": [{"i": 314, "c": "830", "n": "Theology 11", "p": "A", "h": "F", "r": "Computer Lab J-222", "e": 20, "sn": 6, "sg": false}, {"i": 329, "c": "851", "n": "Spirituality of Vocation", "p": "F", "h": "1", "r": "Computer Lab J-222", "e": 17, "sn": 1, "sg": false}, {"i": 330, "c": "851", "n": "Spirituality of Vocation", "p": "E", "h": "1", "r": "Computer Lab J-222", "e": 19, "sn": 2, "sg": false}, {"i": 331, "c": "851", "n": "Spirituality of Vocation", "p": "C", "h": "1", "r": "Computer Lab J-222", "e": 21, "sn": 3, "sg": false}, {"i": 332, "c": "851", "n": "Spirituality of Vocation", "p": "A", "h": "1", "r": "Computer Lab J-222", "e": 23, "sn": 4, "sg": false}, {"i": 333, "c": "851", "n": "Spirituality of Vocation", "p": "G", "h": "2", "r": "Computer Lab J-222", "e": 23, "sn": 5, "sg": false}, {"i": 334, "c": "851", "n": "Spirituality of Vocation", "p": "D", "h": "2", "r": "Computer Lab J-222", "e": 19, "sn": 6, "sg": false}, {"i": 335, "c": "851", "n": "Spirituality of Vocation", "p": "B", "h": "2", "r": "Computer Lab J-222", "e": 22, "sn": 7, "sg": false}, {"i": 336, "c": "851", "n": "Spirituality of Vocation", "p": "F", "h": "2", "r": "Computer Lab J-222", "e": 21, "sn": 8, "sg": false}], "New THEO 2 Teacher (TBD)": [{"i": 315, "c": "830", "n": "Theology 11", "p": "B", "h": "F", "r": "Band Room Band", "e": 22, "sn": 9, "sg": false}, {"i": 321, "c": "849", "n": "Catholic Social Teaching", "p": "E", "h": "1", "r": "Classroom J-020", "e": 14, "sn": 1, "sg": false}, {"i": 322, "c": "849", "n": "Catholic Social Teaching", "p": "C", "h": "1", "r": "Classroom J-020", "e": 16, "sn": 2, "sg": false}, {"i": 323, "c": "849", "n": "Catholic Social Teaching", "p": "F", "h": "1", "r": "Classroom J-020", "e": 21, "sn": 3, "sg": false}, {"i": 324, "c": "849", "n": "Catholic Social Teaching", "p": "G", "h": "1", "r": "Classroom J-020", "e": 30, "sn": 4, "sg": false}, {"i": 325, "c": "849", "n": "Catholic Social Teaching", "p": "D", "h": "2", "r": "Classroom J-020", "e": 21, "sn": 5, "sg": false}, {"i": 326, "c": "849", "n": "Catholic Social Teaching", "p": "A", "h": "2", "r": "Classroom J-020", "e": 21, "sn": 6, "sg": false}, {"i": 327, "c": "849", "n": "Catholic Social Teaching", "p": "B", "h": "2", "r": "Classroom J-020", "e": 21, "sn": 7, "sg": false}, {"i": 328, "c": "849", "n": "Catholic Social Teaching", "p": "E", "h": "2", "r": "Classroom J-020", "e": 19, "sn": 8, "sg": false}], "Ojo, Clement": [{"i": 316, "c": "830", "n": "Theology 11", "p": "A", "h": "F", "r": "Classroom J-221", "e": 20, "sn": 1, "sg": false}, {"i": 317, "c": "830", "n": "Theology 11", "p": "G", "h": "F", "r": "Classroom J-221", "e": 27, "sn": 2, "sg": false}, {"i": 318, "c": "830", "n": "Theology 11", "p": "B", "h": "F", "r": "Classroom J-221", "e": 21, "sn": 3, "sg": false}, {"i": 319, "c": "830", "n": "Theology 11", "p": "C", "h": "F", "r": "Classroom J-221", "e": 24, "sn": 4, "sg": false}, {"i": 320, "c": "830", "n": "Theology 11", "p": "F", "h": "F", "r": "Classroom J-221", "e": 20, "sn": 5, "sg": false}], "Judge, Michelle": [{"i": 337, "c": "955", "n": "Academic Support", "p": "B", "h": "F", "r": "Success Center", "e": 7, "sn": 1, "sg": false}, {"i": 338, "c": "955", "n": "Academic Support", "p": "D", "h": "F", "r": "Success Center", "e": 7, "sn": 2, "sg": false}, {"i": 339, "c": "955", "n": "Academic Support", "p": "E", "h": "F", "r": "Success Center", "e": 7, "sn": 3, "sg": false}], "New LN Teacher (TBD)": [{"i": 340, "c": "955", "n": "Academic Support", "p": "G", "h": "F", "r": "Success Center", "e": 7, "sn": 4, "sg": false}], "Park, Sam": [{"i": 342, "c": "2024", "n": "TV/Film Process and Principles", "p": "D", "h": "1", "r": "Classroom I-111", "e": 8, "sn": 1, "sg": false}, {"i": 343, "c": "2024", "n": "TV/Film Process and Principles", "p": "G", "h": "2", "r": "Classroom I-111", "e": 3, "sn": 2, "sg": false}, {"i": 344, "c": "2034", "n": "TV/Film Production & Editing I", "p": "C", "h": "1", "r": "Classroom I-111", "e": 2, "sn": 1, "sg": false}, {"i": 345, "c": "2034", "n": "TV/Film Production & Editing I", "p": "E", "h": "2", "r": "Classroom I-111", "e": 5, "sn": 2, "sg": false}, {"i": 346, "c": "2044", "n": "TV/Film Production II", "p": "E", "h": "1", "r": "Classroom I-111", "e": 2, "sn": 1, "sg": false}, {"i": 347, "c": "2044", "n": "TV/Film Production II", "p": "C", "h": "2", "r": "Classroom I-111", "e": 8, "sn": 2, "sg": false}, {"i": 348, "c": "2054", "n": "Digital Media", "p": "G", "h": "1", "r": "Classroom I-111", "e": 19, "sn": 1, "sg": false}, {"i": 349, "c": "2054", "n": "Digital Media", "p": "B", "h": "2", "r": "Classroom I-111", "e": 9, "sn": 2, "sg": false}]};
+
+// ===== STATE =====
+const PERIODS = ['A','B','C','D','E','F','G'];
+const SEMS = ['FY','S1','S2'];
+const state = {
+  singletons: new Map(),
+  moves: new Map(),
+  locked: new Set(),
+  saved: null,
+  committed: null
+};
+
+// Initialize singleton state
+D.s.forEach(s => {
+  state.singletons.set(s.i, {
+    ...s,
+    origPeriod: s.p,
+    origHalves: s.h,
+    currentPeriod: s.p,
+    currentHalves: s.h,
+    conflicts: [],
+    enrollment: s.e
+  });
+});
+
+// Build lookup maps
+const codeToTitle = new Map();
+D.s.forEach(s => codeToTitle.set(s.c, s.n));
+D.t && Object.values(D.t).forEach(secs => secs.forEach(s => codeToTitle.set(s.c, s.n)));
+
+function halvesOverlap(h1, h2) {
+  if (h1 === 'F' || h2 === 'F') return true;
+  return h1 === h2;
+}
+
+function getStudentPeriodsForSem(studentCourses, sem) {
+  const periods = {};
+  for (const [code, val] of Object.entries(studentCourses)) {
+    const p = val.charAt(0);
+    const h = val.charAt(1);
+    if (sem === 'F' || h === 'F' ||
+        (sem === '1' && h === '1') ||
+        (sem === '2' && h === '2')) {
+      if (!periods[p]) periods[p] = [];
+      periods[p].push(code);
+    }
+  }
+  return periods;
+}
+
+function checkConflicts(sid, newPeriod, newHalves) {
+  const s = state.singletons.get(sid);
+  const conflicts = { teacher: [], students: [], room: [] };
+
+  // 1. Teacher conflict: does this teacher have another section at newPeriod in overlapping semester?
+  const teacherSecs = D.t[s.t] || [];
+  for (const ts of teacherSecs) {
+    if (ts.c === s.c) continue; // skip self
+    // Check if another singleton has been moved
+    let tsPeriod = ts.p;
+    let tsHalves = ts.h;
+    for (const [otherId, otherS] of state.singletons) {
+      if (otherId !== sid && otherS.c === ts.c && otherS.t === s.t) {
+        tsPeriod = otherS.currentPeriod;
+        tsHalves = otherS.currentHalves;
+      }
+    }
+    if (tsPeriod === newPeriod && halvesOverlap(tsHalves, newHalves)) {
+      conflicts.teacher.push({ code: ts.c, title: ts.n, period: tsPeriod });
+    }
+  }
+
+  // 2. Student conflicts: how many requesting students have a conflict at this period/sem?
+  const requesters = D.r[s.c] || [];
+  let canEnroll = 0;
+  for (const pid of requesters) {
+    const st = D.st[pid];
+    if (!st) continue;
+    let hasConflict = false;
+    for (const [code, val] of Object.entries(st.c)) {
+      if (code === s.c) continue;
+      const p = val.charAt(0);
+      const h = val.charAt(1);
+      if (p === newPeriod && halvesOverlap(h, newHalves)) {
+        hasConflict = true;
+        conflicts.students.push({ pid, code, period: p });
+        break;
+      }
+    }
+    if (!hasConflict) canEnroll++;
+  }
+
+  // 3. Room conflict
+  const roomKey = s.r.replace('Classroom ', '');
+  const roomSlots = D.rm[roomKey] || {};
+  const semsToCheck = newHalves === 'F' ? ['S1','S2'] : [newHalves === '1' ? 'S1' : 'S2'];
+  for (const sem of semsToCheck) {
+    const slotKey = `${newPeriod}_${sem}`;
+    const occupant = roomSlots[slotKey];
+    if (occupant && occupant !== s.c) {
+      conflicts.room.push({ sem, code: occupant, title: codeToTitle.get(occupant) || occupant });
+    }
+  }
+
+  return { conflicts, canEnroll, totalRequesters: requesters.length };
+}
+
+function getSlotKey(period, semIdx) {
+  return `${period}_${semIdx}`;
+}
+
+function semLabel(h) {
+  if (h === 'F') return 'FY';
+  if (h === '1') return 'S1';
+  return 'S2';
+}
+
+function colsForHalves(h) {
+  if (h === 'F') return [0, 1, 2]; // FY, S1, S2
+  if (h === '1') return [1]; // S1 only
+  return [2]; // S2 only
+}
+
+function halvesFromCols(cols) {
+  if (cols.length >= 2 || cols.includes(0)) return 'F';
+  if (cols.includes(1)) return '1';
+  return '2';
+}
+
+// ===== RENDER =====
+function buildBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  // Row 1: Period headers
+  addCell(board, 'Teacher Name', 'cell cell-header', 1, 1, 2, 1);
+  addCell(board, 'Dept', 'cell cell-header', 1, 2, 2, 1);
+  PERIODS.forEach((p, pi) => {
+    addCell(board, `Period ${p}`, 'cell cell-header', 1, 3 + pi * 3, 1, 3);
+  });
+
+  // Row 2: FY/S1/S2 sub-headers
+  PERIODS.forEach((p, pi) => {
+    SEMS.forEach((sem, si) => {
+      addCell(board, sem, 'cell cell-subheader', 2, 3 + pi * 3 + si, 1, 1);
+    });
+  });
+
+  // Teacher rows
+  const teachers = Object.keys(D.t).sort();
+  let row = 3;
+
+  teachers.forEach(teacher => {
+    // Check filter
+    if (!matchesFilter(teacher)) return;
+
+    const secs = D.t[teacher];
+    const teacherCell = addCell(board, '', 'cell cell-teacher', row, 1, 1, 1);
+    teacherCell.textContent = teacher;
+
+    const dept = getDeptForTeacher(teacher);
+    addCell(board, dept, 'cell cell-dept', row, 2, 1, 1);
+
+    // Period slots
+    PERIODS.forEach((period, pi) => {
+      SEMS.forEach((sem, si) => {
+        const slotEl = addCell(board, '', 'cell cell-slot', row, 3 + pi * 3 + si, 1, 1);
+        slotEl.dataset.teacher = teacher;
+        slotEl.dataset.period = period;
+        slotEl.dataset.sem = sem;
+        slotEl.dataset.semIdx = si;
+
+        // Find what goes in this slot
+        const cardsHere = getCardsForSlot(teacher, period, sem, si);
+        cardsHere.forEach(card => {
+          const cardEl = createCard(card);
+          slotEl.appendChild(cardEl);
+          // FY cards span across all 3 semester columns
+          if (card.type === 'singleton' && card.data.currentHalves === 'F') {
+            cardEl.style.position = 'absolute';
+            cardEl.style.left = '0';
+            cardEl.style.top = '1px';
+            cardEl.style.bottom = '1px';
+            cardEl.style.width = 'calc(300% + 2px)';
+            cardEl.style.zIndex = '5';
+          }
+          if (card.type === 'regular' && card.data.h === 'F') {
+            cardEl.style.position = 'absolute';
+            cardEl.style.left = '0';
+            cardEl.style.top = '1px';
+            cardEl.style.bottom = '1px';
+            cardEl.style.width = 'calc(300% + 2px)';
+            cardEl.style.zIndex = '4';
+          }
+        });
+
+        // Drop target events
+        slotEl.addEventListener('dragover', handleDragOver);
+        slotEl.addEventListener('dragleave', handleDragLeave);
+        slotEl.addEventListener('drop', handleDrop);
+      });
+    });
+
+    row++;
+  });
+}
+
+function addCell(parent, text, cls, gridRow, gridCol, rowSpan, colSpan) {
+  const el = document.createElement('div');
+  el.className = cls;
+  if (text) el.textContent = text;
+  el.style.gridRow = rowSpan > 1 ? `${gridRow} / span ${rowSpan}` : gridRow;
+  el.style.gridColumn = colSpan > 1 ? `${gridCol} / span ${colSpan}` : gridCol;
+  parent.appendChild(el);
+  return el;
+}
+
+function getCardsForSlot(teacher, period, sem, semIdx) {
+  const cards = [];
+
+  // Check singletons assigned to this teacher at this slot
+  for (const [sid, s] of state.singletons) {
+    if (s.t !== teacher) continue;
+    if (s.currentPeriod !== period) continue;
+    const sCols = colsForHalves(s.currentHalves);
+    if (!sCols.includes(semIdx)) continue;
+
+    // For FY courses, only render in FY column (semIdx 0)
+    if (s.currentHalves === 'F' && semIdx !== 0) continue;
+
+    cards.push({ type: 'singleton', sid, data: s });
+  }
+
+  // Check regular (non-singleton) sections for this teacher at this slot
+  const teacherSecs = D.t[teacher] || [];
+  for (const ts of teacherSecs) {
+    if (ts.s) continue; // skip singletons (handled above)
+    // Check if period matches
+    let tsPeriod = ts.p;
+    if (tsPeriod !== period) continue;
+
+    const tsHalves = ts.h;
+    const tsCols = colsForHalves(tsHalves);
+    if (!tsCols.includes(semIdx)) continue;
+    if (tsHalves === 'F' && semIdx !== 0) continue;
+    if (tsHalves === '1' && semIdx === 2) continue;
+    if (tsHalves === '2' && semIdx === 1) continue;
+
+    cards.push({ type: 'regular', data: ts });
+  }
+
+  return cards;
+}
+
+function createCard(card) {
+  const el = document.createElement('div');
+
+  if (card.type === 'singleton') {
+    const s = card.data;
+    const sid = card.sid;
+    const isMoved = s.currentPeriod !== s.origPeriod || s.currentHalves !== s.origHalves;
+    const isLocked = state.locked.has(sid);
+    const result = checkConflicts(sid, s.currentPeriod, s.currentHalves);
+    const hasConflicts = result.conflicts.teacher.length > 0 || result.conflicts.room.length > 0;
+    const noConflicts = !hasConflicts;
+
+    s.conflicts = result.conflicts;
+    s.enrollment = result.canEnroll;
+
+    let cls = 'course-card singleton';
+    if (isLocked) cls += ' locked';
+    else if (isMoved && noConflicts) cls += ' green';
+
+    el.className = cls;
+    el.dataset.sid = sid;
+
+    el.innerHTML = `
+      <span class="code">${s.c}</span>
+      <span class="title">${truncate(s.n, 22)}</span>
+      <span class="teacher-name">${s.t.split(',')[0]}</span>
+      <span class="enroll">${result.canEnroll}/${result.totalRequesters}</span>
+    `;
+
+    if (!isLocked) {
+      el.draggable = true;
+      el.addEventListener('dragstart', handleDragStart);
+      el.addEventListener('dragend', handleDragEnd);
+    }
+
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showPopover(sid);
+    });
+
+  } else {
+    const ts = card.data;
+    el.className = 'course-card regular';
+    el.innerHTML = `
+      <span class="code">${ts.c}</span>
+      <span class="title">${truncate(ts.n, 20)}</span>
+    `;
+  }
+
+  return el;
+}
+
+function truncate(str, len) {
+  return str.length > len ? str.slice(0, len - 1) + '…' : str;
+}
+
+function getDeptForTeacher(teacher) {
+  for (const s of D.s) {
+    if (s.t === teacher) return s.d;
+  }
+  const secs = D.t[teacher] || [];
+  return secs.length > 0 ? '' : '';
+}
+
+// ===== DRAG AND DROP =====
+let dragSid = null;
+let ghostEl = null;
+
+function handleDragStart(e) {
+  const sid = parseInt(e.target.dataset.sid);
+  if (state.locked.has(sid)) { e.preventDefault(); return; }
+  dragSid = sid;
+  const s = state.singletons.get(sid);
+
+  e.target.classList.add('dragging');
+
+  // Create ghost
+  ghostEl = document.createElement('div');
+  ghostEl.className = 'ghost-card';
+  ghostEl.innerHTML = `${s.c}<br>${truncate(s.n, 18)}`;
+  document.body.appendChild(ghostEl);
+
+  // Hide default drag image
+  const blank = document.createElement('canvas');
+  blank.width = 1; blank.height = 1;
+  e.dataTransfer.setDragImage(blank, 0, 0);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', sid.toString());
+
+  document.addEventListener('dragover', moveGhost);
+}
+
+function moveGhost(e) {
+  if (ghostEl) {
+    ghostEl.style.left = e.clientX + 'px';
+    ghostEl.style.top = e.clientY + 'px';
+  }
+}
+
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+  if (ghostEl) { ghostEl.remove(); ghostEl = null; }
+  document.removeEventListener('dragover', moveGhost);
+  dragSid = null;
+
+  document.querySelectorAll('.drop-target, .drop-invalid').forEach(el => {
+    el.classList.remove('drop-target', 'drop-invalid');
+  });
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  if (!dragSid) return;
+
+  const slot = e.currentTarget;
+  const s = state.singletons.get(dragSid);
+  if (!s) return;
+
+  // Check if this slot belongs to the same teacher
+  if (slot.dataset.teacher !== s.t) {
+    slot.classList.add('drop-invalid');
+    slot.classList.remove('drop-target');
+    e.dataTransfer.dropEffect = 'none';
+    return;
+  }
+
+  const newPeriod = slot.dataset.period;
+  const semIdx = parseInt(slot.dataset.semIdx);
+
+  // For FY courses, any sem column is fine (will span all)
+  // Preserve original semester designation — S1 stays S1, S2 stays S2, FY stays FY
+  const newHalves = s.origHalves;
+
+  const result = checkConflicts(dragSid, newPeriod, newHalves);
+  const hasConflicts = result.conflicts.teacher.length > 0 || result.conflicts.room.length > 0;
+
+  if (hasConflicts) {
+    slot.classList.add('drop-invalid');
+    slot.classList.remove('drop-target');
+  } else {
+    slot.classList.add('drop-target');
+    slot.classList.remove('drop-invalid');
+  }
+
+  e.dataTransfer.dropEffect = 'move';
+
+  // Update ghost color
+  if (ghostEl) {
+    ghostEl.style.background = hasConflicts ? 'var(--red-cell)' : 'var(--green-cell)';
+  }
+}
+
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove('drop-target', 'drop-invalid');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  const slot = e.currentTarget;
+  slot.classList.remove('drop-target', 'drop-invalid');
+
+  if (!dragSid) return;
+  const s = state.singletons.get(dragSid);
+  if (!s || slot.dataset.teacher !== s.t) return;
+
+  const newPeriod = slot.dataset.period;
+  const semIdx = parseInt(slot.dataset.semIdx);
+
+  // Preserve original semester designation — S1 stays S1, S2 stays S2, FY stays FY
+  const newHalves = s.origHalves;
+
+  // Apply the move
+  s.currentPeriod = newPeriod;
+  s.currentHalves = newHalves;
+
+  state.moves.set(dragSid, {
+    from: { period: s.origPeriod, halves: s.origHalves },
+    to: { period: newPeriod, halves: newHalves }
+  });
+
+  buildBoard();
+  updateStats();
+  updateButtons();
+
+  const result = checkConflicts(dragSid, newPeriod, newHalves);
+  const hasConflicts = result.conflicts.teacher.length > 0 || result.conflicts.room.length > 0;
+  showToast(
+    hasConflicts
+      ? `${s.c} moved to Period ${newPeriod} — has conflicts!`
+      : `${s.c} moved to Period ${newPeriod} — conflict-free (${result.canEnroll} students can enroll)`,
+    hasConflicts ? 'error' : 'success'
+  );
+}
+
+// ===== POPOVER =====
+function showPopover(sid) {
+  const s = state.singletons.get(sid);
+  const result = checkConflicts(sid, s.currentPeriod, s.currentHalves);
+  const isLocked = state.locked.has(sid);
+  const isMoved = s.currentPeriod !== s.origPeriod || s.currentHalves !== s.origHalves;
+
+  const pop = document.getElementById('popover');
+
+  // Teacher schedule
+  const teacherSecs = D.t[s.t] || [];
+  let teacherHtml = '<table><tr><th>Code</th><th>Course</th><th>Period</th><th>Term</th><th>Room</th></tr>';
+  teacherSecs.forEach(ts => {
+    let p = ts.p, h = ts.h;
+    // If this is another singleton that has been moved, show current position
+    for (const [otherId, otherS] of state.singletons) {
+      if (otherS.c === ts.c && otherS.t === s.t) {
+        p = otherS.currentPeriod;
+        h = otherS.currentHalves;
+      }
+    }
+    const isSelf = ts.c === s.c;
+    const style = isSelf ? 'font-weight:700;background:var(--amber-bg);' : '';
+    teacherHtml += `<tr style="${style}"><td>${ts.c}</td><td>${ts.n}</td><td>${p}</td><td>${semLabel(h)}</td><td>${ts.r || ''}</td></tr>`;
+  });
+  teacherHtml += '</table>';
+
+  // Student requesters with conflicts
+  const requesters = D.r[s.c] || [];
+  let studentsHtml = `<p style="margin-bottom:6px;">${result.canEnroll} of ${result.totalRequesters} students can take this at Period ${s.currentPeriod} (${semLabel(s.currentHalves)})</p>`;
+  studentsHtml += `<div style="max-height:200px;overflow-y:auto;"><table><tr><th>Student</th><th>Grade</th><th>Conflict</th><th>At Period ${s.currentPeriod}</th></tr>`;
+
+  const conflictPids = new Set(result.conflicts.students.map(c => c.pid));
+  requesters.forEach(pid => {
+    const st = D.st[pid];
+    if (!st) return;
+    const hasConf = conflictPids.has(pid);
+    let confCourse = '';
+    if (hasConf) {
+      const c = result.conflicts.students.find(x => x.pid === pid);
+      confCourse = c ? `${c.code} (${codeToTitle.get(c.code) || c.code})` : '';
+    }
+    studentsHtml += `<tr><td>${pid}</td><td>${st.g}</td><td><span class="conflict-tag ${hasConf ? 'yes' : 'no'}">${hasConf ? 'Yes' : 'OK'}</span></td><td>${confCourse}</td></tr>`;
+  });
+  studentsHtml += '</table></div>';
+
+  // Room info
+  const roomKey = s.r.replace('Classroom ', '');
+  const roomSlots = D.rm[roomKey] || {};
+  let roomHtml = `<p style="margin-bottom:6px;">Room: <strong>${s.r}</strong></p><table><tr><th>Period</th><th>S1</th><th>S2</th></tr>`;
+  PERIODS.forEach(p => {
+    const s1 = roomSlots[`${p}_S1`] || '';
+    const s2 = roomSlots[`${p}_S2`] || '';
+    const isTarget = p === s.currentPeriod;
+    const style = isTarget ? 'background:var(--amber-bg);font-weight:700;' : '';
+    roomHtml += `<tr style="${style}"><td>${p}</td><td>${s1}</td><td>${s2}</td></tr>`;
+  });
+  roomHtml += '</table>';
+
+  // Room conflicts
+  if (result.conflicts.room.length > 0) {
+    roomHtml += '<p style="color:var(--red);font-weight:600;margin-top:6px;">Room conflict: ';
+    roomHtml += result.conflicts.room.map(c => `${c.code} (${c.title || ''}) in ${c.sem}`).join(', ');
+    roomHtml += '</p>';
+  }
+
+  // Teacher conflicts
+  let teacherConflictHtml = '';
+  if (result.conflicts.teacher.length > 0) {
+    teacherConflictHtml = `<div class="pop-section"><h4>Teacher Conflicts</h4><p style="color:var(--red);font-weight:600;">`;
+    teacherConflictHtml += result.conflicts.teacher.map(c => `${c.code} ${c.title} at Period ${c.period}`).join(', ');
+    teacherConflictHtml += '</p></div>';
+  }
+
+  // Period analysis: show conflicts at each period
+  let periodAnalysisHtml = '<table><tr><th>Period</th><th>Teacher</th><th>Room</th><th>Students OK</th></tr>';
+  PERIODS.forEach(p => {
+    const test = checkConflicts(sid, p, s.currentHalves);
+    const tConf = test.conflicts.teacher.length > 0 ? 'Conflict' : 'Free';
+    const rConf = test.conflicts.room.length > 0 ? 'Conflict' : 'Free';
+    const tStyle = tConf === 'Conflict' ? 'color:var(--red);font-weight:600;' : 'color:var(--green);';
+    const rStyle = rConf === 'Conflict' ? 'color:var(--red);font-weight:600;' : 'color:var(--green);';
+    const isCurrent = p === s.currentPeriod;
+    const rowStyle = isCurrent ? 'background:var(--amber-bg);' : '';
+    periodAnalysisHtml += `<tr style="${rowStyle}"><td>${p}${isCurrent ? ' (current)' : ''}</td><td style="${tStyle}">${tConf}</td><td style="${rStyle}">${rConf}</td><td>${test.canEnroll}/${test.totalRequesters}</td></tr>`;
+  });
+  periodAnalysisHtml += '</table>';
+
+  const hasConflicts = result.conflicts.teacher.length > 0 || result.conflicts.room.length > 0;
+
+  pop.innerHTML = `
+    <div class="pop-header">
+      <h3>${s.c} — ${s.n}</h3>
+      <button class="pop-close" id="pop-close">&times;</button>
+    </div>
+    <div class="pop-body">
+      <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+        <span><strong>Period:</strong> ${s.currentPeriod} (${semLabel(s.currentHalves)})</span>
+        <span><strong>Teacher:</strong> ${s.t}</span>
+        <span><strong>Room:</strong> ${s.r}</span>
+        <span><strong>Cap:</strong> ${s.k}</span>
+        <span><strong>Enrolled:</strong> ${result.canEnroll}/${result.totalRequesters}</span>
+        ${isMoved ? `<span style="color:var(--amber);font-weight:600;">Moved from ${s.origPeriod}</span>` : ''}
+        ${isLocked ? '<span style="color:var(--green);font-weight:600;">LOCKED</span>' : ''}
+        ${hasConflicts ? '<span style="color:var(--red);font-weight:600;">HAS CONFLICTS</span>' : '<span style="color:var(--green);font-weight:600;">NO CONFLICTS</span>'}
+      </div>
+
+      ${teacherConflictHtml}
+
+      <div class="pop-section">
+        <h4>Period Analysis</h4>
+        ${periodAnalysisHtml}
+      </div>
+
+      <div class="pop-section">
+        <h4>Teacher Schedule — ${s.t}</h4>
+        ${teacherHtml}
+      </div>
+
+      <div class="pop-section">
+        <h4>Student Requesters</h4>
+        ${studentsHtml}
+      </div>
+
+      <div class="pop-section">
+        <h4>Room Schedule</h4>
+        ${roomHtml}
+      </div>
+
+      <div class="pop-actions">
+        ${!isLocked && isMoved && !hasConflicts ? `<button class="btn btn-commit" onclick="lockSingleton(${sid})">Lock Position</button>` : ''}
+        ${!isLocked && isMoved ? `<button class="btn btn-reset" onclick="resetSingleton(${sid})">Reset to Original</button>` : ''}
+        ${isLocked ? `<button class="btn btn-reset" onclick="unlockSingleton(${sid})">Unlock</button>` : ''}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('popover-overlay').classList.add('active');
+
+  // Center popover
+  pop.style.top = '50%';
+  pop.style.left = '50%';
+  pop.style.transform = 'translate(-50%, -50%)';
+
+  document.getElementById('pop-close').onclick = closePopover;
+  document.getElementById('popover-overlay').onclick = (e) => {
+    if (e.target === document.getElementById('popover-overlay')) closePopover();
+  };
+}
+
+function closePopover() {
+  document.getElementById('popover-overlay').classList.remove('active');
+}
+
+// ===== ACTIONS =====
+function lockSingleton(sid) {
+  state.locked.add(sid);
+  closePopover();
+  buildBoard();
+  updateStats();
+  updateButtons();
+  showToast(`Section locked at Period ${state.singletons.get(sid).currentPeriod}`, 'success');
+}
+
+function unlockSingleton(sid) {
+  state.locked.delete(sid);
+  closePopover();
+  buildBoard();
+  updateStats();
+  updateButtons();
+  showToast('Section unlocked', 'info');
+}
+
+function resetSingleton(sid) {
+  const s = state.singletons.get(sid);
+  s.currentPeriod = s.origPeriod;
+  s.currentHalves = s.origHalves;
+  state.moves.delete(sid);
+  state.locked.delete(sid);
+  closePopover();
+  buildBoard();
+  updateStats();
+  updateButtons();
+  showToast(`${s.c} reset to original Period ${s.origPeriod}`, 'info');
+}
+
+function updateStats() {
+  let moved = 0, green = 0, locked = 0, conflicts = 0;
+  for (const [sid, s] of state.singletons) {
+    const isMoved = s.currentPeriod !== s.origPeriod || s.currentHalves !== s.origHalves;
+    if (isMoved) moved++;
+    const result = checkConflicts(sid, s.currentPeriod, s.currentHalves);
+    const hasConflicts = result.conflicts.teacher.length > 0 || result.conflicts.room.length > 0;
+    if (isMoved && !hasConflicts) green++;
+    if (state.locked.has(sid)) locked++;
+    if (hasConflicts) conflicts++;
+  }
+  document.getElementById('stat-moved').textContent = moved;
+  document.getElementById('stat-green').textContent = green;
+  document.getElementById('stat-locked').textContent = locked;
+  document.getElementById('stat-conflicts').textContent = conflicts;
+}
+
+function updateButtons() {
+  const hasMoves = state.moves.size > 0;
+  const hasLocked = state.locked.size > 0;
+  document.getElementById('btn-save').disabled = !hasMoves;
+  document.getElementById('btn-commit').disabled = !hasLocked;
+  document.getElementById('btn-reset').disabled = !hasMoves && !hasLocked;
+}
+
+// ===== SAVE / COMMIT / EXPORT =====
+document.getElementById('btn-save').onclick = () => {
+  state.saved = {};
+  for (const [sid, s] of state.singletons) {
+    if (state.moves.has(sid)) {
+      state.saved[sid] = {
+        code: s.c,
+        title: s.n,
+        teacher: s.t,
+        from: { period: s.origPeriod, halves: semLabel(s.origHalves) },
+        to: { period: s.currentPeriod, halves: semLabel(s.currentHalves) },
+        locked: state.locked.has(sid),
+        enrollment: s.enrollment
+      };
+    }
+  }
+  showToast(`Saved ${Object.keys(state.saved).length} changes`, 'success');
+};
+
+document.getElementById('btn-commit').onclick = () => {
+  const committed = [];
+  for (const [sid, s] of state.singletons) {
+    if (state.locked.has(sid)) {
+      const result = checkConflicts(sid, s.currentPeriod, s.currentHalves);
+      committed.push({
+        sid: s.i,
+        code: s.c,
+        title: s.n,
+        teacher: s.t,
+        room: s.r,
+        from: { period: s.origPeriod, halves: semLabel(s.origHalves) },
+        to: { period: s.currentPeriod, halves: semLabel(s.currentHalves) },
+        enrollment: result.canEnroll,
+        totalRequesters: result.totalRequesters
+      });
+    }
+  }
+  state.committed = committed;
+  showToast(`Committed ${committed.length} locked changes — use Export to download`, 'success');
+  document.getElementById('btn-export').classList.add('btn-commit');
+};
+
+document.getElementById('btn-reset').onclick = () => {
+  if (!confirm('Reset all moves and locks?')) return;
+  for (const [sid, s] of state.singletons) {
+    s.currentPeriod = s.origPeriod;
+    s.currentHalves = s.origHalves;
+  }
+  state.moves.clear();
+  state.locked.clear();
+  state.saved = null;
+  state.committed = null;
+  buildBoard();
+  updateStats();
+  updateButtons();
+  showToast('All changes reset', 'info');
+};
+
+document.getElementById('btn-export').onclick = () => {
+  const exportData = {
+    exported: new Date().toISOString(),
+    type: state.committed ? 'committed' : 'draft',
+    changes: []
+  };
+
+  if (state.committed) {
+    exportData.changes = state.committed;
+  } else {
+    for (const [sid, s] of state.singletons) {
+      if (state.moves.has(sid)) {
+        const result = checkConflicts(sid, s.currentPeriod, s.currentHalves);
+        exportData.changes.push({
+          sid: s.i,
+          code: s.c,
+          title: s.n,
+          teacher: s.t,
+          room: s.r,
+          from: { period: s.origPeriod, halves: semLabel(s.origHalves) },
+          to: { period: s.currentPeriod, halves: semLabel(s.currentHalves) },
+          locked: state.locked.has(sid),
+          conflicts: {
+            teacher: result.conflicts.teacher.length,
+            room: result.conflicts.room.length,
+            students: result.conflicts.students.length
+          },
+          enrollment: result.canEnroll,
+          totalRequesters: result.totalRequesters
+        });
+      }
+    }
+  }
+
+  if (exportData.changes.length === 0) {
+    showToast('No changes to export', 'error');
+    return;
+  }
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `singleton_changes_${exportData.type}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`Exported ${exportData.changes.length} changes`, 'success');
+};
+
+// ===== FILTER =====
+function matchesFilter(teacher) {
+  const dept = document.getElementById('filter-dept').value;
+  const status = document.getElementById('filter-status').value;
+  const search = document.getElementById('filter-search').value.toLowerCase();
+
+  if (search) {
+    const teacherMatch = teacher.toLowerCase().includes(search);
+    const courseMatch = (D.t[teacher] || []).some(s =>
+      s.c.toLowerCase().includes(search) || s.n.toLowerCase().includes(search)
+    );
+    if (!teacherMatch && !courseMatch) return false;
+  }
+
+  if (dept) {
+    const teacherDept = getDeptForTeacher(teacher);
+    if (teacherDept !== dept) return false;
+  }
+
+  if (status) {
+    const teacherSingletons = [];
+    for (const [sid, s] of state.singletons) {
+      if (s.t === teacher) teacherSingletons.push(sid);
+    }
+    if (teacherSingletons.length === 0) return false;
+
+    switch (status) {
+      case 'moved': return teacherSingletons.some(sid => state.moves.has(sid));
+      case 'green': return teacherSingletons.some(sid => {
+        const s = state.singletons.get(sid);
+        const isMoved = s.currentPeriod !== s.origPeriod;
+        const result = checkConflicts(sid, s.currentPeriod, s.currentHalves);
+        return isMoved && result.conflicts.teacher.length === 0 && result.conflicts.room.length === 0;
+      });
+      case 'locked': return teacherSingletons.some(sid => state.locked.has(sid));
+      case 'unmoved': return teacherSingletons.some(sid => !state.moves.has(sid));
+    }
+  }
+
+  return true;
+}
+
+document.getElementById('filter-dept').onchange = () => { buildBoard(); };
+document.getElementById('filter-status').onchange = () => { buildBoard(); };
+document.getElementById('filter-search').oninput = () => { buildBoard(); };
+
+// Populate department filter
+function populateDepts() {
+  const depts = new Set();
+  D.s.forEach(s => { if (s.d) depts.add(s.d); });
+  const sel = document.getElementById('filter-dept');
+  [...depts].sort().forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    sel.appendChild(opt);
+  });
+}
+
+// ===== TOAST =====
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
+// ===== ZOOM =====
+let zoomLevel = 100;
+const ZOOM_STEPS = [50, 60, 70, 80, 90, 100];
+
+function applyZoom(level) {
+  zoomLevel = level;
+  const board = document.querySelector('.board');
+  const wrap = document.querySelector('.board-wrap');
+  const scale = level / 100;
+  board.style.transform = `scale(${scale})`;
+  board.style.transformOrigin = 'top left';
+  board.style.width = (100 / scale) + '%';
+  document.getElementById('zoom-label').textContent = level + '%';
+}
+
+document.getElementById('zoom-out').onclick = () => {
+  const idx = ZOOM_STEPS.indexOf(zoomLevel);
+  if (idx > 0) applyZoom(ZOOM_STEPS[idx - 1]);
+  else if (idx === -1 && zoomLevel > ZOOM_STEPS[0]) {
+    const nearest = ZOOM_STEPS.filter(s => s < zoomLevel).pop();
+    if (nearest) applyZoom(nearest);
+  }
+};
+
+document.getElementById('zoom-in').onclick = () => {
+  const idx = ZOOM_STEPS.indexOf(zoomLevel);
+  if (idx < ZOOM_STEPS.length - 1) applyZoom(ZOOM_STEPS[idx + 1]);
+  else if (idx === -1 && zoomLevel < ZOOM_STEPS[ZOOM_STEPS.length - 1]) {
+    const nearest = ZOOM_STEPS.find(s => s > zoomLevel);
+    if (nearest) applyZoom(nearest);
+  }
+};
+
+document.getElementById('zoom-fit').onclick = () => {
+  const wrap = document.querySelector('.board-wrap');
+  const board = document.querySelector('.board');
+  board.style.transform = 'none';
+  board.style.width = '';
+  const viewW = wrap.clientWidth;
+  const boardW = board.scrollWidth;
+  const fitPct = Math.max(50, Math.min(100, Math.floor((viewW / boardW) * 100)));
+  const snapped = ZOOM_STEPS.reduce((prev, curr) => Math.abs(curr - fitPct) < Math.abs(prev - fitPct) ? curr : prev);
+  applyZoom(snapped);
+};
+
+// ===== INIT =====
+populateDepts();
+buildBoard();
+updateStats();
+</script>
