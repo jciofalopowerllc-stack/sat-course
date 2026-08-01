@@ -350,3 +350,112 @@ The **Course file** is the single source of truth for which course codes belong 
 ### Future Cross-File Validation Checks
 
 The cohort example is the first. The same pattern applies anywhere data in one file can confirm or contradict data in another. Additional checks will be defined as we build out the remaining data containers.
+
+---
+
+## Two-Level Priority System
+
+The engine uses two separate priority calculations to build the master schedule. This is what makes this system different — priority values drive the entire build.
+
+### Level 1 — Course Section Priority Value (which sections get placed first)
+
+The engine ranks every course section by how restricted it is. The most restricted sections get placed into the master schedule first — because they have the fewest valid time slots and waiting too long means no slot remains.
+
+**Formula:**
+
+> Course Section Priority Value = (Locks × Weight) + Average Student Priority Value
+
+- **Locks** = the total number of restrictions on the section from the Course file, Teacher file, and Room file. Each lock is multiplied by a weight to ensure locks always outrank student priority.
+- **Average Student Priority Value** = the average priority of ALL students who requested this course. This ensures a section with fewer but higher-priority students is not bumped by a section with more but lower-priority students.
+
+### What counts as a lock
+
+Locks come from three files — Course, Teacher, and Room:
+
+**From the Course file:**
+
+| Lock | When it counts |
+|------|---------------|
+| Semester only (S1 or S2) | Course is not FY — restricted to half the schedule |
+| Singleton | Only one section exists — zero flexibility |
+| AP | Student chose AP over non-AP — contingent upon prerequisites being met |
+| Graduation Requirement | Required course — must be placed |
+| Cohort course | Must keep cohort students together |
+| Co-Schedule Group | Must share a period with other courses |
+| Prescribed Term | Course locked to a specific term |
+
+**From the Teacher file (prescribed teacher's restrictions):**
+
+| Lock | When it counts |
+|------|---------------|
+| Prescribed Teacher | Course has a specific teacher assigned |
+| Teacher prescribed to a Period | That teacher is locked to a specific period |
+| Teacher prescribed to a Term | That teacher is locked to a specific term |
+| Teacher prescribed to a Room | That teacher is locked to a specific room |
+
+**From the Room file (prescribed room's restrictions):**
+
+| Lock | When it counts |
+|------|---------------|
+| Prescribed Room | Course has a specific room assigned |
+| Unavailable Rooms | Rooms excluded for this course — reduces options |
+
+### Why locks are weighted
+
+If each lock and each student priority point counted equally (1 point each), a section with no locks but high-priority students could jump ahead of a heavily locked section. The locked section has fewer placement options and MUST go first — student priority cannot override that.
+
+Weighting locks higher (e.g., each lock = 10 points, student priority max = 8) ensures:
+- Locks always determine the primary order
+- Student priority only makes a difference between sections with similar lock counts
+- A section with more locks ALWAYS goes before a section with fewer locks, regardless of who requested it
+
+### Level 2 — Student Priority Value (which students fill each section first)
+
+Once a section is placed on the schedule, the engine fills it with students. Students are added in order of their Student Priority Value — highest first — until the section hits the enrollment cap. Students who don't make the cut are flagged and saved to a report for the principal to review.
+
+**Formula:**
+
+> Student Priority Value = Grade Level Priority Value + Cohort Priority Value (if any) + SSP Priority Value (if any)
+
+**Components:**
+
+| Component | What it measures |
+|-----------|-----------------|
+| Grade Level Priority Value | Higher grade = higher priority (12 highest, 9 lowest) — universal rule, no exceptions |
+| Cohort Priority Value | Student is in a cohort (LEO II) — hard scheduling constraint, higher value |
+| SSP Priority Value | Student is in an SSP (Academic Support, Pathway, etc.) — priority boost, lower value than cohort |
+
+**Stacking rules:**
+- Different sources stack: Grade Level + Cohort + SSP all add together
+- Same program across years does NOT stack: LEO I SSP is replaced by LEO II Cohort, not added on top
+- A student can belong to BOTH a cohort and a separate SSP: LEO II (Cohort) + Academic Support (SSP) = both values added
+
+### Engine Build Order
+
+1. Calculate Course Section Priority Value for every section (locks from Course + Teacher + Room files, weighted, plus average student priority)
+2. Rank all sections from highest to lowest Course Section Priority Value
+3. Place the highest-ranked section first — prescribed room, prescribed teacher, prescribed term
+4. Fill the section with students — highest Student Priority Value first, until the cap is reached
+5. Flag students who didn't make the cut — save to a report for the principal
+6. Move to the next highest-ranked section
+7. Repeat until all sections are placed
+
+### Weighted Priority Tests
+
+All tests use: each lock = 10 points, student priority range = 1-8.
+
+| Test | Section A | Section B | Result |
+|------|-----------|-----------|--------|
+| Heavy locks vs. no locks | 5 locks (50) + avg 6 = **56** | 0 locks (0) + avg 1 = **1** | A first — correct |
+| Same locks, different students | 3 locks (30) + avg 4 = **34** | 3 locks (30) + avg 1 = **31** | A first — higher-priority students break tie |
+| High locks + low students vs. no locks + high students | 5 locks (50) + avg 1 = **51** | 0 locks (0) + avg 6 = **6** | A first — locks can't be overridden |
+| Low locks + 1 high student vs. high locks + many students | 2 locks (20) + avg 7 = **27** | 5 locks (50) + avg 2 = **52** | B first — more locks wins |
+| Few high-priority students vs. many low-priority students | 4 locks (40) + avg 6 = **46** | 4 locks (40) + avg 1 = **41** | A first — 2 students not bumped by 20 |
+| Grade 12 AP S2 Singleton vs. no-lock FY course | 5 locks (50) + avg 4 = **54** | 0 locks (0) + avg 1 = **1** | A first — never bumped |
+| Same locks, close call | 3 locks (30) + avg 7 = **37** | 3 locks (30) + avg 3 = **33** | A first — student priority breaks tie |
+
+All 7 tests pass. Locks always determine the primary order. Student priority breaks ties between equally locked sections. No section with more locks is ever bumped by student priority alone.
+
+### Actual point values
+
+Point values for grade level, cohort, SSP, and lock weight will be selected after all data containers are fully defined — this ensures the student with the most restrictions always calculates highest and the most restricted course section is always placed first.
