@@ -89,20 +89,28 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 | Student > Grade Level Priority Score | calculated from grade level | not allowed |
 | Student > Cohort Name | cohort name (e.g., LEO Cohort A) | null — student not assigned to a cohort |
 | Student > Cohort Locked | Y or N | null — treated as N (not locked) |
-| Student > LEO II | Y or N | null — treated as N |
-| Student > Pathway | Y or N | null — treated as N |
-| Student > Academic Support | Y or N | null — treated as N |
-| Student > Honors Track | Y or N | null — treated as N |
-| Student > AP Track | Y or N | null — treated as N |
+| Student > Cohort Priority Value | number (assigned based on cohort membership) | null — no cohort, no cohort priority |
+| Student > SSP Programs | list of programs (e.g., LEO II, Pathway, Academic Support) | null — student is not in any special program |
+| Student > SSP Priority Value | number (assigned based on SSP membership) | null — no SSP, no SSP priority |
 | Student > Has IEP | Y or N | null — treated as N |
 | Student > IEP Max Class Size | number (e.g., 15) | null — no class size restriction |
 | Student > IEP Required Periods | period letters (e.g., A, B) | null — no period restriction |
-| Student > SSP (Student Special Priority) | calculated: LEO=5, Pathway=4, Academic Support=3, Standard=1 | not allowed — always calculated from population flags |
 | Student > Course Request > Course Code | course code (e.g., 745) | not applicable — every request has a code |
+| Student > Total Priority Score | calculated (see formula below) | not allowed — always calculated |
+
+**Cohort vs. SSP — these are NOT the same thing:**
+
+- **Cohort** = a hard scheduling constraint. A student in a cohort MUST stay with a specific group of students — same course, same teacher, same term, same period. The engine has less flexibility, so the cohort priority value is HIGHER.
+- **SSP (Special Student Population)** = the student belongs to one or more special programs (e.g., LEO II, Engineering Pathway, Academic Support). SSP affects priority but does NOT restrict the student to stay with a group. The engine has more flexibility, so the SSP priority value is LOWER than cohort.
+- **A student can belong to BOTH a cohort and one or more SSP programs.** When this happens, both priority values are used in the student's total priority score — they stack.
+
+**Total Priority Score formula:**
+
+> Student Total Priority = Grade Level Priority + Cohort Priority (if any) + SSP Priority (if any)
 
 **Cohort** is a shared resource. A student's cohort assignment is an input field in the Student file — NOT a separate file. The principal decides before the build which students belong to which cohort.
 
-**Special population flags** (LEO II, Pathway, Academic Support, Honors Track, AP Track, IEP) are input fields in the Student file. They determine the student's SSP score and affect scheduling priority.
+**SSP programs** (LEO II, Pathway, Academic Support, etc.) are input fields in the Student file. A student can belong to more than one SSP program.
 
 ### Teacher
 
