@@ -44,7 +44,7 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 | # | File | What it holds |
 |---|------|--------------|
 | 1 | **Student** | ID, grade level, course requests, cohort assignment, LEO/Pathway flags |
-| 2 | **Teacher** | ID, department, prescribed courses, prescribed room, prescribed period, prescribed term, SSP, availability |
+| 2 | **Teacher** | ID, department, prescribed courses, prescribed room, prescribed period, prescribed term, Special Student Population, availability |
 | 3 | **Room** | Room ID (S-234), capacity, type, available periods, prescribed courses, unavailable rooms |
 
 ### Shared Resource File
@@ -88,7 +88,7 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 
 3. **35.0 credits is the ABSOLUTE cap for students (Don Bosco).**
 
-4. **Student names/emails/contacts NEVER enter the scheduling database (PII isolation).**
+4. **Student names allowed for Don Bosco engine. Student names/emails/contacts NEVER enter the commercial product scheduling database (PII isolation). Teacher names allowed for both engines.**
 
 ---
 
@@ -106,30 +106,30 @@ The engine processes each student's data in this order:
 | 4 | Assign Point Value | Student > Grade Level Priority Value | Points assigned based on grade level |
 | 5 | History | Student > Historical Courses Completed | What course requests the student already had scheduled |
 | 6 | History | Student > Historical Cohort Membership | Was the student in a cohort in prior years |
-| 7 | History | Student > Historical SSP Membership | Was the student in an SSP in prior years |
-| 8 | Validate | Student > Current Year Course Requests | Cross-File Validation against 5, 6, 7 — confirm cohort, confirm SSP, flag duplicate courses |
+| 7 | History | Student > Historical Special Student Population Membership | Was the student in a Special Student Population in prior years |
+| 8 | Validate | Student > Current Year Course Requests | Cross-File Validation against 5, 6, 7 — confirm cohort, confirm Special Student Population, flag duplicate courses |
 | 9 | Grades | Student > Historical Failed Course + Teacher | Avoid placing student with the same teacher |
 | 10 | Grades | Student > Historical Prerequisite Courses (all required) + Final Grades | Verify student passed all required prerequisites |
 | 11 | Grades | Student > Historical Prerequisite Courses (all required) + Final Exam Grades | Verify prerequisite exam grades (null = ignore) |
 | 12 | Confirm | Student > LEO II (Y/N) | Cross-File Validation confirms cohort membership — this IS the cohort |
 | 13 | Assign Point Value | Student > Cohort Priority Value | Points assigned if LEO II = Y |
-| 14 | Confirm | Student > LEO I (Y/N) | Cross-File Validation confirms SSP membership |
-| 15 | Confirm | Student > Academic Support (Y/N) | Cross-File Validation confirms SSP membership |
-| 16 | Confirm | Student > Pathway (Y/N) | Cross-File Validation confirms SSP membership |
-| 17 | Assign Point Value | Student > SSP Priority Value | Points assigned based on SSP programs — stacks with Cohort unless LEO I → LEO II (same program, no stacking) |
-| 18 | **Calculate** | **Student > Raw Priority Value** | **Grade Level + Cohort (if any) + SSP (if any) — who the student IS. FIXED for the school year. No course, teacher, or room data. Saved to student's profile by school year.** |
+| 14 | Confirm | Student > LEO I (Y/N) | Cross-File Validation confirms Special Student Population membership |
+| 15 | Confirm | Student > Academic Support (Y/N) | Cross-File Validation confirms Special Student Population membership |
+| 16 | Confirm | Student > Pathway (Y/N) | Cross-File Validation confirms Special Student Population membership |
+| 17 | Assign Point Value | Student > Special Student Population Priority Value | Points assigned based on Special Student Population programs — stacks with Cohort unless LEO I → LEO II (same program, no stacking) |
+| 18 | **Calculate** | **Student > Raw Priority Value** | **Grade Level + Cohort (if any) + Special Student Population (if any) — who the student IS. FIXED for the school year. No course, teacher, or room data. Saved to student's profile by school year.** |
 | 19 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — includes the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only |
 | 20 | **Calculate** | **Student > Total Priority Value** | **Raw Priority Value (step 18) + Course Priority Values (step 19). Changes every run as courses are placed and removed from the student's request list. Saved to student's profile with run number and school year.** |
 
-**Cohort vs. SSP — these are NOT the same thing:**
+**Cohort vs. Special Student Population — these are NOT the same thing:**
 
 - **Cohort** = a hard scheduling constraint. A student in a cohort MUST stay with a specific group of students — same course, same teacher, same term, same period. Don Bosco Prep has one cohort: LEO II. The engine has less flexibility, so the cohort priority value is HIGHER.
-- **SSP (Special Student Population)** = the student belongs to one or more special programs (e.g., Pathway, Academic Support). SSP affects priority but does NOT restrict the student to stay with a group. The engine has more flexibility, so the SSP priority value is LOWER than cohort.
-- **A student can belong to BOTH a cohort and one or more SSP programs.** When this happens, both priority values are used in the student's total priority score — they stack.
+- **Special Student Population** = the student belongs to one or more special programs (e.g., Pathway, Academic Support). Special Student Population affects priority but does NOT restrict the student to stay with a group. The engine has more flexibility, so the Special Student Population priority value is LOWER than cohort.
+- **A student can belong to BOTH a cohort and one or more Special Student Population programs.** When this happens, both priority values are used in the student's total priority score — they stack.
 
 **Student Raw Priority Value formula (FIXED for the school year):**
 
-> Student Raw Priority Value = Grade Level Priority Value + Cohort Priority Value (if any) + SSP Priority Value (if any)
+> Student Raw Priority Value = Grade Level Priority Value + Cohort Priority Value (if any) + Special Student Population Priority Value (if any)
 
 This is who the student IS — no course, teacher, or room data. Calculated once and saved to the student's profile by school year.
 
@@ -147,7 +147,7 @@ Course Priority Values include the course's own restrictions (AP, Singleton, etc
 |--------|----------|--------|
 | Grade Level | 12 | (grade value) |
 | LEO II | Cohort | (cohort value) |
-| Academic Support | SSP | (SSP value) |
+| Academic Support | Special Student Population | (Special Student Population value) |
 | AP Art | AP course | (AP value) |
 | Singleton elective | Singleton | (singleton value) |
 | **Total** | | **all five added together** |
@@ -158,7 +158,7 @@ Course Priority Values include the course's own restrictions (AP, Singleton, etc
 |--------|----------|--------|
 | Grade Level | 12 | (grade value) |
 | LEO II | Cohort | (cohort value) |
-| Academic Support | SSP | (SSP value) |
+| Academic Support | Special Student Population | (Special Student Population value) |
 | AP Art | AP + Singleton → use HIGHER value only | (higher of AP or singleton value) |
 | **Total** | | **no double-count from AP Art** |
 
@@ -166,9 +166,73 @@ Course Priority Values include the course's own restrictions (AP, Singleton, etc
 
 **LEO I vs. LEO II — these are NOT the same thing:**
 
-- **LEO I** = SSP. The engine has flexibility to assign LEO I students into groups. No hard constraint during the LEO I year. LEO I automatically assigns the student to SSP as a member of Business Pathway.
-- **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period. LEO I SSP membership does NOT carry over to LEO II — it is replaced by Cohort. The engine must not add LEO I SSP + LEO II Cohort together because that is the same program across two years and would overinflate the score. However, if the student also belongs to a separate SSP (e.g., Academic Support), that separate SSP DOES stack with the Cohort. Example: a LEO II student in Academic Support gets Grade Level + Cohort (LEO II) + SSP (Academic Support).
+- **LEO I** = Special Student Population. The engine has flexibility to assign LEO I students into groups. No hard constraint during the LEO I year. LEO I automatically assigns the student to Special Student Population as a member of Business Pathway.
+- **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period. LEO I Special Student Population membership does NOT carry over to LEO II — it is replaced by Cohort. The engine must not add LEO I Special Student Population + LEO II Cohort together because that is the same program across two years and would overinflate the score. However, if the student also belongs to a separate Special Student Population (e.g., Academic Support), that separate Special Student Population DOES stack with the Cohort. Example: a LEO II student in Academic Support gets Grade Level + Cohort (LEO II) + Special Student Population (Academic Support).
 - LEO is a two-year pipeline: the engine's LEO I group assignments (output from year 1) become the prescribed cohort input for LEO II (year 2).
+
+**Student Template — Don Bosco Prep**
+
+The student data is split across two sheets in the same file. Sheet 1 holds student-level data (one row per student). Sheet 2 holds transcript history (one row per course per year).
+
+**Sheet 1: Student Profiles (one row per student)**
+
+| Column | Field | Required? | Values |
+|--------|-------|-----------|--------|
+| A | Student ID | REQUIRED | Unique student identifier |
+| B | Last Name | REQUIRED | Student's last name |
+| C | First Name | REQUIRED | Student's first name |
+| D | Grade Level | REQUIRED | 9, 10, 11, 12 |
+| E | NCAA | REQUIRED | Y/N — is this student NCAA tracked |
+| F | LEO II | REQUIRED | Y/N — cohort membership |
+| G | LEO I | REQUIRED | Y/N — Special Student Population membership |
+| H | Academic Support | REQUIRED | Y/N — Special Student Population membership |
+| I | Pathway | REQUIRED | Y/N — Special Student Population membership |
+| J | Cohort Name | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not in a cohort |
+| K | Cohort Locked | OPTIONAL | Y/N — confirms cross-file cohort result. If Y and data doesn't match, engine flags conflict for user to resolve. Null = not applicable |
+
+11 columns total.
+
+**Sheet 2: Transcript History (one row per course per year)**
+
+| Column | Field | Required? | Values |
+|--------|-------|-----------|--------|
+| A | Student ID | REQUIRED | Must match Sheet 1 |
+| B | Academic Year | REQUIRED | e.g., 2023-2024 |
+| C | Course Code | REQUIRED | Must match Course file |
+| D | Course Title | REQUIRED | Course name |
+| E | Department | REQUIRED | Department name |
+| F | Credits | REQUIRED | Credit value |
+| G | Final Grade | OPTIONAL | Numeric grade — null = incomplete |
+| H | Passed (Y/N) | OPTIONAL | null = incomplete |
+| I | Grade Level When Taken | REQUIRED | What grade the student was in |
+| J | Notes | OPTIONAL | null = none |
+
+10 columns total.
+
+**Columns removed from the original Template 8 (not needed by Don Bosco engine):**
+
+The original Template 8 had 21 columns on Sheet 1. The following 11 columns were removed:
+
+- Credits Earned — engine calculates from transcript
+- Credits Required — comes from School Settings file
+- GPA Band — engine doesn't use GPA for priority
+- Priority Level (P0-P5) — OLD priority system, engine now calculates automatically
+- SSP (Student Special Priority) — OLD system value, replaced by Special Student Population Priority Value
+- Has IEP — saved for commercial product
+- IEP Max Class Size — saved for commercial product
+- IEP Required Periods — saved for commercial product
+- Honors Track — engine doesn't use "track" for priority
+- AP Track — engine doesn't use "track" for priority
+- Requests Total, Requests Fulfilled, Placement Rate, Conflicts Active — engine calculates at runtime, not input data
+
+**Columns added (4 total):**
+
+- Last Name — student names allowed for Don Bosco engine
+- First Name — student names allowed for Don Bosco engine
+- NCAA (Y/N) — engine Step 3 needs this to validate course requests
+- LEO I (Y/N) — engine Step 14 needs this for Special Student Population confirmation
+
+**Commercial product note:** IEP columns (Has IEP, IEP Max Class Size, IEP Required Periods) and runtime output columns (Requests Total, Requests Fulfilled, Placement Rate, Conflicts Active) may be needed for the commercial engine. Student names will NOT be included in the commercial product (PII isolation). Specifications will be defined after the Don Bosco Prep engine build is completed.
 
 ### Teacher — Don Bosco Prep
 
@@ -193,7 +257,7 @@ The teacher data is split across two sheets in the same file. Sheet 1 holds teac
 | M | Avail Period E | REQUIRED | Y/N |
 | N | Avail Period F | REQUIRED | Y/N |
 | O | Avail Period G | REQUIRED | Y/N |
-| P | SSP Teacher | OPTIONAL | Which SSP programs this teacher is part of (e.g., Academic Support, Pathway) — null if none |
+| P | Special Student Population Teacher | OPTIONAL | Which Special Student Population programs this teacher is part of (e.g., Academic Support, Pathway) — null if none |
 
 16 columns total.
 
@@ -257,7 +321,7 @@ The engine processes each teacher's data in this order:
 | 3 | Validate | Teacher > Availability (Periods A-G) | Which periods the teacher is available — N = unavailable |
 | 4 | Validate | Teacher > Max Teaching Periods | Per-semester cap (default 5) |
 | 5 | Validate | Teacher > 6th Period Approval (FY/S1/S2) | Can the teacher exceed the 5-period cap? |
-| 6 | Confirm | Teacher > SSP Teacher | Is the teacher part of an SSP program? |
+| 6 | Confirm | Teacher > Special Student Population Teacher | Is the teacher part of a Special Student Population program? |
 | 7 | Load | Teacher > Course Assignments (Sheet 2) | Load all course assignments for this teacher |
 | 8 | Count Locks | Teacher > Prescribed Room | Each course with a prescribed room = 1 lock |
 | 9 | Count Locks | Teacher > Prescribed Period | Each course with a prescribed period = 1 lock |
@@ -650,7 +714,7 @@ Once a section is placed on the schedule, the engine fills it with students. Stu
 
 **Formula:**
 
-> Student Priority Value = Grade Level Priority Value + Cohort Priority Value (if any) + SSP Priority Value (if any)
+> Student Priority Value = Grade Level Priority Value + Cohort Priority Value (if any) + Special Student Population Priority Value (if any)
 
 **Components:**
 
@@ -658,12 +722,12 @@ Once a section is placed on the schedule, the engine fills it with students. Stu
 |-----------|-----------------|
 | Grade Level Priority Value | Higher grade = higher priority (12 highest, 9 lowest) — universal rule, no exceptions |
 | Cohort Priority Value | Student is in a cohort (LEO II) — hard scheduling constraint, higher value |
-| SSP Priority Value | Student is in an SSP (Academic Support, Pathway, etc.) — priority boost, lower value than cohort |
+| Special Student Population Priority Value | Student is in a Special Student Population (Academic Support, Pathway, etc.) — priority boost, lower value than cohort |
 
 **Stacking rules:**
-- Different sources stack: Grade Level + Cohort + SSP all add together
-- Same program across years does NOT stack: LEO I SSP is replaced by LEO II Cohort, not added on top
-- A student can belong to BOTH a cohort and a separate SSP: LEO II (Cohort) + Academic Support (SSP) = both values added
+- Different sources stack: Grade Level + Cohort + Special Student Population all add together
+- Same program across years does NOT stack: LEO I Special Student Population is replaced by LEO II Cohort, not added on top
+- A student can belong to BOTH a cohort and a separate Special Student Population: LEO II (Cohort) + Academic Support (Special Student Population) = both values added
 
 ### Engine Build Order
 
@@ -870,4 +934,4 @@ Without recalculation, a teacher who started with one high-priority student coul
 
 ### Actual point values
 
-Point values for grade level, cohort, SSP, and lock weight will be selected after all data containers are fully defined — this ensures the student with the most restrictions always calculates highest and the most restricted course section is always placed first.
+Point values for grade level, cohort, Special Student Population, and lock weight will be selected after all data containers are fully defined — this ensures the student with the most restrictions always calculates highest and the most restricted course section is always placed first.
