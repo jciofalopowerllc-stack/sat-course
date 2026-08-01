@@ -80,11 +80,21 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 
 ---
 
+## Universal Rules
+
+1. **Higher grade level = higher priority. No exceptions.** Grade 12 is highest, Grade 9 is lowest. A senior in their last year cannot miss a course — a freshman has three more chances.
+
+2. **Teacher load cap = 5 periods per semester.** Counted by PERIODS, not courses. A full-year (FY) course uses 1 period in S1 AND 1 period in S2. A semester course uses 1 period in ONE semester only. The cap is calculated per semester — no more than 5 periods in S1 and no more than 5 periods in S2, using any combination of FY and semester courses. The cap cannot be exceeded unless the teacher is approved for a 6th period (full-year, S1 only, or S2 only).
+
+3. **35.0 credits is the ABSOLUTE cap for students (Don Bosco).**
+
+4. **Student names/emails/contacts NEVER enter the scheduling database (PII isolation).**
+
+---
+
 ## Parent Data Inputs
 
 ### Student — Don Bosco Prep
-
-**Universal rule: Higher grade level = higher priority. No exceptions.** Grade 12 is highest, Grade 9 is lowest. A senior in their last year cannot miss a course — a freshman has three more chances.
 
 The engine processes each student's data in this order:
 
