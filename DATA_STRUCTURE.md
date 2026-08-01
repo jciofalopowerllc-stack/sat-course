@@ -33,6 +33,51 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 
 ---
 
+## Required Input Files
+
+8 input files. No more, no less.
+
+### Parent Files (one per parent)
+
+| # | File | What it holds |
+|---|------|--------------|
+| 1 | **Student** | ID, grade level, course requests, cohort assignment, LEO/Pathway flags |
+| 2 | **Teacher** | ID, department, prescribed courses, prescribed room, prescribed period, prescribed term, SSP, availability |
+| 3 | **Room** | Room ID (S-234), capacity, type, available periods, prescribed courses, unavailable rooms |
+
+### Shared Resource File
+
+| # | File | What it holds |
+|---|------|--------------|
+| 4 | **Course** | Course code, title, department, credits, prerequisites, number of sections, prescribed term (FY/S1/S2) |
+
+Term designation is a property of the course code — NOT a separate file. Cohort assignment is a field in the Student file — NOT a separate file.
+
+### Constraint File
+
+| # | File | What it holds |
+|---|------|--------------|
+| 5 | **Co-Schedule Groups** | Courses that must share the same period (links multiple course codes together) |
+
+This requires its own file because it is a many-to-many relationship between course codes that cannot be stored as a single field in the Course file.
+
+### Historical Files (for pre-build validation)
+
+| # | File | What it holds |
+|---|------|--------------|
+| 6 | **Historical Grades** | Student ID, school year, course code, section, final grade, pass/fail |
+| 7 | **Prior Year Master Schedule** | School year, course code, section, teacher ID, room |
+
+### School Configuration
+
+| # | File | What it holds |
+|---|------|--------------|
+| 8 | **School Settings** | Credit cap (35), periods (A-G), graduation requirements by grade level |
+
+This is the rulebook — not a parent, not a shared resource, not a historical file. It defines the constraints the engine must enforce for the entire school.
+
+---
+
 ## Parent Data Inputs
 
 ### Student
@@ -42,6 +87,22 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 | Student > ID Number | unique ID (e.g., 106245) | not allowed — every student has an ID |
 | Student > Grade Level | 9, 10, 11, 12 | not allowed — every student has a grade |
 | Student > Grade Level Priority Score | calculated from grade level | not allowed |
+| Student > Cohort Name | cohort name (e.g., LEO Cohort A) | null — student not assigned to a cohort |
+| Student > Cohort Locked | Y or N | null — treated as N (not locked) |
+| Student > LEO II | Y or N | null — treated as N |
+| Student > Pathway | Y or N | null — treated as N |
+| Student > Academic Support | Y or N | null — treated as N |
+| Student > Honors Track | Y or N | null — treated as N |
+| Student > AP Track | Y or N | null — treated as N |
+| Student > Has IEP | Y or N | null — treated as N |
+| Student > IEP Max Class Size | number (e.g., 15) | null — no class size restriction |
+| Student > IEP Required Periods | period letters (e.g., A, B) | null — no period restriction |
+| Student > SSP (Student Special Priority) | calculated: LEO=5, Pathway=4, Academic Support=3, Standard=1 | not allowed — always calculated from population flags |
+| Student > Course Request > Course Code | course code (e.g., 745) | not applicable — every request has a code |
+
+**Cohort** is a shared resource. A student's cohort assignment is an input field in the Student file — NOT a separate file. The principal decides before the build which students belong to which cohort.
+
+**Special population flags** (LEO II, Pathway, Academic Support, Honors Track, AP Track, IEP) are input fields in the Student file. They determine the student's SSP score and affect scheduling priority.
 
 ### Teacher
 
@@ -61,6 +122,29 @@ Room ID is the room number (e.g., S-234). This is both the identifier and the na
 
 - **Don Bosco Prep (now):** The principal prescribes which room a course uses, or provides a list of rooms that CANNOT be used. The engine works with what's left. No department matching needed.
 - **Commercial Product (future):** Room > Department field will be added so the engine can automatically match rooms to courses and teachers by department. A new school won't have to prescribe every room manually.
+
+---
+
+## Shared Resource Data Inputs
+
+### Course
+
+| Field | Values | Null Meaning |
+|-------|--------|-------------|
+| Course > Course Code | unique code (e.g., 745) | not allowed — every course has a code |
+| Course > Course Title | text (e.g., Catholic Social Teaching) | not allowed — every course has a title |
+| Course > Department | department name (e.g., THEO, ENG, MATH) | not allowed — every course belongs to a department |
+| Course > Credits | number (e.g., 5) | not allowed — every course has a credit value |
+| Course > Grade Levels | list (e.g., 9, 10, 11, 12) | not allowed — every course has eligible grade levels |
+| Course > Sections Needed | number (e.g., 8) | not allowed — every course needs at least 1 section |
+| Course > Max Enrollment per Section | number (e.g., 25) | not allowed — every section has a cap |
+| Course > Prescribed Term | FY, S1, S2 | null — engine selects least restrictive |
+| Course > Prerequisites | course codes (e.g., 110) | null — no prerequisites |
+| Course > Corequisites | course codes (e.g., 301) | null — no corequisites |
+| Course > Graduation Requirement | subject area (e.g., English, Theology, Math, Science, History) | null — course is an elective |
+| Course > Singleton | Y or N | not allowed — engine must know if only one section exists |
+
+**Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English" or "Theology"). If the field is null, the course is an elective. The engine uses this field combined with the School Settings file (graduation requirements by grade level) to verify that every student's course requests include all required subject areas for their grade.
 
 ---
 
