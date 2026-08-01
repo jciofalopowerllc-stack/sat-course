@@ -1,5 +1,7 @@
 # Data Structure — Master Schedule Builder
 
+**Rule: All commercial product work happens ONLY after the Don Bosco Prep engine build is completed.** Everything in this document is for Don Bosco Prep unless explicitly labeled otherwise.
+
 ## Parents
 
 Three entities that stand on their own. They don't belong to anything else.
