@@ -49,7 +49,54 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 
 ### Room
 
-(to be defined)
+| Field | Values | Null Meaning |
+|-------|--------|-------------|
+| Room > Prescribed Room > Course Code | course code | null — room not locked to a course |
+| Room > Unavailable Rooms > Course Code | list of room numbers | null — no rooms excluded |
+
+**Don Bosco Prep vs. Commercial Product:**
+
+- **Don Bosco Prep (now):** The principal prescribes which room a course uses, or provides a list of rooms that CANNOT be used. The engine works with what's left. No department matching needed.
+- **Commercial Product (future):** Room > Department field will be added so the engine can automatically match rooms to courses and teachers by department. A new school won't have to prescribe every room manually.
+
+---
+
+## Pre-Build Validation Sources
+
+### Student Course Request Checks
+
+The engine needs to validate course requests before the build runs. This requires data from multiple sources:
+
+| Check | Sources Needed |
+|-------|---------------|
+| Total credits within cap (35) | Student > Course Request > Course Code + Course Code > Credits |
+| Duplicate requests in current year | Student > Course Request > Course Code (check for repeats within same student) |
+| Already completed in previous year | Student > Course Request > Course Code + Historical Grades (same course code with Pass) |
+| Prerequisites met | Student > Course Request > Course Code + Course Code > Prerequisite > Course Code + Historical Grades |
+| Avoid failed-course teacher | Historical Grades (failed course + section) + Prior Year Master Schedule (section + teacher) |
+
+### Historical Grades File
+
+| Field | Purpose |
+|-------|---------|
+| Student ID | match to Student > ID Number |
+| School Year | which year (23-24, 24-25, 25-26) |
+| Course Code | clean, standalone column — NOT embedded in a combined string |
+| Section | needed to cross-reference teacher from prior year master schedule |
+| Final Grade | the grade earned |
+| Pass/Fail | clear yes/no — did the student complete this course |
+
+### Prior Year Master Schedule
+
+| Field | Purpose |
+|-------|---------|
+| School Year | which year |
+| Course Code | match to historical grades |
+| Section | match to historical grades — this is the link between the two files |
+| Teacher ID | who taught this section |
+| Room | where this section met |
+
+The engine cross-references these two files using Course Code + Section to connect a student's grade to the teacher and room from that year.
 
 ---
 
