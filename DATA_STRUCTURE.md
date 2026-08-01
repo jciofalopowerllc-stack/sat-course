@@ -114,8 +114,8 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 
 **LEO I vs. LEO II — these are NOT the same thing:**
 
-- **LEO I** = SSP. The engine has flexibility to assign LEO I students into groups. No hard constraint during the LEO I year.
-- **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period.
+- **LEO I** = SSP. The engine has flexibility to assign LEO I students into groups. No hard constraint during the LEO I year. LEO I automatically assigns the student to SSP as a member of Business Pathway — two things happen at once.
+- **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period. LEO II does NOT re-assign the student to Business Pathway SSP — that would be redundant because it was already assigned during LEO I.
 - LEO is a two-year pipeline: the engine's LEO I group assignments (output from year 1) become the prescribed cohort input for LEO II (year 2).
 
 ### Teacher
