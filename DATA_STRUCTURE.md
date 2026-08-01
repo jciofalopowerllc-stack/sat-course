@@ -115,7 +115,7 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 **LEO I vs. LEO II — these are NOT the same thing:**
 
 - **LEO I** = SSP. The engine has flexibility to assign LEO I students into groups. No hard constraint during the LEO I year. LEO I automatically assigns the student to SSP as a member of Business Pathway.
-- **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period. LEO I SSP membership does NOT carry over to LEO II — it is replaced by Cohort. A LEO II student receives Cohort priority only, not Cohort + SSP. Adding both would overinflate the student's score.
+- **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period. LEO I SSP membership does NOT carry over to LEO II — it is replaced by Cohort. The engine must not add LEO I SSP + LEO II Cohort together because that is the same program across two years and would overinflate the score. However, if the student also belongs to a separate SSP (e.g., Academic Support), that separate SSP DOES stack with the Cohort. Example: a LEO II student in Academic Support gets Grade Level + Cohort (LEO II) + SSP (Academic Support).
 - LEO is a two-year pipeline: the engine's LEO I group assignments (output from year 1) become the prescribed cohort input for LEO II (year 2).
 
 ### Teacher
