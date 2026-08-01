@@ -68,14 +68,15 @@ GRAD_REQ_DEPTS = {
     12: set(_grad_req.get('grade_12', {}).get('required_departments', []))
          | set(_grad_req.get('grade_12', {}).get('required_either', [])),
 }
-# ── Priority Band System ──
+# ── Priority Band System (Four-Band) ──
 # Band 1 (GRAD_REQ_BAND): courses required for the student's grade-level graduation.
-# Band 2 (ELECTIVE_BAND): all other courses (electives), regardless of AP/Honors/restrictions.
-# Band 1 courses are ALWAYS ranked higher than Band 2 courses for the same student.
-# Within each band, the static course tier (P0-P5) determines relative order.
-# The band offset guarantees separation: the lowest Band 1 score (100 + P0 = 100)
-# always exceeds the highest Band 2 score (0 + P5 = 5).
+# Band 2 (AP_ELECTIVE_BAND): AP/Singleton elective courses — non-substitutable, 1-2 sections.
+# Band 3 (CONSTRAINED_ELECTIVE_BAND): non-singleton electives with limited sections (P3+, <=3 sections).
+# Band 4 (ELECTIVE_BAND): regular electives — flexible, multiple alternatives (4+ sections).
+# Separation guarantees: lowest Band 1 (100) > highest Band 2 (55) > highest Band 3 (30) > highest Band 4 (5).
 GRAD_REQ_BAND = 100
+AP_ELECTIVE_BAND = 50
+CONSTRAINED_ELECTIVE_BAND = 25
 ELECTIVE_BAND = 0
 
 def prio(c):
@@ -93,20 +94,28 @@ def _is_grad_req_dept(cid, student_grade):
     dept = _course_dept_map.get(str(cid), '')
     return dept in GRAD_REQ_DEPTS.get(student_grade, set())
 
+_COURSE_SECTION_COUNTS = {}
+
 def student_prio(pid, cid):
-    """Dynamic per-student priority using the two-band system.
-    Band 1 (100+): graduation-required courses — never bumped in favor of an elective.
-    Band 2 (0-5): electives — scored by course tier within the band.
-    The lowest possible Band 1 score (100) always exceeds the highest Band 2 score (5)."""
+    """Dynamic per-student priority using the four-band system.
+    Band 1 (100+): graduation-required courses for this student's grade.
+    Band 2 (50+): AP/Singleton elective courses — non-substitutable, 1-2 sections.
+    Band 3 (25+): constrained electives — P3+ non-singleton with limited sections (<=3).
+    Band 4 (0-5): regular electives — flexible, 4+ sections."""
     base = prio(cid)
     g = grade.get(str(pid), 0)
     if g and _is_grad_req_dept(cid, g):
         return GRAD_REQ_BAND + base
+    if base >= 5 or str(cid) in SINGLETON_COURSES:
+        return AP_ELECTIVE_BAND + base
+    if base >= 3 and _COURSE_SECTION_COUNTS.get(str(cid), 0) <= 3:
+        return CONSTRAINED_ELECTIVE_BAND + base
     return ELECTIVE_BAND + base
 
 with open(os.path.join(os.path.dirname(__file__) or '.', 'priority_assignments.json')) as _paf:
     PRIO_ASSIGN = json.load(_paf)
 
+_COURSE_SECTION_COUNTS.update({str(k): v.get('sections', 0) for k, v in PRIO_ASSIGN.get('course_priorities', {}).items()})
 _PA_WEIGHTS = PRIO_ASSIGN['metadata']['weights']
 _W = (_PA_WEIGHTS['CFP'], _PA_WEIGHTS['CYRP'], _PA_WEIGHTS['SSP'], _PA_WEIGHTS['MTP'],
       _PA_WEIGHTS['CTAP'], _PA_WEIGHTS['TL'], _PA_WEIGHTS['PL'], _PA_WEIGHTS['RL'],
@@ -138,11 +147,6 @@ def _compute_scarcity():
             _scarcity_scores[cid] = 2
         else:
             _scarcity_scores[cid] = 1
-
-def _compute_conflict_risk():
-    """ConflictRisk per student-course: count how many of the student's OTHER requests
-    share sections in the same period as this course's sections. Higher = more risk."""
-    _conflict_risk_scores.clear()
 
 def placement_score(pid, cid):
     key = (str(pid), str(cid))
@@ -1115,7 +1119,7 @@ def _compute_conflict_risk():
                     os = sections[osid]
                     if os['period']:
                         o_periods.add(os['period'])
-                if o_periods and c_periods and o_periods == c_periods and len(o_periods) == 1:
+                if o_periods and c_periods and o_periods & c_periods:
                     risk += 1
             _conflict_risk_scores[(str(pid), str(cid))] = min(risk, 5)
 
@@ -1648,12 +1652,9 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
-# Two-band priority: Band 1 (100+) = graduation required, Band 2 (0-5) = electives.
-# Any course in Band 1 is pinned (never bumped in favor of an elective).
-PROT_THRESHOLD = GRAD_REQ_BAND  # 100 — all graduation-required courses are protected
-# Legacy static sets kept for reference but NOT used in bump decisions
-PROT = {str(c) for c, p in COURSE_PRIORITY.items() if p == 5}
-PROT_P4 = {str(c) for c, p in COURSE_PRIORITY.items() if p == 4}
+# Three-band priority: Band 1 (100+) = grad req, Band 2 (50+) = AP/singleton elective, Band 3 (0-5) = regular elective.
+# Bands 1 and 2 are pinned during CSP re-solve — only Band 3 courses are rearranged.
+PROT_THRESHOLD = AP_ELECTIVE_BAND  # 50 — grad reqs AND AP/singleton electives are protected
 
 def resolve_student(pid):
     pins = {}
@@ -1821,7 +1822,7 @@ for pid in students:
             'code': c, 'course': course_info.get(c, {}).get('title', c),
             'priority': prio(c),
             'effective_priority': _eff_prio,
-            'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else 'elective',
+            'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else ('ap_singleton_elective' if _eff_prio >= AP_ELECTIVE_BAND else ('constrained_elective' if _eff_prio >= CONSTRAINED_ELECTIVE_BAND else 'elective')),
             'is_grad_req': _eff_prio >= GRAD_REQ_BAND,
             'composite_ws': round(_ws, 1),
             'composite_cc': _cc,
@@ -1913,7 +1914,7 @@ _reseat_course_order = {}
 for _pid in _reseat_pid_order:
     _reseat_course_order[_pid] = sorted(
         sreq[_pid],
-        key=lambda c, _p=_pid: (placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
+        key=lambda c, _p=_pid: (-student_prio(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
     )
 
 
@@ -1981,7 +1982,7 @@ def full_reseat():
                 'code': c, 'course': course_info.get(c, {}).get('title', c),
                 'priority': prio(c),
                 'effective_priority': _eff_prio,
-                'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else 'elective',
+                'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else ('ap_singleton_elective' if _eff_prio >= AP_ELECTIVE_BAND else ('constrained_elective' if _eff_prio >= CONSTRAINED_ELECTIVE_BAND else 'elective')),
                 'is_grad_req': _eff_prio >= GRAD_REQ_BAND,
                 'composite_ws': round(_ws_b, 1),
                 'composite_cc': _cc_b,
@@ -2011,16 +2012,48 @@ def full_reseat():
         if best is not None:
             add_place(pid, cid, best)
             nc.remove(cl_item)
-    return nc
+    # CSP recovery: for students still missing bumped courses, try rearranging their schedule
+    bumped_pids = {c['student'] for c in nc}
+    for pid in bumped_pids:
+        resolve_student(pid)
+    # Re-check: some CSP rearrangements may have opened slots for greedy re-add
+    still_bumped = []
+    for cl_item in list(nc):
+        pid, cid = cl_item['student'], cl_item['code']
+        if cid in assign.get(pid, {}):
+            continue
+        used = set()
+        for c2, s2 in assign.get(pid, {}).items():
+            for x in occ_cells(s2):
+                used.add(x)
+        best, bsc = None, None
+        for alt in sec_by_code.get(cid, []):
+            if any(x in used for x in occ_cells(alt)):
+                continue
+            sc = (max(0, secfill[alt] + 1 - sections[alt]['cap']), secfill[alt])
+            if bsc is None or sc < bsc:
+                bsc, best = sc, alt
+        if best is not None:
+            add_place(pid, cid, best)
+        else:
+            still_bumped.append(cl_item)
+    return still_bumped
 
+
+def _clash_quality(cl):
+    """Priority-aware clash quality score: (band1+2, band3, total).
+    Lower is better. Lexicographic: never trade higher-band clashes for lower-band ones."""
+    b12 = sum(1 for c in cl if student_prio(c['student'], c['code']) >= AP_ELECTIVE_BAND)
+    b3 = sum(1 for c in cl if CONSTRAINED_ELECTIVE_BAND <= student_prio(c['student'], c['code']) < AP_ELECTIVE_BAND)
+    return (b12, b3, len(cl))
 
 def run_optimization_pass(cl=None):
     if cl is None:
         cl = full_reseat()
+    best_q = _clash_quality(cl)
     stalled = 0
-    # v3: deeper search — 40 iterations, top 8 candidates per round
-    for d_iter in range(40):
-        if stalled >= 5:
+    for d_iter in range(60):
+        if stalled >= 8:
             break
         sec_sc = Counter()
         for c in cl:
@@ -2081,14 +2114,16 @@ def run_optimization_pass(cl=None):
             break
         cands.sort(reverse=True)
         improved = False
-        for est, sid, np in cands[:8]:
+        for est, sid, np in cands[:16]:
             s = sections[sid]
             op = s['period']
             s['period'] = np
             _invalidate_occ_cache()
             tc = full_reseat()
-            if len(tc) < len(cl):
+            tc_q = _clash_quality(tc)
+            if tc_q < best_q:
                 cl = tc
+                best_q = tc_q
                 improved = True
                 stalled = 0
                 break
@@ -2106,11 +2141,25 @@ best_periods = None
 best_halves = None
 best_seed = None
 
+def _recompute_seating_order():
+    """Recompute scarcity, conflict risk, and per-student course ordering
+    after period assignments change. This tunes each restart's seating to its layout."""
+    _compute_scarcity()
+    _compute_conflict_risk()
+    _placement_cache.clear()
+    _course_composite_cache.clear()
+    for _pid in _reseat_pid_order:
+        _reseat_course_order[_pid] = sorted(
+            sreq[_pid],
+            key=lambda c, _p=_pid: (-student_prio(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
+        )
+
 import time as _time
 for restart, seed in enumerate(SEEDS):
     _t0 = _time.time()
     _restore_for_restart(fixed_state)
     greedy_assign_periods(seed=seed)
+    _recompute_seating_order()
     cl = full_reseat()
     baseline = len(cl)
 
@@ -2120,7 +2169,8 @@ for restart, seed in enumerate(SEEDS):
 
     print(f"  Restart {restart+1}/{len(SEEDS)} (seed={seed}): baseline={baseline} -> optimized={result}  [{_elapsed:.1f}s]")
 
-    if best_clash is None or result < len(best_clash):
+    result_q = _clash_quality(cl)
+    if best_clash is None or result_q < _clash_quality(best_clash):
         best_clash = cl
         best_seed = seed
         best_periods = {s['sid']: s['period'] for s in sections}
@@ -2135,6 +2185,7 @@ for restart, seed in enumerate(SEEDS):
 for s in sections:
     s['period'] = best_periods[s['sid']]
     s['halves'] = best_halves[s['sid']]
+_recompute_seating_order()
 clash = full_reseat()
 print(f"\n  BEST: seed={best_seed}, {len(clash)} clashes")
 
