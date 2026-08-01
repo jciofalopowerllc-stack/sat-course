@@ -322,6 +322,7 @@ for r in range(2, ws2.max_row + 1):
 print(f"  Sections: {len(sections)}")
 print(f"  Courses: {len(sec_by_code)}")
 print(f"  Teachers: {len(teacher_sections)}")
+swb.close()
 
 # Populate course→department map for graduation-requirement priority
 for _cid, _ci in course_info.items():
@@ -363,6 +364,7 @@ for r in range(2, rws.max_row + 1):
 
 print(f"  Students: {len(students)}")
 print(f"  Requests: {sum(len(v) for v in sreq.values())}")
+rwb.close()
 
 # ── Template 6: Teacher Profiles ──
 teacher_profiles = {}
@@ -989,6 +991,7 @@ for r in range(2, lws.max_row + 1):
                 cohB.add(pid)
             break
 print(f"  LEO Cohort A: {len(cohA)}, Cohort B: {len(cohB)}")
+lwb.close()
 
 # ── Template 4: Co-Schedule Groups ──
 t4_path = os.path.join(TEMPLATES, 'Template_4_CoSchedule_Groups.xlsx')
@@ -1005,6 +1008,7 @@ for r in range(4, cws.max_row + 1):
     sem = cws.cell(r, 8).value
     cogroups.append({'name': gname, 'codes': codes, 'period': period, 'sem': sem})
     print(f"  Co-schedule: {gname} = {codes} period={period}")
+iwb.close()
 
 # ── Template 5: Prior Year Schedule ──
 t5_path = os.path.join(TEMPLATES, 'Template_5_Prior_Year_Schedule.xlsx')
@@ -1059,6 +1063,7 @@ for e in prior_entries:
         prior_course_periods[e['code']].add(e['period'])
 
 print(f"  Prior-year entries: {len(prior_entries)}")
+pwb.close()
 
 
 # ── Teacher Load Rules (enhanced with profiles + contracts) ──
@@ -1669,7 +1674,7 @@ _all_requests.sort(key=_full_sort_key)
 #   - periods are getting used (conflict risk changes)
 #   - ripple effects have shifted
 # So we recalculate scores and re-sort the remaining placements.
-_BATCH_SIZE = 500
+_BATCH_SIZE = 1500
 _placed_set = set()
 _placed_count_b = 0
 
@@ -2121,6 +2126,100 @@ def full_reseat():
     return still_bumped
 
 
+def full_reseat_fast():
+    """Fast version for optimizer: same greedy+CSP+bump logic, but returns only
+    a quality tuple instead of building full diagnostic dicts for every bump.
+    This avoids ~15,000 rounds of root cause analysis that would never be used."""
+    _invalidate_occ_cache()
+    for pid in students:
+        assign[pid] = {}
+    secfill.clear()
+    cell_usage.clear()
+    for pid in _reseat_pid_order:
+        for cid in _reseat_course_order[pid]:
+            if cid not in sec_by_code:
+                continue
+            if cid == '745':
+                if pid in cohA and leo2C is not None:
+                    add_place(pid, cid, leo2C)
+                elif pid in cohB and leo2E is not None:
+                    add_place(pid, cid, leo2E)
+                else:
+                    add_place(pid, cid, min(sec_by_code[cid],
+                              key=lambda sid: (added_conflicts(pid, sid), secfill[sid])))
+                continue
+            add_place(pid, cid, min(sec_by_code[cid], key=lambda sid: (
+                added_conflicts(pid, sid),
+                max(0, secfill[sid] + 1 - sections[sid]['cap']),
+                secfill[sid])))
+    for rnd in range(3):
+        cpids = [pid for pid in students
+                 if any(cell_usage.get((pid, x), 0) > 1
+                        for cid, sid in assign[pid].items() for x in occ_cells(sid))]
+        if not cpids:
+            break
+        rslvd = 0
+        for pid in cpids:
+            if any(cell_usage.get((pid, x), 0) > 1
+                   for cid, sid in assign[pid].items() for x in occ_cells(sid)):
+                if resolve_student(pid):
+                    rslvd += 1
+        if rslvd == 0:
+            break
+    top = 0
+    mid = 0
+    total = 0
+    for pid in students:
+        cm = defaultdict(list)
+        for cid, sid in list(assign[pid].items()):
+            for x in occ_cells(sid):
+                cm[x].append(cid)
+        bmp = set()
+        for x, cs in cm.items():
+            cs = [c for c in cs if c not in bmp]
+            if len(cs) > 1:
+                _sf = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+                kp = min(cs, key=_sf)
+                for c in cs:
+                    if c != kp and student_prio(pid, c) < PROT_THRESHOLD:
+                        bmp.add(c)
+        for c in bmp:
+            rm_place(pid, c)
+            sp = student_prio(pid, c)
+            if sp >= LEVEL_NO_ALTERNATIVE:
+                top += 1
+            elif sp >= LEVEL_LIMITED_CHOICE:
+                mid += 1
+            total += 1
+    # Greedy re-add for bumped courses (no diagnostic tracking)
+    for pid in students:
+        for cid in sreq[pid]:
+            if cid in assign.get(pid, {}):
+                continue
+            if cid not in sec_by_code:
+                continue
+            used = set()
+            for c2, s2 in assign.get(pid, {}).items():
+                for x in occ_cells(s2):
+                    used.add(x)
+            best, bsc = None, None
+            for alt in sec_by_code.get(cid, []):
+                if any(x in used for x in occ_cells(alt)):
+                    continue
+                sc = (max(0, secfill[alt] + 1 - sections[alt]['cap']), secfill[alt])
+                if bsc is None or sc < bsc:
+                    bsc, best = sc, alt
+            if best is not None:
+                add_place(pid, cid, best)
+                total -= 1
+                sp = student_prio(pid, cid)
+                if sp >= LEVEL_NO_ALTERNATIVE:
+                    top -= 1
+                elif sp >= LEVEL_LIMITED_CHOICE:
+                    mid -= 1
+    return (max(0, top), max(0, mid), max(0, total))
+
+
 def _clash_quality(cl):
     """Priority-aware clash quality score: (band1+2, band3, total).
     Lower is better. Protects higher pyramid levels from being traded for lower ones."""
@@ -2186,7 +2285,15 @@ def run_optimization_pass(cl=None):
                         rsids = sec_by_code.get(rc, [])
                         if rsids and all(sections[rs]['period'] == p for rs in rsids):
                             if any(set(sections[rs]['halves']) & set(s['halves']) for rs in rsids):
-                                new_conf += 1
+                                sp = student_prio(rpid, rc)
+                                if sp >= LEVEL_GRAD_REQ:
+                                    new_conf += 4
+                                elif sp >= LEVEL_NO_ALTERNATIVE:
+                                    new_conf += 3
+                                elif sp >= LEVEL_LIMITED_CHOICE:
+                                    new_conf += 2
+                                else:
+                                    new_conf += 1
                                 break
                 est = score - new_conf
                 if est > 0:
@@ -2200,11 +2307,10 @@ def run_optimization_pass(cl=None):
             op = s['period']
             s['period'] = np
             _invalidate_occ_cache()
-            tc = full_reseat()
-            tc_q = _clash_quality(tc)
+            tc_q = full_reseat_fast()
             if tc_q < best_q:
-                cl = tc
                 best_q = tc_q
+                cl = full_reseat()
                 improved = True
                 stalled = 0
                 break
@@ -2236,7 +2342,9 @@ def _recompute_seating_order():
         )
 
 import time as _time
+import gc as _gc
 for restart, seed in enumerate(SEEDS):
+    _gc.collect()
     _t0 = _time.time()
     _restore_for_restart(fixed_state)
     greedy_assign_periods(seed=seed)

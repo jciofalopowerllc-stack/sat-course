@@ -44,11 +44,11 @@ The core algorithm runs in four phases:
 | Phase | Name | Function |
 |-------|------|----------|
 | A | Assign Periods | Place 350 sections across 7 periods (A–G) using multi-restart greedy optimization |
-| B | Seat Students | Place 6,512 course requests using greedy warm-start + CSP re-solve |
-| C | Bump Conflicts | Resolve remaining conflicts by bumping lower-priority courses |
-| D | Multi-Restart Clash Resolution | 8 random seeds, full re-seat per seed, keep best solution |
+| B | Seat Students | Place 6,512 course requests using pyramid-level ordering with batch recalculation and ripple scoring |
+| C | Bump Conflicts | Resolve remaining conflicts by bumping lower-priority courses, with CSP recovery |
+| D | Multi-Restart Optimization | 16 random seeds × 60-iteration priority-aware optimization, keep best solution |
 
-**Current Performance:** 207 clashes, 96.8% placement rate (6,305/6,512), zero P5 (AP/Singleton) clashes.
+**Current Performance:** Under active optimization. Baseline before audit fixes: 325 clashes, 95.1% placement. Three-band priority system reduced to 240 clashes. Full pyramid-level + ripple scoring system committed, pending first run.
 
 ### 2.2 Data Inputs
 
@@ -80,9 +80,26 @@ The core algorithm runs in four phases:
 
 ## 3. Priority System — Student Rank Score
 
-### 3.1 Philosophy
+### 3.1 Philosophy — The Pyramid
 
-The scheduling engine builds the master schedule in order of constraint density. Placements with the most restrictions are locked in first, while the grid is wide open and conflict-free. Flexible placements go last, absorbing whatever periods remain. The goal is a zero-conflict master schedule.
+The scheduling engine builds the master schedule like a pyramid, top-down. Placements at the top of the pyramid have the most restrictions and the biggest ripple effect on everyone else — they are placed first, while the grid is wide open. Placements at the bottom are flexible and absorb whatever periods remain. The goal is a zero-conflict master schedule.
+
+Every placement is a "pebble in the pond." The engine measures how many other placements are affected by each one (the ripple). Bigger ripples get placed earlier within their pyramid level. After a batch of placements, the pond has changed — scarcity, conflict risk, and ripple scores are recalculated before the next batch.
+
+### 3.1a Pyramid Levels
+
+Each student-course placement is classified into one of four pyramid levels based on how critical and how constrained it is:
+
+| Level | Score | Name | Description |
+|-------|-------|------|-------------|
+| 1 (top) | 100+ | Graduation Required | Student MUST take this course to graduate. Department is required for their grade level. |
+| 2 | 50-55 | No Alternative | Only 1-2 sections exist and no substitute course is available. Includes singletons (Guitar, Robotics, AP Art, etc.) and P5 courses. |
+| 3 | 25-30 | Limited Choice | Few sections available (3 or fewer) and course priority is 3+. Hard to reschedule if bumped. |
+| 4 (base) | 0-5 | Flexible | Many sections available. Easy to move around. Absorbs whatever remains. |
+
+Score separation ensures no level can be confused with another: lowest Level 1 (100) is always higher than highest Level 2 (55).
+
+Levels 1 and 2 are **protected** — they cannot be bumped to make room for a lower-level placement.
 
 ### 3.2 Ten Raw Inputs
 
@@ -173,11 +190,15 @@ Each student is ranked 1–800 (most restricted to least restricted) using a two
 
 ### 3.7 Scheduling Order
 
-1. Rank all 800 students by Student Rank Score (most restricted first)
-2. For each student, rank their course requests by Placement Composite Score (highest first)
-3. Student #1's highest-scoring placement enters a wide-open grid — guaranteed no conflict
-4. Work through all 800 students in rank order
-5. By the time flexible students are reached, their flexible courses absorb whatever periods remain
+Placements are sorted globally (not per-student) using a five-key ordering:
+
+1. **Pyramid Level** (highest first) — graduation requirements before no-alternatives before limited-choice before flexible
+2. **Ripple Score** (biggest first) — placements that affect the most other placements go first
+3. **Composite Score** (constraint count, then weighted sum) — most constrained first
+4. **Section Count** (fewest first) — courses with fewer sections are harder to place
+5. **Student Rank** (tiebreaker) — most constrained student first
+
+Placements are made in batches. After each batch, scarcity, conflict risk, and ripple scores are recalculated because the pond has changed. Remaining placements are re-sorted with the updated scores before the next batch.
 
 ### 3.8 Per-Placement Composite
 
@@ -235,7 +256,16 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 ## 5. Pilot Results (Don Bosco Prep)
 
-### 5.1 Current Engine Results (v1.0)
+### 5.1 Engine Results History
+
+| Version | Clashes | Placement | Level 1+2 Clashes | Notes |
+|---------|---------|-----------|-------------------|-------|
+| v1.0 (single-tier) | 207 | 96.8% | 0 P5 | Original engine, single priority scale |
+| v1.1 (composite scoring) | 325 | 95.1% | 0 P5 | Phase B refactor regressed ordering |
+| v1.2 (three-band fix) | 240 | 95.1% | 0 P5 | Three-band priority + priority-aware optimization |
+| v2.0 (pyramid + ripple) | TBD | TBD | TBD | Four-level pyramid + ripple scoring + batch recalculation |
+
+### 5.2 Current Configuration
 
 | Metric | Value |
 |--------|-------|
@@ -244,24 +274,13 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | Total Teachers | 64 |
 | Total Students | 800 |
 | Total Requests | 6,512 |
-| Placed | 6,305 (96.8%) |
-| Clashes | 207 |
-| P5 (AP/Singleton) Clashes | 0 |
-| Section Sizes | min=1, max=71, avg=18.0 |
-| Teacher Load Violations | 3 |
-| Room Conflicts | 0 (28 resolved via reassignment) |
+| Pyramid Levels | 4 (Graduation Required, No Alternative, Limited Choice, Flexible) |
+| Protected Levels | 1 and 2 (cannot be bumped) |
+| Restart Seeds | 16 |
+| Optimization Iterations | 60 per restart |
+| Batch Recalculation Size | 1,500 placements |
 
-### 5.2 Clash Distribution by Priority
-
-| Priority | Label | Clashes |
-|----------|-------|---------|
-| P1 | Elective-Standard | 95 |
-| P2 | Departmental Core | 29 |
-| P3 | Sequence/Honors | 74 |
-| P4 | Required Core | 9 |
-| P5 | AP/Singleton | 0 |
-
-### 5.3 Target (v2.0 with Student Rank Score)
+### 5.3 Target (v2.0 with Pyramid + Ripple)
 
 | Metric | Target |
 |--------|--------|
@@ -276,8 +295,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 ### 6.1 Completed (v1.0)
 
 - [x] Four-phase scheduling engine (period assignment, student seating, conflict resolution, multi-restart optimization)
-- [x] Course priority scale (0–5) integrated into all engine decision points
-- [x] Protected courses (PROT) — P5 courses never bumped
+- [x] Course priority scale (0-5) integrated into all engine decision points
 - [x] Interactive singleton board with drag-and-drop
 - [x] Student clash report with impact analysis
 - [x] Conflict resolution console
@@ -287,10 +305,10 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Co-schedule groups
 - [x] LEO cohort pinning
 
-### 6.2 In Progress (v2.0 — Student Rank Score)
+### 6.2 Completed (v2.0 — Student Rank Score + Pyramid + Ripple)
 
 - [x] 10-input weighted priority scoring per student-course-section placement (CFP, CYRP, SSP, MTP, CTAP, TL, PL, RL, SC, CR)
-- [x] Student ranking 1–800 by constraint density
+- [x] Student ranking 1-800 by constraint density
 - [x] SSP multi-membership: students belong to 1, 2, or all 3 populations (LEO, Pathway, Academic Support)
 - [x] TSSP (Teacher Special Population Priority): derived from SSP Teacher flag in Template 6
 - [x] Per-semester approved 6-period load (Full-Year, S1-only, S2-only)
@@ -303,6 +321,15 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Current year teacher assignment priority data input (CTAP — sole teachers set to 5)
 - [x] Engine refactor: replace single-tier `prio(c)` with composite placement scoring
 - [x] Most-constrained-first scheduling order (composite-sorted, student rank tiebreaker)
+- [x] Four-level pyramid system (Graduation Required > No Alternative > Limited Choice > Flexible)
+- [x] Ripple scoring — measures cross-impact of each placement on the rest of the schedule
+- [x] Batch recalculation in Phase B — recalculate scores between batches as the schedule fills
+- [x] Priority-aware optimization — prevents trading high-priority clashes for low-priority ones
+- [x] Priority-aware conflict estimation — optimizer penalizes moves that create high-priority conflicts
+- [x] Post-bump CSP recovery — after bumping, rearrange remaining placements to recover seats
+- [x] Per-restart seating order recomputation — each restart recalculates scores for its specific period layout
+- [x] Conflict risk fix — any period overlap (not just single-period exact match)
+- [x] Memory optimization — fast reseat for optimizer, workbook cleanup, garbage collection between restarts
 
 ### 6.3 Future
 
