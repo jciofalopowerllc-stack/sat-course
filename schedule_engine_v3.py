@@ -68,16 +68,22 @@ GRAD_REQ_DEPTS = {
     12: set(_grad_req.get('grade_12', {}).get('required_departments', []))
          | set(_grad_req.get('grade_12', {}).get('required_either', [])),
 }
-# ── Priority Band System (Four-Band) ──
-# Band 1 (GRAD_REQ_BAND): courses required for the student's grade-level graduation.
-# Band 2 (AP_ELECTIVE_BAND): AP/Singleton elective courses — non-substitutable, 1-2 sections.
-# Band 3 (CONSTRAINED_ELECTIVE_BAND): non-singleton electives with limited sections (P3+, <=3 sections).
-# Band 4 (ELECTIVE_BAND): regular electives — flexible, multiple alternatives (4+ sections).
-# Separation guarantees: lowest Band 1 (100) > highest Band 2 (55) > highest Band 3 (30) > highest Band 4 (5).
-GRAD_REQ_BAND = 100
-AP_ELECTIVE_BAND = 50
-CONSTRAINED_ELECTIVE_BAND = 25
-ELECTIVE_BAND = 0
+# ── Pyramid Level System ──
+# The schedule is built top-down like a pyramid. Placements at the top have
+# the most restrictions and the biggest ripple effect on everyone else.
+# Placements at the bottom are flexible and absorb whatever remains.
+#
+# Level 1 (top):    Graduation requirements — student MUST take this course
+# Level 2:         No-alternative electives — only 1-2 sections exist, no substitute
+# Level 3:         Limited-choice electives — few sections (<=3), hard to reschedule
+# Level 4 (base):  Flexible electives — many sections, easy to move around
+#
+# Score separation ensures no level can be confused with another:
+#   Lowest Level 1 (100) > Highest Level 2 (55) > Highest Level 3 (30) > Highest Level 4 (5)
+LEVEL_GRAD_REQ = 100
+LEVEL_NO_ALTERNATIVE = 50
+LEVEL_LIMITED_CHOICE = 25
+LEVEL_FLEXIBLE = 0
 
 def prio(c):
     """Static course priority (grade-agnostic). Use student_prio() for bump decisions."""
@@ -89,6 +95,15 @@ def is_singleton(c):
 # _course_dept_map populated after course_info is loaded (Template 1)
 _course_dept_map = {}
 
+def _pyramid_label(score):
+    if score >= LEVEL_GRAD_REQ:
+        return 'graduation_required'
+    if score >= LEVEL_NO_ALTERNATIVE:
+        return 'no_alternative'
+    if score >= LEVEL_LIMITED_CHOICE:
+        return 'limited_choice'
+    return 'flexible'
+
 def _is_grad_req_dept(cid, student_grade):
     """Check if a course belongs to a department required for the student's grade level."""
     dept = _course_dept_map.get(str(cid), '')
@@ -97,20 +112,20 @@ def _is_grad_req_dept(cid, student_grade):
 _COURSE_SECTION_COUNTS = {}
 
 def student_prio(pid, cid):
-    """Dynamic per-student priority using the four-band system.
-    Band 1 (100+): graduation-required courses for this student's grade.
-    Band 2 (50+): AP/Singleton elective courses — non-substitutable, 1-2 sections.
-    Band 3 (25+): constrained electives — P3+ non-singleton with limited sections (<=3).
-    Band 4 (0-5): regular electives — flexible, 4+ sections."""
+    """Pyramid level for a student-course placement.
+    Level 1 (100+): graduation requirement for this student's grade.
+    Level 2 (50+):  no-alternative elective — singleton or P5, no substitute exists.
+    Level 3 (25+):  limited-choice elective — P3+ with 3 or fewer sections.
+    Level 4 (0-5):  flexible elective — many sections, easy to reschedule."""
     base = prio(cid)
     g = grade.get(str(pid), 0)
     if g and _is_grad_req_dept(cid, g):
-        return GRAD_REQ_BAND + base
+        return LEVEL_GRAD_REQ + base
     if base >= 5 or str(cid) in SINGLETON_COURSES:
-        return AP_ELECTIVE_BAND + base
+        return LEVEL_NO_ALTERNATIVE + base
     if base >= 3 and _COURSE_SECTION_COUNTS.get(str(cid), 0) <= 3:
-        return CONSTRAINED_ELECTIVE_BAND + base
-    return ELECTIVE_BAND + base
+        return LEVEL_LIMITED_CHOICE + base
+    return LEVEL_FLEXIBLE + base
 
 with open(os.path.join(os.path.dirname(__file__) or '.', 'priority_assignments.json')) as _paf:
     PRIO_ASSIGN = json.load(_paf)
@@ -1584,64 +1599,130 @@ for sid in leo2_sids:
 sorted_students = sorted(students.keys(), key=student_rank_key)
 print("  Greedy warm-start (most-constrained-first)...")
 
-# Composite-scored seating: full 10-input weighted priority replaces prio(c) tiers.
-# Primary sort: two-band system (grad reqs in Band 1 always before electives in Band 2).
-# Secondary sort: composite placement_sort_key (-critical_count, -weighted_sum).
-# Tertiary sort: fewer available sections = more constrained = seated earlier.
+# ── Ripple score ──
+# Measures how many OTHER placements are affected when this one is made.
+# Bigger ripple = higher on the pyramid = placed earlier.
+# Components:
+#   1. How many other students also need this same course (course demand pressure)
+#   2. How many sections are available (fewer = bigger ripple per placement)
+#   3. How many other courses this student takes (more = more period conflicts possible)
+#   4. How many other students share courses with this student (connection density)
+_ripple_cache = {}
+
+def _compute_ripple():
+    """Compute ripple score for every student-course pair."""
+    _ripple_cache.clear()
+    # Pre-compute per student: how many other students share any course with them
+    _student_connections = {}
+    for pid in students:
+        connected = set()
+        for cid in sreq[pid]:
+            connected.update(code_requesters.get(cid, set()))
+        connected.discard(pid)
+        _student_connections[pid] = len(connected)
+
+    for pid in students:
+        student_load = len(sreq[pid])
+        connections = _student_connections[pid]
+        for cid in sreq[pid]:
+            course_demand = len(code_requesters.get(cid, set()))
+            n_sec = len(sec_by_code.get(cid, []))
+            scarcity_mult = max(1, 6 - n_sec)
+            ripple = (course_demand * scarcity_mult) + connections + student_load
+            _ripple_cache[(str(pid), str(cid))] = ripple
+
+def ripple_score(pid, cid):
+    return _ripple_cache.get((str(pid), str(cid)), 0)
+
+# ── Placement sort key ──
+# Determines the order placements enter the schedule.
+# 1. Pyramid level (graduation reqs first, then no-alternative, then limited, then flexible)
+# 2. Ripple size within each level (biggest ripple first — most impact on the pond)
+# 3. Composite score within each level (most constrained first)
+# 4. Fewer available sections first (harder to place)
+# 5. Student rank as tiebreaker (most constrained student first)
+def _full_sort_key(pc):
+    pid, cid = pc
+    return (
+        -student_prio(pid, cid),
+        -ripple_score(pid, cid),
+        placement_sort_key(pid, cid),
+        len(sec_by_code.get(cid, [])),
+        student_rank_key(pid)
+    )
+
+# Compute initial ripple scores
+_compute_ripple()
+
+# Build the full request list
 _all_requests = []
 for pid in sorted_students:
     for cid in sreq[pid]:
         _all_requests.append((pid, cid))
 
-_all_requests.sort(key=lambda pc: (
-    -student_prio(pc[0], pc[1]),
-    placement_sort_key(pc[0], pc[1]),
-    len(sec_by_code.get(pc[1], [])),
-    student_rank_key(pc[0])
-))
+# Sort by pyramid level + ripple + composite
+_all_requests.sort(key=_full_sort_key)
 
-_refresh_interval = max(200, len(_all_requests) // 8)
+# ── Place in batches, recalculate between batches ──
+# After each batch of placements, the pond has changed:
+#   - sections are filling up (scarcity changes)
+#   - periods are getting used (conflict risk changes)
+#   - ripple effects have shifted
+# So we recalculate scores and re-sort the remaining placements.
+_BATCH_SIZE = 500
+_placed_set = set()
 _placed_count_b = 0
 
-for pid, cid in _all_requests:
-    if cid not in sec_by_code:
-        continue
-    if cid == '745':
-        if pid in cohA and leo2C is not None:
-            add_place(pid, cid, leo2C)
-        elif pid in cohB and leo2E is not None:
-            add_place(pid, cid, leo2E)
-        else:
-            opts = sec_by_code[cid]
-            best = min(opts, key=lambda sid: (added_conflicts(pid, sid), secfill[sid]))
-            add_place(pid, cid, best)
+while _placed_count_b < len(_all_requests):
+    # Place the next batch in current sort order
+    batch_placed = 0
+    for pid, cid in _all_requests:
+        if (pid, cid) in _placed_set:
+            continue
+        if cid not in sec_by_code:
+            _placed_set.add((pid, cid))
+            continue
+        if cid == '745':
+            if pid in cohA and leo2C is not None:
+                add_place(pid, cid, leo2C)
+            elif pid in cohB and leo2E is not None:
+                add_place(pid, cid, leo2E)
+            else:
+                opts = sec_by_code[cid]
+                best = min(opts, key=lambda sid: (added_conflicts(pid, sid), secfill[sid]))
+                add_place(pid, cid, best)
+            _placed_set.add((pid, cid))
+            _placed_count_b += 1
+            batch_placed += 1
+            if batch_placed >= _BATCH_SIZE:
+                break
+            continue
+        opts = sec_by_code[cid]
+        best = min(opts, key=lambda sid: (
+            added_conflicts(pid, sid),
+            max(0, secfill[sid] + 1 - sections[sid]['cap']),
+            secfill[sid]
+        ))
+        add_place(pid, cid, best)
+        _placed_set.add((pid, cid))
         _placed_count_b += 1
-        continue
-    opts = sec_by_code[cid]
-    best = min(opts, key=lambda sid: (
-        added_conflicts(pid, sid),
-        max(0, secfill[sid] + 1 - sections[sid]['cap']),
-        secfill[sid]
-    ))
-    add_place(pid, cid, best)
-    _placed_count_b += 1
+        batch_placed += 1
+        if batch_placed >= _BATCH_SIZE:
+            break
 
-    if _placed_count_b % _refresh_interval == 0:
+    if batch_placed == 0:
+        break
+
+    # Recalculate: the pond has changed, update scores and re-sort remaining
+    if _placed_count_b < len(_all_requests):
         _placement_cache.clear()
         _course_composite_cache.clear()
-        for cid_r, sids_r in sec_by_code.items():
-            rem = sum(max(0, sections[sid_r]['cap'] - secfill[sid_r]) for sid_r in sids_r)
-            demand = _course_demand.get(cid_r, 0)
-            placed_now = sum(1 for pid_r in students if cid_r in assign.get(pid_r, {}))
-            unplaced = demand - placed_now
-            if unplaced > 0 and rem > 0:
-                ratio = unplaced / rem
-                if ratio >= 2.0:
-                    _scarcity_scores[cid_r] = 5
-                elif ratio >= 1.5:
-                    _scarcity_scores[cid_r] = max(_scarcity_scores.get(cid_r, 1), 4)
-                elif ratio >= 1.0:
-                    _scarcity_scores[cid_r] = max(_scarcity_scores.get(cid_r, 1), 3)
+        _compute_scarcity()
+        _compute_conflict_risk()
+        _compute_ripple()
+        # Re-sort only remaining unplaced requests
+        _all_requests = [pc for pc in _all_requests if pc not in _placed_set]
+        _all_requests.sort(key=_full_sort_key)
 
 conf_count = 0
 for pid in students:
@@ -1652,9 +1733,9 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
-# Three-band priority: Band 1 (100+) = grad req, Band 2 (50+) = AP/singleton elective, Band 3 (0-5) = regular elective.
-# Bands 1 and 2 are pinned during CSP re-solve — only Band 3 courses are rearranged.
-PROT_THRESHOLD = AP_ELECTIVE_BAND  # 50 — grad reqs AND AP/singleton electives are protected
+# Protection threshold: placements at Level 1 (grad req) and Level 2 (no alternative)
+# are pinned — they cannot be bumped to make room for a lower-level placement.
+PROT_THRESHOLD = LEVEL_NO_ALTERNATIVE  # 50
 
 def resolve_student(pid):
     pins = {}
@@ -1741,7 +1822,7 @@ def _analyze_root_cause(pid, bumped_cid, keeping_cid, bumped_period):
             'code': keeping_cid,
             'title': course_info.get(keeping_cid, {}).get('title', keeping_cid),
             'effective_priority': keep_prio,
-            'priority_band': 'graduation_required' if keep_prio >= GRAD_REQ_BAND else 'elective',
+            'priority_band': _pyramid_label(keep_prio),
         })
 
     # Check if bumped course is a singleton
@@ -1822,8 +1903,8 @@ for pid in students:
             'code': c, 'course': course_info.get(c, {}).get('title', c),
             'priority': prio(c),
             'effective_priority': _eff_prio,
-            'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else ('ap_singleton_elective' if _eff_prio >= AP_ELECTIVE_BAND else ('constrained_elective' if _eff_prio >= CONSTRAINED_ELECTIVE_BAND else 'elective')),
-            'is_grad_req': _eff_prio >= GRAD_REQ_BAND,
+            'priority_band': _pyramid_label(_eff_prio),
+            'is_grad_req': _eff_prio >= LEVEL_GRAD_REQ,
             'composite_ws': round(_ws, 1),
             'composite_cc': _cc,
             'lost_period': s['period'],
@@ -1914,7 +1995,7 @@ _reseat_course_order = {}
 for _pid in _reseat_pid_order:
     _reseat_course_order[_pid] = sorted(
         sreq[_pid],
-        key=lambda c, _p=_pid: (-student_prio(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
+        key=lambda c, _p=_pid: (-student_prio(_p, c), -ripple_score(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
     )
 
 
@@ -1982,8 +2063,8 @@ def full_reseat():
                 'code': c, 'course': course_info.get(c, {}).get('title', c),
                 'priority': prio(c),
                 'effective_priority': _eff_prio,
-                'priority_band': 'graduation_required' if _eff_prio >= GRAD_REQ_BAND else ('ap_singleton_elective' if _eff_prio >= AP_ELECTIVE_BAND else ('constrained_elective' if _eff_prio >= CONSTRAINED_ELECTIVE_BAND else 'elective')),
-                'is_grad_req': _eff_prio >= GRAD_REQ_BAND,
+                'priority_band': _pyramid_label(_eff_prio),
+                'is_grad_req': _eff_prio >= LEVEL_GRAD_REQ,
                 'composite_ws': round(_ws_b, 1),
                 'composite_cc': _cc_b,
                 'lost_period': bs['period'],
@@ -2042,10 +2123,10 @@ def full_reseat():
 
 def _clash_quality(cl):
     """Priority-aware clash quality score: (band1+2, band3, total).
-    Lower is better. Lexicographic: never trade higher-band clashes for lower-band ones."""
-    b12 = sum(1 for c in cl if student_prio(c['student'], c['code']) >= AP_ELECTIVE_BAND)
-    b3 = sum(1 for c in cl if CONSTRAINED_ELECTIVE_BAND <= student_prio(c['student'], c['code']) < AP_ELECTIVE_BAND)
-    return (b12, b3, len(cl))
+    Lower is better. Protects higher pyramid levels from being traded for lower ones."""
+    top_clashes = sum(1 for c in cl if student_prio(c['student'], c['code']) >= LEVEL_NO_ALTERNATIVE)
+    mid_clashes = sum(1 for c in cl if LEVEL_LIMITED_CHOICE <= student_prio(c['student'], c['code']) < LEVEL_NO_ALTERNATIVE)
+    return (top_clashes, mid_clashes, len(cl))
 
 def run_optimization_pass(cl=None):
     if cl is None:
@@ -2142,16 +2223,16 @@ best_halves = None
 best_seed = None
 
 def _recompute_seating_order():
-    """Recompute scarcity, conflict risk, and per-student course ordering
-    after period assignments change. This tunes each restart's seating to its layout."""
+    """Recompute scores and per-student course ordering after period assignments change."""
     _compute_scarcity()
     _compute_conflict_risk()
+    _compute_ripple()
     _placement_cache.clear()
     _course_composite_cache.clear()
     for _pid in _reseat_pid_order:
         _reseat_course_order[_pid] = sorted(
             sreq[_pid],
-            key=lambda c, _p=_pid: (-student_prio(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
+            key=lambda c, _p=_pid: (-student_prio(_p, c), -ripple_score(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
         )
 
 import time as _time
