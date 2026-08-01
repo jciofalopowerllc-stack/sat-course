@@ -143,6 +143,7 @@ Room ID is the room number (e.g., S-234). This is both the identifier and the na
 | Course > Corequisites | course codes (e.g., 301) | null — no corequisites |
 | Course > Graduation Requirement | subject area (e.g., English, Theology, Math, Science, History) | null — course is an elective |
 | Course > Singleton | Y or N | not allowed — engine must know if only one section exists |
+| Course > Cohort | cohort name (e.g., LEO Cohort A) | null — course is not a cohort course |
 
 **Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English" or "Theology"). If the field is null, the course is an elective. The engine uses this field combined with the School Settings file (graduation requirements by grade level) to verify that every student's course requests include all required subject areas for their grade.
 
@@ -266,3 +267,41 @@ Any parent can be prescribed to any shared resource or course code. If not presc
 | Course Code > Prescribed Room | room number | engine selects least restrictive |
 | Course Code > Prescribed Term | FY, S1, S2 | engine selects least restrictive |
 | Course Code > Prescribed Period | A, B, C, D, E, F, G | engine selects least restrictive |
+
+---
+
+## Cross-File Validation
+
+The engine reads all 8 input files before the build. When data in one file can confirm or contradict data in another file, the engine connects the dots automatically. If everything matches, the engine fills in the value. If something doesn't match, the engine flags it for the principal to review.
+
+**Rule:** The engine never guesses. It either proves a match across files or asks a human.
+
+### How It Works
+
+1. **Default** — Every field that can be auto-filled starts as null (no value).
+2. **Cross-reference** — The engine checks multiple files for indicators that point to the same answer.
+3. **All match** — The engine fills in the value automatically.
+4. **Mismatch** — The engine flags the conflict for the principal to review and decide.
+5. **Principal decides** — The engine waits for the human to verify before proceeding.
+
+### Example: Student Cohort Membership
+
+The engine uses the Course file's `Cohort` field as the master list of which course codes belong to which cohort. It does NOT need a cohort column in the historical files — the course code is the link.
+
+| Step | What the engine does |
+|------|---------------------|
+| 1. Default | Student > Cohort Name starts as null (no cohort) |
+| 2. Check Historical Grades | Look up the student's prior course codes → check each one in the Course file → did any belong to a cohort? |
+| 3. Check Prior Year Master Schedule | Look up the student's prior sections → check those course codes in the Course file → did any belong to a cohort? |
+| 4. Check Current Year Course Requests | Look up the student's requested course codes → check each one in the Course file → do any belong to a cohort? |
+| 5a. All three match | Engine fills in Student > Cohort Name automatically (e.g., "LEO Cohort A") |
+| 5b. Mismatch | Engine flags: "Student 106245 — cohort indicators found in 2 of 3 sources. Historical grades show LEO courses, current requests show LEO courses, but prior year schedule does not. Please verify." |
+| 6. Principal reviews | Principal confirms or corrects. Engine proceeds. |
+
+### Why This Works Without Changing the Historical Files
+
+The **Course file** is the single source of truth for which course codes belong to a cohort. The engine looks up any course code — current or historical — in the Course file to check for a cohort indicator. No new columns needed in the Historical Grades or Prior Year Master Schedule files.
+
+### Future Cross-File Validation Checks
+
+The cohort example is the first. The same pattern applies anywhere data in one file can confirm or contradict data in another. Additional checks will be defined as we build out the remaining data containers.
