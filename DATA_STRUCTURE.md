@@ -59,9 +59,9 @@ Term designation is a property of the course code — NOT a separate file. Cohor
 
 | # | File | What it holds |
 |---|------|--------------|
-| 5 | **Co-Schedule Groups** | Courses that must share the same period (links multiple course codes together) |
+| 5 | **Co-Schedule Groups** | Low-enrollment course sections grouped by the principal to share the same teacher, same room, and same period. Protects students from losing courses and teachers from losing full-time status. |
 
-This requires its own file because it is a many-to-many relationship between course codes that cannot be stored as a single field in the Course file.
+This requires its own file because a co-schedule group can contain 2, 3, or 4 course codes linked to one teacher, which is a many-to-many relationship that cannot be stored as a single field in the Course file.
 
 ### Historical Files (for pre-build validation)
 
@@ -327,25 +327,98 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 
 ## Shared Resource Data Inputs
 
-### Course
+### Course — Don Bosco Prep
 
-| Field | Values | Null Meaning |
-|-------|--------|-------------|
-| Course > Course Code | unique code (e.g., 745) | not allowed — every course has a code |
-| Course > Course Title | text (e.g., Catholic Social Teaching) | not allowed — every course has a title |
-| Course > Department | department name (e.g., THEO, ENG, MATH) | not allowed — every course belongs to a department |
-| Course > Credits | number (e.g., 5) | not allowed — every course has a credit value |
-| Course > Grade Levels | list (e.g., 9, 10, 11, 12) | not allowed — every course has eligible grade levels |
-| Course > Sections Needed | number (e.g., 8) | not allowed — every course needs at least 1 section |
-| Course > Max Enrollment per Section | number (e.g., 25) | not allowed — every section has a cap |
-| Course > Prescribed Term | FY, S1, S2 | null — engine selects least restrictive |
-| Course > Prerequisites | course codes (e.g., 110) | null — no prerequisites |
-| Course > Corequisites | course codes (e.g., 301) | null — no corequisites |
-| Course > Graduation Requirement | subject area (e.g., English, Theology, Math, Science, History) | null — course is an elective |
-| Course > Singleton | Y or N | not allowed — engine must know if only one section exists |
-| Course > Cohort | cohort name (e.g., LEO Cohort A) | null — course is not a cohort course |
+| Column | Field | Required? | Values |
+|--------|-------|-----------|--------|
+| A | Course Code | REQUIRED | Unique code (e.g., 745) |
+| B | Course Title | REQUIRED | Course name (e.g., AP Calculus AB) |
+| C | Department | REQUIRED | Department name (e.g., MATH, ENG, THEO) |
+| D | Credits | REQUIRED | Credit value (e.g., 5, 2.5) |
+| E | Prescribed Term | REQUIRED | FY, S1, S2 |
+| F | Grade Levels | REQUIRED | Eligible grades, comma-separated (e.g., 11, 12) |
+| G | Sections Needed | REQUIRED | Number of sections (e.g., 8) |
+| H | Max Enrollment per Section | REQUIRED | Seat cap (e.g., 25) |
+| I | Singleton | REQUIRED | Y/N — only one section exists |
+| J | AP | REQUIRED | Y/N — is this an AP course |
+| K | Graduation Requirement | OPTIONAL | Subject area satisfied (e.g., English, Math, Science, History, Theology) — null = elective |
+| L | Cohort | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not a cohort course |
+| M | NCAA | OPTIONAL | Y/N — is this course NCAA approved — null = not applicable |
+| N | Prerequisites | OPTIONAL | Course codes, comma-separated (e.g., 110, 421) — null = none |
+| O | Corequisites | OPTIONAL | Course codes, comma-separated — null = none |
+
+15 columns total.
 
 **Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English" or "Theology"). If the field is null, the course is an elective. The engine uses this field combined with the School Settings file (graduation requirements by grade level) to verify that every student's course requests include all required subject areas for their grade.
+
+**Columns removed from the original Template 7 (not needed by Don Bosco engine):**
+
+The original Template 7 had 28 columns. The following 17 columns were removed:
+
+- Level (Regular/Honors/AP) — replaced by clear AP (Y/N) field
+- Type (Full-Year/Semester) — duplicate of Prescribed Term
+- Min Enrollment — engine doesn't use minimum enrollment
+- Priority Level (0-5) — OLD priority system, engine now calculates automatically
+- CFP (Course Flexibility) — OLD scoring, conflicts with new system
+- CYRP (Current Year Required) — OLD scoring, conflicts with new system
+- CTAP (Course-Teacher Affinity) — OLD scoring, conflicts with new system
+- TL (Teacher Lock) — OLD scoring, locks now counted automatically from Teacher-Course Assignments
+- PL (Period Lock) — OLD scoring, locks now counted automatically
+- RL (Room Lock) — OLD scoring, locks now counted automatically
+- Required Certification — engine doesn't use teacher certification
+- Required Room Type — handled by Prescribed Room in Teacher-Course Assignments
+- Required Equipment — engine doesn't use equipment
+- Total Requests — engine calculates from Student file
+- Demand Ratio — engine calculates
+- Prior Year Sections — engine gets from Prior Year Master Schedule file
+- Prior Year Avg Enrollment — engine calculates
+
+**Columns added (not in original Template 7):**
+
+- AP (Y/N) — engine needs a clear yes/no, old "Level" field mixed AP with Honors
+- NCAA (Y/N) — engine needs to validate NCAA students' course requests
+
+**Commercial product note:** Some removed columns may be needed for the commercial engine. Specifications will be defined after the Don Bosco Prep engine build is completed.
+
+### Co-Schedule Groups — Don Bosco Prep
+
+Co-scheduling is a protection mechanism for low-enrollment courses. The principal decides which course sections are grouped together. All sections in a co-schedule group share the same teacher, same room, and same period. This protects students from losing courses due to low enrollment and protects teachers from losing full-time status.
+
+A co-schedule group can contain 2, 3, or 4 course sections. The engine decides the optimal term and period for the group.
+
+**Co-Schedule File (one row per course in the group):**
+
+| Column | Field | Required? | Values |
+|--------|-------|-----------|--------|
+| A | Co-Schedule Group Name | REQUIRED | Group identifier (e.g., "Dennehy Art Block") |
+| B | Course Code | REQUIRED | Must match a Course Code in the Course file |
+| C | Teacher ID | REQUIRED | Must match a Teacher ID in the Teacher file — same teacher for all rows in the group |
+| D | Prescribed Room | OPTIONAL | Room number (e.g., Art Room J-322) — null = engine decides |
+
+**Example:**
+
+| Group Name | Course Code | Teacher ID | Prescribed Room |
+|-----------|-------------|------------|----------------|
+| Dennehy Art Block | 253 | Dennehy | Art Room J-322 |
+| Dennehy Art Block | 243 | Dennehy | Art Room J-322 |
+| Dennehy Art Block | 248 | Dennehy | Art Room J-322 |
+
+**Co-Scheduled Priority Value:**
+
+The engine calculates a separate priority value for each co-schedule group. This value is used to place the entire group as one unit — the engine does not place co-scheduled sections individually.
+
+The Co-Scheduled Priority Value uses the same calculations as a regular Course Section Priority Value (Top Student + Teacher + Room), except it combines the data from ALL sections in the group:
+
+- **Top Student** = the highest-scoring student from ALL students across ALL courses in the co-schedule group
+- **Teacher Priority Value** = the teacher's Total Priority Value (same teacher for all sections)
+- **Room Priority Value** = the prescribed room's Total Priority Value (0 if no room prescribed)
+
+The Co-Scheduled Priority Value follows the same recalculation cycle — after the group is placed, students are removed, scores recalculate, and the engine moves to the next most restricted section or group.
+
+**Raw vs Total — same rule applies:**
+
+- **Co-Schedule Raw Priority Value** = locks from all sections in the group combined. Fixed for the school year.
+- **Co-Schedule Total Priority Value** = Raw + Top Student + Teacher + Room. Changes every run. Saved with run number and school year.
 
 ---
 
