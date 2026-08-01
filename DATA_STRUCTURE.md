@@ -258,8 +258,9 @@ The teacher data is split across two sheets in the same file. Sheet 1 holds teac
 | N | Avail Period F | REQUIRED | Y/N |
 | O | Avail Period G | REQUIRED | Y/N |
 | P | Special Student Population Teacher | OPTIONAL | Which Special Student Population programs this teacher is part of (e.g., Academic Support, Pathway) — null if none |
+| Q | Approved for Co-Scheduled Sections | REQUIRED | Y/N — is this teacher approved to teach co-scheduled sections |
 
-16 columns total.
+17 columns total.
 
 **Sheet 2: Teacher-Course Assignments (one row per teacher-course combination)**
 
@@ -340,18 +341,42 @@ After each section is placed, the engine returns to step 15 — rebuilds the stu
 
 ### Room — Don Bosco Prep
 
-Room ID is the room number (e.g., S-234). This is both the identifier and the name. No separate RM_ prefix ID — one clean code.
+Room ID is the room number (e.g., J-322). This is both the identifier and the name. No separate RM_ prefix ID — one clean code.
 
-| Field | Values | Null Meaning |
-|-------|--------|-------------|
-| Room > Room ID | room number (e.g., S-234) | not allowed — every room has an ID |
-| Room > Prescribed Room > Course Code | course code | null — room not locked to a course |
-| Room > Unavailable Rooms > Course Code | list of room numbers | null — no rooms excluded |
+**Room Template — Don Bosco Prep (1 sheet)**
 
-**Don Bosco Prep vs. Commercial Product:**
+| Column | Field | Required? | Values |
+|--------|-------|-----------|--------|
+| A | Room ID | REQUIRED | Room number (e.g., J-322, Audit., Band) |
+| B | Capacity | REQUIRED | Max seats in the room |
+| C | Available Periods | REQUIRED | Which periods the room is available, comma-separated (e.g., A,B,C,D,E,F,G) |
+| D | Available Terms | REQUIRED | Which terms the room is available (FY, S1, S2) — null = available all terms |
+| E | Shared Room | REQUIRED | Y/N — is this room approved for co-scheduled sections |
 
-- **Don Bosco Prep (now):** The principal prescribes which room a course uses, or provides a list of rooms that CANNOT be used. The engine works with what's left. No department matching needed.
-- **Commercial Product (future):** Room > Department field will be added so the engine can automatically match rooms to courses and teachers by department. A new school won't have to prescribe every room manually.
+5 columns total.
+
+**Columns removed from the original Template 9 (not needed by Don Bosco engine):**
+
+The original Template 9 had 16 columns. The following 12 columns were removed:
+
+- Room Number — duplicate of Room ID (engine uses room number as the ID)
+- Building — engine doesn't use for scheduling
+- Wing — engine doesn't use for scheduling
+- Floor — engine doesn't use for scheduling
+- Room Type — engine doesn't use for Don Bosco (principal prescribes rooms)
+- Has Projector — engine doesn't use equipment
+- Has Smartboard — engine doesn't use equipment
+- Has Lab Stations — engine doesn't use equipment
+- Has Computers — engine doesn't use equipment
+- ADA Accessible — engine doesn't use for scheduling
+- Home Teacher — handled by Prescribed Room in Teacher-Course Assignments
+- Adjacent Rooms — engine doesn't use room adjacency
+
+**Columns added (1 total):**
+
+- Available Terms — engine Step 3 needs this for lock calculation
+
+**Commercial product note:** Building, Wing, Floor, Room Type, equipment columns, and ADA Accessible may be needed for the commercial engine. A Room > Department field will be added so the engine can automatically match rooms to courses and teachers by department. Specifications will be defined after the Don Bosco Prep engine build is completed.
 
 **Room Processing Order:**
 
