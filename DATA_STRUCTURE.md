@@ -12,7 +12,7 @@ Three entities that stand on their own. They don't belong to anything else.
 
 Used by multiple parents. They don't own anything — parents get placed into them.
 
-1. **Cohort** — a group of Students (e.g., LEO Cohort A)
+1. **Cohort** — a group of Students who must be assigned to a specific course code with the same teacher, during the same term and same period (e.g., LEO Cohort A). A cohort is a scheduling constraint, not just a label — the engine must keep all cohort members together in the same section.
 2. **Term** — a time block: FY, S1, S2
 3. **Period** — a time slot in the bell schedule: A, B, C, D, E, F, G
 
