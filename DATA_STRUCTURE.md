@@ -107,7 +107,7 @@ The engine processes each student's data in this order:
 | 15 | Confirm | Student > Academic Support (Y/N) | Cross-File Validation confirms SSP membership |
 | 16 | Confirm | Student > Pathway (Y/N) | Cross-File Validation confirms SSP membership |
 | 17 | Assign Point Value | Student > SSP Priority Value | Points assigned based on SSP programs — stacks with Cohort unless LEO I → LEO II (same program, no stacking) |
-| 18 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — same course, multiple categories = highest value only |
+| 18 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — includes the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only |
 | 19 | Calculate | Student > Total Priority Score | Grade Level + Cohort (if any) + SSP (if any) + Course Priority Values |
 
 **Cohort vs. SSP — these are NOT the same thing:**
@@ -365,10 +365,13 @@ The engine ranks every course section by how restricted it is. The most restrict
 
 **Formula:**
 
-> Course Section Priority Value = (Locks × Weight) + Average Student Priority Value
+> Course Section Priority Value = Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value
 
-- **Locks** = the total number of restrictions on the section from the Course file, Teacher file, and Room file. Each lock is multiplied by a weight to ensure locks always outrank student priority.
-- **Average Student Priority Value** = the average priority of ALL students who requested this course. This ensures a section with fewer but higher-priority students is not bumped by a section with more but lower-priority students.
+- **Top Student Priority Value** = from all students who requested THIS course, with THIS teacher, in THIS room — the one with the highest Student Priority Value. Only students connected to this specific section are used, not all students who requested the course across all sections.
+- **Teacher Total Priority Value** = the Teacher Priority Value of the teacher assigned to this section (includes the teacher's own locks, their top student, and their prescribed room — documented in the Teacher Total Priority Value section below).
+- **Room Total Priority Value** = the Room Priority Value of the room assigned to this section (includes room availability, demand, top teacher, and top student — documented in the Room Total Priority Value section below).
+
+All three parents feed into each other: Student Priority includes teacher and room restrictions through course request priority values. Teacher Priority includes the top student and prescribed room. Room Priority includes the top teacher and top student. They are all factors for one another.
 
 ### What counts as a lock
 
@@ -434,13 +437,24 @@ Once a section is placed on the schedule, the engine fills it with students. Stu
 
 ### Engine Build Order
 
-1. Calculate Course Section Priority Value for every section (locks from Course + Teacher + Room files, weighted, plus average student priority)
-2. Rank all sections from highest to lowest Course Section Priority Value
-3. Place the highest-ranked section first — prescribed room, prescribed teacher, prescribed term
-4. Fill the section with students — highest Student Priority Value first, until the cap is reached
-5. Flag students who didn't make the cut — save to a report for the principal
-6. Move to the next highest-ranked section
-7. Repeat until all sections are placed
+1. Calculate all three parent priority values: Student, Teacher, Room — all feed into each other
+2. Calculate Course Section Priority Value for every section (Top Student + Teacher + Room)
+3. Rank all sections from highest to lowest Course Section Priority Value
+4. Place the highest-ranked section first — prescribed room, prescribed teacher, prescribed term
+5. Fill the section with students — highest Student Priority Value first, until the cap is reached
+6. Flag students who didn't make the cut — save to a report for the principal
+7. Remove placed students from all priority calculations
+8. Recalculate ALL parent priority values (Student, Teacher, Room) with remaining students
+9. Recalculate ALL Course Section Priority Values with updated parent values
+10. Re-rank all remaining sections
+11. Place the next highest-ranked section
+12. Repeat steps 5-11 until all sections are placed or flagged — this cycle runs thousands of times
+
+### Conflict Resolution
+
+When two sections compete for the same period or room, the engine does NOT guess. It compares their Course Section Priority Values. The section with the higher value stays. The section with the lower value gets moved to a different period.
+
+This is the same priority system used for placement order — highest value always wins. The engine will automatically defer to the section with the higher value and place the competing section into a different period because it does not outweigh the other.
 
 ### Weighted Priority Tests
 
