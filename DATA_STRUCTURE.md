@@ -49,8 +49,11 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 
 ### Room
 
+Room ID is the room number (e.g., S-234). This is both the identifier and the name. No separate RM_ prefix ID — one clean code.
+
 | Field | Values | Null Meaning |
 |-------|--------|-------------|
+| Room > Room ID | room number (e.g., S-234) | not allowed — every room has an ID |
 | Room > Prescribed Room > Course Code | course code | null — room not locked to a course |
 | Room > Unavailable Rooms > Course Code | list of room numbers | null — no rooms excluded |
 
