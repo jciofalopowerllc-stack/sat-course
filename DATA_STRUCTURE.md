@@ -357,6 +357,10 @@ The cohort example is the first. The same pattern applies anywhere data in one f
 
 ## Two-Level Priority System
 
+**Governing Principle: The schedule is only as flexible as its most restricted elements. Highest gets placed earliest.**
+
+This is the governing principle of the entire engine. The most restricted section gets placed first. The most restricted student fills the seat first. The most restricted teacher gets their sections scheduled first. The most restricted room gets its sections assigned first. After each placement, everything recalculates so the NEXT most restricted element rises to the top. Every decision is backed by math.
+
 The engine uses two separate priority calculations to build the master schedule. This is what makes this system different — priority values drive the entire build.
 
 ### Level 1 — Course Section Priority Value (which sections get placed first)
@@ -455,6 +459,110 @@ Once a section is placed on the schedule, the engine fills it with students. Stu
 When two sections compete for the same period or room, the engine does NOT guess. It compares their Course Section Priority Values. The section with the higher value stays. The section with the lower value gets moved to a different period.
 
 This is the same priority system used for placement order — highest value always wins. The engine will automatically defer to the section with the higher value and place the competing section into a different period because it does not outweigh the other.
+
+### Data Removal Rule
+
+After each run (each time a section is placed), ONLY the data tied to that specific section is removed. Nothing disappears completely until ALL of its sections or course requests are placed.
+
+**Student:**
+- The placed course is removed from the student's request list
+- That course's priority points are removed from the student's score
+- The student STAYS in the pool for all remaining course requests
+- The student's score recalculates — it goes DOWN because one course is fulfilled
+
+**Teacher:**
+- The placed section is removed from the teacher's section list
+- Students who got seats in that section are removed from the teacher's student pool for that course
+- The teacher STAYS in the pool for all remaining sections they teach
+- The teacher's score recalculates — new top student emerges from remaining students
+
+**Room:**
+- The placed section is removed from the room's demand count
+- The teacher and students from that section are removed from the room's pool
+- The room STAYS in the pool for all remaining sections prescribed to it
+- The room's score recalculates — new top teacher, new top student from remaining sections
+
+**Course:**
+- The placed section is done, but if the course has multiple sections (e.g., English 12 has 8 sections), only the placed section is removed
+- The remaining sections stay in the pool with their own recalculated scores
+
+**Why this works:** Every run starts with a clean, accurate picture of what's left. A student who just got their most restricted course placed will have a LOWER score on the next run — they don't keep jumping the line. A teacher whose top student was just placed gets a new, lower top student. Scores always reflect reality at THAT moment — not reality from a previous run. This eliminates inflated priority and stale rankings.
+
+### Run Log (Audit Trail)
+
+The engine stores the priority values for every Student, Teacher, Room, and Course Section at EVERY run. This creates a complete history from Run #1 through the final run — every score, every decision, every placement.
+
+**What is stored at each run:**
+
+| Data Point | What it records |
+|-----------|----------------|
+| Run Number | Which run this is (1, 2, 3, ... thousands) |
+| Section Placed | Which course section was placed in this run |
+| Period + Term Assigned | Where the section was placed (e.g., Period C, S1) |
+| Course Section Priority Value | The section's score at the time of placement |
+| Top Student Priority Value | The top student's score used in the section's calculation |
+| Teacher Total Priority Value | The teacher's score used in the section's calculation |
+| Room Total Priority Value | The room's score used in the section's calculation |
+| Students Seated | List of student IDs who received seats |
+| Students Not Seated | List of student IDs who requested the course but did not make the cut |
+| Score Changes | Which students, teachers, and rooms had their scores recalculated and what the new scores are |
+
+**Why this matters:** The run log makes the schedule 100% defensible. Every placement can be traced back to the exact scores that determined it. No opinion, no guesswork — only math.
+
+### Clash Report
+
+When the engine cannot place a section without creating a conflict, the run log proves exactly WHY.
+
+**What the clash report shows:**
+
+- Which section could not be placed
+- Which previously placed section is blocking it, and in which run it was placed
+- The priority scores of both sections at the time of the conflict
+- Which prescribed decisions (made by the principal) caused the clash
+
+**Example — student didn't get a seat:**
+
+"AP Art Section 1 was placed in Run #38 with a Course Section Priority Value of 54. Student #101's priority value at Run #38 was 6, ranking them #27 out of 32 students who requested that section. The section cap is 25. Students ranked #1 through #25 by priority filled the seats. Student #101 ranked #27 and did not receive a seat."
+
+**Example — principal's prescriptions contradict each other:**
+
+"Teacher Smith was prescribed to Period C (principal's decision) AND prescribed to Room Lab-1 (principal's decision), but Room Lab-1 is only available during Periods D and E. These two prescriptions contradict each other."
+
+**The principal can see exactly which of THEIR decisions caused the problem.** The system does not say "it didn't fit." It says "here is the math that proves why it didn't fit, and here is exactly which prescribed input created the conflict."
+
+### Resolution Options
+
+When a clash is found, the engine does not just report the problem. It provides the principal with a ranked list of data-backed options to resolve it.
+
+**Each option includes:**
+
+| Data Point | What it shows |
+|-----------|--------------|
+| Option Letter | A, B, C, etc. |
+| What Changes | Plain English description of the change (e.g., "Move Section X to Period D") |
+| Score Impact | How many priority points are gained or lost by making this change |
+| Side Effects | Which other students, teachers, or sections are affected |
+| Recommended | YES or NO — the engine recommends the option with the lowest score impact |
+
+**Example:**
+
+"Student #101 did not receive a seat in AP Art Section 1. Here are the options:"
+
+| Option | What Changes | Score Impact | Side Effects | Recommended |
+|--------|-------------|-------------|-------------|-------------|
+| A | Increase AP Art Section 1 cap from 25 to 27 | No score change | 2 additional students seated, room capacity must support 27 | YES |
+| B | Create AP Art Section 2 | -12 points (new section has fewer locks) | Requires a second teacher and room for AP Art | NO |
+| C | Remove Student #88 (lowest priority in section, score 3) and replace with Student #101 (score 6) | +3 points net gain | Student #88 loses seat, flagged for principal review | NO |
+
+**The principal chooses. The engine provides the math. The schedule is defensible.**
+
+### Cohort Scoring Rule
+
+When calculating the priority value for a cohort section, the engine uses the HIGHEST student score from the cohort — NOT the average.
+
+**Why:** The cohort is only as flexible as its most restricted member. All cohort students are locked together — the engine cannot pick and choose. If the top student in the cohort is a Grade 12 with a score of 8, the entire group must be placed on that student's timeline. Using the average would hide the most restricted student behind lower-scoring members and cause the group to be placed too late.
+
+Each cohort section (e.g., LEO II Cohort A vs. LEO II Cohort B) is scored independently. Different locked student lists, possibly different teachers and rooms — different scores. The cohort with the higher top student gets placed first.
 
 ### Weighted Priority Tests
 
