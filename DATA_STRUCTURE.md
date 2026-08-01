@@ -161,9 +161,81 @@ The engine processes each student's data in this order:
 - **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period. LEO I SSP membership does NOT carry over to LEO II — it is replaced by Cohort. The engine must not add LEO I SSP + LEO II Cohort together because that is the same program across two years and would overinflate the score. However, if the student also belongs to a separate SSP (e.g., Academic Support), that separate SSP DOES stack with the Cohort. Example: a LEO II student in Academic Support gets Grade Level + Cohort (LEO II) + SSP (Academic Support).
 - LEO is a two-year pipeline: the engine's LEO I group assignments (output from year 1) become the prescribed cohort input for LEO II (year 2).
 
-### Teacher
+### Teacher — Don Bosco Prep
 
-(to be defined)
+The teacher data is split across two sheets in the same file. Sheet 1 holds teacher-level data (one row per teacher). Sheet 2 holds course-level prescriptions (one row per teacher-course combination).
+
+**Sheet 1: Teacher Profiles (one row per teacher)**
+
+| Column | Field | Required? | Values |
+|--------|-------|-----------|--------|
+| A | Teacher ID | REQUIRED | Unique ID (e.g., 105826) |
+| B | Last Name | REQUIRED | Teacher last name |
+| C | First Name | REQUIRED | Teacher first name |
+| D | Department | REQUIRED | Department name (e.g., MATH, ENG, THEO) |
+| E | Max Teaching Periods | REQUIRED | Default 5 — the per-semester cap |
+| F | Approved 6th Period FY | REQUIRED | Y/N — approved for 6 periods both semesters |
+| G | Approved 6th Period S1 Only | REQUIRED | Y/N — approved for 6 periods in S1 only |
+| H | Approved 6th Period S2 Only | REQUIRED | Y/N — approved for 6 periods in S2 only |
+| I | Avail Period A | REQUIRED | Y/N — available to teach in Period A |
+| J | Avail Period B | REQUIRED | Y/N |
+| K | Avail Period C | REQUIRED | Y/N |
+| L | Avail Period D | REQUIRED | Y/N |
+| M | Avail Period E | REQUIRED | Y/N |
+| N | Avail Period F | REQUIRED | Y/N |
+| O | Avail Period G | REQUIRED | Y/N |
+| P | SSP Teacher | OPTIONAL | Which SSP programs this teacher is part of (e.g., Academic Support, Pathway) — null if none |
+
+16 columns total.
+
+**Sheet 2: Teacher-Course Assignments (one row per teacher-course combination)**
+
+Each row connects one teacher to one course they teach, with prescriptions specific to that combination. A teacher with 5 courses has 5 rows. Null = engine decides.
+
+| Column | Field | Required? | Values |
+|--------|-------|-----------|--------|
+| A | Teacher ID | REQUIRED | Must match a Teacher ID in Sheet 1 |
+| B | Course Code | REQUIRED | Must match a Course Code in the Course file |
+| C | Prescribed Room | OPTIONAL | Room number (e.g., S-234) — null = engine decides |
+| D | Prescribed Period | OPTIONAL | A, B, C, D, E, F, G — null = engine decides |
+| E | Prescribed Term | OPTIONAL | FY, S1, S2 — null = engine decides |
+| F | Prescribed Cohort | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not a cohort course |
+
+6 columns total.
+
+**Why two sheets:** A teacher can teach multiple courses, and each course can have a different prescribed room, period, term, and cohort. One row per teacher with one room column cannot capture this. The assignment sheet connects each teacher-course combination to its own prescriptions.
+
+**PII rule for teachers:** Teacher names (Last Name, First Name) are ALLOWED in the scheduling database for both Don Bosco Prep and the commercial product. PII isolation applies to student names only.
+
+**Columns removed from the original Template 6 (not needed by Don Bosco engine):**
+
+The original Template 6 had 48 columns. The following 32 columns were removed because the engine does not use them:
+
+- Department 2 (secondary department)
+- Employment Status
+- Contract Type
+- Hire Year
+- Seniority Rank
+- Max Consecutive Periods
+- Requires 2 Consecutive Free
+- Prep Periods Required
+- Duty Periods
+- Preferred Periods (soft preference — engine uses prescribed, not preferred)
+- Avoid Periods (soft constraint — engine uses prescribed, not preferred)
+- Preferred Room (replaced by Prescribed Room in Sheet 2)
+- Preferred Wing
+- Primary Subjects
+- Secondary Subjects
+- Master Teacher
+- AP/Honors Teacher
+- Certification Type, Subject, Expiry
+- Course-Teacher Lock (replaced by Sheet 2)
+- Sole Teacher for Courses
+- Prior Year Periods Taught
+- Prior Year Room
+- All Reference/computed columns (Sections Assigned, Unique Courses, Full-Year Load, S1 Load, S2 Load, Singleton Courses, Computed MTP Score, Courses Assigned)
+
+**Commercial product note:** Some of these removed columns may be needed for the commercial engine. Specifications for the commercial version of this template will be defined after the Don Bosco Prep engine build is completed.
 
 ### Room
 
