@@ -58,7 +58,7 @@ def auto_width(ws, widths):
 
 
 # ================================================================
-# TEMPLATE 6: Teacher Profiles (128 data points from C1)
+# TEMPLATE 6: Teacher Profiles (48 columns from C1)
 # ================================================================
 wb6 = openpyxl.Workbook()
 ws6 = wb6.active
@@ -67,13 +67,13 @@ ws6.title = 'Teacher Profiles'
 headers_6 = [
     # Identity (Required)
     'Teacher ID', 'Last Name', 'First Name',
-    # Organizational (Required)
+    # Organizational
     'Department 1', 'Department 2', 'Employment Status',
-    # Contract (Required — Hire Year/Seniority optional for Don Bosco)
+    # Contract
     'Contract Type', 'Hire Year', 'Seniority Rank',
-    # Scheduling Constraints (Required)
-    'Max Teaching Periods', 'Max Consecutive Periods', 'Requires 2 Consec Free',
-    'Prep Periods', 'Duty Periods',
+    # Scheduling Constraints
+    'Max Teaching Periods', 'Max Consec Periods', 'Requires 2 Consec Free',
+    'Prep Periods Required', 'Duty Periods',
     # Approved Overload (3-column split: Full-Year, S1, S2)
     'Approved 6-Period Full-Year', 'Approved 6-Period Semester 1', 'Approved 6-Period Semester 2',
     # Period Availability (Required — Y/N for each)
@@ -82,20 +82,19 @@ headers_6 = [
     # Preferences (Optional)
     'Preferred Periods', 'Avoid Periods',
     'Preferred Room', 'Preferred Wing',
-    # Subject Affinities (Required)
+    # Subject Affinities
     'Primary Subjects', 'Secondary Subjects',
-    'Master Teacher', 'AP/Honors Qualified',
-    # Certifications (Optional)
-    'Certification 1', 'Certification 2', 'Certification 3',
+    # Teacher Flags (Y/N)
+    'Master Teacher', 'AP/Honors Teacher', 'SSP Teacher',
+    # Certification (single set — Optional)
+    'Certification Type', 'Certification Subject', 'Certification Expiry',
     # Course-Teacher Lock
-    'Course-Teacher Lock', 'Sole Teacher',
+    'Course-Teacher Lock Codes', 'Sole Teacher for Courses',
     # Prior Year (Optional)
-    'Prior Year Periods', 'Prior Year Room',
-    # Computed / Derived
+    'Prior Year Periods Taught', 'Prior Year Room',
+    # Derived (leave blank — engine fills)
     'Sections Assigned', 'Unique Courses', 'Full-Year Load', 'S1 Load', 'S2 Load',
-    'Singleton Courses', 'Computed MTP', 'Computed TSSP',
-    # SSP Populations (Y/N flags)
-    'Teaches LEO', 'Teaches Pathway', 'Teaches Acad Support',
+    'Singleton Courses', 'Computed MTP Score',
     # Reference
     'Courses Assigned',
 ]
@@ -103,19 +102,21 @@ headers_6 = [
 # Sub-header row showing Required vs Optional
 subheaders_6 = [
     'REQUIRED', 'REQUIRED', 'REQUIRED',
-    'REQUIRED', 'OPTIONAL', 'REQUIRED',
-    'REQUIRED', 'OPTIONAL', 'OPTIONAL',
+    'REQUIRED', 'OPTIONAL',
+    'REQUIRED', 'REQUIRED',
+    'OPTIONAL', 'OPTIONAL',
     'REQUIRED', 'REQUIRED', 'Y/N', 'REQUIRED', 'REQUIRED',
     'Y/N', 'Y/N', 'Y/N',
     'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED',
-    'OPTIONAL', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
-    'REQUIRED', 'OPTIONAL', 'Y/N', 'Y/N',
+    'OPTIONAL', 'OPTIONAL',
+    'OPTIONAL', 'OPTIONAL',
+    'REQUIRED', 'OPTIONAL',
+    'Y/N', 'Y/N', 'Y/N',
     'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
     'OPTIONAL', 'Y/N',
     'OPTIONAL', 'OPTIONAL',
     'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED',
-    'DERIVED', 'DERIVED', 'DERIVED',
-    'Y/N', 'Y/N', 'Y/N',
+    'DERIVED', 'DERIVED',
     'DERIVED',
 ]
 
@@ -129,35 +130,59 @@ for c, sh in enumerate(subheaders_6, 1):
     if sh == 'REQUIRED':
         cell.fill = REQUIRED_FILL
         cell.font = Font(name='Arial', bold=True, size=9, color='A63D2B')
+    elif sh == 'DERIVED':
+        cell.fill = PatternFill(start_color='EEF0F3', end_color='EEF0F3', fill_type='solid')
+        cell.font = Font(name='Arial', size=9, color='5A6A7A')
     else:
         cell.fill = OPTIONAL_FILL
         cell.font = Font(name='Arial', size=9, color='2D6A4F')
     cell.alignment = Alignment(horizontal='center')
     cell.border = THIN_BORDER
 
-# Example rows
+# Example rows (48 columns each)
 examples_6 = [
-    ['T_GARCIA', 'Garcia', 'Anthony', 'Mathematics', 'Active',
-     'Standard', 2018, 5, 5, 3, 1, 1, 7,
-     'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N',
-     'Classroom S-231', 'S-Wing', 'A,B,C', '',
-     'Mathematics', 'Computer Science', 'N', '',
+    ['T_GARCIA', 'Garcia', 'Anthony',
+     'Mathematics', '', 'Active',
+     'Standard', 2018, 5,
+     5, 3, 'N', 1, 1,
+     'N', 'N', 'N',
+     'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N',
+     'A,B,C', '',
+     'Classroom S-231', 'S-Wing',
+     'Mathematics', 'Computer Science',
+     'N', 'N', 'N',
      'NJ Standard', 'Mathematics', '2028-06-30',
-     5, 'Classroom S-231'],
-    ['T_SMITH', 'Smith', 'Jane', 'English', 'Active',
-     'Standard', 2015, 3, 5, 3, 1, 0, 7,
-     'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',
-     'Classroom D-101', 'D-Wing', '', 'G',
-     'English', '', 'Y', '',
+     '', 'N',
+     '', 'Classroom S-231',
+     '', '', '', '', '', '', '', ''],
+    ['T_SMITH', 'Smith', 'Jane',
+     'English', '', 'Active',
+     'Standard', 2015, 3,
+     5, 3, 'Y', 1, 0,
+     'Y', 'N', 'N',
+     'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',
+     '', 'G',
+     'Classroom D-101', 'D-Wing',
+     'English', '',
+     'Y', 'N', 'N',
      'NJ Standard', 'English Language Arts', '2027-06-30',
-     5, 'Classroom D-101'],
-    ['T_DANIELS', 'Daniels', 'Torrence', 'Physical Education', 'Active',
-     'Standard', 2020, 8, 5, 2, 1, 1, 7,
-     'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N',
-     'Gym', '', '', '',
-     'Physical Education', '', 'N', '620',
+     '', 'N',
+     '', 'Classroom D-101',
+     '', '', '', '', '', '', '', ''],
+    ['T_DANIELS', 'Daniels', 'Torrence',
+     'Physical Education', '', 'Active',
+     'Standard', 2020, 8,
+     5, 2, 'N', 1, 1,
+     'N', 'N', 'N',
+     'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N',
+     '', '',
+     'Gym', '',
+     'Physical Education', '',
+     'N', 'N', 'N',
      'NJ Standard', 'Physical Education', '2029-06-30',
-     5, 'Gym'],
+     '620', 'N',
+     '', 'Gym',
+     '', '', '', '', '', '', '', ''],
 ]
 for i, row in enumerate(examples_6):
     for c, v in enumerate(row, 1):
@@ -169,15 +194,23 @@ dv_yn = DataValidation(type="list", formula1='"Y,N"', allow_blank=True)
 dv_yn.error = "Enter Y or N"
 dv_yn.errorTitle = "Invalid"
 ws6.add_data_validation(dv_yn)
-for col in range(14, 22):  # Period availability + approved overload
+# Y/N columns: Requires 2 Consec Free (12), Approved 6-Period (15-17),
+# Avail Per A-G (18-24), Master/AP/SSP Teacher (31-33), Sole Teacher (38)
+for col in [12] + list(range(15, 25)) + [31, 32, 33, 38]:
     dv_yn.add(ws6.cell(3, col))
 
 dv_status = DataValidation(type="list", formula1='"Active,Leave,Part-Time,Retired"', allow_blank=False)
 ws6.add_data_validation(dv_status)
 
-widths_6 = [12, 14, 14, 16, 14, 14, 10, 12, 12, 12, 12, 12, 12,
-            10, 10, 10, 10, 10, 10, 10, 12, 14, 12, 18, 16,
-            22, 18, 12, 22, 16, 18, 16, 14, 16]
+widths_6 = [12, 14, 14, 16, 14, 16, 14, 10, 12,
+            16, 16, 18, 16, 12,
+            12, 12, 12,
+            10, 10, 10, 10, 10, 10, 10,
+            16, 14, 16, 14,
+            18, 18, 14, 16, 12,
+            16, 16, 14,
+            20, 14, 18, 14,
+            16, 14, 14, 10, 10, 16, 16, 18]
 auto_width(ws6, widths_6)
 
 wb6.save(os.path.join(OUT, 'Template_6_Teacher_Profiles.xlsx'))
@@ -564,7 +597,7 @@ print("=" * 60)
 print(f"\nLocation: {OUT}/")
 print("""
 Enhanced Templates (from the product spec profiles):
-  6.  Template_6_Teacher_Profiles.xlsx     — 128 data points (C1)
+  6.  Template_6_Teacher_Profiles.xlsx     — 48 columns (C1)
   7.  Template_7_Course_Profiles.xlsx      — 94 data points + 8-input scoring (C3)
   8.  Template_8_Student_Profiles.xlsx     — 155 data points, priority P0-P5 (C2)
   9.  Template_9_Room_Profiles.xlsx        — 91 data points (C4)

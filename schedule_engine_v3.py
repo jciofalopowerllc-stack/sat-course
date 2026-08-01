@@ -375,8 +375,8 @@ try:
             return t6ws.cell(r, c).value if c else None
 
         max_periods = _read('Max Teaching Periods')
-        max_consec = _read('Max Consec Periods')
-        prep_req = _read('Prep Periods Required')
+        max_consec = _read('Max Consec Periods') or _read('Max Consecutive Periods')
+        prep_req = _read('Prep Periods Required') or _read('Prep Periods')
         duty = _read('Duty Periods')
         req_2consec = str(_read('Requires 2 Consec Free') or 'N').upper() == 'Y'
 
@@ -397,14 +397,20 @@ try:
         dept1 = str(_read('Department 1') or '')
         dept2 = str(_read('Department 2') or '')
 
+        # SSP Teacher flag (consolidated column in revised template)
+        ssp_teacher = str(_read('SSP Teacher') or 'N').upper() == 'Y'
+        # Legacy support: also check separate columns if present
         teaches_leo = str(_read('Teaches LEO') or 'N').upper() == 'Y'
         teaches_pathway = str(_read('Teaches Pathway') or 'N').upper() == 'Y'
         teaches_acad_support = str(_read('Teaches Acad Support') or 'N').upper() == 'Y'
 
-        ct_lock_raw = _read('Course-Teacher Lock')
+        ct_lock_raw = _read('Course-Teacher Lock Codes') or _read('Course-Teacher Lock')
         ct_lock = str(ct_lock_raw).strip() if ct_lock_raw and str(ct_lock_raw).strip() not in ('N/A', 'None', '') else ''
 
-        computed_tssp_raw = _read('Computed TSSP')
+        computed_mtp_raw = _read('Computed MTP Score') or _read('Computed MTP')
+        computed_mtp = int(computed_mtp_raw) if computed_mtp_raw and str(computed_mtp_raw).strip().isdigit() else None
+
+        computed_tssp_raw = _read('Computed TSSP Score') or _read('Computed TSSP')
         computed_tssp = int(computed_tssp_raw) if computed_tssp_raw and str(computed_tssp_raw).strip().isdigit() else None
 
         teacher_profiles[tname] = {
@@ -424,10 +430,12 @@ try:
             'contract': contract,
             'department_1': dept1,
             'department_2': dept2,
+            'ssp_teacher': ssp_teacher,
             'teaches_leo': teaches_leo,
             'teaches_pathway': teaches_pathway,
             'teaches_acad_support': teaches_acad_support,
             'course_teacher_locks': ct_lock,
+            'computed_mtp': computed_mtp,
             'computed_tssp': computed_tssp,
         }
     t6wb.close()
@@ -1137,28 +1145,27 @@ if _ssp_overrides:
     print(f"  SSP scores merged from Template 8: {_ssp_overrides} students updated")
 
 # ── Merge Template 6 TSSP into teacher priority system ──
+# Priority: computed_tssp column > separate population columns > ssp_teacher flag > default 1
 _tssp_overrides = 0
 for _tname, _tp in teacher_profiles.items():
     tssp_val = _tp.get('computed_tssp')
     if tssp_val is not None:
-        if _tname in _TEACHER_PRIO:
-            _TEACHER_PRIO[_tname]['TSSP'] = tssp_val
-        else:
-            _TEACHER_PRIO[_tname] = {'MTP': 1, 'TSSP': tssp_val}
-        _tssp_overrides += 1
+        _tssp = tssp_val
+    elif _tp.get('teaches_leo'):
+        _tssp = 5
+    elif _tp.get('teaches_pathway'):
+        _tssp = 4
+    elif _tp.get('teaches_acad_support'):
+        _tssp = 3
+    elif _tp.get('ssp_teacher'):
+        _tssp = 5
     else:
-        if _tp.get('teaches_leo'):
-            _tssp = 5
-        elif _tp.get('teaches_pathway'):
-            _tssp = 4
-        elif _tp.get('teaches_acad_support'):
-            _tssp = 3
-        else:
-            _tssp = 1
-        if _tname in _TEACHER_PRIO:
-            _TEACHER_PRIO[_tname].setdefault('TSSP', _tssp)
-        else:
-            _TEACHER_PRIO[_tname] = {'MTP': 1, 'TSSP': _tssp}
+        _tssp = 1
+    if _tname in _TEACHER_PRIO:
+        _TEACHER_PRIO[_tname]['TSSP'] = _tssp
+    else:
+        _TEACHER_PRIO[_tname] = {'MTP': _tp.get('computed_mtp') or 1, 'TSSP': _tssp}
+    _tssp_overrides += 1
 if _tssp_overrides:
     print(f"  TSSP scores merged from Template 6: {_tssp_overrides} teachers updated")
 

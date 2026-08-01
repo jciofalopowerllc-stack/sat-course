@@ -27,7 +27,7 @@
       "RL": "5=specialized room, 0=standard",
       "SC": "5=1 section (singleton), 4=2 sections, 3=3 sections, 2=4-5 sections, 1=6+ sections",
       "CR": "Computed dynamically: count of student's other requests sharing period slots with this course",
-      "TSSP": "5=teaches LEO courses, 4=teaches Pathway courses, 3=teaches AcademicSupport courses, 1=standard"
+      "TSSP": "5=SSP Teacher (Y in Template 6), 1=standard"
     }
   },
   "course_priorities": {
@@ -15434,10 +15434,8 @@
         "425",
         "445"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Angotti, Sylvia": {
       "MTP": 5,
@@ -15448,23 +15446,8 @@
         "330",
         "351"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
-    },
-    "Arcede, Francis": {
-      "MTP": 3,
-      "sections": 5,
-      "unique_courses": 1,
-      "courses": [
-        "810"
-      ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Biggs, Tyrell": {
       "MTP": 5,
@@ -15473,10 +15456,8 @@
       "courses": [
         "610"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Calidas, Riddhi": {
       "MTP": 5,
@@ -15490,11 +15471,8 @@
         "494",
         "496"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Campbell, Scott": {
       "MTP": 5,
@@ -15505,11 +15483,8 @@
         "453",
         "455"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Carr, Lynette": {
       "MTP": 4,
@@ -15519,10 +15494,8 @@
         "311",
         "320"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Chiaravalloti, Michael": {
       "MTP": 5,
@@ -15532,11 +15505,8 @@
         "631",
         "642"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Connelly, Tiffany": {
       "MTP": 4,
@@ -15546,11 +15516,8 @@
         "544",
         "546"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Corcoran, Kevin": {
       "MTP": 5,
@@ -15563,8 +15530,7 @@
       ],
       "TSSP": 5,
       "serving_populations": [
-        "LEO",
-        "Pathway"
+        "SSP Teacher"
       ]
     },
     "Daniels, Torrence": {
@@ -15574,10 +15540,8 @@
       "courses": [
         "620"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "DeLeon, Marco": {
       "MTP": 4,
@@ -15587,10 +15551,8 @@
         "412",
         "432"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Delmonico, Marisa": {
       "MTP": 4,
@@ -15600,10 +15562,8 @@
         "111",
         "129"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Dennehy, Sheri": {
       "MTP": 5,
@@ -15620,9 +15580,9 @@
         "255",
         "764"
       ],
-      "TSSP": 4,
+      "TSSP": 5,
       "serving_populations": [
-        "Pathway"
+        "SSP Teacher"
       ]
     },
     "Doughty, Chelsea": {
@@ -15632,10 +15592,8 @@
       "courses": [
         "520"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Dwyer, Kevin": {
       "MTP": 4,
@@ -15645,11 +15603,8 @@
         "130",
         "141"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Esposito, John": {
       "MTP": 5,
@@ -15663,8 +15618,7 @@
       ],
       "TSSP": 5,
       "serving_populations": [
-        "LEO",
-        "Pathway"
+        "SSP Teacher"
       ]
     },
     "Fisk, Mary Pat": {
@@ -15675,10 +15629,8 @@
         "131",
         "139"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Gerlach, Reese": {
       "MTP": 4,
@@ -15688,11 +15640,8 @@
         "420",
         "440"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Gettler, Mary": {
       "MTP": 5,
@@ -15703,11 +15652,8 @@
         "440",
         "448"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Guy, Libbie": {
       "MTP": 4,
@@ -15717,11 +15663,8 @@
         "542",
         "543"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Hampson, Elizabeth": {
       "MTP": 4,
@@ -15731,11 +15674,8 @@
         "430",
         "443"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Harris, Megan": {
       "MTP": 5,
@@ -15746,11 +15686,8 @@
         "731",
         "761"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Janeczko, Douglas": {
       "MTP": 5,
@@ -15760,10 +15697,8 @@
         "500",
         "510"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Judge, Michelle": {
       "MTP": 5,
@@ -15774,10 +15709,8 @@
         "122",
         "955"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Kilduff, Kevin": {
       "MTP": 4,
@@ -15787,11 +15720,8 @@
         "511",
         "553"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Konopelski, Louis": {
       "MTP": 5,
@@ -15802,11 +15732,8 @@
         "765",
         "766"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Kozak, Bernadette": {
       "MTP": 4,
@@ -15816,10 +15743,8 @@
         "530",
         "595"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Langan, John": {
       "MTP": 3,
@@ -15829,10 +15754,8 @@
         "820",
         "830"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Laracy, John": {
       "MTP": 5,
@@ -15842,11 +15765,8 @@
         "830",
         "851"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Lomascolo, Frank": {
       "MTP": 3,
@@ -15856,10 +15776,8 @@
         "810",
         "820"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Lopez, Enrique": {
       "MTP": 5,
@@ -15872,9 +15790,9 @@
         "209",
         "220"
       ],
-      "TSSP": 4,
+      "TSSP": 5,
       "serving_populations": [
-        "Pathway"
+        "SSP Teacher"
       ]
     },
     "Martino, Brianna": {
@@ -15885,11 +15803,8 @@
         "721",
         "763"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Mazella, Julie": {
       "MTP": 3,
@@ -15898,10 +15813,8 @@
       "courses": [
         "120"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "McConnell, George": {
       "MTP": 5,
@@ -15914,9 +15827,9 @@
         "590",
         "591"
       ],
-      "TSSP": 4,
+      "TSSP": 5,
       "serving_populations": [
-        "Pathway"
+        "SSP Teacher"
       ]
     },
     "McManus, Brianna": {
@@ -15926,10 +15839,8 @@
       "courses": [
         "521"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Montegari, James": {
       "MTP": 4,
@@ -15938,10 +15849,8 @@
       "courses": [
         "720"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Muscat, Nicole": {
       "MTP": 5,
@@ -15954,10 +15863,8 @@
         "333",
         "352"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Nepolitan, John": {
       "MTP": 5,
@@ -15968,10 +15875,8 @@
         "731",
         "733"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "New ENGLISH Teacher (TBD)": {
       "MTP": 5,
@@ -15983,35 +15888,8 @@
         "143",
         "145"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
-    },
-    "New ENGLISH Teacher ELENA (TBD)": {
-      "MTP": 4,
-      "sections": 3,
-      "unique_courses": 1,
-      "courses": [
-        "144"
-      ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
-    },
-    "New LN Teacher (TBD)": {
-      "MTP": 3,
-      "sections": 1,
-      "unique_courses": 1,
-      "courses": [
-        "955"
-      ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "New MATH  Teacher OH (TBD)": {
       "MTP": 4,
@@ -16021,10 +15899,8 @@
         "410",
         "422"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "New MATH Teacher HARTMAN (TBD)": {
       "MTP": 5,
@@ -16035,24 +15911,8 @@
         "440",
         "450"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
-    },
-    "New THEATER Teacher (TBD)": {
-      "MTP": 4,
-      "sections": 2,
-      "unique_courses": 2,
-      "courses": [
-        "225",
-        "228"
-      ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "New THEO 1 Teacher (TBD)": {
       "MTP": 3,
@@ -16062,10 +15922,8 @@
         "810",
         "820"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "New THEO 2 Teacher (TBD)": {
       "MTP": 5,
@@ -16075,11 +15933,8 @@
         "830",
         "849"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Nobilione, Lauren": {
       "MTP": 5,
@@ -16090,11 +15945,8 @@
         "140",
         "146"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "O'Connor, Paul": {
       "MTP": 5,
@@ -16105,11 +15957,8 @@
         "121",
         "149"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Ojo, Clement": {
       "MTP": 3,
@@ -16118,26 +15967,8 @@
       "courses": [
         "830"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
-    },
-    "Park, Sam": {
-      "MTP": 5,
-      "sections": 9,
-      "unique_courses": 5,
-      "courses": [
-        "2014",
-        "2024",
-        "2034",
-        "2044",
-        "2054"
-      ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Quast, Richard": {
       "MTP": 5,
@@ -16150,11 +15981,8 @@
         "744",
         "751"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Ramirez, Jaime": {
       "MTP": 4,
@@ -16164,10 +15992,8 @@
         "330",
         "331"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Sabella, Daniel": {
       "MTP": 4,
@@ -16188,11 +16014,8 @@
         "741",
         "751"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Serra, Carmine": {
       "MTP": 3,
@@ -16201,10 +16024,8 @@
       "courses": [
         "110"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Stoller, Timothy": {
       "MTP": 4,
@@ -16213,10 +16034,8 @@
       "courses": [
         "551"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Tranate, John": {
       "MTP": 5,
@@ -16227,11 +16046,8 @@
         "557",
         "558"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Tuesta, David": {
       "MTP": 4,
@@ -16240,26 +16056,8 @@
       "courses": [
         "310"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
-    },
-    "Unassigned": {
-      "MTP": 3,
-      "sections": 5,
-      "unique_courses": 4,
-      "courses": [
-        "430",
-        "500",
-        "727",
-        "732"
-      ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Willi, Mary": {
       "MTP": 4,
@@ -16269,10 +16067,8 @@
         "410",
         "411"
       ],
-      "TSSP": 4,
-      "serving_populations": [
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Winters, Jack": {
       "MTP": 4,
@@ -16282,11 +16078,8 @@
         "710",
         "756"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Zawacki, Richard": {
       "MTP": 5,
@@ -16297,11 +16090,8 @@
         "742",
         "752"
       ],
-      "TSSP": 5,
-      "serving_populations": [
-        "LEO",
-        "Pathway"
-      ]
+      "TSSP": 1,
+      "serving_populations": []
     },
     "Zawiski, Brian": {
       "MTP": 5,
@@ -16314,10 +16104,42 @@
         "339",
         "359"
       ],
+      "TSSP": 1,
+      "serving_populations": []
+    },
+    "Payne, Jamie": {
+      "MTP": 1,
+      "sections": 0,
+      "unique_courses": 0,
+      "courses": [],
       "TSSP": 5,
       "serving_populations": [
-        "LEO",
-        "Pathway"
+        "SSP Teacher"
+      ]
+    },
+    "Ferrante-Martin, Elena": {
+      "MTP": 4,
+      "sections": 3,
+      "unique_courses": 1,
+      "courses": [
+        "144"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "SSP Teacher"
+      ]
+    },
+    "Austria, Joseph": {
+      "MTP": 4,
+      "sections": 2,
+      "unique_courses": 2,
+      "courses": [
+        "225",
+        "228"
+      ],
+      "TSSP": 5,
+      "serving_populations": [
+        "SSP Teacher"
       ]
     }
   },
@@ -16424,12 +16246,6 @@
       "CTAP": 5,
       "MTP": 5
     },
-    "144:New ENGLISH Teacher ELENA (TBD)": {
-      "course": "144",
-      "teacher": "New ENGLISH Teacher ELENA (TBD)",
-      "CTAP": 4,
-      "MTP": 4
-    },
     "145:New ENGLISH Teacher (TBD)": {
       "course": "145",
       "teacher": "New ENGLISH Teacher (TBD)",
@@ -16477,18 +16293,6 @@
       "teacher": "Lopez, Enrique",
       "CTAP": 5,
       "MTP": 5
-    },
-    "225:New THEATER Teacher (TBD)": {
-      "course": "225",
-      "teacher": "New THEATER Teacher (TBD)",
-      "CTAP": 5,
-      "MTP": 4
-    },
-    "228:New THEATER Teacher (TBD)": {
-      "course": "228",
-      "teacher": "New THEATER Teacher (TBD)",
-      "CTAP": 5,
-      "MTP": 4
     },
     "241:Dennehy, Sheri": {
       "course": "241",
@@ -16700,12 +16504,6 @@
       "CTAP": 3,
       "MTP": 4
     },
-    "430:Unassigned": {
-      "course": "430",
-      "teacher": "Unassigned",
-      "CTAP": 3,
-      "MTP": 3
-    },
     "431:Campbell, Scott": {
       "course": "431",
       "teacher": "Campbell, Scott",
@@ -16831,12 +16629,6 @@
       "teacher": "Janeczko, Douglas",
       "CTAP": 4,
       "MTP": 5
-    },
-    "500:Unassigned": {
-      "course": "500",
-      "teacher": "Unassigned",
-      "CTAP": 4,
-      "MTP": 3
     },
     "510:Janeczko, Douglas": {
       "course": "510",
@@ -17042,12 +16834,6 @@
       "CTAP": 3,
       "MTP": 5
     },
-    "727:Unassigned": {
-      "course": "727",
-      "teacher": "Unassigned",
-      "CTAP": 3,
-      "MTP": 3
-    },
     "729:Esposito, John": {
       "course": "729",
       "teacher": "Esposito, John",
@@ -17071,12 +16857,6 @@
       "teacher": "Nepolitan, John",
       "CTAP": 4,
       "MTP": 5
-    },
-    "732:Unassigned": {
-      "course": "732",
-      "teacher": "Unassigned",
-      "CTAP": 3,
-      "MTP": 3
     },
     "732:Zawacki, Richard": {
       "course": "732",
@@ -17192,12 +16972,6 @@
       "CTAP": 5,
       "MTP": 5
     },
-    "810:Arcede, Francis": {
-      "course": "810",
-      "teacher": "Arcede, Francis",
-      "CTAP": 2,
-      "MTP": 3
-    },
     "810:Lomascolo, Frank": {
       "course": "810",
       "teacher": "Lomascolo, Frank",
@@ -17270,41 +17044,23 @@
       "CTAP": 3,
       "MTP": 5
     },
-    "955:New LN Teacher (TBD)": {
-      "course": "955",
-      "teacher": "New LN Teacher (TBD)",
-      "CTAP": 3,
-      "MTP": 3
+    "144:Ferrante-Martin, Elena": {
+      "course": "144",
+      "teacher": "Ferrante-Martin, Elena",
+      "CTAP": 4,
+      "MTP": 4
     },
-    "2014:Park, Sam": {
-      "course": "2014",
-      "teacher": "Park, Sam",
+    "225:Austria, Joseph": {
+      "course": "225",
+      "teacher": "Austria, Joseph",
       "CTAP": 5,
-      "MTP": 5
+      "MTP": 4
     },
-    "2024:Park, Sam": {
-      "course": "2024",
-      "teacher": "Park, Sam",
-      "CTAP": 4,
-      "MTP": 5
-    },
-    "2034:Park, Sam": {
-      "course": "2034",
-      "teacher": "Park, Sam",
-      "CTAP": 4,
-      "MTP": 5
-    },
-    "2044:Park, Sam": {
-      "course": "2044",
-      "teacher": "Park, Sam",
-      "CTAP": 4,
-      "MTP": 5
-    },
-    "2054:Park, Sam": {
-      "course": "2054",
-      "teacher": "Park, Sam",
-      "CTAP": 4,
-      "MTP": 5
+    "228:Austria, Joseph": {
+      "course": "228",
+      "teacher": "Austria, Joseph",
+      "CTAP": 5,
+      "MTP": 4
     }
   },
   "term_locks": {

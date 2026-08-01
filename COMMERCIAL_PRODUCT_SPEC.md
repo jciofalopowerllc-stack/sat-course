@@ -61,7 +61,7 @@ The core algorithm runs in four phases:
 | Semester Designations | S1/S2 locks, full freedom courses, split rules |
 | Course Priorities | 0–5 priority scale for 141 courses |
 | Co-Schedule Groups | Course groups that must share a period (AP Art, Guitar, Theater, etc.) |
-| Teacher Profiles (Template 6) | 51 columns: departments, load caps, per-semester 6-period approval, period availability, TSSP, SSP population flags |
+| Teacher Profiles (Template 6) | 48 columns: departments, load caps, per-semester 6-period approval, period availability, SSP Teacher flag, certifications, computed MTP |
 | Student Profiles (Template 8) | 21 columns: grade, SSP, multi-membership flags (LEO, Pathway, Academic Support), IEP, cohort |
 
 ### 2.3 Constraint System
@@ -292,11 +292,11 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] 10-input weighted priority scoring per student-course-section placement (CFP, CYRP, SSP, MTP, CTAP, TL, PL, RL, SC, CR)
 - [x] Student ranking 1–800 by constraint density
 - [x] SSP multi-membership: students belong to 1, 2, or all 3 populations (LEO, Pathway, Academic Support)
-- [x] TSSP (Teacher Special Population Priority): mirrors SSP for teachers serving special populations
+- [x] TSSP (Teacher Special Population Priority): derived from SSP Teacher flag in Template 6
 - [x] Per-semester approved 6-period load (Full-Year, S1-only, S2-only)
-- [x] Template 6 header-based column lookup (no hardcoded indices)
+- [x] Template 6 header-based column lookup (48 columns, no hardcoded indices)
 - [x] Template 8 student profiles reading (LEO, Pathway, Academic Support flags)
-- [x] Engine reads TSSP from Template 6 and SSP from Template 8
+- [x] Engine reads TSSP from Template 6 SSP Teacher flag and SSP from Template 8
 - [x] Course-Teacher Lock codes read from Template 6 instead of hardcoded
 - [ ] Current year course request priority data input (CYRP fine-tuning)
 - [ ] Master teacher profile priority data input (MTP fine-tuning)

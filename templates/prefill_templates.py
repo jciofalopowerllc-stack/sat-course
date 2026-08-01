@@ -479,21 +479,20 @@ headers_6 = [
     'Teacher ID', 'Last Name', 'First Name',
     'Department 1', 'Department 2', 'Employment Status',
     'Contract Type', 'Hire Year', 'Seniority Rank',
-    'Max Teaching Periods', 'Max Consecutive Periods', 'Requires 2 Consec Free',
-    'Prep Periods', 'Duty Periods',
+    'Max Teaching Periods', 'Max Consec Periods', 'Requires 2 Consec Free',
+    'Prep Periods Required', 'Duty Periods',
     'Approved 6-Period Full-Year', 'Approved 6-Period Semester 1', 'Approved 6-Period Semester 2',
     'Avail Per A', 'Avail Per B', 'Avail Per C', 'Avail Per D',
     'Avail Per E', 'Avail Per F', 'Avail Per G',
     'Preferred Periods', 'Avoid Periods',
     'Preferred Room', 'Preferred Wing',
     'Primary Subjects', 'Secondary Subjects',
-    'Master Teacher', 'AP/Honors Qualified',
-    'Certification 1', 'Certification 2', 'Certification 3',
-    'Course-Teacher Lock', 'Sole Teacher',
-    'Prior Year Periods', 'Prior Year Room',
+    'Master Teacher', 'AP/Honors Teacher', 'SSP Teacher',
+    'Certification Type', 'Certification Subject', 'Certification Expiry',
+    'Course-Teacher Lock Codes', 'Sole Teacher for Courses',
+    'Prior Year Periods Taught', 'Prior Year Room',
     'Sections Assigned', 'Unique Courses', 'Full-Year Load', 'S1 Load', 'S2 Load',
-    'Singleton Courses', 'Computed MTP', 'Computed TSSP',
-    'Teaches LEO', 'Teaches Pathway', 'Teaches Acad Support',
+    'Singleton Courses', 'Computed MTP Score',
     'Courses Assigned',
 ]
 
@@ -505,13 +504,12 @@ subheaders_6 = [
     'Y/N', 'Y/N', 'Y/N',
     'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED', 'REQUIRED',
     'OPTIONAL', 'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
-    'REQUIRED', 'OPTIONAL', 'Y/N', 'Y/N',
+    'REQUIRED', 'OPTIONAL', 'Y/N', 'Y/N', 'Y/N',
     'OPTIONAL', 'OPTIONAL', 'OPTIONAL',
     'OPTIONAL', 'Y/N',
     'OPTIONAL', 'OPTIONAL',
     'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED', 'DERIVED',
-    'DERIVED', 'DERIVED', 'DERIVED',
-    'Y/N', 'Y/N', 'Y/N',
+    'DERIVED', 'DERIVED',
     'DERIVED',
 ]
 
@@ -595,6 +593,7 @@ for t in sorted(teachers_data, key=lambda x: x['name']):
     write_cell(ws6, row, col, dept2 if dept2 else ''); col += 1
     write_cell(ws6, row, col, is_master); col += 1
     write_cell(ws6, row, col, 'N'); col += 1
+    write_cell(ws6, row, col, 'N'); col += 1
     write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
     write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
     write_cell(ws6, row, col, 'N/A', is_na=True); col += 1
@@ -609,10 +608,6 @@ for t in sorted(teachers_data, key=lambda x: x['name']):
     write_cell(ws6, row, col, ''); col += 1
     write_cell(ws6, row, col, ''); col += 1
     write_cell(ws6, row, col, mtp); col += 1
-    write_cell(ws6, row, col, ''); col += 1
-    write_cell(ws6, row, col, 'N'); col += 1
-    write_cell(ws6, row, col, 'N'); col += 1
-    write_cell(ws6, row, col, 'N'); col += 1
     write_cell(ws6, row, col, ', '.join(t.get('courses', []))); col += 1
     row += 1
 
@@ -620,11 +615,11 @@ widths_6 = [12, 14, 14, 18, 18, 14, 14, 10, 12, 14, 14, 14, 12, 12,
             14, 14, 14,
             10, 10, 10, 10, 10, 10, 10,
             14, 14, 18, 12,
-            24, 18, 12, 12,
+            24, 18, 12, 12, 12,
             14, 14, 14,
             18, 12, 14, 14,
-            12, 12, 12, 10, 10, 12, 12, 12,
-            10, 10, 14, 30]
+            12, 12, 12, 10, 10, 12, 12,
+            30]
 auto_width(ws6, widths_6)
 
 wb6.save(os.path.join(TEMPLATES, 'Template_6_Teacher_Profiles.xlsx'))
