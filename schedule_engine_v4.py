@@ -387,46 +387,44 @@ def parse_comma_list(val):
     return [x.strip() for x in s.split(",") if x.strip()]
 
 
-def _match_room(preferred_room, room_ids):
-    """Match a teacher's preferred room string to a known room ID.
-    E.g. 'Classroom D-106' matches room ID 'D-106'."""
-    if not preferred_room:
-        return None
-    name = str(preferred_room).strip()
-    if name in room_ids:
-        return name
-    for rid in sorted(room_ids, key=len, reverse=True):
-        if rid in name:
-            return rid
-    return None
-
-
 def load_students(path):
+    """Load students from NEW template (11 columns on Sheet 1, 10 columns on Sheet 2).
+
+    Sheet 1 — Student Profiles:
+      A=Student ID, B=Last Name, C=First Name, D=Grade Level,
+      E=NCAA, F=LEO II, G=LEO I, H=Academic Support, I=Pathway,
+      J=Cohort Name, K=Cohort Locked
+
+    Sheet 2 — Transcript History:
+      A=Student ID, B=Academic Year, C=Course Code, D=Course Title,
+      E=Department, F=Credits, G=Final Grade, H=Passed, I=Grade Level When Taken,
+      J=Notes
+    """
     wb = openpyxl.load_workbook(path)
     students = {}
 
     ws = wb["Student Profiles"]
-    for row in ws.iter_rows(min_row=3, values_only=False):
+    for row in ws.iter_rows(min_row=2, values_only=False):
         vals = [c.value for c in row]
         sid = vals[0]
         if sid is None:
             continue
         sid = str(sid).strip()
-        # OLD template layout (21 cols): Student ID(0), Grade Level(1),
-        # ..., LEO II(10), Pathway(11), Academic Support(12), ...,
-        # Cohort Name(15), Cohort Locked(16)
+        if not sid or sid.upper() in ("STUDENT ID", "REQUIRED", "OPTIONAL"):
+            continue
+
         s = Student(
             sid=sid,
-            last_name="",
-            first_name="",
-            grade=int(vals[1]) if vals[1] else 9,
-            ncaa=False,
-            leo_ii=yn(vals[10]) if len(vals) > 10 else False,
-            leo_i=False,
-            academic_support=yn(vals[12]) if len(vals) > 12 else False,
-            pathway=yn(vals[11]) if len(vals) > 11 else False,
-            cohort_name=str(vals[15]) if len(vals) > 15 and vals[15] else None,
-            cohort_locked=yn(vals[16]) if len(vals) > 16 else False,
+            last_name=str(vals[1] or ""),
+            first_name=str(vals[2] or ""),
+            grade=int(vals[3]) if vals[3] else 9,
+            ncaa=yn(vals[4]) if len(vals) > 4 else False,
+            leo_ii=yn(vals[5]) if len(vals) > 5 else False,
+            leo_i=yn(vals[6]) if len(vals) > 6 else False,
+            academic_support=yn(vals[7]) if len(vals) > 7 else False,
+            pathway=yn(vals[8]) if len(vals) > 8 else False,
+            cohort_name=str(vals[9]).strip() if len(vals) > 9 and vals[9] else None,
+            cohort_locked=yn(vals[10]) if len(vals) > 10 else False,
         )
         students[sid] = s
 
@@ -435,7 +433,9 @@ def load_students(path):
         for row in ws2.iter_rows(min_row=2, values_only=False):
             vals = [c.value for c in row]
             sid = str(vals[0]).strip() if vals[0] else None
-            if sid and sid in students:
+            if not sid or sid.upper() in ("STUDENT ID", "REQUIRED", "OPTIONAL"):
+                continue
+            if sid in students:
                 students[sid].transcript.append({
                     "year": str(vals[1] or ""),
                     "course_code": str(vals[2] or ""),
@@ -463,49 +463,38 @@ def load_course_requests(path, students):
                 students[sid].course_requests.append(course_code)
 
 
-def load_teachers(path, room_ids=None):
-    """Load teachers from Template 6 (OLD 48-column format).
+def load_teachers(path):
+    """Load teachers from NEW template (17 columns on Sheet 1, 6 columns on Sheet 2).
 
-    OLD layout: title row 1, instruction row 2, headers row 3, descriptors row 4,
-    data starts row 5.  Key columns (0-based): Teacher ID(0), Last Name(1),
-    First Name(2), Department 1(3), Max Teaching Periods(9),
-    Approved 6-Period FY(14), S1(15), S2(16), Avail A-G(17-23),
-    Preferred Room(26), SSP Teacher(32), Courses Assigned(47).
+    Sheet 1 — Teacher Profiles:
+      A=Teacher ID, B=Last Name, C=First Name, D=Department,
+      E=Max Teaching Periods, F=Approved 6th Period FY, G=Approved 6th Period S1 Only,
+      H=Approved 6th Period S2 Only, I=Avail Period A, J=Avail Period B,
+      K=Avail Period C, L=Avail Period D, M=Avail Period E, N=Avail Period F,
+      O=Avail Period G, P=Special Student Population Teacher,
+      Q=Approved for Co-Scheduled Sections
+
+    Sheet 2 — Teacher-Course Assignments:
+      A=Teacher ID, B=Course Code, C=Prescribed Room, D=Prescribed Period,
+      E=Prescribed Term, F=Prescribed Cohort
     """
-    if room_ids is None:
-        room_ids = set()
-
     wb = openpyxl.load_workbook(path)
     teachers = {}
 
     ws = wb["Teacher Profiles"] if "Teacher Profiles" in wb.sheetnames else wb[wb.sheetnames[0]]
 
-    # Find header row (look for "Teacher ID" in column A)
-    data_start = 5
-    for r in range(1, 8):
-        val = ws.cell(r, 1).value
-        if val and "teacher id" in str(val).strip().lower():
-            data_start = r + 1
-            while data_start <= r + 3:
-                test = ws.cell(data_start, 1).value
-                if test and str(test).strip().upper() in ("REQUIRED", "OPTIONAL"):
-                    data_start += 1
-                else:
-                    break
-            break
-
-    for row in ws.iter_rows(min_row=data_start, values_only=False):
+    for row in ws.iter_rows(min_row=2, values_only=False):
         vals = [c.value for c in row]
         tid = vals[0]
         if tid is None:
             continue
         tid = str(tid).strip()
-        if not tid or tid.upper() in ("REQUIRED", "OPTIONAL"):
+        if not tid or tid.upper() in ("TEACHER ID", "REQUIRED", "OPTIONAL"):
             continue
 
         avail = {}
         for i, p in enumerate(PERIODS):
-            col_idx = 17 + i  # columns R through X (0-based 17-23)
+            col_idx = 8 + i  # columns I through O (0-based 8-14)
             avail[p] = yn(vals[col_idx]) if col_idx < len(vals) else True
 
         t = Teacher(
@@ -513,47 +502,60 @@ def load_teachers(path, room_ids=None):
             last_name=str(vals[1] or ""),
             first_name=str(vals[2] or ""),
             department=str(vals[3] or ""),
-            max_periods=int(vals[9]) if len(vals) > 9 and vals[9] else 5,
-            sixth_fy=yn(vals[14]) if len(vals) > 14 else False,
-            sixth_s1=yn(vals[15]) if len(vals) > 15 else False,
-            sixth_s2=yn(vals[16]) if len(vals) > 16 else False,
+            max_periods=int(vals[4]) if len(vals) > 4 and vals[4] else 5,
+            sixth_fy=yn(vals[5]) if len(vals) > 5 else False,
+            sixth_s1=yn(vals[6]) if len(vals) > 6 else False,
+            sixth_s2=yn(vals[7]) if len(vals) > 7 else False,
             avail=avail,
-            ssp_teacher=str(vals[32] or "") if len(vals) > 32 and vals[32] else "",
-            co_schedule_approved=True,
+            ssp_teacher=str(vals[15] or "").strip() if len(vals) > 15 and vals[15] else "",
+            co_schedule_approved=yn(vals[16]) if len(vals) > 16 else True,
         )
-
-        # Build course assignments from "Courses Assigned" (col 47)
-        courses_raw = vals[47] if len(vals) > 47 else None
-        preferred_room = vals[26] if len(vals) > 26 else None
-        matched_room = _match_room(preferred_room, room_ids)
-
-        if courses_raw:
-            for entry in str(courses_raw).split(","):
-                entry = entry.strip()
-                if not entry:
-                    continue
-                parts = entry.split()
-                if parts and parts[0].isdigit():
-                    t.course_assignments.append({
-                        "course_code": parts[0],
-                        "prescribed_room": matched_room,
-                        "prescribed_period": None,
-                        "prescribed_term": None,
-                        "prescribed_cohort": None,
-                    })
-
         teachers[tid] = t
+
+    # Sheet 2: Teacher-Course Assignments
+    sheet2_name = "Teacher-Course Assignments"
+    if sheet2_name not in wb.sheetnames:
+        for name in wb.sheetnames:
+            if "assignment" in name.lower() or "course" in name.lower():
+                sheet2_name = name
+                break
+
+    if sheet2_name in wb.sheetnames:
+        ws2 = wb[sheet2_name]
+        for row in ws2.iter_rows(min_row=2, values_only=False):
+            vals = [c.value for c in row]
+            tid = str(vals[0]).strip() if vals[0] else None
+            if not tid or tid.upper() in ("TEACHER ID", "REQUIRED", "OPTIONAL"):
+                continue
+            course_code = str(vals[1]).strip() if vals[1] else None
+            if not course_code:
+                continue
+            if tid in teachers:
+                prescribed_room = str(vals[2]).strip() if len(vals) > 2 and vals[2] else None
+                prescribed_period = str(vals[3]).strip().upper() if len(vals) > 3 and vals[3] else None
+                prescribed_term = str(vals[4]).strip().upper() if len(vals) > 4 and vals[4] else None
+                prescribed_cohort = str(vals[5]).strip() if len(vals) > 5 and vals[5] else None
+
+                if prescribed_period and prescribed_period not in PERIODS:
+                    prescribed_period = None
+                if prescribed_term and prescribed_term not in TERMS:
+                    prescribed_term = None
+
+                teachers[tid].course_assignments.append({
+                    "course_code": course_code,
+                    "prescribed_room": prescribed_room,
+                    "prescribed_period": prescribed_period,
+                    "prescribed_term": prescribed_term,
+                    "prescribed_cohort": prescribed_cohort,
+                })
 
     return teachers
 
 
 def load_rooms(path):
-    """Load rooms from Template 9 (OLD 16-column format).
+    """Load rooms from NEW template (5 columns).
 
-    OLD layout: Room ID(0)=RM_xxx, Room Number(1)=clean name, Building(2),
-    Wing(3), Floor(4), Capacity(5), Room Type(6), ...,
-    Available Periods(12), Shared Room(13), Home Teacher(14), Adjacent(15).
-    Uses Room Number (col 1) as the room ID.
+    A=Room ID, B=Capacity, C=Available Periods, D=Available Terms, E=Shared Room
     """
     wb = openpyxl.load_workbook(path)
     ws = wb.active
@@ -561,21 +563,24 @@ def load_rooms(path):
 
     for row in ws.iter_rows(min_row=2, values_only=False):
         vals = [c.value for c in row]
-        room_num = vals[1]  # Room Number = clean ID like "J-322"
-        if room_num is None:
+        rid = vals[0]
+        if rid is None:
             continue
-        rid = str(room_num).strip()
-        if rid.upper() in ("ROOM NUMBER", "REQUIRED", "OPTIONAL"):
+        rid = str(rid).strip()
+        if not rid or rid.upper() in ("ROOM ID", "REQUIRED", "OPTIONAL"):
             continue
 
-        avail_periods = parse_comma_list(vals[12]) if len(vals) > 12 and vals[12] else list(PERIODS)
+        avail_periods = parse_comma_list(vals[2]) if len(vals) > 2 and vals[2] else list(PERIODS)
+        avail_terms = parse_comma_list(vals[3]) if len(vals) > 3 and vals[3] else None
+        if avail_terms and not avail_terms:
+            avail_terms = None
 
         r = Room(
             room_id=rid,
-            capacity=int(vals[5]) if len(vals) > 5 and vals[5] else 30,
+            capacity=int(vals[1]) if len(vals) > 1 and vals[1] else 30,
             available_periods=avail_periods,
-            available_terms=None,
-            shared=yn(vals[13]) if len(vals) > 13 else False,
+            available_terms=avail_terms if avail_terms else None,
+            shared=yn(vals[4]) if len(vals) > 4 else False,
         )
         rooms[rid] = r
 
@@ -583,53 +588,55 @@ def load_rooms(path):
 
 
 def load_courses(path):
-    """Load courses from Template 7 (OLD 28-column format).
+    """Load courses from NEW template (15 columns).
 
-    OLD layout: Course Code(0), Title(1), Department(2), Credits(3),
-    Level(4), Type(5), Grade Levels(6), Sections Needed(7),
-    Max Enrollment(8), Min Enrollment(9), Singleton(10), Priority Level(11),
-    ..., Semester Designation(18), Prerequisites(19), Corequisites(20), ...
+    A=Course Code, B=Course Title, C=Department, D=Credits,
+    E=Prescribed Term, F=Grade Levels, G=Sections Needed,
+    H=Max Enrollment per Section, I=Singleton, J=AP,
+    K=Graduation Requirement, L=Cohort, M=NCAA,
+    N=Prerequisites, O=Corequisites
     """
     wb = openpyxl.load_workbook(path)
     ws = wb.active
     courses = {}
 
-    for row in ws.iter_rows(min_row=3, values_only=False):
+    for row in ws.iter_rows(min_row=2, values_only=False):
         vals = [c.value for c in row]
         code = vals[0]
         if code is None:
             continue
         code = str(code).strip()
-        if code.upper() in ("REQUIRED", "OPTIONAL", "COURSE CODE"):
+        if not code or code.upper() in ("REQUIRED", "OPTIONAL", "COURSE CODE"):
             continue
 
-        # Derive AP from Level column (idx 4)
-        level_raw = str(vals[4] or "").strip().upper()
-        is_ap = "AP" in level_raw
+        term_raw = str(vals[4] or "FY").strip().upper() if len(vals) > 4 and vals[4] else "FY"
+        if term_raw not in TERMS:
+            term_raw = "FY"
 
-        # Derive term from Type column (idx 5)
-        type_raw = str(vals[5] or "").strip().upper()
-        if "SEM" in type_raw:
-            term = "S1"  # Semester course — section-level terms from semester_designations.json
-        else:
-            term = "FY"
+        grad_req_raw = str(vals[10] or "").strip() if len(vals) > 10 and vals[10] else None
+        if grad_req_raw and grad_req_raw.upper() in ("N/A", "NONE", ""):
+            grad_req_raw = None
+
+        cohort_raw = str(vals[11] or "").strip() if len(vals) > 11 and vals[11] else None
+        if cohort_raw and cohort_raw.upper() in ("N/A", "NONE", ""):
+            cohort_raw = None
 
         c = Course(
             code=code,
             title=str(vals[1] or ""),
             department=str(vals[2] or ""),
-            credits=float(vals[3]) if vals[3] else 5,
-            prescribed_term=term,
-            grade_levels=parse_comma_list(vals[6]),
-            sections_needed=int(vals[7]) if vals[7] else 1,
-            max_enrollment=int(vals[8]) if vals[8] else 25,
-            singleton=yn(vals[10]) if len(vals) > 10 else False,
-            ap=is_ap,
-            grad_req=None,
-            cohort=None,
-            ncaa=False,
-            prerequisites=parse_comma_list(vals[19]) if len(vals) > 19 else [],
-            corequisites=parse_comma_list(vals[20]) if len(vals) > 20 else [],
+            credits=float(vals[3]) if len(vals) > 3 and vals[3] else 5,
+            prescribed_term=term_raw,
+            grade_levels=parse_comma_list(vals[5]) if len(vals) > 5 else [],
+            sections_needed=int(vals[6]) if len(vals) > 6 and vals[6] else 1,
+            max_enrollment=int(vals[7]) if len(vals) > 7 and vals[7] else 25,
+            singleton=yn(vals[8]) if len(vals) > 8 else False,
+            ap=yn(vals[9]) if len(vals) > 9 else False,
+            grad_req=grad_req_raw,
+            cohort=cohort_raw,
+            ncaa=yn(vals[12]) if len(vals) > 12 else False,
+            prerequisites=parse_comma_list(vals[13]) if len(vals) > 13 else [],
+            corequisites=parse_comma_list(vals[14]) if len(vals) > 14 else [],
         )
         courses[code] = c
 
@@ -1471,16 +1478,15 @@ def main():
     total_requests = sum(len(s.course_requests) for s in students.values())
     print(f"       Loaded {total_requests} course requests")
 
-    print("[3/9] Loading rooms...")
-    rooms = load_rooms(os.path.join(template_dir, "Template_9_Room_Profiles.xlsx"))
-    print(f"       Loaded {len(rooms)} rooms")
-
-    print("[4/9] Loading teachers...")
+    print("[3/9] Loading teachers...")
     teachers = load_teachers(
         os.path.join(template_dir, "Template_6_Teacher_Profiles.xlsx"),
-        room_ids=set(rooms.keys()),
     )
     print(f"       Loaded {len(teachers)} teachers")
+
+    print("[4/9] Loading rooms...")
+    rooms = load_rooms(os.path.join(template_dir, "Template_9_Room_Profiles.xlsx"))
+    print(f"       Loaded {len(rooms)} rooms")
 
     print("[5/9] Loading courses...")
     courses = load_courses(os.path.join(template_dir, "Template_7_Course_Profiles.xlsx"))
