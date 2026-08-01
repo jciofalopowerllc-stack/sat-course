@@ -80,33 +80,41 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 
 ## Parent Data Inputs
 
-### Student
+### Student — Don Bosco Prep
 
-| Field | Values | Null Meaning |
-|-------|--------|-------------|
-| Student > ID Number | unique ID (e.g., 106245) | not allowed — every student has an ID |
-| Student > Grade Level | 9, 10, 11, 12 | not allowed — every student has a grade |
-| Student > Grade Level Priority Score | calculated from grade level | not allowed |
-| Student > Cohort Name | cohort name (e.g., LEO Cohort A) | null — student not assigned to a cohort |
-| Student > Cohort Locked | Y or N | null — treated as N (not locked) |
-| Student > Cohort Priority Value | number (assigned based on cohort membership) | null — no cohort, no cohort priority |
-| Student > SSP Programs | list of programs (e.g., Pathway, Academic Support) | null — student is not in any special program |
-| Student > SSP Priority Value | number (assigned based on SSP membership) | null — no SSP, no SSP priority |
-| Student > Has IEP | Y or N | null — treated as N |
-| Student > IEP Max Class Size | number (e.g., 15) | null — no class size restriction |
-| Student > IEP Required Periods | period letters (e.g., A, B) | null — no period restriction |
-| Student > Course Request > Course Code | course code (e.g., 745) | not applicable — every request has a code |
-| Student > Total Priority Score | calculated (see formula below) | not allowed — always calculated |
+The engine processes each student's data in this order:
+
+| # | Step | Field | What the engine does |
+|---|------|-------|---------------------|
+| 1 | Identify | Student > ID Number | Unique student identifier |
+| 2 | Identify | Student > Grade Level (9, 10, 11, 12) | What year the student is in |
+| 3 | Validate | Student > NCAA (Y/N) | If Y, verify each course request is NCAA approved |
+| 4 | Assign Point Value | Student > Grade Level Priority Value | Points assigned based on grade level |
+| 5 | History | Student > Historical Courses Completed | What course requests the student already had scheduled |
+| 6 | History | Student > Historical Cohort Membership | Was the student in a cohort in prior years |
+| 7 | History | Student > Historical SSP Membership | Was the student in an SSP in prior years |
+| 8 | Validate | Student > Current Year Course Requests | Cross-File Validation against 5, 6, 7 — confirm cohort, confirm SSP, flag duplicate courses |
+| 9 | Grades | Student > Historical Failed Course + Teacher | Avoid placing student with the same teacher |
+| 10 | Grades | Student > Historical Prerequisite Courses (all required) + Final Grades | Verify student passed all required prerequisites |
+| 11 | Grades | Student > Historical Prerequisite Courses (all required) + Final Exam Grades | Verify prerequisite exam grades (null = ignore) |
+| 12 | Confirm | Student > LEO II (Y/N) | Cross-File Validation confirms cohort membership — this IS the cohort |
+| 13 | Assign Point Value | Student > Cohort Priority Value | Points assigned if LEO II = Y |
+| 14 | Confirm | Student > LEO I (Y/N) | Cross-File Validation confirms SSP membership |
+| 15 | Confirm | Student > Academic Support (Y/N) | Cross-File Validation confirms SSP membership |
+| 16 | Confirm | Student > Pathway (Y/N) | Cross-File Validation confirms SSP membership |
+| 17 | Assign Point Value | Student > SSP Priority Value | Points assigned based on SSP programs — stacks with Cohort unless LEO I → LEO II (same program, no stacking) |
+| 18 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — same course, multiple categories = highest value only |
+| 19 | Calculate | Student > Total Priority Score | Grade Level + Cohort (if any) + SSP (if any) + Course Priority Values |
 
 **Cohort vs. SSP — these are NOT the same thing:**
 
-- **Cohort** = a hard scheduling constraint. A student in a cohort MUST stay with a specific group of students — same course, same teacher, same term, same period. Example: LEO II is a cohort. The engine has less flexibility, so the cohort priority value is HIGHER.
-- **SSP (Special Student Population)** = the student belongs to one or more special programs (e.g., Engineering Pathway, Academic Support). SSP affects priority but does NOT restrict the student to stay with a group. The engine has more flexibility, so the SSP priority value is LOWER than cohort.
+- **Cohort** = a hard scheduling constraint. A student in a cohort MUST stay with a specific group of students — same course, same teacher, same term, same period. Don Bosco Prep has one cohort: LEO II. The engine has less flexibility, so the cohort priority value is HIGHER.
+- **SSP (Special Student Population)** = the student belongs to one or more special programs (e.g., Pathway, Academic Support). SSP affects priority but does NOT restrict the student to stay with a group. The engine has more flexibility, so the SSP priority value is LOWER than cohort.
 - **A student can belong to BOTH a cohort and one or more SSP programs.** When this happens, both priority values are used in the student's total priority score — they stack.
 
 **Total Priority Score formula:**
 
-> Student Total Priority = Grade Level Priority + Cohort Priority (if any) + SSP Priority (if any) + Course-Level Priorities (see rules below)
+> Student Total Priority = Grade Level Priority Value + Cohort Priority Value (if any) + SSP Priority Value (if any) + Course Priority Values
 
 **Course-level priority categories** (e.g., AP, Singleton) add point values to the student's total. But when a single course qualifies for more than one category, the student receives only the HIGHER point value from that course — not both. This prevents double-counting from the same course.
 
@@ -132,10 +140,6 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 | **Total** | | **no double-count from AP Art** |
 
 **Rule: Different sources stack. Same course, multiple categories → highest value only.**
-
-**Cohort** is a shared resource. A student's cohort assignment is an input field in the Student file — NOT a separate file. The principal decides before the build which students belong to which cohort.
-
-**SSP programs** (LEO I, Pathway, Academic Support, etc.) are input fields in the Student file. A student can belong to more than one SSP program. LEO II is NOT an SSP — it is a cohort.
 
 **LEO I vs. LEO II — these are NOT the same thing:**
 
