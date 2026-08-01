@@ -45,7 +45,7 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 |---|------|--------------|
 | 1 | **Student** | ID, grade level, course requests, cohort assignment, LEO/Pathway flags |
 | 2 | **Teacher** | ID, department, prescribed courses, prescribed room, prescribed period, prescribed term, Special Student Population, availability |
-| 3 | **Room** | Room ID (S-234), capacity, type, available periods, prescribed courses, unavailable rooms |
+| 3 | **Room** | Room ID (e.g., J-322), capacity, available periods, available terms, shared room (co-schedule approved) |
 
 ### Shared Resource File
 
@@ -469,6 +469,28 @@ The original Template 7 had 28 columns. The following 17 columns were removed:
 
 **Commercial product note:** Some removed columns may be needed for the commercial engine. Specifications will be defined after the Don Bosco Prep engine build is completed.
 
+**Course Section Processing Order:**
+
+The engine processes each course section's data in this order:
+
+| # | Step | Field | What the engine does |
+|---|------|-------|---------------------|
+| 1 | Identify | Course Section > Course Code | Which course this section belongs to |
+| 2 | Identify | Course Section > Section Number | Which section of the course (e.g., Section 1 of 8) |
+| 3 | Load | Course Section > Course Characteristics | Load AP, Singleton, Graduation Requirement, Prescribed Term, Cohort, Co-Schedule from Course file |
+| 4 | Check | Course Section > Semester Only | Is this a semester-only course (S1 or S2)? If yes, add Semester Only points |
+| 5 | **Calculate** | **Course Section > Raw Priority Value** | **Sum of all applicable course characteristics (AP + Singleton + Grad Req + Semester Only + Cohort + Co-Schedule + Prescribed Term). FIXED for the school year. No student, teacher, or room data. Saved by school year.** |
+| 6 | Identify | Course Section > Assigned Teacher | Load the teacher assigned to this section from Teacher-Course Assignments |
+| 7 | Load | Course Section > Teacher Total Priority Value | The assigned teacher's Total Priority Value |
+| 8 | Identify | Course Section > Assigned Room | Load the room assigned to this section (prescribed or engine-assigned) |
+| 9 | Load | Course Section > Room Total Priority Value | The assigned room's Total Priority Value |
+| 10 | Identify | Course Section > All Students with Course Requests | From ALL students who requested THIS course, with THIS teacher, in THIS room — build the student list |
+| 11 | Rank | Course Section > Student List by Priority Value | Rank all students from high to low |
+| 12 | Assign Point Value | Course Section > Top Student Priority Value | The highest-scoring student's value |
+| 13 | **Calculate** | **Course Section > Total Priority Value** | **Raw Priority Value (step 5) + Top Student Priority Value (step 12) + Teacher Total Priority Value (step 7) + Room Total Priority Value (step 9). Changes every run. Saved with run number and school year.** |
+
+After each section is placed, the engine returns to step 10 for all remaining sections — rebuilds student lists with remaining students, re-ranks, gets new top students, reloads updated Teacher and Room Totals, and recalculates step 13. Step 5 (Raw) never changes.
+
 ### Co-Schedule Groups — Don Bosco Prep
 
 Co-scheduling is a protection mechanism for low-enrollment courses. The principal decides which course sections are grouped together. All sections in a co-schedule group share the same teacher, same room, and same period. This protects students from losing courses due to low enrollment and protects teachers from losing full-time status.
@@ -506,7 +528,7 @@ The Co-Scheduled Priority Value follows the same recalculation cycle — after t
 
 **Raw vs Total — same rule applies:**
 
-- **Co-Schedule Raw Priority Value** = locks from all sections in the group combined. Fixed for the school year.
+- **Co-Schedule Raw Priority Value** = sum of all Course Section Raw values from all sections in the group + teacher locks + room locks. Fixed for the school year.
 - **Co-Schedule Total Priority Value** = Raw + Top Student + Teacher + Room. Changes every run. Saved with run number and school year.
 
 ---
@@ -735,7 +757,7 @@ Locks come from three files — Course, Teacher, and Room:
 
 If each lock and each student priority point counted equally (1 point each), a section with no locks but high-priority students could jump ahead of a heavily locked section. The locked section has fewer placement options and MUST go first — student priority cannot override that.
 
-Weighting locks higher (e.g., each lock = 10 points, student priority max = 8) ensures:
+Weighting locks higher (each lock = 10 points, student grade level range = 10-40) ensures:
 - Locks always determine the primary order
 - Student priority only makes a difference between sections with similar lock counts
 - A section with more locks ALWAYS goes before a section with fewer locks, regardless of who requested it
@@ -763,18 +785,19 @@ Once a section is placed on the schedule, the engine fills it with students. Stu
 
 ### Engine Build Order
 
-1. Calculate all three parent priority values: Student, Teacher, Room — all feed into each other
-2. Calculate Course Section Priority Value for every section (Top Student + Teacher + Room)
-3. Rank all sections from highest to lowest Course Section Priority Value
-4. Place the highest-ranked section first — prescribed room, prescribed teacher, prescribed term
-5. Fill the section with students — highest Student Priority Value first, until the cap is reached
-6. Flag students who didn't make the cut — save to a report for the principal
-7. Remove placed students from all priority calculations
-8. Recalculate ALL parent priority values (Student, Teacher, Room) with remaining students
-9. Recalculate ALL Course Section Priority Values with updated parent values
-10. Re-rank all remaining sections
-11. Place the next highest-ranked section
-12. Repeat steps 5-11 until all sections are placed or flagged — this cycle runs thousands of times
+1. Calculate Course Section Raw Priority Value for every section (AP, Singleton, Grad Req, etc.) — fixed for the year
+2. Calculate all three parent priority values: Student, Teacher, Room — all feed into each other
+3. Calculate Course Section Total Priority Value for every section (Course Section Raw + Top Student + Teacher Total + Room Total)
+4. Rank all sections from highest to lowest Course Section Total Priority Value
+5. Place the highest-ranked section first — prescribed room, prescribed teacher, prescribed term
+6. Fill the section with students — highest Student Priority Value first, until the cap is reached
+7. Flag students who didn't make the cut — save to a report for the principal
+8. Remove placed students from all priority calculations
+9. Recalculate ALL parent priority values (Student, Teacher, Room) with remaining students
+10. Recalculate ALL Course Section Total Priority Values with updated parent values (Raw does not change)
+11. Re-rank all remaining sections
+12. Place the next highest-ranked section
+13. Repeat steps 6-12 until all sections are placed or flagged — this cycle runs thousands of times
 
 ### Conflict Resolution
 
@@ -895,7 +918,7 @@ Point values: AP = 30, Singleton = 25, Grad Req = 20, Semester Only = 15, Cohort
 | Test | Section A | Section B | Result |
 |------|-----------|-----------|--------|
 | AP Singleton S2 vs. regular FY elective | Raw 70 (30+25+15) + top student 40 + teacher 30 + room 20 = **160** | Raw 0 + top student 40 + teacher 0 + room 10 = **50** | A first — course characteristics dominate |
-| Same course characteristics, different top students | Raw 20 + top student 115 (Gr12+Cohort+SSP) + teacher 30 + room 20 = **185** | Raw 20 + top student 10 (Gr9) + teacher 30 + room 20 = **80** | A first — higher-priority student breaks tie |
+| Same course characteristics, different top students | Raw 20 + top student 115 (Gr12+Cohort+Special Student Population) + teacher 30 + room 20 = **185** | Raw 20 + top student 10 (Gr9) + teacher 30 + room 20 = **80** | A first — higher-priority student breaks tie |
 | High course raw + low students vs. low raw + high students | Raw 70 + top student 10 + teacher 20 + room 10 = **110** | Raw 0 + top student 115 + teacher 20 + room 10 = **145** | B first — but B has higher Total because student and teacher scores are high enough to overcome. Course Raw alone is a floor, not an override of all other factors combined |
 | Heavy teacher locks vs. no locks | Raw 20 + top student 40 + teacher 80 (8 locks) + room 20 = **160** | Raw 20 + top student 40 + teacher 0 + room 20 = **80** | A first — teacher locks dominate |
 | Cohort student vs. non-cohort | Raw 15 + top student 90 (Gr12+Cohort) + teacher 30 + room 20 = **155** | Raw 15 + top student 40 (Gr12) + teacher 30 + room 20 = **105** | A first — cohort student raises section priority |
@@ -946,7 +969,7 @@ The engine does NOT calculate priority values once and use them for the entire b
 1. Removes all students who received seats from the requesting pool
 2. Recalculates the Teacher Total Priority Value using the remaining students — new top student emerges
 3. Recalculates the Room Total Priority Value using the remaining teachers and students — new top teacher and top student emerge
-4. Recalculates the Course Section Priority Value using the updated averages
+4. Recalculates the Course Section Total Priority Value using the updated parent values (Raw does not change)
 5. Re-ranks ALL sections, teachers, and rooms with their new scores
 6. Places the next most restricted section
 7. Repeats until all sections are placed or flagged for the overflow report
