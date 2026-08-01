@@ -2,7 +2,7 @@
   "metadata": {
     "school": "Don Bosco Preparatory High School",
     "year": "2026-27",
-    "generated": "2026-07-29",
+    "generated": "2026-08-01",
     "weights": {
       "CFP": 1.0,
       "CYRP": 1.5,
@@ -18,10 +18,10 @@
     "max_weighted_sum": 77.5,
     "scoring_rules": {
       "CFP": "From course_priorities.json: 0=Flex Elective, 1=Std Elective, 2=Dept Core, 3=Sequence/Honors, 4=Required Core, 5=AP/Singleton",
-      "CYRP": "5=singleton+oversubscribed, 4=ratio>=30, 3=ratio>=20, 2=ratio>=10, 1=has demand, 0=none",
+      "CYRP": "5=singleton+high-demand(ratio>=20 or CFP>=3), 4=ratio>=30 or singleton+demand, 3=ratio>=20 or singleton, 2=ratio>=10, 1=has demand, 0=none",
       "SSP": "5=LEO, 4=Pathway, 3=AcademicSupport, 1=Standard",
       "MTP": "5=sole+overload/3+unique, 4=sole or overload, 3=AP/honors teacher, 2=multi-section, 1=standard",
-      "CTAP": "5=sole teacher+singleton section, 4=sole teacher or <=2 sections, 3=few teachers, 2=many sections, 1=standard",
+      "CTAP": "5=sole teacher for course, 4=one of two teachers OR <=2 sections, 3=few teachers (3+), 2=many teachers + many sections, 1=standard",
       "TL": "5=locked semester, 0=flexible",
       "PL": "5=locked period, 0=flexible",
       "RL": "5=specialized room, 0=standard",
@@ -54,7 +54,7 @@
       "requests": 64,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -68,7 +68,7 @@
       "sections": 1,
       "requests": 11,
       "CFP": 4,
-      "CYRP": 2,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -100,7 +100,7 @@
       "requests": 56,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -114,7 +114,7 @@
       "sections": 1,
       "requests": 7,
       "CFP": 4,
-      "CYRP": 1,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -130,7 +130,7 @@
       "requests": 36,
       "CFP": 5,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -161,7 +161,7 @@
       "requests": 65,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -175,7 +175,7 @@
       "sections": 1,
       "requests": 11,
       "CFP": 4,
-      "CYRP": 2,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -191,7 +191,7 @@
       "requests": 43,
       "CFP": 5,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -206,7 +206,7 @@
       "requests": 43,
       "CFP": 4,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -221,7 +221,7 @@
       "requests": 68,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -235,7 +235,7 @@
       "sections": 1,
       "requests": 18,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -256,7 +256,7 @@
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "New ENGLISH Teacher ELENA (TBD)"
+        "Ferrante-Martin, Elena"
       ]
     },
     "145": {
@@ -265,7 +265,7 @@
       "sections": 1,
       "requests": 6,
       "CFP": 4,
-      "CYRP": 1,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -280,7 +280,7 @@
       "sections": 1,
       "requests": 12,
       "CFP": 4,
-      "CYRP": 2,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -296,7 +296,7 @@
       "requests": 43,
       "CFP": 5,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -310,7 +310,7 @@
       "sections": 1,
       "requests": 3,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -325,7 +325,7 @@
       "sections": 1,
       "requests": 2,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -340,7 +340,7 @@
       "sections": 1,
       "requests": 23,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -355,7 +355,7 @@
       "sections": 1,
       "requests": 5,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -370,7 +370,7 @@
       "sections": 1,
       "requests": 6,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -385,13 +385,13 @@
       "sections": 1,
       "requests": 8,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 5,
       "teachers": [
-        "New THEATER Teacher (TBD)"
+        "Austria, Joseph"
       ]
     },
     "228": {
@@ -400,13 +400,13 @@
       "sections": 1,
       "requests": 1,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 5,
       "teachers": [
-        "New THEATER Teacher (TBD)"
+        "Austria, Joseph"
       ]
     },
     "241": {
@@ -416,7 +416,7 @@
       "requests": 26,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -430,7 +430,7 @@
       "sections": 1,
       "requests": 15,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -445,7 +445,7 @@
       "sections": 1,
       "requests": 5,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -460,7 +460,7 @@
       "sections": 1,
       "requests": 5,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -475,7 +475,7 @@
       "sections": 1,
       "requests": 4,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -490,7 +490,7 @@
       "sections": 1,
       "requests": 2,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -505,7 +505,7 @@
       "sections": 1,
       "requests": 2,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -520,7 +520,7 @@
       "sections": 1,
       "requests": 2,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -536,7 +536,7 @@
       "requests": 122,
       "CFP": 2,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -550,7 +550,7 @@
       "sections": 1,
       "requests": 23,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -566,7 +566,7 @@
       "requests": 40,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -580,7 +580,7 @@
       "sections": 1,
       "requests": 23,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -596,7 +596,7 @@
       "requests": 84,
       "CFP": 2,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -611,7 +611,7 @@
       "requests": 49,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -626,7 +626,7 @@
       "requests": 37,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -640,7 +640,7 @@
       "sections": 1,
       "requests": 17,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -655,7 +655,7 @@
       "sections": 1,
       "requests": 25,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -671,7 +671,7 @@
       "requests": 47,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 3,
+      "CTAP": 4,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -687,7 +687,7 @@
       "requests": 75,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -701,7 +701,7 @@
       "sections": 1,
       "requests": 21,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -716,7 +716,7 @@
       "sections": 1,
       "requests": 12,
       "CFP": 3,
-      "CYRP": 2,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -731,7 +731,7 @@
       "sections": 1,
       "requests": 31,
       "CFP": 5,
-      "CYRP": 4,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -747,7 +747,7 @@
       "requests": 32,
       "CFP": 5,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -761,7 +761,7 @@
       "sections": 1,
       "requests": 6,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -776,7 +776,7 @@
       "sections": 1,
       "requests": 23,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -808,7 +808,7 @@
       "requests": 15,
       "CFP": 3,
       "CYRP": 1,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -823,7 +823,7 @@
       "requests": 31,
       "CFP": 4,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -838,7 +838,7 @@
       "requests": 93,
       "CFP": 4,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -853,7 +853,7 @@
       "requests": 67,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -868,7 +868,7 @@
       "requests": 26,
       "CFP": 3,
       "CYRP": 1,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -882,7 +882,7 @@
       "sections": 1,
       "requests": 25,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -898,7 +898,7 @@
       "requests": 85,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 3,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -914,7 +914,7 @@
       "requests": 62,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 3,
+      "CTAP": 4,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -930,7 +930,7 @@
       "requests": 23,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -944,7 +944,7 @@
       "sections": 1,
       "requests": 18,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -977,7 +977,7 @@
       "requests": 44,
       "CFP": 5,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -991,7 +991,7 @@
       "sections": 1,
       "requests": 19,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1007,7 +1007,7 @@
       "requests": 20,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1021,7 +1021,7 @@
       "sections": 1,
       "requests": 25,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1037,7 +1037,7 @@
       "requests": 21,
       "CFP": 5,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1051,7 +1051,7 @@
       "sections": 1,
       "requests": 16,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1066,7 +1066,7 @@
       "sections": 1,
       "requests": 14,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1081,7 +1081,7 @@
       "sections": 1,
       "requests": 18,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1097,7 +1097,7 @@
       "requests": 24,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 5,
@@ -1111,7 +1111,7 @@
       "sections": 1,
       "requests": 6,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1126,7 +1126,7 @@
       "sections": 1,
       "requests": 8,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1141,7 +1141,7 @@
       "sections": 1,
       "requests": 5,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1156,7 +1156,7 @@
       "sections": 1,
       "requests": 11,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1172,7 +1172,7 @@
       "requests": 31,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1188,7 +1188,7 @@
       "requests": 122,
       "CFP": 2,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1203,7 +1203,7 @@
       "requests": 93,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1218,7 +1218,7 @@
       "requests": 93,
       "CFP": 2,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1233,7 +1233,7 @@
       "requests": 91,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1248,7 +1248,7 @@
       "requests": 97,
       "CFP": 2,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1263,7 +1263,7 @@
       "requests": 67,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1277,7 +1277,7 @@
       "sections": 1,
       "requests": 15,
       "CFP": 3,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1293,7 +1293,7 @@
       "requests": 36,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1307,7 +1307,7 @@
       "sections": 1,
       "requests": 24,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1323,7 +1323,7 @@
       "requests": 39,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1337,7 +1337,7 @@
       "sections": 1,
       "requests": 13,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1352,7 +1352,7 @@
       "sections": 1,
       "requests": 20,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1368,7 +1368,7 @@
       "requests": 31,
       "CFP": 5,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1382,7 +1382,7 @@
       "sections": 1,
       "requests": 20,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1398,7 +1398,7 @@
       "requests": 17,
       "CFP": 1,
       "CYRP": 1,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1413,7 +1413,7 @@
       "requests": 43,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1427,7 +1427,7 @@
       "sections": 1,
       "requests": 17,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1442,7 +1442,7 @@
       "sections": 1,
       "requests": 20,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 5,
       "PL": 0,
@@ -1457,7 +1457,7 @@
       "sections": 1,
       "requests": 3,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 5,
       "PL": 0,
@@ -1472,7 +1472,7 @@
       "sections": 1,
       "requests": 13,
       "CFP": 5,
-      "CYRP": 2,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1488,7 +1488,7 @@
       "requests": 204,
       "CFP": 2,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 5,
@@ -1503,7 +1503,7 @@
       "requests": 168,
       "CFP": 2,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 5,
@@ -1518,7 +1518,7 @@
       "requests": 57,
       "CFP": 2,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 5,
@@ -1533,7 +1533,7 @@
       "requests": 65,
       "CFP": 2,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 5,
@@ -1548,7 +1548,7 @@
       "requests": 133,
       "CFP": 1,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 0,
@@ -1579,7 +1579,7 @@
       "requests": 38,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1593,7 +1593,7 @@
       "sections": 1,
       "requests": 28,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1609,7 +1609,7 @@
       "requests": 129,
       "CFP": 2,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1624,7 +1624,7 @@
       "requests": 61,
       "CFP": 3,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1638,7 +1638,7 @@
       "sections": 1,
       "requests": 29,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1654,7 +1654,7 @@
       "requests": 62,
       "CFP": 1,
       "CYRP": 4,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1669,7 +1669,7 @@
       "requests": 61,
       "CFP": 1,
       "CYRP": 3,
-      "CTAP": 3,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 0,
@@ -1685,7 +1685,7 @@
       "requests": 43,
       "CFP": 5,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1700,7 +1700,7 @@
       "requests": 80,
       "CFP": 2,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1731,7 +1731,7 @@
       "requests": 75,
       "CFP": 1,
       "CYRP": 3,
-      "CTAP": 3,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1747,7 +1747,7 @@
       "requests": 69,
       "CFP": 5,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1762,7 +1762,7 @@
       "requests": 40,
       "CFP": 5,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 0,
@@ -1777,7 +1777,7 @@
       "requests": 58,
       "CFP": 2,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1792,7 +1792,7 @@
       "requests": 29,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1806,7 +1806,7 @@
       "sections": 1,
       "requests": 20,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 5,
@@ -1821,7 +1821,7 @@
       "sections": 1,
       "requests": 33,
       "CFP": 5,
-      "CYRP": 4,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 5,
@@ -1837,7 +1837,7 @@
       "requests": 36,
       "CFP": 5,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 5,
       "RL": 0,
@@ -1868,7 +1868,7 @@
       "requests": 30,
       "CFP": 3,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1882,7 +1882,7 @@
       "sections": 1,
       "requests": 13,
       "CFP": 3,
-      "CYRP": 2,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1898,7 +1898,7 @@
       "requests": 58,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1913,7 +1913,7 @@
       "requests": 34,
       "CFP": 1,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 0,
@@ -1927,7 +1927,7 @@
       "sections": 1,
       "requests": 20,
       "CFP": 5,
-      "CYRP": 3,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 5,
@@ -1943,7 +1943,7 @@
       "requests": 32,
       "CFP": 5,
       "CYRP": 2,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
@@ -1957,7 +1957,7 @@
       "sections": 1,
       "requests": 1,
       "CFP": 5,
-      "CYRP": 1,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1972,7 +1972,7 @@
       "sections": 1,
       "requests": 37,
       "CFP": 5,
-      "CYRP": 4,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -1987,7 +1987,7 @@
       "sections": 1,
       "requests": 37,
       "CFP": 5,
-      "CYRP": 4,
+      "CYRP": 5,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
@@ -2003,14 +2003,13 @@
       "requests": 215,
       "CFP": 4,
       "CYRP": 3,
-      "CTAP": 2,
+      "CTAP": 3,
       "TL": 0,
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "Arcede, Francis",
-        "Lomascolo, Frank",
-        "New THEO 1 Teacher (TBD)"
+        "New THEO 1 Teacher (TBD)",
+        "Lomascolo, Frank"
       ]
     },
     "820": {
@@ -2055,7 +2054,7 @@
       "requests": 165,
       "CFP": 4,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 0,
@@ -2070,7 +2069,7 @@
       "requests": 165,
       "CFP": 4,
       "CYRP": 3,
-      "CTAP": 4,
+      "CTAP": 5,
       "TL": 5,
       "PL": 0,
       "RL": 5,
@@ -2085,13 +2084,12 @@
       "requests": 28,
       "CFP": 5,
       "CYRP": 1,
-      "CTAP": 3,
+      "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "Judge, Michelle",
-        "New LN Teacher (TBD)"
+        "Judge, Michelle"
       ]
     },
     "2014": {
@@ -2100,13 +2098,13 @@
       "sections": 1,
       "requests": 11,
       "CFP": 3,
-      "CYRP": 2,
+      "CYRP": 4,
       "CTAP": 5,
       "TL": 0,
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "Park, Sam"
+        "New CommArts Teacher (TBD)"
       ]
     },
     "2024": {
@@ -2121,7 +2119,7 @@
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "Park, Sam"
+        "New CommArts Teacher (TBD)"
       ]
     },
     "2034": {
@@ -2136,7 +2134,7 @@
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "Park, Sam"
+        "New CommArts Teacher (TBD)"
       ]
     },
     "2044": {
@@ -2151,7 +2149,7 @@
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "Park, Sam"
+        "New CommArts Teacher (TBD)"
       ]
     },
     "2054": {
@@ -2166,7 +2164,7 @@
       "PL": 0,
       "RL": 0,
       "teachers": [
-        "Park, Sam"
+        "New CommArts Teacher (TBD)"
       ]
     }
   },
@@ -16159,7 +16157,7 @@
     "111:Delmonico, Marisa": {
       "course": "111",
       "teacher": "Delmonico, Marisa",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "112:Judge, Michelle": {
@@ -16183,7 +16181,7 @@
     "121:O'Connor, Paul": {
       "course": "121",
       "teacher": "O'Connor, Paul",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "122:Judge, Michelle": {
@@ -16195,7 +16193,7 @@
     "129:Delmonico, Marisa": {
       "course": "129",
       "teacher": "Delmonico, Marisa",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "130:Dwyer, Kevin": {
@@ -16213,7 +16211,7 @@
     "131:Fisk, Mary Pat": {
       "course": "131",
       "teacher": "Fisk, Mary Pat",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "132:New ENGLISH Teacher (TBD)": {
@@ -16225,19 +16223,19 @@
     "139:Fisk, Mary Pat": {
       "course": "139",
       "teacher": "Fisk, Mary Pat",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "140:Nobilione, Lauren": {
       "course": "140",
       "teacher": "Nobilione, Lauren",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "141:Dwyer, Kevin": {
       "course": "141",
       "teacher": "Dwyer, Kevin",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "143:New ENGLISH Teacher (TBD)": {
@@ -16261,7 +16259,7 @@
     "149:O'Connor, Paul": {
       "course": "149",
       "teacher": "O'Connor, Paul",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "201:Lopez, Enrique": {
@@ -16297,7 +16295,7 @@
     "241:Dennehy, Sheri": {
       "course": "241",
       "teacher": "Dennehy, Sheri",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "242:Dennehy, Sheri": {
@@ -16345,7 +16343,7 @@
     "310:Tuesta, David": {
       "course": "310",
       "teacher": "Tuesta, David",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "311:Carr, Lynette": {
@@ -16357,7 +16355,7 @@
     "312:Zawiski, Brian": {
       "course": "312",
       "teacher": "Zawiski, Brian",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "315:Zawiski, Brian": {
@@ -16369,19 +16367,19 @@
     "320:Carr, Lynette": {
       "course": "320",
       "teacher": "Carr, Lynette",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "321:Angotti, Sylvia": {
       "course": "321",
       "teacher": "Angotti, Sylvia",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "322:Muscat, Nicole": {
       "course": "322",
       "teacher": "Muscat, Nicole",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "323:Muscat, Nicole": {
@@ -16399,19 +16397,19 @@
     "330:Angotti, Sylvia": {
       "course": "330",
       "teacher": "Angotti, Sylvia",
-      "CTAP": 3,
+      "CTAP": 4,
       "MTP": 5
     },
     "330:Ramirez, Jaime": {
       "course": "330",
       "teacher": "Ramirez, Jaime",
-      "CTAP": 3,
+      "CTAP": 4,
       "MTP": 4
     },
     "331:Ramirez, Jaime": {
       "course": "331",
       "teacher": "Ramirez, Jaime",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "332:Muscat, Nicole": {
@@ -16435,7 +16433,7 @@
     "351:Angotti, Sylvia": {
       "course": "351",
       "teacher": "Angotti, Sylvia",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "352:Muscat, Nicole": {
@@ -16465,31 +16463,31 @@
     "411:Willi, Mary": {
       "course": "411",
       "teacher": "Willi, Mary",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "412:DeLeon, Marco": {
       "course": "412",
       "teacher": "DeLeon, Marco",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "420:Gerlach, Reese": {
       "course": "420",
       "teacher": "Gerlach, Reese",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "421:Ahn, Keun": {
       "course": "421",
       "teacher": "Ahn, Keun",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "422:New MATH  Teacher OH (TBD)": {
       "course": "422",
       "teacher": "New MATH  Teacher OH (TBD)",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "425:Ahn, Keun": {
@@ -16501,25 +16499,25 @@
     "430:Hampson, Elizabeth": {
       "course": "430",
       "teacher": "Hampson, Elizabeth",
-      "CTAP": 3,
+      "CTAP": 5,
       "MTP": 4
     },
     "431:Campbell, Scott": {
       "course": "431",
       "teacher": "Campbell, Scott",
-      "CTAP": 3,
+      "CTAP": 4,
       "MTP": 5
     },
     "431:New MATH Teacher HARTMAN (TBD)": {
       "course": "431",
       "teacher": "New MATH Teacher HARTMAN (TBD)",
-      "CTAP": 3,
+      "CTAP": 4,
       "MTP": 5
     },
     "432:DeLeon, Marco": {
       "course": "432",
       "teacher": "DeLeon, Marco",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "435:Gettler, Mary": {
@@ -16549,7 +16547,7 @@
     "443:Hampson, Elizabeth": {
       "course": "443",
       "teacher": "Hampson, Elizabeth",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "445:Ahn, Keun": {
@@ -16561,7 +16559,7 @@
     "448:Gettler, Mary": {
       "course": "448",
       "teacher": "Gettler, Mary",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "450:New MATH Teacher HARTMAN (TBD)": {
@@ -16573,7 +16571,7 @@
     "453:Campbell, Scott": {
       "course": "453",
       "teacher": "Campbell, Scott",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "455:Campbell, Scott": {
@@ -16597,7 +16595,7 @@
     "473:Calidas, Riddhi": {
       "course": "473",
       "teacher": "Calidas, Riddhi",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "490:Calidas, Riddhi": {
@@ -16627,43 +16625,43 @@
     "500:Janeczko, Douglas": {
       "course": "500",
       "teacher": "Janeczko, Douglas",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "510:Janeczko, Douglas": {
       "course": "510",
       "teacher": "Janeczko, Douglas",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "511:Kilduff, Kevin": {
       "course": "511",
       "teacher": "Kilduff, Kevin",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "520:Doughty, Chelsea": {
       "course": "520",
       "teacher": "Doughty, Chelsea",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "521:McManus, Brianna": {
       "course": "521",
       "teacher": "McManus, Brianna",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "530:Kozak, Bernadette": {
       "course": "530",
       "teacher": "Kozak, Bernadette",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "531:Tranate, John": {
       "course": "531",
       "teacher": "Tranate, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "542:Guy, Libbie": {
@@ -16675,7 +16673,7 @@
     "543:Guy, Libbie": {
       "course": "543",
       "teacher": "Guy, Libbie",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "544:Connelly, Tiffany": {
@@ -16687,7 +16685,7 @@
     "546:Connelly, Tiffany": {
       "course": "546",
       "teacher": "Connelly, Tiffany",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "551:Stoller, Timothy": {
@@ -16705,7 +16703,7 @@
     "557:Tranate, John": {
       "course": "557",
       "teacher": "Tranate, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "558:Tranate, John": {
@@ -16717,13 +16715,13 @@
     "570:McConnell, George": {
       "course": "570",
       "teacher": "McConnell, George",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "580:McConnell, George": {
       "course": "580",
       "teacher": "McConnell, George",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "585:McConnell, George": {
@@ -16753,31 +16751,31 @@
     "610:Biggs, Tyrell": {
       "course": "610",
       "teacher": "Biggs, Tyrell",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "620:Daniels, Torrence": {
       "course": "620",
       "teacher": "Daniels, Torrence",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "631:Chiaravalloti, Michael": {
       "course": "631",
       "teacher": "Chiaravalloti, Michael",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "642:Chiaravalloti, Michael": {
       "course": "642",
       "teacher": "Chiaravalloti, Michael",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "708:Sabella, Daniel": {
       "course": "708",
       "teacher": "Sabella, Daniel",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "710:Saggio, Jack": {
@@ -16795,7 +16793,7 @@
     "711:Quast, Richard": {
       "course": "711",
       "teacher": "Quast, Richard",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "713:Quast, Richard": {
@@ -16807,13 +16805,13 @@
     "720:Montegari, James": {
       "course": "720",
       "teacher": "Montegari, James",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "721:Martino, Brianna": {
       "course": "721",
       "teacher": "Martino, Brianna",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "722:Nepolitan, John": {
@@ -16825,25 +16823,25 @@
     "726:Esposito, John": {
       "course": "726",
       "teacher": "Esposito, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "727:Corcoran, Kevin": {
       "course": "727",
       "teacher": "Corcoran, Kevin",
-      "CTAP": 3,
+      "CTAP": 5,
       "MTP": 5
     },
     "729:Esposito, John": {
       "course": "729",
       "teacher": "Esposito, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "730:Harris, Megan": {
       "course": "730",
       "teacher": "Harris, Megan",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "731:Harris, Megan": {
@@ -16861,31 +16859,31 @@
     "732:Zawacki, Richard": {
       "course": "732",
       "teacher": "Zawacki, Richard",
-      "CTAP": 3,
+      "CTAP": 5,
       "MTP": 5
     },
     "733:Nepolitan, John": {
       "course": "733",
       "teacher": "Nepolitan, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "734:Esposito, John": {
       "course": "734",
       "teacher": "Esposito, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "741:Saggio, Jack": {
       "course": "741",
       "teacher": "Saggio, Jack",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "742:Zawacki, Richard": {
       "course": "742",
       "teacher": "Zawacki, Richard",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "743:Quast, Richard": {
@@ -16903,7 +16901,7 @@
     "745:Esposito, John": {
       "course": "745",
       "teacher": "Esposito, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "751:Quast, Richard": {
@@ -16921,7 +16919,7 @@
     "752:Zawacki, Richard": {
       "course": "752",
       "teacher": "Zawacki, Richard",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "756:Winters, Jack": {
@@ -16933,13 +16931,13 @@
     "757:Corcoran, Kevin": {
       "course": "757",
       "teacher": "Corcoran, Kevin",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "758:Corcoran, Kevin": {
       "course": "758",
       "teacher": "Corcoran, Kevin",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "761:Harris, Megan": {
@@ -16951,7 +16949,7 @@
     "763:Martino, Brianna": {
       "course": "763",
       "teacher": "Martino, Brianna",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "764:Dennehy, Sheri": {
@@ -16975,13 +16973,13 @@
     "810:Lomascolo, Frank": {
       "course": "810",
       "teacher": "Lomascolo, Frank",
-      "CTAP": 2,
+      "CTAP": 3,
       "MTP": 3
     },
     "810:New THEO 1 Teacher (TBD)": {
       "course": "810",
       "teacher": "New THEO 1 Teacher (TBD)",
-      "CTAP": 2,
+      "CTAP": 3,
       "MTP": 3
     },
     "820:Langan, John": {
@@ -17029,25 +17027,25 @@
     "849:New THEO 2 Teacher (TBD)": {
       "course": "849",
       "teacher": "New THEO 2 Teacher (TBD)",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "851:Laracy, John": {
       "course": "851",
       "teacher": "Laracy, John",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 5
     },
     "955:Judge, Michelle": {
       "course": "955",
       "teacher": "Judge, Michelle",
-      "CTAP": 3,
+      "CTAP": 5,
       "MTP": 5
     },
     "144:Ferrante-Martin, Elena": {
       "course": "144",
       "teacher": "Ferrante-Martin, Elena",
-      "CTAP": 4,
+      "CTAP": 5,
       "MTP": 4
     },
     "225:Austria, Joseph": {

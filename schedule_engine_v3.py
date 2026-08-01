@@ -1580,52 +1580,64 @@ for sid in leo2_sids:
 sorted_students = sorted(students.keys(), key=student_rank_key)
 print("  Greedy warm-start (most-constrained-first)...")
 
-# Item 8: Seat by priority tier with scarcity recalculation between tiers
-# Group requests by course priority tier and seat highest tiers first
-_tier_groups = defaultdict(list)
+# Composite-scored seating: full 10-input weighted priority replaces prio(c) tiers.
+# Primary sort: two-band system (grad reqs in Band 1 always before electives in Band 2).
+# Secondary sort: composite placement_sort_key (-critical_count, -weighted_sum).
+# Tertiary sort: fewer available sections = more constrained = seated earlier.
+_all_requests = []
 for pid in sorted_students:
     for cid in sreq[pid]:
-        _tier_groups[prio(cid)].append((pid, cid))
-_tiers_desc = sorted(_tier_groups.keys(), reverse=True)
+        _all_requests.append((pid, cid))
 
-for _tier in _tiers_desc:
-    for pid, cid in _tier_groups[_tier]:
-        if cid not in sec_by_code:
-            continue
-        if cid == '745':
-            if pid in cohA and leo2C is not None:
-                add_place(pid, cid, leo2C)
-            elif pid in cohB and leo2E is not None:
-                add_place(pid, cid, leo2E)
-            else:
-                opts = sec_by_code[cid]
-                best = min(opts, key=lambda sid: (added_conflicts(pid, sid), secfill[sid]))
-                add_place(pid, cid, best)
-            continue
-        opts = sec_by_code[cid]
-        best = min(opts, key=lambda sid: (
-            added_conflicts(pid, sid),
-            max(0, secfill[sid] + 1 - sections[sid]['cap']),
-            secfill[sid]
-        ))
-        add_place(pid, cid, best)
-    # Recalculate scarcity after each tier — sections filling up may create new bottlenecks
-    _placement_cache.clear()
-    _course_composite_cache.clear()
-    _remaining_cap = {}
-    for cid_r, sids_r in sec_by_code.items():
-        rem = sum(max(0, sections[sid_r]['cap'] - secfill[sid_r]) for sid_r in sids_r)
-        demand = _course_demand.get(cid_r, 0)
-        placed_count = sum(1 for pid_r in students if cid_r in assign.get(pid_r, {}))
-        unplaced = demand - placed_count
-        if unplaced > 0 and rem > 0:
-            ratio = unplaced / rem
-            if ratio >= 2.0:
-                _scarcity_scores[cid_r] = 5
-            elif ratio >= 1.5:
-                _scarcity_scores[cid_r] = max(_scarcity_scores.get(cid_r, 1), 4)
-            elif ratio >= 1.0:
-                _scarcity_scores[cid_r] = max(_scarcity_scores.get(cid_r, 1), 3)
+_all_requests.sort(key=lambda pc: (
+    -student_prio(pc[0], pc[1]),
+    placement_sort_key(pc[0], pc[1]),
+    len(sec_by_code.get(pc[1], [])),
+    student_rank_key(pc[0])
+))
+
+_refresh_interval = max(200, len(_all_requests) // 8)
+_placed_count_b = 0
+
+for pid, cid in _all_requests:
+    if cid not in sec_by_code:
+        continue
+    if cid == '745':
+        if pid in cohA and leo2C is not None:
+            add_place(pid, cid, leo2C)
+        elif pid in cohB and leo2E is not None:
+            add_place(pid, cid, leo2E)
+        else:
+            opts = sec_by_code[cid]
+            best = min(opts, key=lambda sid: (added_conflicts(pid, sid), secfill[sid]))
+            add_place(pid, cid, best)
+        _placed_count_b += 1
+        continue
+    opts = sec_by_code[cid]
+    best = min(opts, key=lambda sid: (
+        added_conflicts(pid, sid),
+        max(0, secfill[sid] + 1 - sections[sid]['cap']),
+        secfill[sid]
+    ))
+    add_place(pid, cid, best)
+    _placed_count_b += 1
+
+    if _placed_count_b % _refresh_interval == 0:
+        _placement_cache.clear()
+        _course_composite_cache.clear()
+        for cid_r, sids_r in sec_by_code.items():
+            rem = sum(max(0, sections[sid_r]['cap'] - secfill[sid_r]) for sid_r in sids_r)
+            demand = _course_demand.get(cid_r, 0)
+            placed_now = sum(1 for pid_r in students if cid_r in assign.get(pid_r, {}))
+            unplaced = demand - placed_now
+            if unplaced > 0 and rem > 0:
+                ratio = unplaced / rem
+                if ratio >= 2.0:
+                    _scarcity_scores[cid_r] = 5
+                elif ratio >= 1.5:
+                    _scarcity_scores[cid_r] = max(_scarcity_scores.get(cid_r, 1), 4)
+                elif ratio >= 1.0:
+                    _scarcity_scores[cid_r] = max(_scarcity_scores.get(cid_r, 1), 3)
 
 conf_count = 0
 for pid in students:

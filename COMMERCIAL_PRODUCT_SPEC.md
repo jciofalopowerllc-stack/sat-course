@@ -298,11 +298,11 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Template 8 student profiles reading (LEO, Pathway, Academic Support flags)
 - [x] Engine reads TSSP from Template 6 SSP Teacher flag and SSP from Template 8
 - [x] Course-Teacher Lock codes read from Template 6 instead of hardcoded
-- [ ] Current year course request priority data input (CYRP fine-tuning)
-- [ ] Master teacher profile priority data input (MTP fine-tuning)
-- [ ] Current year teacher assignment priority data input (CTAP fine-tuning)
-- [ ] Engine refactor: replace single-tier `prio(c)` with composite placement scoring
-- [ ] Most-constrained-first scheduling order (students ranked, then placements within each student)
+- [x] Current year course request priority data input (CYRP — improved formula, singletons 3-5)
+- [x] Master teacher profile priority data input (MTP — cross-referenced with Template 6)
+- [x] Current year teacher assignment priority data input (CTAP — sole teachers set to 5)
+- [x] Engine refactor: replace single-tier `prio(c)` with composite placement scoring
+- [x] Most-constrained-first scheduling order (composite-sorted, student rank tiebreaker)
 
 ### 6.3 Future
 
