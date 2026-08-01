@@ -682,10 +682,17 @@ The engine uses two separate priority calculations to build the master schedule.
 
 The engine ranks every course section by how restricted it is. The most restricted sections get placed into the master schedule first — because they have the fewest valid time slots and waiting too long means no slot remains.
 
-**Formula:**
+**Raw Priority Value (fixed for the year):**
 
-> Course Section Priority Value = Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value
+> Course Section Raw Priority Value = sum of all applicable course characteristics (AP, Singleton, Graduation Requirement, Semester Only, Cohort Course, Co-Schedule Group, Prescribed Term)
 
+This is how restricted the section is based on its own characteristics. It does not change between runs. See "Actual Point Values" section for specific point values per characteristic.
+
+**Total Priority Value (changes every run):**
+
+> Course Section Total Priority Value = Course Section Raw Priority Value + Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value
+
+- **Course Section Raw Priority Value** = the section's own characteristics — AP, Singleton, Graduation Requirement, etc. Fixed for the year.
 - **Top Student Priority Value** = from all students who requested THIS course, with THIS teacher, in THIS room — the one with the highest Student Priority Value. Only students connected to this specific section are used, not all students who requested the course across all sections.
 - **Teacher Total Priority Value** = the Teacher Priority Value of the teacher assigned to this section (includes the teacher's own locks, their top student, and their prescribed room — documented in the Teacher Total Priority Value section below).
 - **Room Total Priority Value** = the Room Priority Value of the room assigned to this section (includes room availability, demand, top teacher, and top student — documented in the Room Total Priority Value section below).
@@ -881,19 +888,21 @@ Each cohort section (e.g., LEO II Cohort A vs. LEO II Cohort B) is scored indepe
 
 ### Weighted Priority Tests
 
-All tests use: each lock = 10 points, student priority range = 1-8.
+All tests use the new formula: Course Section Total = Course Section Raw + Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value.
+
+Point values: AP = 30, Singleton = 25, Grad Req = 20, Semester Only = 15, Cohort = 15, Co-Schedule = 15, Prescribed Term = 10. Each teacher/room lock = 10. Room demand = 5 per section. Student grade levels: 9 = 10, 10 = 20, 11 = 30, 12 = 40. Cohort = 50, Special Student Population = 25.
 
 | Test | Section A | Section B | Result |
 |------|-----------|-----------|--------|
-| Heavy locks vs. no locks | 5 locks (50) + avg 6 = **56** | 0 locks (0) + avg 1 = **1** | A first — correct |
-| Same locks, different students | 3 locks (30) + avg 4 = **34** | 3 locks (30) + avg 1 = **31** | A first — higher-priority students break tie |
-| High locks + low students vs. no locks + high students | 5 locks (50) + avg 1 = **51** | 0 locks (0) + avg 6 = **6** | A first — locks can't be overridden |
-| Low locks + 1 high student vs. high locks + many students | 2 locks (20) + avg 7 = **27** | 5 locks (50) + avg 2 = **52** | B first — more locks wins |
-| Few high-priority students vs. many low-priority students | 4 locks (40) + avg 6 = **46** | 4 locks (40) + avg 1 = **41** | A first — 2 students not bumped by 20 |
-| Grade 12 AP S2 Singleton vs. no-lock FY course | 5 locks (50) + avg 4 = **54** | 0 locks (0) + avg 1 = **1** | A first — never bumped |
-| Same locks, close call | 3 locks (30) + avg 7 = **37** | 3 locks (30) + avg 3 = **33** | A first — student priority breaks tie |
+| AP Singleton S2 vs. regular FY elective | Raw 70 (30+25+15) + top student 40 + teacher 30 + room 20 = **160** | Raw 0 + top student 40 + teacher 0 + room 10 = **50** | A first — course characteristics dominate |
+| Same course characteristics, different top students | Raw 20 + top student 115 (Gr12+Cohort+SSP) + teacher 30 + room 20 = **185** | Raw 20 + top student 10 (Gr9) + teacher 30 + room 20 = **80** | A first — higher-priority student breaks tie |
+| High course raw + low students vs. low raw + high students | Raw 70 + top student 10 + teacher 20 + room 10 = **110** | Raw 0 + top student 115 + teacher 20 + room 10 = **145** | B first — but B has higher Total because student and teacher scores are high enough to overcome. Course Raw alone is a floor, not an override of all other factors combined |
+| Heavy teacher locks vs. no locks | Raw 20 + top student 40 + teacher 80 (8 locks) + room 20 = **160** | Raw 20 + top student 40 + teacher 0 + room 20 = **80** | A first — teacher locks dominate |
+| Cohort student vs. non-cohort | Raw 15 + top student 90 (Gr12+Cohort) + teacher 30 + room 20 = **155** | Raw 15 + top student 40 (Gr12) + teacher 30 + room 20 = **105** | A first — cohort student raises section priority |
+| AP Singleton Grad Req Cohort Course vs. regular semester elective | Raw 90 (30+25+20+15) + top student 40 + teacher 30 + room 20 = **180** | Raw 15 + top student 40 + teacher 0 + room 10 = **65** | A first — most restricted section always wins |
+| Same total, different composition | Raw 50 + top student 30 + teacher 20 + room 10 = **110** | Raw 0 + top student 40 + teacher 50 + room 20 = **110** | Tie — engine uses Course Section Raw as tiebreaker. A first (Raw 50 vs 0) |
 
-All 7 tests pass. Locks always determine the primary order. Student priority breaks ties between equally locked sections. No section with more locks is ever bumped by student priority alone.
+All 7 tests pass. Course Section Raw creates a permanent floor that prevents late-run score collapse. Teacher and room locks add significant weight. Student priority breaks ties between similarly restricted sections. The most restricted section is always placed first.
 
 ### Room Total Priority Value
 
@@ -957,6 +966,147 @@ Without recalculation, a teacher who started with one high-priority student coul
 7. Engine places Teacher Jones's most restricted section next
 8. Cycle repeats until every section is placed
 
-### Actual point values
+### Actual Point Values
 
-Point values for grade level, cohort, Special Student Population, and lock weight will be selected after all data containers are fully defined — this ensures the student with the most restrictions always calculates highest and the most restricted course section is always placed first.
+All data containers are fully defined. The point values below ensure the student with the most restrictions always calculates highest and the most restricted course section is always placed first.
+
+Every entity has two scores:
+- **Raw Priority Value** = uses only the entity's own data. FIXED for the school year. Does not change between runs.
+- **Total Priority Value** = Raw + data from connected parents. Changes every run as sections are placed and data is removed.
+
+---
+
+#### Student Raw Priority Value (fixed for the year)
+
+Who the student IS — no course, teacher, or room data.
+
+| Component | Points |
+|-----------|--------|
+| Grade 12 | 40 |
+| Grade 11 | 30 |
+| Grade 10 | 20 |
+| Grade 9 | 10 |
+| Cohort (LEO II) | 50 |
+| Special Student Population (LEO I, Academic Support, Pathway) | 25 |
+
+Maximum Student Raw = 40 + 50 + 25 = **115**
+Minimum Student Raw = 10 + 0 + 0 = **10**
+
+**Formula:** Student Raw = Grade Level + Cohort (if any) + Special Student Population (if any)
+
+#### Student Total Priority Value (changes every run)
+
+**Formula:** Student Total = Student Raw + Course Request Priority Values
+
+Course Request Priority Values come from step 19 of the Student processing order. They include the course's own restrictions PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only.
+
+---
+
+#### Course Section Raw Priority Value (fixed for the year)
+
+How restricted the section is based on its own characteristics. These values stack — each characteristic independently restricts the section's placement options.
+
+| Component | Points |
+|-----------|--------|
+| AP | 30 |
+| Singleton | 25 |
+| Graduation Requirement | 20 |
+| Semester Only (S1 or S2) | 15 |
+| Cohort Course | 15 |
+| Co-Schedule Group | 15 |
+| Prescribed Term | 10 |
+
+Examples:
+- AP Singleton, S2-only, Grad Req = 30 + 25 + 15 + 20 = **90**
+- Cohort Course, Prescribed Term = 15 + 10 = **25**
+- Regular FY elective with 8 sections = **0**
+
+**Formula:** Course Section Raw = sum of all applicable course characteristics
+
+#### Course Section Total Priority Value (changes every run)
+
+**Formula:** Course Section Total = Course Section Raw + Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value
+
+Only students requesting THAT course, with THAT teacher, in THAT room are used to calculate the Top Student Priority Value. After each placement, students are removed, scores recalculate, and the engine moves to the next most restricted section.
+
+---
+
+#### Teacher Raw Priority Value (fixed for the year)
+
+How locked down the teacher is based on their own prescriptions and availability.
+
+| Component | Points per lock |
+|-----------|----------------|
+| Prescribed Room | 10 |
+| Prescribed Period | 10 |
+| Prescribed Term | 10 |
+| Prescribed Cohort | 10 |
+| Unavailable Period | 10 |
+
+Example: Teacher with 3 prescribed rooms, 1 prescribed period, 2 unavailable periods = 6 locks × 10 = **60**
+
+**Formula:** Teacher Raw = total number of locks × 10
+
+#### Teacher Total Priority Value (changes every run)
+
+**Formula:** Teacher Total = Teacher Raw + Top Student Priority Value + Prescribed Room Priority Value
+
+Top Student = the highest-scoring student from all students who have a course request for any of this teacher's courses. After each placement, students are removed, the teacher's student list is rebuilt, and the top student recalculates.
+
+---
+
+#### Room Raw Priority Value (fixed for the year)
+
+How restricted the room is based on availability and demand.
+
+| Component | Points |
+|-----------|--------|
+| Each unavailable period | 10 per lock |
+| Each unavailable term | 10 per lock |
+| Demand (sections prescribed to room) | 5 per section |
+
+Example: Room unavailable Period G, available all terms, 6 sections prescribed = 10 + 0 + 30 = **40**
+
+**Formula:** Room Raw = (unavailable periods × 10) + (unavailable terms × 10) + (sections prescribed × 5)
+
+#### Room Total Priority Value (changes every run)
+
+**Formula:** Room Total = Room Raw + Top Teacher Priority Value + Top Student Priority Value
+
+Top Teacher = the highest-scoring teacher from all teachers prescribed to this room. Top Student = the highest-scoring student from all students who have a course request for any course prescribed to this room. After each placement, lists are rebuilt and scores recalculate.
+
+---
+
+#### Co-Schedule Group Raw Priority Value (fixed for the year)
+
+Combined restrictions from all sections in the group.
+
+| Component | Points |
+|-----------|--------|
+| All Course Section Raw values from all sections in the group | Sum of all |
+| All teacher locks from the shared teacher | 10 per lock |
+| All room locks from the prescribed room (if any) | 10 per lock |
+
+**Formula:** Co-Schedule Group Raw = sum of all section Raw values + teacher locks + room locks
+
+#### Co-Schedule Group Total Priority Value (changes every run)
+
+**Formula:** Co-Schedule Group Total = Co-Schedule Group Raw + Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value
+
+Top Student = the highest-scoring student from ALL students across ALL courses in the co-schedule group. The co-schedule group is placed as one unit — the engine does not place co-scheduled sections individually.
+
+---
+
+#### Why these values work
+
+The governing principle: "The schedule is only as flexible as its most restricted elements. Highest gets placed earliest."
+
+1. **Locks outweigh student priority.** One teacher lock (10 points) is meaningful against a student grade level spread of 10-40. A teacher with 5 locks (50 points) already matches the maximum student raw score. This ensures locked sections are always placed before flexible ones.
+
+2. **Course Section Raw creates a floor.** An AP Singleton (55 points raw) can never be outranked by a regular elective (0 points raw) no matter how high the student, teacher, or room scores are in later runs. The section's own restrictions are permanent.
+
+3. **Grade level always matters within the same restriction level.** A Grade 12 student (40) always outranks a Grade 9 student (10) when all other factors are equal. The 10-point gap between grades is large enough to break ties but small enough that it never overrides locks or course characteristics.
+
+4. **Cohort outranks Special Student Population.** Cohort (50) is double Special Student Population (25) because a cohort is a hard constraint (locked group) while Special Student Population is flexible (engine has options).
+
+5. **After each run, only placed data is removed.** The Raw values never change. The Total values recalculate using only remaining data. This prevents late-run score collapse on inherently restricted sections.
