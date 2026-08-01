@@ -452,12 +452,18 @@ def load_students(path):
 
 
 def load_course_requests(path, students):
+    """Load course requests from NEW template (2 columns).
+
+    A=Student ID, B=Course Code
+    """
     wb = openpyxl.load_workbook(path)
     ws = wb.active
     for row in ws.iter_rows(min_row=2, values_only=False):
         vals = [c.value for c in row]
         sid = str(vals[0]).strip() if vals[0] else None
-        course_code = str(vals[3]).strip() if vals[3] else None
+        if not sid or sid.upper() in ("STUDENT ID", "REQUIRED", "OPTIONAL"):
+            continue
+        course_code = str(vals[1]).strip() if len(vals) > 1 and vals[1] else None
         if sid and course_code and sid in students:
             if course_code not in students[sid].course_requests:
                 students[sid].course_requests.append(course_code)
@@ -644,43 +650,43 @@ def load_courses(path):
 
 
 def load_co_schedule_groups(path):
+    """Load co-schedule groups from NEW template (4 columns, one row per course).
+
+    A=Co-Schedule Group Name, B=Course Code, C=Teacher ID, D=Prescribed Room
+    """
     wb = openpyxl.load_workbook(path)
     ws = wb.active
     groups = {}
 
-    header_row = None
-    for r in range(1, ws.max_row + 1):
-        val = ws.cell(row=r, column=1).value
-        if val and "group name" in str(val).lower():
-            header_row = r
-            break
-
-    if header_row is None:
-        for r in range(1, ws.max_row + 1):
-            val = ws.cell(row=r, column=1).value
-            if val and str(val).strip() and "co-schedule" not in str(val).lower() and "courses that" not in str(val).lower():
-                header_row = r
-                break
-
-    if header_row is None:
-        return groups
-
-    for r in range(header_row + 1, ws.max_row + 1):
-        name = ws.cell(row=r, column=1).value
-        codes_raw = ws.cell(row=r, column=2).value
-        if not name or not codes_raw:
+    for row in ws.iter_rows(min_row=2, values_only=False):
+        vals = [c.value for c in row]
+        name = vals[0]
+        if name is None:
             continue
         name = str(name).strip()
-        codes = parse_comma_list(codes_raw)
+        if not name or name.upper() in ("CO-SCHEDULE GROUP NAME", "REQUIRED", "OPTIONAL"):
+            continue
+
+        course_code = str(vals[1]).strip() if len(vals) > 1 and vals[1] else None
+        teacher_id = str(vals[2]).strip() if len(vals) > 2 and vals[2] else None
+        prescribed_room = str(vals[3]).strip() if len(vals) > 3 and vals[3] else None
+
+        if not course_code:
+            continue
+
         if name not in groups:
             groups[name] = {
                 "name": name,
-                "course_codes": codes,
-                "teacher_id": None,
-                "prescribed_room": None,
+                "course_codes": [course_code],
+                "teacher_id": teacher_id,
+                "prescribed_room": prescribed_room,
             }
         else:
-            groups[name]["course_codes"].extend(codes)
+            groups[name]["course_codes"].append(course_code)
+            if teacher_id and not groups[name]["teacher_id"]:
+                groups[name]["teacher_id"] = teacher_id
+            if prescribed_room and not groups[name]["prescribed_room"]:
+                groups[name]["prescribed_room"] = prescribed_room
 
     return {
         name: CoScheduleGroup(
