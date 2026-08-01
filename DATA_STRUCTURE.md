@@ -110,7 +110,13 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 
 **Cohort** is a shared resource. A student's cohort assignment is an input field in the Student file — NOT a separate file. The principal decides before the build which students belong to which cohort.
 
-**SSP programs** (Pathway, Academic Support, etc.) are input fields in the Student file. A student can belong to more than one SSP program. LEO II is NOT an SSP — it is a cohort.
+**SSP programs** (LEO I, Pathway, Academic Support, etc.) are input fields in the Student file. A student can belong to more than one SSP program. LEO II is NOT an SSP — it is a cohort.
+
+**LEO I vs. LEO II — these are NOT the same thing:**
+
+- **LEO I** = SSP. The engine has flexibility to assign LEO I students into groups. No hard constraint during the LEO I year.
+- **LEO II** = Cohort. The groups the engine created during LEO I are now locked. Those same students must stay together — same course, same teacher, same term, same period.
+- LEO is a two-year pipeline: the engine's LEO I group assignments (output from year 1) become the prescribed cohort input for LEO II (year 2).
 
 ### Teacher
 
