@@ -458,6 +458,68 @@ All tests use: each lock = 10 points, student priority range = 1-8.
 
 All 7 tests pass. Locks always determine the primary order. Student priority breaks ties between equally locked sections. No section with more locks is ever bumped by student priority alone.
 
+### Room Total Priority Value
+
+The engine calculates a priority value for each prescribed room. A room with more restrictions and higher-demand teachers and students must be scheduled first — waiting too long means no valid periods remain.
+
+**Formula:**
+
+> Room Total Priority Value = Room Availability Locks (×10) + Room Demand + Top Teacher Priority Value + Top Student Priority Value
+
+**Components:**
+
+| Component | What it measures |
+|-----------|-----------------|
+| Room Availability Locks | Number of periods/terms the room is NOT available — fewer available slots = more restricted |
+| Room Demand | Number of course sections competing for this room — more sections = harder to schedule |
+| Top Teacher Priority Value | From ALL teachers prescribed to this room, the one with the highest Teacher Total Priority Value |
+| Top Student Priority Value | From ALL students who have a course request for any course prescribed to this room, the one with the highest Student Priority Value |
+
+### Teacher Total Priority Value
+
+The engine calculates a priority value for each teacher. A teacher with more restrictions, higher-demand students, and a more restricted prescribed room must be scheduled first.
+
+**Formula:**
+
+> Teacher Total Priority Value = Teacher Locks (×10) + Top Student Priority Value + Prescribed Room Priority Value
+
+**Components:**
+
+| Component | What it measures |
+|-----------|-----------------|
+| Teacher Locks | Prescribed period, prescribed term, prescribed room, prescribed cohort — each lock × 10 |
+| Top Student Priority Value | From ALL students across ALL of the teacher's prescribed courses, the one with the highest Student Priority Value |
+| Prescribed Room Priority Value | The Room Total Priority Value of the room prescribed to this teacher (0 if no room is prescribed) |
+
+### Recalculation Cycle
+
+The engine does NOT calculate priority values once and use them for the entire build. Priority values are LIVE — they change every time a section is placed.
+
+**After each section is placed, the engine:**
+
+1. Removes all students who received seats from the requesting pool
+2. Recalculates the Teacher Total Priority Value using the remaining students — new top student emerges
+3. Recalculates the Room Total Priority Value using the remaining teachers and students — new top teacher and top student emerge
+4. Recalculates the Course Section Priority Value using the updated averages
+5. Re-ranks ALL sections, teachers, and rooms with their new scores
+6. Places the next most restricted section
+7. Repeats until all sections are placed or flagged for the overflow report
+
+**Why this matters:**
+
+Without recalculation, a teacher who started with one high-priority student could stay ranked high even after that student is already placed. That would waste prime schedule positions on sections that no longer need them. The recalculation cycle ensures the engine is always working on the most restricted situation REMAINING — not the most restricted situation that existed at the start.
+
+**Example:**
+
+1. Teacher Smith has 60 students across all courses — top student priority = 8
+2. Engine places Teacher Smith's AP Singleton SEM II section — 22 students get seats
+3. Those 22 students are removed from Teacher Smith's student list
+4. Teacher Smith now has 38 students — new top student priority = 6
+5. Teacher Smith's total score drops
+6. Engine re-ranks ALL teachers — maybe Teacher Jones now ranks higher
+7. Engine places Teacher Jones's most restricted section next
+8. Cycle repeats until every section is placed
+
 ### Actual point values
 
 Point values for grade level, cohort, SSP, and lock weight will be selected after all data containers are fully defined — this ensures the student with the most restrictions always calculates highest and the most restricted course section is always placed first.
