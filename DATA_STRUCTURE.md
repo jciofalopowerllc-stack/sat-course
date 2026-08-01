@@ -82,6 +82,8 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 
 ### Student — Don Bosco Prep
 
+**Universal rule: Higher grade level = higher priority. No exceptions.** Grade 12 is highest, Grade 9 is lowest. A senior in their last year cannot miss a course — a freshman has three more chances.
+
 The engine processes each student's data in this order:
 
 | # | Step | Field | What the engine does |
