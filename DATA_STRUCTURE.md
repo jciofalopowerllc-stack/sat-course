@@ -106,7 +106,32 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 
 **Total Priority Score formula:**
 
-> Student Total Priority = Grade Level Priority + Cohort Priority (if any) + SSP Priority (if any)
+> Student Total Priority = Grade Level Priority + Cohort Priority (if any) + SSP Priority (if any) + Course-Level Priorities (see rules below)
+
+**Course-level priority categories** (e.g., AP, Singleton) add point values to the student's total. But when a single course qualifies for more than one category, the student receives only the HIGHER point value from that course — not both. This prevents double-counting from the same course.
+
+**Example — Grade 12 student in LEO II, Academic Support, AP Art, and a Singleton elective:**
+
+| Source | Category | Points |
+|--------|----------|--------|
+| Grade Level | 12 | (grade value) |
+| LEO II | Cohort | (cohort value) |
+| Academic Support | SSP | (SSP value) |
+| AP Art | AP course | (AP value) |
+| Singleton elective | Singleton | (singleton value) |
+| **Total** | | **all five added together** |
+
+**But if AP Art is also a Singleton:**
+
+| Source | Category | Points |
+|--------|----------|--------|
+| Grade Level | 12 | (grade value) |
+| LEO II | Cohort | (cohort value) |
+| Academic Support | SSP | (SSP value) |
+| AP Art | AP + Singleton → use HIGHER value only | (higher of AP or singleton value) |
+| **Total** | | **no double-count from AP Art** |
+
+**Rule: Different sources stack. Same course, multiple categories → highest value only.**
 
 **Cohort** is a shared resource. A student's cohort assignment is an input field in the Student file — NOT a separate file. The principal decides before the build which students belong to which cohort.
 
