@@ -1,0 +1,158 @@
+[
+  {
+    "section": "110-5",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "110-6",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "710-5",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "830-7",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "830-8",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "830-9",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "820-7",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "820-8",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "820-9",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "810-8",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "810-9",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "110-2",
+    "reason": "No valid period/room combination available for term FY",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "422-2",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  },
+  {
+    "section": "422-3",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  },
+  {
+    "section": "410-4",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  },
+  {
+    "section": "410-5",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  }
+]

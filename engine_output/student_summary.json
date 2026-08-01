@@ -1,0 +1,10567 @@
+[
+  {
+    "student_id": "105477",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "542",
+      "143",
+      "2054",
+      "242",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106167",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "543",
+      "763",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106169",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "642",
+      "440",
+      "144",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106170",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "149",
+      "763",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106172",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "558",
+      "758",
+      "450",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106173",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 11,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
+    "unplaced": [
+      "141",
+      "595",
+      "440",
+      "144",
+      "590",
+      "591"
+    ]
+  },
+  {
+    "student_id": "106174",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "352",
+      "595",
+      "756",
+      "440",
+      "590"
+    ]
+  },
+  {
+    "student_id": "106176",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "455",
+      "558",
+      "351",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106178",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "450",
+      "141",
+      "590",
+      "744"
+    ]
+  },
+  {
+    "student_id": "106182",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "455",
+      "558",
+      "761"
+    ]
+  },
+  {
+    "student_id": "106183",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "542",
+      "756",
+      "448",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106185",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "450",
+      "849",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106186",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "453",
+      "557",
+      "758",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106187",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "761",
+      "763",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106189",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 7,
+    "placement_rate": 63.6,
+    "unplaced": [
+      "542",
+      "143",
+      "440",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106192",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "143",
+      "595",
+      "440",
+      "242",
+      "243"
+    ]
+  },
+  {
+    "student_id": "106193",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "255",
+      "352",
+      "141",
+      "590",
+      "591"
+    ]
+  },
+  {
+    "student_id": "106194",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "763",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106195",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "761",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106196",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "763",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106197",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "543",
+      "849",
+      "141",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106199",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "543",
+      "758",
+      "849",
+      "144",
+      "241"
+    ]
+  },
+  {
+    "student_id": "106201",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "254",
+      "242",
+      "243"
+    ]
+  },
+  {
+    "student_id": "106203",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "443",
+      "351",
+      "758",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106204",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "141",
+      "595",
+      "590"
+    ]
+  },
+  {
+    "student_id": "106205",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "149",
+      "743",
+      "557",
+      "443"
+    ]
+  },
+  {
+    "student_id": "106206",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "543",
+      "546",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106208",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "763",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106210",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "149",
+      "758",
+      "757",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106211",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "2054",
+      "145",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106212",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 11,
+    "courses_placed": 8,
+    "placement_rate": 72.7,
+    "unplaced": [
+      "642",
+      "440",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106213",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "756",
+      "642",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106215",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "453",
+      "557",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106216",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "141"
+    ]
+  },
+  {
+    "student_id": "106217",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "351",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106218",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 11,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
+    "unplaced": [
+      "849",
+      "2054",
+      "595",
+      "642",
+      "242",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106219",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "455",
+      "558",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106220",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "751",
+      "542",
+      "642",
+      "440",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106221",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "732",
+      "141",
+      "642",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106222",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "440",
+      "741",
+      "590",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106224",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "141",
+      "2054",
+      "440",
+      "590"
+    ]
+  },
+  {
+    "student_id": "106226",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "756",
+      "440",
+      "741",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106227",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "543",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106230",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
+    "unplaced": [
+      "455",
+      "558",
+      "761",
+      "456",
+      "206"
+    ]
+  },
+  {
+    "student_id": "106231",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "542",
+      "2044",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106232",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "455",
+      "558",
+      "351",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106233",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "351",
+      "141",
+      "440",
+      "741"
+    ]
+  },
+  {
+    "student_id": "106234",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "761",
+      "758",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106235",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "143",
+      "756",
+      "144",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106236",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "546",
+      "440",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106237",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "149",
+      "761",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106238",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "455",
+      "558",
+      "758",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106239",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "849",
+      "141",
+      "546",
+      "440",
+      "851"
+    ]
+  },
+  {
+    "student_id": "106240",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "453",
+      "558",
+      "456"
+    ]
+  },
+  {
+    "student_id": "106241",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "763",
+      "732",
+      "849",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106242",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "849",
+      "143",
+      "440",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106243",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "141",
+      "595",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106244",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "543",
+      "763",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106245",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 11,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
+    "unplaced": [
+      "758",
+      "732",
+      "849",
+      "141",
+      "745",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106247",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "453",
+      "558",
+      "351",
+      "758"
+    ]
+  },
+  {
+    "student_id": "106248",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "756",
+      "440",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106249",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "849",
+      "141",
+      "595",
+      "590",
+      "472"
+    ]
+  },
+  {
+    "student_id": "106250",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "542",
+      "440",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106251",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "743",
+      "141",
+      "590",
+      "225"
+    ]
+  },
+  {
+    "student_id": "106252",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "455",
+      "558",
+      "758",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106253",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "546",
+      "723",
+      "642",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106254",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "455",
+      "558",
+      "758",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106255",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "448",
+      "741",
+      "472",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106256",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "542",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106257",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "542",
+      "141",
+      "642",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106258",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "543",
+      "765",
+      "450",
+      "595",
+      "590"
+    ]
+  },
+  {
+    "student_id": "106259",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "440",
+      "590",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106260",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "761",
+      "351",
+      "141",
+      "590"
+    ]
+  },
+  {
+    "student_id": "106261",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
+    "unplaced": [
+      "228",
+      "450",
+      "849",
+      "202",
+      "141",
+      "143"
+    ]
+  },
+  {
+    "student_id": "106263",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "543",
+      "149",
+      "758",
+      "450"
+    ]
+  },
+  {
+    "student_id": "106264",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "351",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106265",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "743",
+      "758",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106266",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 7,
+    "placement_rate": 63.6,
+    "unplaced": [
+      "2054",
+      "723",
+      "145",
+      "2044"
+    ]
+  },
+  {
+    "student_id": "106267",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "149",
+      "352",
+      "758",
+      "732"
+    ]
+  },
+  {
+    "student_id": "106268",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "455",
+      "359",
+      "558",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106269",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "743",
+      "761",
+      "351",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106270",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "448",
+      "2044",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106271",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "141",
+      "440",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106272",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106273",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "443",
+      "732",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106275",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "141",
+      "440",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106276",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "455",
+      "558",
+      "456",
+      "758",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106277",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "141",
+      "546",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106278",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "553",
+      "149",
+      "761",
+      "450"
+    ]
+  },
+  {
+    "student_id": "106279",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "141",
+      "333",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106280",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "542",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106281",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "763",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106282",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "553",
+      "743",
+      "758",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106283",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "743",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106287",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "455",
+      "558",
+      "351",
+      "763"
+    ]
+  },
+  {
+    "student_id": "106288",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "2054",
+      "756",
+      "642"
+    ]
+  },
+  {
+    "student_id": "106289",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "558",
+      "763",
+      "758",
+      "745"
+    ]
+  },
+  {
+    "student_id": "106290",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "450",
+      "141",
+      "585",
+      "590"
+    ]
+  },
+  {
+    "student_id": "106291",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "149",
+      "352",
+      "558"
+    ]
+  },
+  {
+    "student_id": "106292",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "543",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106295",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "149",
+      "761"
+    ]
+  },
+  {
+    "student_id": "106296",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "763",
+      "758",
+      "450"
+    ]
+  },
+  {
+    "student_id": "106297",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
+    "unplaced": [
+      "455",
+      "558",
+      "351",
+      "763",
+      "206"
+    ]
+  },
+  {
+    "student_id": "106299",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "543",
+      "141",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106300",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "2054",
+      "448",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106301",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "642",
+      "448"
+    ]
+  },
+  {
+    "student_id": "106303",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "761",
+      "450",
+      "849"
+    ]
+  },
+  {
+    "student_id": "106306",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "440",
+      "741",
+      "144",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106307",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "756",
+      "448",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106308",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "542",
+      "595",
+      "642",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106309",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "455",
+      "761",
+      "351",
+      "849"
+    ]
+  },
+  {
+    "student_id": "106310",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "453",
+      "761",
+      "141"
+    ]
+  },
+  {
+    "student_id": "106311",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "763",
+      "141",
+      "440",
+      "590"
+    ]
+  },
+  {
+    "student_id": "106312",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "352",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106313",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "448",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106314",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "149",
+      "351",
+      "450"
+    ]
+  },
+  {
+    "student_id": "106316",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "546",
+      "723",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106322",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "849",
+      "546",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106323",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "440",
+      "144",
+      "744"
+    ]
+  },
+  {
+    "student_id": "106324",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
+    "unplaced": [
+      "455",
+      "558",
+      "761",
+      "456",
+      "590",
+      "591"
+    ]
+  },
+  {
+    "student_id": "106325",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "849",
+      "144",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106332",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 7,
+    "placement_rate": 63.6,
+    "unplaced": [
+      "543",
+      "141",
+      "440",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106333",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "149",
+      "756",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106334",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "849",
+      "440",
+      "242",
+      "243"
+    ]
+  },
+  {
+    "student_id": "106335",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "595",
+      "144",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106336",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "543",
+      "149",
+      "456",
+      "741"
+    ]
+  },
+  {
+    "student_id": "106337",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 7,
+    "placement_rate": 63.6,
+    "unplaced": [
+      "143",
+      "2054",
+      "756",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106341",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "443",
+      "761",
+      "763",
+      "206"
+    ]
+  },
+  {
+    "student_id": "106344",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "455",
+      "558",
+      "761",
+      "456"
+    ]
+  },
+  {
+    "student_id": "106347",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "542",
+      "849",
+      "144",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106349",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "542",
+      "849",
+      "143",
+      "144",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106350",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "440",
+      "590",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106351",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "543",
+      "732",
+      "141",
+      "756"
+    ]
+  },
+  {
+    "student_id": "106353",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "743",
+      "141",
+      "595"
+    ]
+  },
+  {
+    "student_id": "106356",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "849",
+      "546",
+      "440"
+    ]
+  },
+  {
+    "student_id": "106357",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 90,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "450",
+      "141",
+      "741",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106736",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "143",
+      "440",
+      "590",
+      "242",
+      "140"
+    ]
+  },
+  {
+    "student_id": "106739",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
+    "unplaced": [
+      "2054",
+      "242",
+      "146"
+    ]
+  },
+  {
+    "student_id": "106784",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "106791",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "132",
+      "530"
+    ]
+  },
+  {
+    "student_id": "106794",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "131",
+      "731"
+    ]
+  },
+  {
+    "student_id": "106800",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "445",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106803",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "106809",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "106812",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "249",
+      "332"
+    ]
+  },
+  {
+    "student_id": "106818",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "445",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106822",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "332",
+      "144"
+    ]
+  },
+  {
+    "student_id": "106830",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "445",
+      "139"
+    ]
+  },
+  {
+    "student_id": "106836",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "530"
+    ]
+  },
+  {
+    "student_id": "106839",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "106869",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "445",
+      "553",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106884",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "139",
+      "202",
+      "333"
+    ]
+  },
+  {
+    "student_id": "106888",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "332",
+      "530"
+    ]
+  },
+  {
+    "student_id": "106897",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106902",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "106927",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "445",
+      "553"
+    ]
+  },
+  {
+    "student_id": "106930",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "106950",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "445",
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106960",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106973",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "733",
+      "830"
+    ]
+  },
+  {
+    "student_id": "106976",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "445",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106981",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "830",
+      "731"
+    ]
+  },
+  {
+    "student_id": "106985",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "139",
+      "733",
+      "331"
+    ]
+  },
+  {
+    "student_id": "106991",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "432",
+      "530"
+    ]
+  },
+  {
+    "student_id": "107004",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "955",
+      "432"
+    ]
+  },
+  {
+    "student_id": "107008",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "543",
+      "141",
+      "440"
+    ]
+  },
+  {
+    "student_id": "107030",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "144",
+      "320"
+    ]
+  },
+  {
+    "student_id": "107035",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "553",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107048",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "431",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107057",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107060",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "333"
+    ]
+  },
+  {
+    "student_id": "107073",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "530"
+    ]
+  },
+  {
+    "student_id": "107082",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "445",
+      "553",
+      "139",
+      "590"
+    ]
+  },
+  {
+    "student_id": "107085",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "445",
+      "139",
+      "339"
+    ]
+  },
+  {
+    "student_id": "107104",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "320"
+    ]
+  },
+  {
+    "student_id": "107111",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "131",
+      "590"
+    ]
+  },
+  {
+    "student_id": "107121",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "530"
+    ]
+  },
+  {
+    "student_id": "107127",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 11,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
+    "unplaced": [
+      "751",
+      "849",
+      "595",
+      "2014",
+      "642",
+      "440"
+    ]
+  },
+  {
+    "student_id": "107150",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "339",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107157",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "445",
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107171",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "530",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107177",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "132",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107183",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "323"
+    ]
+  },
+  {
+    "student_id": "107187",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "530",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107225",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "955",
+      "131"
+    ]
+  },
+  {
+    "student_id": "107246",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "443",
+      "333"
+    ]
+  },
+  {
+    "student_id": "107251",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "249",
+      "339"
+    ]
+  },
+  {
+    "student_id": "107254",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "143",
+      "2054",
+      "590",
+      "242",
+      "225"
+    ]
+  },
+  {
+    "student_id": "107268",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "820"
+    ]
+  },
+  {
+    "student_id": "107271",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "453",
+      "339"
+    ]
+  },
+  {
+    "student_id": "107279",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "332",
+      "530"
+    ]
+  },
+  {
+    "student_id": "107296",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "130"
+    ]
+  },
+  {
+    "student_id": "107303",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "107336",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "131",
+      "339"
+    ]
+  },
+  {
+    "student_id": "107370",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "131"
+    ]
+  },
+  {
+    "student_id": "107376",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "546",
+      "723",
+      "642",
+      "448"
+    ]
+  },
+  {
+    "student_id": "107450",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "445",
+      "553",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107478",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "107509",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "107533",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "733",
+      "131",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107575",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "440",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107578",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107594",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "107598",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "432"
+    ]
+  },
+  {
+    "student_id": "107606",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "339"
+    ]
+  },
+  {
+    "student_id": "107618",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "243"
+    ]
+  },
+  {
+    "student_id": "107623",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "339",
+      "144"
+    ]
+  },
+  {
+    "student_id": "107626",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "733",
+      "339"
+    ]
+  },
+  {
+    "student_id": "107632",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "107634",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "530"
+    ]
+  },
+  {
+    "student_id": "107636",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "443",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107648",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "131",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107653",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "530",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107678",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107721",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "320"
+    ]
+  },
+  {
+    "student_id": "107737",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "726",
+      "202",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107742",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "339",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107747",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "107757",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "107780",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "131",
+      "339"
+    ]
+  },
+  {
+    "student_id": "107782",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "107794",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "131",
+      "339"
+    ]
+  },
+  {
+    "student_id": "107801",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "131",
+      "332"
+    ]
+  },
+  {
+    "student_id": "107807",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "733",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107817",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "107836",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "455",
+      "553",
+      "339",
+      "225"
+    ]
+  },
+  {
+    "student_id": "107848",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "445",
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107857",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107859",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "139",
+      "333"
+    ]
+  },
+  {
+    "student_id": "107868",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "729",
+      "321"
+    ]
+  },
+  {
+    "student_id": "107881",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "107889",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "955",
+      "432",
+      "830"
+    ]
+  },
+  {
+    "student_id": "107894",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "553",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107904",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "530",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107916",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "107920",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "320"
+    ]
+  },
+  {
+    "student_id": "107970",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "108003",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "108011",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "108012",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "431",
+      "727",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108017",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "139",
+      "440"
+    ]
+  },
+  {
+    "student_id": "108020",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "431",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108027",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "131",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108054",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "722",
+      "551",
+      "129",
+      "202"
+    ]
+  },
+  {
+    "student_id": "108061",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "131",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108070",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "339"
+    ]
+  },
+  {
+    "student_id": "108077",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "352",
+      "733"
+    ]
+  },
+  {
+    "student_id": "108093",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "108111",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "243",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108137",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "830",
+      "2034"
+    ]
+  },
+  {
+    "student_id": "108153",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "333"
+    ]
+  },
+  {
+    "student_id": "108160",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "620",
+      "320"
+    ]
+  },
+  {
+    "student_id": "108163",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "733",
+      "732",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108174",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "733",
+      "521",
+      "333"
+    ]
+  },
+  {
+    "student_id": "108189",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "320"
+    ]
+  },
+  {
+    "student_id": "108215",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "108231",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "431",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108270",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "620",
+      "421"
+    ]
+  },
+  {
+    "student_id": "108288",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "108291",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "332",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108293",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "432",
+      "530",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108298",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "130"
+    ]
+  },
+  {
+    "student_id": "108309",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "108326",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "445",
+      "331"
+    ]
+  },
+  {
+    "student_id": "108333",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "421"
+    ]
+  },
+  {
+    "student_id": "108345",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "2054"
+    ]
+  },
+  {
+    "student_id": "108351",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "425"
+    ]
+  },
+  {
+    "student_id": "108361",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "139"
+    ]
+  },
+  {
+    "student_id": "108368",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "727",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108382",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "132"
+    ]
+  },
+  {
+    "student_id": "108388",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "108399",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "722",
+      "729",
+      "521"
+    ]
+  },
+  {
+    "student_id": "108402",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "631",
+      "530"
+    ]
+  },
+  {
+    "student_id": "108404",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "553",
+      "331"
+    ]
+  },
+  {
+    "student_id": "108408",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "445",
+      "553",
+      "331"
+    ]
+  },
+  {
+    "student_id": "108437",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "130",
+      "2024",
+      "2034"
+    ]
+  },
+  {
+    "student_id": "108445",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "421",
+      "320"
+    ]
+  },
+  {
+    "student_id": "108479",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "955",
+      "432"
+    ]
+  },
+  {
+    "student_id": "108482",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "727",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108507",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "253"
+    ]
+  },
+  {
+    "student_id": "108568",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "130"
+    ]
+  },
+  {
+    "student_id": "108571",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "108592",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "108605",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "108608",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "445",
+      "553",
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "108615",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "435",
+      "255"
+    ]
+  },
+  {
+    "student_id": "108622",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "131",
+      "2054",
+      "242"
+    ]
+  },
+  {
+    "student_id": "108628",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "708"
+    ]
+  },
+  {
+    "student_id": "108645",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "722",
+      "551",
+      "323"
+    ]
+  },
+  {
+    "student_id": "108658",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "733",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108666",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "131",
+      "339"
+    ]
+  },
+  {
+    "student_id": "108668",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "425",
+      "111",
+      "315"
+    ]
+  },
+  {
+    "student_id": "108673",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "431",
+      "331"
+    ]
+  },
+  {
+    "student_id": "108734",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "108738",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "139",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108756",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "450",
+      "141",
+      "225"
+    ]
+  },
+  {
+    "student_id": "108764",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "108772",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "131",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108797",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "111"
+    ]
+  },
+  {
+    "student_id": "108803",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "955"
+    ]
+  },
+  {
+    "student_id": "108808",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "131",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108809",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "421"
+    ]
+  },
+  {
+    "student_id": "108813",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "139",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "108828",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "830",
+      "2044"
+    ]
+  },
+  {
+    "student_id": "108851",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "511",
+      "421"
+    ]
+  },
+  {
+    "student_id": "108870",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "432"
+    ]
+  },
+  {
+    "student_id": "108935",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "254",
+      "530"
+    ]
+  },
+  {
+    "student_id": "108938",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "553",
+      "139",
+      "339"
+    ]
+  },
+  {
+    "student_id": "108962",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "432"
+    ]
+  },
+  {
+    "student_id": "108963",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "708"
+    ]
+  },
+  {
+    "student_id": "108989",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "445",
+      "553"
+    ]
+  },
+  {
+    "student_id": "109004",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "425",
+      "111",
+      "339"
+    ]
+  },
+  {
+    "student_id": "109005",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "139",
+      "733"
+    ]
+  },
+  {
+    "student_id": "109021",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "109022",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "242"
+    ]
+  },
+  {
+    "student_id": "109026",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "339"
+    ]
+  },
+  {
+    "student_id": "109051",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "810"
+    ]
+  },
+  {
+    "student_id": "109069",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "521",
+      "339"
+    ]
+  },
+  {
+    "student_id": "109079",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "720"
+    ]
+  },
+  {
+    "student_id": "109182",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "332",
+      "741"
+    ]
+  },
+  {
+    "student_id": "109204",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "530",
+      "144"
+    ]
+  },
+  {
+    "student_id": "109211",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "431"
+    ]
+  },
+  {
+    "student_id": "109214",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "109253",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "521"
+    ]
+  },
+  {
+    "student_id": "109306",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "121",
+      "321"
+    ]
+  },
+  {
+    "student_id": "109319",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "720"
+    ]
+  },
+  {
+    "student_id": "109375",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "109385",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "109421",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "445",
+      "139",
+      "331"
+    ]
+  },
+  {
+    "student_id": "109435",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "553",
+      "139"
+    ]
+  },
+  {
+    "student_id": "109445",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "320"
+    ]
+  },
+  {
+    "student_id": "109453",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "331"
+    ]
+  },
+  {
+    "student_id": "109471",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "445",
+      "331"
+    ]
+  },
+  {
+    "student_id": "109482",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "425",
+      "511",
+      "2054"
+    ]
+  },
+  {
+    "student_id": "109511",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "553",
+      "139",
+      "333"
+    ]
+  },
+  {
+    "student_id": "109520",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "332",
+      "830"
+    ]
+  },
+  {
+    "student_id": "109554",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "109580",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "339",
+      "530"
+    ]
+  },
+  {
+    "student_id": "109583",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "139",
+      "333"
+    ]
+  },
+  {
+    "student_id": "109587",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "315"
+    ]
+  },
+  {
+    "student_id": "109592",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "242"
+    ]
+  },
+  {
+    "student_id": "109662",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "109726",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "727",
+      "830"
+    ]
+  },
+  {
+    "student_id": "109738",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "131",
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "109753",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "445",
+      "139"
+    ]
+  },
+  {
+    "student_id": "109788",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "129",
+      "521",
+      "421"
+    ]
+  },
+  {
+    "student_id": "109824",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "830",
+      "2024"
+    ]
+  },
+  {
+    "student_id": "109826",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "121",
+      "203",
+      "721"
+    ]
+  },
+  {
+    "student_id": "109833",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "339",
+      "830"
+    ]
+  },
+  {
+    "student_id": "109845",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "132"
+    ]
+  },
+  {
+    "student_id": "109958",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "521"
+    ]
+  },
+  {
+    "student_id": "109984",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "110"
+    ]
+  },
+  {
+    "student_id": "110097",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "727",
+      "830"
+    ]
+  },
+  {
+    "student_id": "110098",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "830"
+    ]
+  },
+  {
+    "student_id": "110101",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "332"
+    ]
+  },
+  {
+    "student_id": "110133",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "143",
+      "830"
+    ]
+  },
+  {
+    "student_id": "110134",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "820",
+      "2024"
+    ]
+  },
+  {
+    "student_id": "110274",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "130",
+      "830"
+    ]
+  },
+  {
+    "student_id": "110377",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "110396",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "732"
+    ]
+  },
+  {
+    "student_id": "110478",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "763",
+      "546"
+    ]
+  },
+  {
+    "student_id": "110504",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "620"
+    ]
+  },
+  {
+    "student_id": "110529",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "713"
+    ]
+  },
+  {
+    "student_id": "110546",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "708"
+    ]
+  },
+  {
+    "student_id": "110549",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "129",
+      "521"
+    ]
+  },
+  {
+    "student_id": "110663",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "722",
+      "202",
+      "323"
+    ]
+  },
+  {
+    "student_id": "110767",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "202",
+      "331"
+    ]
+  },
+  {
+    "student_id": "110787",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "110820",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "421",
+      "323"
+    ]
+  },
+  {
+    "student_id": "110864",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "320",
+      "720"
+    ]
+  },
+  {
+    "student_id": "110886",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "543",
+      "763"
+    ]
+  },
+  {
+    "student_id": "111020",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "708"
+    ]
+  },
+  {
+    "student_id": "111035",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "327"
+    ]
+  },
+  {
+    "student_id": "111045",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "411"
+    ]
+  },
+  {
+    "student_id": "111054",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "708",
+      "320"
+    ]
+  },
+  {
+    "student_id": "111057",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "339",
+      "530"
+    ]
+  },
+  {
+    "student_id": "111062",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "111082",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "111095",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "521"
+    ]
+  },
+  {
+    "student_id": "111098",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "121",
+      "2054",
+      "320"
+    ]
+  },
+  {
+    "student_id": "111103",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111107",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "129"
+    ]
+  },
+  {
+    "student_id": "111127",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111130",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "620"
+    ]
+  },
+  {
+    "student_id": "111141",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "111144",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "111167",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "143"
+    ]
+  },
+  {
+    "student_id": "111186",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "722",
+      "327"
+    ]
+  },
+  {
+    "student_id": "111237",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "722",
+      "521",
+      "620"
+    ]
+  },
+  {
+    "student_id": "111248",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111258",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "708"
+    ]
+  },
+  {
+    "student_id": "111267",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "331"
+    ]
+  },
+  {
+    "student_id": "111301",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111315",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "2024"
+    ]
+  },
+  {
+    "student_id": "111323",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "551"
+    ]
+  },
+  {
+    "student_id": "111332",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "520"
+    ]
+  },
+  {
+    "student_id": "111341",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "320"
+    ]
+  },
+  {
+    "student_id": "111350",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111356",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "431",
+      "830"
+    ]
+  },
+  {
+    "student_id": "111364",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "520"
+    ]
+  },
+  {
+    "student_id": "111380",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "620",
+      "321"
+    ]
+  },
+  {
+    "student_id": "111382",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "708"
+    ]
+  },
+  {
+    "student_id": "111383",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "520",
+      "2054",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111414",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "111437",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "520",
+      "2054",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111459",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111461",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "722",
+      "323"
+    ]
+  },
+  {
+    "student_id": "111471",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "955"
+    ]
+  },
+  {
+    "student_id": "111474",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111476",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "111484",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111497",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 3,
+    "placement_rate": 42.9,
+    "unplaced": [
+      "435",
+      "722",
+      "551",
+      "327"
+    ]
+  },
+  {
+    "student_id": "111522",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "144"
+    ]
+  },
+  {
+    "student_id": "111556",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111561",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "722",
+      "320",
+      "242"
+    ]
+  },
+  {
+    "student_id": "111581",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "722",
+      "521"
+    ]
+  },
+  {
+    "student_id": "111584",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "422"
+    ]
+  },
+  {
+    "student_id": "111601",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "120",
+      "520"
+    ]
+  },
+  {
+    "student_id": "111620",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "2054",
+      "710"
+    ]
+  },
+  {
+    "student_id": "111646",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "521",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111657",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "521",
+      "202",
+      "220",
+      "321"
+    ]
+  },
+  {
+    "student_id": "111660",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "315"
+    ]
+  },
+  {
+    "student_id": "111671",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "111702",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "120",
+      "521",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111723",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111725",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "849",
+      "756",
+      "741",
+      "140"
+    ]
+  },
+  {
+    "student_id": "111727",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111730",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "708",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111740",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "421",
+      "327"
+    ]
+  },
+  {
+    "student_id": "111746",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "421",
+      "323"
+    ]
+  },
+  {
+    "student_id": "111751",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "121",
+      "729"
+    ]
+  },
+  {
+    "student_id": "111760",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111766",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "330"
+    ]
+  },
+  {
+    "student_id": "111809",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "520",
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "111831",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "543",
+      "149",
+      "443",
+      "763"
+    ]
+  },
+  {
+    "student_id": "111848",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "2054",
+      "820"
+    ]
+  },
+  {
+    "student_id": "111850",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "546",
+      "708",
+      "440"
+    ]
+  },
+  {
+    "student_id": "111890",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "520"
+    ]
+  },
+  {
+    "student_id": "111916",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "131",
+      "830"
+    ]
+  },
+  {
+    "student_id": "111947",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "530",
+      "331"
+    ]
+  },
+  {
+    "student_id": "111992",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "121",
+      "321"
+    ]
+  },
+  {
+    "student_id": "112019",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "112020",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "443"
+    ]
+  },
+  {
+    "student_id": "112023",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "112051",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "141",
+      "546",
+      "144"
+    ]
+  },
+  {
+    "student_id": "112088",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 12,
+    "courses_placed": 6,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "450",
+      "2054",
+      "708",
+      "145",
+      "144",
+      "2044"
+    ]
+  },
+  {
+    "student_id": "112091",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112128",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "421",
+      "721"
+    ]
+  },
+  {
+    "student_id": "112151",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112154",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112163",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "323"
+    ]
+  },
+  {
+    "student_id": "112208",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112232",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "435",
+      "722",
+      "202",
+      "320"
+    ]
+  },
+  {
+    "student_id": "112275",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "450"
+    ]
+  },
+  {
+    "student_id": "112289",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "112303",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "520",
+      "2054",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112306",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 65,
+    "courses_requested": 10,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "849",
+      "143",
+      "595",
+      "332",
+      "144"
+    ]
+  },
+  {
+    "student_id": "112332",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "708"
+    ]
+  },
+  {
+    "student_id": "112341",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "729"
+    ]
+  },
+  {
+    "student_id": "112343",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "520",
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "112350",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "820",
+      "721"
+    ]
+  },
+  {
+    "student_id": "112355",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "620"
+    ]
+  },
+  {
+    "student_id": "112365",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "521",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112385",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "129",
+      "521",
+      "320"
+    ]
+  },
+  {
+    "student_id": "112399",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112408",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "411",
+      "2014"
+    ]
+  },
+  {
+    "student_id": "112423",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "112440",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "112442",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "112448",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "112451",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "2014"
+    ]
+  },
+  {
+    "student_id": "112459",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "320"
+    ]
+  },
+  {
+    "student_id": "112468",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "546",
+      "440",
+      "741",
+      "144"
+    ]
+  },
+  {
+    "student_id": "112512",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "722",
+      "129"
+    ]
+  },
+  {
+    "student_id": "112532",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "144"
+    ]
+  },
+  {
+    "student_id": "112535",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "112538",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "112607",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "321"
+    ]
+  },
+  {
+    "student_id": "112625",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "323"
+    ]
+  },
+  {
+    "student_id": "112644",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "729"
+    ]
+  },
+  {
+    "student_id": "112649",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "320",
+      "720"
+    ]
+  },
+  {
+    "student_id": "112692",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "722"
+    ]
+  },
+  {
+    "student_id": "112697",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "729",
+      "323"
+    ]
+  },
+  {
+    "student_id": "112725",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "112732",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112733",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "510"
+    ]
+  },
+  {
+    "student_id": "112741",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "144",
+      "720"
+    ]
+  },
+  {
+    "student_id": "112763",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "720"
+    ]
+  },
+  {
+    "student_id": "112765",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112827",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "111"
+    ]
+  },
+  {
+    "student_id": "112846",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112849",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "521",
+      "333"
+    ]
+  },
+  {
+    "student_id": "112855",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "510"
+    ]
+  },
+  {
+    "student_id": "112865",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "620",
+      "327"
+    ]
+  },
+  {
+    "student_id": "112896",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "729"
+    ]
+  },
+  {
+    "student_id": "112902",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "421",
+      "320"
+    ]
+  },
+  {
+    "student_id": "112914",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "321",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112922",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "112930",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "723",
+      "720"
+    ]
+  },
+  {
+    "student_id": "112947",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "144",
+      "720"
+    ]
+  },
+  {
+    "student_id": "112950",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "331",
+      "830"
+    ]
+  },
+  {
+    "student_id": "112958",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "112967",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "520",
+      "2054",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112970",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "112971",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "112985",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "410"
+    ]
+  },
+  {
+    "student_id": "112989",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "722",
+      "551",
+      "129",
+      "327"
+    ]
+  },
+  {
+    "student_id": "113026",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "143",
+      "820"
+    ]
+  },
+  {
+    "student_id": "113047",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "723",
+      "820"
+    ]
+  },
+  {
+    "student_id": "113057",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "113060",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "520"
+    ]
+  },
+  {
+    "student_id": "113087",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 9,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
+    "unplaced": [
+      "722",
+      "551",
+      "202",
+      "227"
+    ]
+  },
+  {
+    "student_id": "113099",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "410"
+    ]
+  },
+  {
+    "student_id": "113119",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "510"
+    ]
+  },
+  {
+    "student_id": "113152",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "521",
+      "421"
+    ]
+  },
+  {
+    "student_id": "113163",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "113173",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "113187",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "551",
+      "129"
+    ]
+  },
+  {
+    "student_id": "113194",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "421",
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "113199",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "320",
+      "830"
+    ]
+  },
+  {
+    "student_id": "113201",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "810"
+    ]
+  },
+  {
+    "student_id": "113204",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "111",
+      "421"
+    ]
+  },
+  {
+    "student_id": "113207",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "520"
+    ]
+  },
+  {
+    "student_id": "113214",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "620",
+      "327"
+    ]
+  },
+  {
+    "student_id": "113260",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "320"
+    ]
+  },
+  {
+    "student_id": "113273",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "327"
+    ]
+  },
+  {
+    "student_id": "113275",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "111",
+      "2014"
+    ]
+  },
+  {
+    "student_id": "113295",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "2054",
+      "720"
+    ]
+  },
+  {
+    "student_id": "113334",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "113337",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "120",
+      "520"
+    ]
+  },
+  {
+    "student_id": "113345",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "113349",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "411"
+    ]
+  },
+  {
+    "student_id": "113366",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "411",
+      "2014"
+    ]
+  },
+  {
+    "student_id": "113496",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "551"
+    ]
+  },
+  {
+    "student_id": "113507",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "113510",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "422",
+      "720"
+    ]
+  },
+  {
+    "student_id": "113529",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "2054",
+      "710"
+    ]
+  },
+  {
+    "student_id": "113546",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "2044"
+    ]
+  },
+  {
+    "student_id": "113606",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "521",
+      "421",
+      "323"
+    ]
+  },
+  {
+    "student_id": "113705",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "321",
+      "720"
+    ]
+  },
+  {
+    "student_id": "113711",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "722",
+      "521"
+    ]
+  },
+  {
+    "student_id": "113718",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "2014"
+    ]
+  },
+  {
+    "student_id": "113734",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "425",
+      "511",
+      "111"
+    ]
+  },
+  {
+    "student_id": "113761",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "450",
+      "141",
+      "143",
+      "744"
+    ]
+  },
+  {
+    "student_id": "113771",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "713",
+      "111"
+    ]
+  },
+  {
+    "student_id": "113831",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "113836",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "113839",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "421",
+      "820"
+    ]
+  },
+  {
+    "student_id": "113911",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "2044"
+    ]
+  },
+  {
+    "student_id": "113920",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "327"
+    ]
+  },
+  {
+    "student_id": "113957",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
+    "unplaced": [
+      "143",
+      "2054",
+      "201",
+      "440",
+      "140"
+    ]
+  },
+  {
+    "student_id": "113967",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "520"
+    ]
+  },
+  {
+    "student_id": "113973",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "411"
+    ]
+  },
+  {
+    "student_id": "113988",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "720"
+    ]
+  },
+  {
+    "student_id": "114011",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "111"
+    ]
+  },
+  {
+    "student_id": "114063",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "729",
+      "323"
+    ]
+  },
+  {
+    "student_id": "114074",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "114102",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "511",
+      "320",
+      "820"
+    ]
+  },
+  {
+    "student_id": "114156",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "530",
+      "440",
+      "830"
+    ]
+  },
+  {
+    "student_id": "114165",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "520",
+      "2054",
+      "720"
+    ]
+  },
+  {
+    "student_id": "114166",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "2054",
+      "310",
+      "810"
+    ]
+  },
+  {
+    "student_id": "114188",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "435",
+      "722",
+      "551"
+    ]
+  },
+  {
+    "student_id": "114289",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "110",
+      "2054",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "114320",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "320"
+    ]
+  },
+  {
+    "student_id": "114332",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "320"
+    ]
+  },
+  {
+    "student_id": "114340",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "320"
+    ]
+  },
+  {
+    "student_id": "114429",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "2054",
+      "710"
+    ]
+  },
+  {
+    "student_id": "114444",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "114475",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "321",
+      "820",
+      "721"
+    ]
+  },
+  {
+    "student_id": "114479",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "114510",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "323"
+    ]
+  },
+  {
+    "student_id": "114520",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "520"
+    ]
+  },
+  {
+    "student_id": "114526",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "144",
+      "810"
+    ]
+  },
+  {
+    "student_id": "114585",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "320"
+    ]
+  },
+  {
+    "student_id": "114677",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "114690",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "620",
+      "327"
+    ]
+  },
+  {
+    "student_id": "114699",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "114886",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "114903",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "723",
+      "820"
+    ]
+  },
+  {
+    "student_id": "114918",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "114922",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "120",
+      "820"
+    ]
+  },
+  {
+    "student_id": "114938",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "722",
+      "129"
+    ]
+  },
+  {
+    "student_id": "114986",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "115044",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "412"
+    ]
+  },
+  {
+    "student_id": "115123",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "320",
+      "820"
+    ]
+  },
+  {
+    "student_id": "115165",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "115172",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "729",
+      "721"
+    ]
+  },
+  {
+    "student_id": "115201",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "310"
+    ]
+  },
+  {
+    "student_id": "115264",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "129",
+      "521"
+    ]
+  },
+  {
+    "student_id": "115318",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "115326",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "115343",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "327"
+    ]
+  },
+  {
+    "student_id": "115461",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "810"
+    ]
+  },
+  {
+    "student_id": "115500",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 9,
+    "courses_placed": 8,
+    "placement_rate": 88.9,
+    "unplaced": [
+      "202"
+    ]
+  },
+  {
+    "student_id": "115574",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "115578",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "115584",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "115597",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "115608",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "435",
+      "722",
+      "551"
+    ]
+  },
+  {
+    "student_id": "115610",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "115619",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "421",
+      "708"
+    ]
+  },
+  {
+    "student_id": "115627",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "450",
+      "141",
+      "642",
+      "144"
+    ]
+  },
+  {
+    "student_id": "115677",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "708"
+    ]
+  },
+  {
+    "student_id": "115684",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "411",
+      "708"
+    ]
+  },
+  {
+    "student_id": "115729",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "551",
+      "242"
+    ]
+  },
+  {
+    "student_id": "115730",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "253",
+      "149",
+      "443",
+      "761"
+    ]
+  },
+  {
+    "student_id": "115776",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "2014"
+    ]
+  },
+  {
+    "student_id": "115797",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 11,
+    "courses_placed": 7,
+    "placement_rate": 63.6,
+    "unplaced": [
+      "756",
+      "440",
+      "242",
+      "140"
+    ]
+  },
+  {
+    "student_id": "115811",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "115894",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 7,
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "115920",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "810"
+    ]
+  },
+  {
+    "student_id": "115942",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "144"
+    ]
+  },
+  {
+    "student_id": "115945",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "111"
+    ]
+  },
+  {
+    "student_id": "115967",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "115969",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "521",
+      "331"
+    ]
+  },
+  {
+    "student_id": "116010",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "425",
+      "713",
+      "111"
+    ]
+  },
+  {
+    "student_id": "116030",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "116036",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "116041",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "116042",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "310"
+    ]
+  },
+  {
+    "student_id": "116044",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "530",
+      "440"
+    ]
+  },
+  {
+    "student_id": "116104",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "2054",
+      "710"
+    ]
+  },
+  {
+    "student_id": "116112",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "412",
+      "144"
+    ]
+  },
+  {
+    "student_id": "116124",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "116127",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "708"
+    ]
+  },
+  {
+    "student_id": "116149",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "330",
+      "830"
+    ]
+  },
+  {
+    "student_id": "116158",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "116162",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "112"
+    ]
+  },
+  {
+    "student_id": "116166",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "511",
+      "111"
+    ]
+  },
+  {
+    "student_id": "116201",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "131",
+      "450"
+    ]
+  },
+  {
+    "student_id": "116221",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "111"
+    ]
+  },
+  {
+    "student_id": "116222",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "708"
+    ]
+  },
+  {
+    "student_id": "116225",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "116229",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "425",
+      "111",
+      "339"
+    ]
+  },
+  {
+    "student_id": "116239",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "708"
+    ]
+  },
+  {
+    "student_id": "116247",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "121",
+      "321",
+      "820",
+      "721"
+    ]
+  },
+  {
+    "student_id": "116271",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "116273",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "310"
+    ]
+  },
+  {
+    "student_id": "116319",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "511",
+      "111",
+      "421"
+    ]
+  },
+  {
+    "student_id": "116329",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "708"
+    ]
+  },
+  {
+    "student_id": "116347",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "708"
+    ]
+  },
+  {
+    "student_id": "116354",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "116372",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "708"
+    ]
+  },
+  {
+    "student_id": "116417",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "411",
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "116437",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "116461",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "820"
+    ]
+  },
+  {
+    "student_id": "116481",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "116482",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "410"
+    ]
+  },
+  {
+    "student_id": "116485",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "116499",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "116523",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "411",
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "116562",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "425",
+      "111",
+      "310"
+    ]
+  },
+  {
+    "student_id": "116565",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "410",
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "116579",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "410"
+    ]
+  },
+  {
+    "student_id": "116602",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "310"
+    ]
+  },
+  {
+    "student_id": "116607",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "521",
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "116614",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "116616",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "708"
+    ]
+  },
+  {
+    "student_id": "116624",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "311"
+    ]
+  },
+  {
+    "student_id": "116628",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "543",
+      "450"
+    ]
+  },
+  {
+    "student_id": "116729",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "310",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "116807",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "410",
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "116815",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "955",
+      "2044"
+    ]
+  },
+  {
+    "student_id": "116837",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "500"
+    ]
+  },
+  {
+    "student_id": "116861",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "116892",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "733",
+      "143"
+    ]
+  },
+  {
+    "student_id": "116919",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "116924",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "110"
+    ]
+  },
+  {
+    "student_id": "116930",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "2014",
+      "720"
+    ]
+  },
+  {
+    "student_id": "116969",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "310",
+      "810"
+    ]
+  },
+  {
+    "student_id": "116980",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "450",
+      "744",
+      "331"
+    ]
+  },
+  {
+    "student_id": "116994",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "425"
+    ]
+  },
+  {
+    "student_id": "117092",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "310"
+    ]
+  },
+  {
+    "student_id": "117097",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "111",
+      "315"
+    ]
+  },
+  {
+    "student_id": "117105",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "130",
+      "830"
+    ]
+  },
+  {
+    "student_id": "117132",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "642",
+      "530",
+      "440"
+    ]
+  },
+  {
+    "student_id": "117136",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 45,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "435",
+      "551"
+    ]
+  },
+  {
+    "student_id": "117153",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "432",
+      "520",
+      "830"
+    ]
+  },
+  {
+    "student_id": "117239",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "546",
+      "642"
+    ]
+  },
+  {
+    "student_id": "117247",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "751",
+      "543",
+      "450"
+    ]
+  },
+  {
+    "student_id": "117259",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "2054",
+      "310",
+      "810"
+    ]
+  },
+  {
+    "student_id": "117274",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "117280",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "2014"
+    ]
+  },
+  {
+    "student_id": "117333",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "421"
+    ]
+  },
+  {
+    "student_id": "117344",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "310"
+    ]
+  },
+  {
+    "student_id": "117347",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "117354",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "410",
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "117392",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "131",
+      "708",
+      "440"
+    ]
+  },
+  {
+    "student_id": "117398",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "310"
+    ]
+  },
+  {
+    "student_id": "117409",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "117427",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "117436",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "315"
+    ]
+  },
+  {
+    "student_id": "117446",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "117452",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 8,
+    "placement_rate": 100.0,
+    "unplaced": []
+  },
+  {
+    "student_id": "117481",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "117590",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "764",
+      "551",
+      "331"
+    ]
+  },
+  {
+    "student_id": "117612",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "2014"
+    ]
+  },
+  {
+    "student_id": "117628",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "310",
+      "810"
+    ]
+  },
+  {
+    "student_id": "117653",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "110"
+    ]
+  },
+  {
+    "student_id": "117698",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "117733",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "410",
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "117743",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "410"
+    ]
+  },
+  {
+    "student_id": "117752",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "708",
+      "315"
+    ]
+  },
+  {
+    "student_id": "117844",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "708",
+      "310"
+    ]
+  },
+  {
+    "student_id": "117848",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "708"
+    ]
+  },
+  {
+    "student_id": "117857",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "310"
+    ]
+  },
+  {
+    "student_id": "117888",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "111",
+      "708"
+    ]
+  },
+  {
+    "student_id": "117901",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "708"
+    ]
+  },
+  {
+    "student_id": "117907",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "111"
+    ]
+  },
+  {
+    "student_id": "117941",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "410",
+      "312",
+      "810"
+    ]
+  },
+  {
+    "student_id": "117998",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "118039",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "118047",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "500",
+      "201"
+    ]
+  },
+  {
+    "student_id": "118074",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "118120",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "118143",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "310",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "118181",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "500"
+    ]
+  },
+  {
+    "student_id": "118186",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "149",
+      "763",
+      "758",
+      "732"
+    ]
+  },
+  {
+    "student_id": "118189",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "411",
+      "708",
+      "810"
+    ]
+  },
+  {
+    "student_id": "118246",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "118324",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "118420",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "131",
+      "830"
+    ]
+  },
+  {
+    "student_id": "118460",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "411",
+      "810"
+    ]
+  },
+  {
+    "student_id": "118533",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "118565",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "425"
+    ]
+  },
+  {
+    "student_id": "118601",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "118635",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "310",
+      "810"
+    ]
+  },
+  {
+    "student_id": "118775",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "118815",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "118828",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "118849",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "708"
+    ]
+  },
+  {
+    "student_id": "118861",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "810"
+    ]
+  },
+  {
+    "student_id": "118889",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "411"
+    ]
+  },
+  {
+    "student_id": "118902",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "810"
+    ]
+  },
+  {
+    "student_id": "119012",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 55,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "432",
+      "830"
+    ]
+  },
+  {
+    "student_id": "119020",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "110"
+    ]
+  },
+  {
+    "student_id": "119104",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "119190",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "311"
+    ]
+  },
+  {
+    "student_id": "119257",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "119307",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "119312",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "708",
+      "810"
+    ]
+  },
+  {
+    "student_id": "119360",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "411",
+      "144"
+    ]
+  },
+  {
+    "student_id": "119384",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "143"
+    ]
+  },
+  {
+    "student_id": "119397",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "2014"
+    ]
+  },
+  {
+    "student_id": "119400",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 10,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
+    "unplaced": [
+      "249",
+      "450",
+      "141",
+      "144"
+    ]
+  },
+  {
+    "student_id": "119412",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "119418",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "119466",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "500"
+    ]
+  },
+  {
+    "student_id": "119498",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "119514",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "631",
+      "145",
+      "530"
+    ]
+  },
+  {
+    "student_id": "119589",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "111",
+      "810"
+    ]
+  },
+  {
+    "student_id": "119656",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "432",
+      "132",
+      "723"
+    ]
+  },
+  {
+    "student_id": "119659",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "631",
+      "530"
+    ]
+  },
+  {
+    "student_id": "119737",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "119950",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "119966",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "120024",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "144"
+    ]
+  },
+  {
+    "student_id": "120047",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "120053",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "120069",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "120089",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "120126",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "810"
+    ]
+  },
+  {
+    "student_id": "120187",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "810"
+    ]
+  },
+  {
+    "student_id": "120211",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "411",
+      "110",
+      "810"
+    ]
+  },
+  {
+    "student_id": "120240",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "110"
+    ]
+  },
+  {
+    "student_id": "120267",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "120279",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "120374",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
+    "unplaced": [
+      "310",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "120399",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "111",
+      "708"
+    ]
+  },
+  {
+    "student_id": "120418",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "110"
+    ]
+  },
+  {
+    "student_id": "120492",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "110",
+      "710"
+    ]
+  },
+  {
+    "student_id": "120546",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
+    "unplaced": [
+      "139",
+      "511",
+      "830"
+    ]
+  },
+  {
+    "student_id": "120587",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "120645",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "111",
+      "708"
+    ]
+  },
+  {
+    "student_id": "120664",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "120688",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "120718",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "708",
+      "810"
+    ]
+  },
+  {
+    "student_id": "120899",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "120940",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "110"
+    ]
+  },
+  {
+    "student_id": "121012",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "410",
+      "310"
+    ]
+  },
+  {
+    "student_id": "121020",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "310",
+      "820",
+      "720"
+    ]
+  },
+  {
+    "student_id": "121117",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "310"
+    ]
+  },
+  {
+    "student_id": "121187",
+    "name": ", ",
+    "grade": 12,
+    "raw_priority": 40,
+    "courses_requested": 9,
+    "courses_placed": 7,
+    "placement_rate": 77.8,
+    "unplaced": [
+      "450",
+      "241"
+    ]
+  },
+  {
+    "student_id": "121196",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "110",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "121287",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "520",
+      "820"
+    ]
+  },
+  {
+    "student_id": "121290",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "410",
+      "310",
+      "810"
+    ]
+  },
+  {
+    "student_id": "121305",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "312",
+      "810"
+    ]
+  },
+  {
+    "student_id": "121312",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 0,
+    "courses_placed": 0,
+    "placement_rate": 0,
+    "unplaced": []
+  },
+  {
+    "student_id": "121320",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 6,
+    "courses_placed": 5,
+    "placement_rate": 83.3,
+    "unplaced": [
+      "830"
+    ]
+  },
+  {
+    "student_id": "121341",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "411",
+      "310",
+      "810"
+    ]
+  },
+  {
+    "student_id": "121384",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "331",
+      "830",
+      "720"
+    ]
+  },
+  {
+    "student_id": "121423",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 3,
+    "placement_rate": 37.5,
+    "unplaced": [
+      "410",
+      "110",
+      "2054",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "121441",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "450",
+      "331"
+    ]
+  },
+  {
+    "student_id": "121444",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "820",
+      "710"
+    ]
+  },
+  {
+    "student_id": "121491",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
+    "unplaced": [
+      "310",
+      "810",
+      "710"
+    ]
+  },
+  {
+    "student_id": "121758",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 35,
+    "courses_requested": 7,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
+    "unplaced": [
+      "209"
+    ]
+  },
+  {
+    "student_id": "121826",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
+    "unplaced": [
+      "425",
+      "310"
+    ]
+  },
+  {
+    "student_id": "121842",
+    "name": ", ",
+    "grade": 10,
+    "raw_priority": 20,
+    "courses_requested": 8,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
+    "unplaced": [
+      "201"
+    ]
+  },
+  {
+    "student_id": "121949",
+    "name": ", ",
+    "grade": 11,
+    "raw_priority": 30,
+    "courses_requested": 7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
+    "unplaced": [
+      "530",
+      "830"
+    ]
+  },
+  {
+    "student_id": "122015",
+    "name": ", ",
+    "grade": 9,
+    "raw_priority": 10,
+    "courses_requested": 8,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
+    "unplaced": [
+      "410",
+      "110",
+      "810",
+      "710"
+    ]
+  }
+]
