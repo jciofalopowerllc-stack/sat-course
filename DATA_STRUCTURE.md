@@ -117,8 +117,9 @@ The engine processes each student's data in this order:
 | 15 | Confirm | Student > Academic Support (Y/N) | Cross-File Validation confirms SSP membership |
 | 16 | Confirm | Student > Pathway (Y/N) | Cross-File Validation confirms SSP membership |
 | 17 | Assign Point Value | Student > SSP Priority Value | Points assigned based on SSP programs — stacks with Cohort unless LEO I → LEO II (same program, no stacking) |
-| 18 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — includes the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only |
-| 19 | Calculate | Student > Total Priority Score | Grade Level + Cohort (if any) + SSP (if any) + Course Priority Values |
+| 18 | **Calculate** | **Student > Raw Priority Value** | **Grade Level + Cohort (if any) + SSP (if any) — who the student IS. FIXED for the school year. No course, teacher, or room data. Saved to student's profile by school year.** |
+| 19 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — includes the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only |
+| 20 | **Calculate** | **Student > Total Priority Value** | **Raw Priority Value (step 18) + Course Priority Values (step 19). Changes every run as courses are placed and removed from the student's request list. Saved to student's profile with run number and school year.** |
 
 **Cohort vs. SSP — these are NOT the same thing:**
 
@@ -126,9 +127,17 @@ The engine processes each student's data in this order:
 - **SSP (Special Student Population)** = the student belongs to one or more special programs (e.g., Pathway, Academic Support). SSP affects priority but does NOT restrict the student to stay with a group. The engine has more flexibility, so the SSP priority value is LOWER than cohort.
 - **A student can belong to BOTH a cohort and one or more SSP programs.** When this happens, both priority values are used in the student's total priority score — they stack.
 
-**Total Priority Score formula:**
+**Student Raw Priority Value formula (FIXED for the school year):**
 
-> Student Total Priority = Grade Level Priority Value + Cohort Priority Value (if any) + SSP Priority Value (if any) + Course Priority Values
+> Student Raw Priority Value = Grade Level Priority Value + Cohort Priority Value (if any) + SSP Priority Value (if any)
+
+This is who the student IS — no course, teacher, or room data. Calculated once and saved to the student's profile by school year.
+
+**Student Total Priority Value formula (CHANGES every run):**
+
+> Student Total Priority Value = Raw Priority Value + Course Priority Values
+
+Course Priority Values include the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. After each run, placed courses are removed and the Total recalculates. Saved to the student's profile with run number and school year.
 
 **Course-level priority categories** (e.g., AP, Singleton) add point values to the student's total. But when a single course qualifies for more than one category, the student receives only the HIGHER point value from that course — not both. This prevents double-counting from the same course.
 
@@ -237,7 +246,35 @@ The original Template 6 had 48 columns. The following 32 columns were removed be
 
 **Commercial product note:** Some of these removed columns may be needed for the commercial engine. Specifications for the commercial version of this template will be defined after the Don Bosco Prep engine build is completed.
 
-### Room
+**Teacher Processing Order:**
+
+The engine processes each teacher's data in this order:
+
+| # | Step | Field | What the engine does |
+|---|------|-------|---------------------|
+| 1 | Identify | Teacher > ID | Unique teacher identifier |
+| 2 | Identify | Teacher > Department | What department the teacher belongs to |
+| 3 | Validate | Teacher > Availability (Periods A-G) | Which periods the teacher is available — N = unavailable |
+| 4 | Validate | Teacher > Max Teaching Periods | Per-semester cap (default 5) |
+| 5 | Validate | Teacher > 6th Period Approval (FY/S1/S2) | Can the teacher exceed the 5-period cap? |
+| 6 | Confirm | Teacher > SSP Teacher | Is the teacher part of an SSP program? |
+| 7 | Load | Teacher > Course Assignments (Sheet 2) | Load all course assignments for this teacher |
+| 8 | Count Locks | Teacher > Prescribed Room | Each course with a prescribed room = 1 lock |
+| 9 | Count Locks | Teacher > Prescribed Period | Each course with a prescribed period = 1 lock |
+| 10 | Count Locks | Teacher > Prescribed Term | Each course with a prescribed term = 1 lock |
+| 11 | Count Locks | Teacher > Prescribed Cohort | Each course with a prescribed cohort = 1 lock |
+| 12 | Count Locks | Teacher > Unavailable Periods | Each period where availability = N = 1 lock |
+| 13 | Assign Point Value | Teacher > Total Lock Value | All locks from steps 8-12 × weight (10 points each) |
+| 14 | **Calculate** | **Teacher > Raw Priority Value** | **Total Lock Value ONLY — no student or room data. FIXED for the school year. Saved to teacher's profile by school year.** |
+| 15 | Identify | Teacher > All Students with Course Requests | From ALL students across ALL of this teacher's courses, build the full student list |
+| 16 | Rank | Teacher > Student List by Priority Value | Rank all students from high to low |
+| 17 | Assign Point Value | Teacher > Top Student Priority Value | The highest-scoring student's value |
+| 18 | Load | Teacher > Prescribed Room Priority Value | Room Total Priority Value for the prescribed room (0 if none) |
+| 19 | **Calculate** | **Teacher > Total Priority Value** | **Raw Priority Value (step 14) + Top Student Priority Value (step 17) + Prescribed Room Priority Value (step 18). Changes every run. Saved to teacher's profile with run number and school year.** |
+
+After each section is placed, the engine returns to step 15 — rebuilds the student list with remaining students, re-ranks, gets new top student, and recalculates step 19. Step 14 (Raw) never changes.
+
+### Room — Don Bosco Prep
 
 Room ID is the room number (e.g., S-234). This is both the identifier and the name. No separate RM_ prefix ID — one clean code.
 
@@ -251,6 +288,40 @@ Room ID is the room number (e.g., S-234). This is both the identifier and the na
 
 - **Don Bosco Prep (now):** The principal prescribes which room a course uses, or provides a list of rooms that CANNOT be used. The engine works with what's left. No department matching needed.
 - **Commercial Product (future):** Room > Department field will be added so the engine can automatically match rooms to courses and teachers by department. A new school won't have to prescribe every room manually.
+
+**Room Processing Order:**
+
+The engine processes each room's data in this order:
+
+| # | Step | Field | What the engine does |
+|---|------|-------|---------------------|
+| 1 | Identify | Room > Room ID | Unique room identifier (e.g., S-234) |
+| 2 | Validate | Room > Available Periods | Which periods the room is available — each unavailable period = 1 lock |
+| 3 | Validate | Room > Available Terms | Which terms the room is available — each unavailable term = 1 lock |
+| 4 | Count Locks | Room > Availability Locks | Total unavailable periods and terms × weight (10 points each) |
+| 5 | Count | Room > Demand | Number of course sections prescribed to this room — more sections competing = more restricted |
+| 6 | **Calculate** | **Room > Raw Priority Value** | **Availability Locks (step 4) + Demand (step 5). FIXED for the school year. No teacher or student data. Saved to room's profile by school year.** |
+| 7 | Identify | Room > All Teachers Prescribed to Room | From ALL teachers with course assignments in this room, build the full teacher list |
+| 8 | Rank | Room > Teacher List by Priority Value | Rank all teachers from high to low |
+| 9 | Assign Point Value | Room > Top Teacher Priority Value | The highest-scoring teacher's value |
+| 10 | Identify | Room > All Students with Course Requests | From ALL students who have a course request for any course prescribed to this room, build the full student list |
+| 11 | Rank | Room > Student List by Priority Value | Rank all students from high to low |
+| 12 | Assign Point Value | Room > Top Student Priority Value | The highest-scoring student's value |
+| 13 | **Calculate** | **Room > Total Priority Value** | **Raw Priority Value (step 6) + Top Teacher Priority Value (step 9) + Top Student Priority Value (step 12). Changes every run. Saved to room's profile with run number and school year.** |
+
+After each section is placed, the engine returns to step 7 — rebuilds the teacher and student lists with remaining data, re-ranks, gets new top teacher and top student, and recalculates step 13. Step 6 (Raw) never changes.
+
+**Profile Storage Rule — applies to ALL three parents:**
+
+| Data Saved | When | Changes? |
+|-----------|------|----------|
+| Raw Priority Value | Once, before Run #1 | NO — fixed for the school year |
+| Total Priority Value (Run #1) | After Run #1 | YES — different each run |
+| Total Priority Value (Run #2) | After Run #2 | YES |
+| Total Priority Value (Run #N) | After each run | YES — until all sections placed |
+| School Year | Stored with each record | Allows year-over-year comparison |
+
+Every student, teacher, and room has a complete history: their raw score plus how their total score changed across every run, stored by school year. The principal can pull up any record and see exactly what happened and why.
 
 ---
 
