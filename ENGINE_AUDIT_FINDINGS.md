@@ -156,19 +156,22 @@ Fixes were applied in this order:
 7. Communication Arts: 2014, 2024, 2034, 2044, 2054
 8. Theater: 225, 227, 228
 
-**Impact:** Expected to reduce clashes significantly by ensuring pathway courses compete at Level 2 priority during Phase B seating, preventing graduation requirements from saturating all periods before pathway courses can be placed.
+**Impact:** 301→99 clashes (-67%), 95.1%→98.4% placement. Grades 9-10 clashes eliminated entirely (149→0). Business department clashes dropped from 136 to 21.
 
-**Implementation:**
-1. Add `pathway_courses` mapping to `course_priorities.json`
-2. Add pathway detection logic to engine startup (reads Historical Grades)
-3. Update Template 8 Pathway column: replace Y/N with pathway name
-4. Modify `student_prio()` to elevate pathway courses to Level 2 for enrolled students
+**Implementation (completed 2026-08-02):**
+1. Added `pathway_courses` mapping to `course_priorities.json` (8 pathways, 45 course codes)
+2. Created `detect_pathways.py` — reads Historical Grades + Course Requests, detects pathway membership, updates Template 8
+3. Updated Template 8 Pathway column: replaced Y/N with pathway name for 625/805 students
+4. Modified `student_prio()` to elevate pathway courses to Level 2 for enrolled students
+5. LEO students auto-mapped to Business pathway
+
+**Remaining 99 clashes:** Grade 11 (55), Grade 12 (44). Departments: Physical Education (34), Science (25), Business (21), Communication Arts (9), Computer Science (5), Humanities (5)
 
 ---
 
 ## Resolution Status
 
-All audit findings have been resolved. IMP-5 (Pathway Course Elevation) is in progress.
+All audit findings have been resolved.
 
 | Finding | Status | Result |
 |---------|--------|--------|
@@ -185,18 +188,20 @@ All audit findings have been resolved. IMP-5 (Pathway Course Elevation) is in pr
 | DISC-1: Grade-dependent P5 | DOCUMENTED | Correct per graduation rules — not a bug |
 | DISC-2: AP elective weight | RESOLVED | Level 2 (No Alternative) in pyramid system |
 | DISC-3: Three-band system | SUPERSEDED | Four-level pyramid system implemented |
-| IMP-5: Pathway course elevation | IN PROGRESS | Detect pathway from Historical Grades, elevate to Level 2 |
+| IMP-5: Pathway course elevation | APPLIED | 301→99 clashes, pathway courses elevated to Level 2 for enrolled students |
 
 ### Final Results
 
-| Metric | Baseline | After All Fixes |
-|--------|----------|-----------------|
-| Clashes | 325 | **301** |
-| Placement | 95.1% | **95.1%** |
-| Graduation Req Clashes | Unknown (bug) | **0** |
-| Grad Req Fulfillment | Unknown (bug) | **100% (5,033/5,033)** |
-| AP/Honors Fulfillment | Unknown | **100% (2,104/2,104)** |
-| P4+ Clashes | 0 | **0** |
+| Metric | Baseline | After v2.1 Fixes | After v2.2 Pathway |
+|--------|----------|-------------------|-------------------|
+| Clashes | 325 | 301 | **99** |
+| Placement | 95.1% | 95.1% | **98.4%** |
+| Graduation Req Clashes | Unknown (bug) | 0 | **0** |
+| Grad Req Fulfillment | Unknown (bug) | 100% (5,033/5,033) | **100% (5,033/5,033)** |
+| AP/Honors Fulfillment | Unknown | 100% (2,104/2,104) | **100% (2,104/2,104)** |
+| P4+ Clashes | 0 | 0 | **0** |
+| Grades 9-10 Clashes | Unknown | 149 | **0** |
+| Pathway Students Identified | 94 (Y/N only) | 94 (Y/N only) | **625 (named pathways)** |
 
 ---
 

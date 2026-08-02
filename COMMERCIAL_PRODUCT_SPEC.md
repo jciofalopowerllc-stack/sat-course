@@ -278,7 +278,8 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | v1.1 (composite scoring) | 325 | 95.1% | 0 P5 | Phase B refactor regressed ordering |
 | v1.2 (three-band fix) | 240 | 95.1% | 0 P5 | Three-band priority + priority-aware optimization |
 | v2.0 (pyramid + ripple) | 338 | 94.5% | 0 (incorrect) | Four-level pyramid system. Graduation req detection bug: "Language" vs "World Language" mismatch, PE missing |
-| v2.1 (grad req fix) | **301** | **95.1%** | **0 (verified)** | Fixed graduation req config: "World Language" match, PE added for grades 9-10. All 5,033 grad reqs fulfilled |
+| v2.1 (grad req fix) | 301 | 95.1% | 0 (verified) | Fixed graduation req config: "World Language" match, PE added for grades 9-10. All 5,033 grad reqs fulfilled |
+| v2.2 (pathway elevation) | **99** | **98.4%** | **0** | Pathway detection from Historical Grades + Course Requests. 625/805 students assigned to named pathways. Pathway courses elevated to Level 2. Grades 9-10 clashes eliminated |
 
 ### 5.2 Current Configuration
 
@@ -296,37 +297,43 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | Optimization Iterations | 60 per restart |
 | Batch Recalculation Size | 1,500 placements |
 
-### 5.3 Current Results (v2.1)
+### 5.3 Current Results (v2.2)
 
 | Metric | Value |
 |--------|-------|
-| Clashes | 301 |
-| Placement Rate | 95.1% (5,850/6,151) |
+| Clashes | 99 |
+| Placement Rate | 98.4% (6,052/6,151) |
 | Graduation Req Fulfillment | 100% (5,033/5,033) |
 | AP/Honors Fulfillment | 100% (2,104/2,104) |
 | P4+ Clashes | 0 |
-| Students Affected | 290 |
-| Prior-Year Alignment | 236/316 |
+| Students Affected | 86 |
+| Prior-Year Alignment | 237/316 |
+| Pathway Students Identified | 625/805 |
 
-### 5.4 Clash Breakdown (v2.1)
+### 5.4 Clash Breakdown (v2.2)
 
 | Category | Count |
 |----------|-------|
-| P1 (Elective-Standard) | 253 |
-| P2 (Departmental Core) | 40 |
-| P3 (Sequence/Honors) | 8 |
+| P1 (Elective-Standard) | 58 |
+| P2 (Departmental Core) | 34 |
+| P3 (Sequence/Honors) | 7 |
 | P4+ (Required Core) | 0 |
 
 | Department | Count |
 |------------|-------|
-| Business | 136 |
-| Physical Education | 39 |
-| Communication Arts | 37 |
-| Science | 33 |
-| Engineering | 32 |
-| Humanities | 12 |
-| Computer Science | 11 |
-| Theater Arts | 1 |
+| Physical Education | 34 |
+| Science | 25 |
+| Business | 21 |
+| Communication Arts | 9 |
+| Computer Science | 5 |
+| Humanities | 5 |
+
+| Grade | Count |
+|-------|-------|
+| Grade 9 | 0 |
+| Grade 10 | 0 |
+| Grade 11 | 55 |
+| Grade 12 | 44 |
 
 ### 5.5 Target
 
@@ -399,14 +406,14 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Unfulfilled Requests Report generated (Excel): 301 requests, 290 students, sorted by priority band
 - [x] 9 interactive HTML boards generated: clash report, conflict console, recommendations, singleton board, constraint builder, master schedule builder, credit validation, data audit, dashboard index
 
-### 6.4 In Progress (v2.2 — Pathway Course Elevation)
+### 6.4 Completed (v2.2 — Pathway Course Elevation)
 
-- [ ] Pathway detection from Historical Grades: identify each student's pathway (Business, CS, Engineering, Fine Arts, Music Arts, Communication Arts, Theater) using completed course history
-- [ ] Detection rules: G12 = 2+ courses, G11 = 1+ course, G10 = G9 history + G10 requests, G9 = elective request match. Tie-break = most matches. All LEO = Business pathway
-- [ ] Add `pathway_courses` mapping to `course_priorities.json` (8 pathways, 45 course codes total)
-- [ ] Update Template 8 Pathway column: replace Y/N with pathway name for all 805 students
-- [ ] Modify `student_prio()`: elevate pathway courses to Level 2 (No Alternative) for enrolled pathway students
-- [ ] Target: reduce 229 pathway-department clashes (76% of total 301) by giving pathway courses higher seating priority
+- [x] Pathway detection from Historical Grades: identify each student's pathway (Business, CS, Engineering, Fine Arts, Music Arts, Communication Arts, Theater) using completed course history
+- [x] Detection rules: G12 = 2+ courses, G11 = 1+ course, G10 = G9 history + G10 requests, G9 = elective request match. Tie-break = most matches. All LEO = Business pathway
+- [x] Added `pathway_courses` mapping to `course_priorities.json` (8 pathways, 45 course codes total)
+- [x] Created `detect_pathways.py` — updates Template 8 Pathway column with pathway name for 625/805 students
+- [x] Modified `student_prio()`: elevate pathway courses to Level 2 (No Alternative) for enrolled pathway students
+- [x] Result: 301→99 clashes (-67%), 95.1%→98.4% placement, grades 9-10 clashes eliminated (149→0)
 - [ ] 6 pathway courses not in Template 7: App Development, Chorus, Music Service, Music Service Project, Tech Theater Level I, The Story Lab
 
 ### 6.5 Future
