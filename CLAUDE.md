@@ -30,8 +30,8 @@
 - `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
 - `schedule_solution_v3.json` — Engine output (current: v2.2, 99 clashes, 98.4% placement)
 
-### Current Results (v2.2)
-- 99 clashes (all grades 11-12), 98.4% placement
+### Current Results (v2.3)
+- 64 clashes (Gr9: 1, Gr11: 35, Gr12: 28), 99.0% placement
 - 0 graduation requirement clashes, 100% grad req fulfillment
-- 0 grades 9-10 clashes
-- Root cause: 98 period_saturation, 1 singleton_collision
+- 0 P4+ (Required Core) clashes
+- Root cause: 63 all_periods_blocked, 1 singleton_collision
