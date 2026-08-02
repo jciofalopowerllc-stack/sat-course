@@ -8,12 +8,12 @@
     "teacher_id": "105617",
     "teacher_name": "O'Connor, Paul",
     "room": "D-101",
-    "period": "E",
+    "period": "D",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 158080,
+    "total_priority": 65080,
     "placed": true
   },
   {
@@ -30,7 +30,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172385,
+    "total_priority": 186995,
     "placed": true
   },
   {
@@ -44,10 +44,10 @@
     "room": "D-102",
     "period": "B",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 24,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172955,
+    "total_priority": 187565,
     "placed": true
   },
   {
@@ -61,10 +61,10 @@
     "room": "D-102",
     "period": "C",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 173525,
+    "total_priority": 188135,
     "placed": true
   },
   {
@@ -78,10 +78,10 @@
     "room": "D-102",
     "period": "D",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 174095,
+    "total_priority": 188665,
     "placed": true
   },
   {
@@ -95,44 +95,10 @@
     "room": "D-102",
     "period": "E",
     "term": "FY",
-    "enrolled": 20,
+    "enrolled": 3,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 174585,
-    "placed": true
-  },
-  {
-    "section_key": "110-7",
-    "course_code": "110",
-    "course_title": "Composition & Literature",
-    "department": "English",
-    "section_num": 7,
-    "teacher_id": "105617",
-    "teacher_name": "O'Connor, Paul",
-    "room": "D-104",
-    "period": "G",
-    "term": "FY",
-    "enrolled": 23,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 121710,
-    "placed": true
-  },
-  {
-    "section_key": "110-8",
-    "course_code": "110",
-    "course_title": "Composition & Literature",
-    "department": "English",
-    "section_num": 8,
-    "teacher_id": "105617",
-    "teacher_name": "O'Connor, Paul",
-    "room": null,
-    "period": null,
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 122040,
+    "total_priority": 189175,
     "placed": true
   },
   {
@@ -144,12 +110,12 @@
     "teacher_id": "112206",
     "teacher_name": "Delmonico, Marisa",
     "room": "J-222",
-    "period": "B",
+    "period": "C",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 12,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172660,
+    "total_priority": 187655,
     "placed": true
   },
   {
@@ -161,12 +127,12 @@
     "teacher_id": "112206",
     "teacher_name": "Delmonico, Marisa",
     "room": "J-222",
-    "period": "C",
+    "period": "D",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 173320,
+    "total_priority": 188285,
     "placed": true
   },
   {
@@ -178,12 +144,12 @@
     "teacher_id": "112206",
     "teacher_name": "Delmonico, Marisa",
     "room": "J-222",
-    "period": "D",
+    "period": "E",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 173980,
+    "total_priority": 188915,
     "placed": true
   },
   {
@@ -194,13 +160,13 @@
     "section_num": 1,
     "teacher_id": "105767",
     "teacher_name": "Judge, Michelle",
-    "room": "Success Center",
-    "period": "B",
+    "room": "Auditorium",
+    "period": "A",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 168400,
+    "total_priority": 184320,
     "placed": true
   },
   {
@@ -211,13 +177,13 @@
     "section_num": 1,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": "Auditorium",
-    "period": "E",
+    "room": "D-101",
+    "period": "F",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 230,
+    "total_priority": 220,
     "placed": true
   },
   {
@@ -228,13 +194,13 @@
     "section_num": 2,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": "I-114",
-    "period": "F",
+    "room": "D-102",
+    "period": "G",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 230,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -245,13 +211,13 @@
     "section_num": 3,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": "D-205",
-    "period": "G",
+    "room": null,
+    "period": null,
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 220,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -268,7 +234,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -285,7 +251,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -302,7 +268,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 158435,
+    "total_priority": 189910,
     "placed": true
   },
   {
@@ -316,10 +282,10 @@
     "room": "D-101",
     "period": "C",
     "term": "FY",
-    "enrolled": 14,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 156425,
+    "total_priority": 63660,
     "placed": true
   },
   {
@@ -331,29 +297,12 @@
     "teacher_id": "105617",
     "teacher_name": "O'Connor, Paul",
     "room": "D-101",
-    "period": "D",
+    "period": "E",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 157255,
-    "placed": true
-  },
-  {
-    "section_key": "121-3",
-    "course_code": "121",
-    "course_title": "American Literature H",
-    "department": "English",
-    "section_num": 3,
-    "teacher_id": "105617",
-    "teacher_name": "O'Connor, Paul",
-    "room": "D-101",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 16,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 121325,
+    "total_priority": 66500,
     "placed": true
   },
   {
@@ -370,7 +319,7 @@
     "enrolled": 7,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 91495,
+    "total_priority": 98440,
     "placed": true
   },
   {
@@ -384,10 +333,27 @@
     "room": "J-222",
     "period": "A",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 22,
     "cap": 25,
-    "raw_priority": 75,
-    "total_priority": 172055,
+    "raw_priority": 50,
+    "total_priority": 186385,
+    "placed": true
+  },
+  {
+    "section_key": "129-2",
+    "course_code": "129",
+    "course_title": "AP Seminar",
+    "department": "English",
+    "section_num": 2,
+    "teacher_id": "112206",
+    "teacher_name": "Delmonico, Marisa",
+    "room": "J-222",
+    "period": "B",
+    "term": "FY",
+    "enrolled": 6,
+    "cap": 25,
+    "raw_priority": 50,
+    "total_priority": 187025,
     "placed": true
   },
   {
@@ -401,10 +367,10 @@
     "room": "I-115",
     "period": "D",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 148865,
+    "total_priority": 195105,
     "placed": true
   },
   {
@@ -421,7 +387,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 149915,
+    "total_priority": 196105,
     "placed": true
   },
   {
@@ -438,24 +404,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 265,
-    "placed": true
-  },
-  {
-    "section_key": "130-4",
-    "course_code": "130",
-    "course_title": "British Literature",
-    "department": "English",
-    "section_num": 4,
-    "teacher_id": "106758",
-    "teacher_name": "Dwyer, Kevin",
-    "room": "D-102",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 25,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 140490,
+    "total_priority": 310,
     "placed": true
   },
   {
@@ -469,10 +418,10 @@
     "room": "I-116",
     "period": "C",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176910,
+    "total_priority": 194770,
     "placed": true
   },
   {
@@ -486,27 +435,10 @@
     "room": "I-116",
     "period": "D",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 20,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 177810,
-    "placed": true
-  },
-  {
-    "section_key": "131-3",
-    "course_code": "131",
-    "course_title": "British Literature H",
-    "department": "English",
-    "section_num": 3,
-    "teacher_id": "105819",
-    "teacher_name": "Fisk, Mary Pat",
-    "room": "D-110",
-    "period": "E",
-    "term": "FY",
-    "enrolled": 25,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 121275,
+    "total_priority": 195550,
     "placed": true
   },
   {
@@ -517,13 +449,13 @@
     "section_num": 1,
     "teacher_id": "105768",
     "teacher_name": "Umbrino, Philip",
-    "room": "D-102",
+    "room": "S-236",
     "period": "G",
     "term": "FY",
     "enrolled": 11,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 345,
+    "total_priority": 335,
     "placed": true
   },
   {
@@ -540,7 +472,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 175150,
+    "total_priority": 193250,
     "placed": true
   },
   {
@@ -557,7 +489,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 176050,
+    "total_priority": 194030,
     "placed": true
   },
   {
@@ -571,10 +503,10 @@
     "room": "D-104",
     "period": "B",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 154935,
+    "total_priority": 186395,
     "placed": true
   },
   {
@@ -588,10 +520,10 @@
     "room": "D-104",
     "period": "C",
     "term": "FY",
-    "enrolled": 12,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 156125,
+    "total_priority": 187585,
     "placed": true
   },
   {
@@ -608,7 +540,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 157295,
+    "total_priority": 188775,
     "placed": true
   },
   {
@@ -622,10 +554,10 @@
     "room": "I-115",
     "period": "A",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 93625,
+    "total_priority": 102465,
     "placed": true
   },
   {
@@ -639,10 +571,10 @@
     "room": "I-115",
     "period": "B",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 95095,
+    "total_priority": 103935,
     "placed": true
   },
   {
@@ -656,10 +588,10 @@
     "room": "I-115",
     "period": "C",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 24,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 96425,
+    "total_priority": 105265,
     "placed": true
   },
   {
@@ -670,13 +602,13 @@
     "section_num": 1,
     "teacher_id": "105768",
     "teacher_name": "Umbrino, Philip",
-    "room": "S-232",
+    "room": "D-104",
     "period": "F",
     "term": "S1",
-    "enrolled": 10,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 410,
+    "total_priority": 400,
     "placed": true
   },
   {
@@ -687,13 +619,13 @@
     "section_num": 1,
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
-    "room": "J-321",
-    "period": "B",
+    "room": "Auditorium",
+    "period": "C",
     "term": "S1",
-    "enrolled": 5,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 625,
+    "total_priority": 595,
     "placed": true
   },
   {
@@ -704,13 +636,13 @@
     "section_num": 2,
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
-    "room": "J-020",
+    "room": "Auditorium",
     "period": "D",
     "term": "S1",
-    "enrolled": 17,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 625,
+    "total_priority": 565,
     "placed": true
   },
   {
@@ -721,30 +653,13 @@
     "section_num": 3,
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
-    "room": "Auditorium",
+    "room": "I-012",
     "period": "A",
     "term": "S2",
-    "enrolled": 5,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 445,
-    "placed": true
-  },
-  {
-    "section_key": "144-4",
-    "course_code": "144",
-    "course_title": "Public Speaking",
-    "department": "English",
-    "section_num": 4,
-    "teacher_id": "122002",
-    "teacher_name": "Ferrante-Martin, Elena",
-    "room": "J-120",
-    "period": "E",
-    "term": "S1",
-    "enrolled": 10,
-    "cap": 25,
-    "raw_priority": 25,
-    "total_priority": 445,
+    "total_priority": 565,
     "placed": true
   },
   {
@@ -755,13 +670,13 @@
     "section_num": 1,
     "teacher_id": "105768",
     "teacher_name": "Umbrino, Philip",
-    "room": "D-105",
+    "room": "Auditorium",
     "period": "E",
     "term": "S1",
-    "enrolled": 3,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 430,
+    "total_priority": 440,
     "placed": true
   },
   {
@@ -778,7 +693,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 153790,
+    "total_priority": 185270,
     "placed": true
   },
   {
@@ -792,10 +707,10 @@
     "room": "D-101",
     "period": "A",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 32455,
+    "total_priority": 40705,
     "placed": true
   },
   {
@@ -812,7 +727,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 34125,
+    "total_priority": 42375,
     "placed": true
   },
   {
@@ -828,25 +743,8 @@
     "term": "FY",
     "enrolled": 2,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 164860,
-    "placed": true
-  },
-  {
-    "section_key": "201-2",
-    "course_code": "201",
-    "course_title": "Introduction to Guitar",
-    "department": "Humanities",
-    "section_num": 2,
-    "teacher_id": "102255",
-    "teacher_name": "Lopez, Enrique",
-    "room": "J-120",
-    "period": "A",
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 82405,
+    "raw_priority": 80,
+    "total_priority": 191210,
     "placed": true
   },
   {
@@ -863,7 +761,7 @@
     "enrolled": 11,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 173455,
+    "total_priority": 184185,
     "placed": true
   },
   {
@@ -875,12 +773,12 @@
     "teacher_id": "122122",
     "teacher_name": "Payne, Jamie",
     "room": "I-111",
-    "period": "G",
+    "period": null,
     "term": "S1",
     "enrolled": 0,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 174430,
+    "total_priority": 186185,
     "placed": true
   },
   {
@@ -892,12 +790,29 @@
     "teacher_id": "122122",
     "teacher_name": "Payne, Jamie",
     "room": "I-111",
-    "period": "D",
+    "period": "G",
     "term": "S1",
-    "enrolled": 4,
+    "enrolled": 12,
     "cap": 12,
-    "raw_priority": 50,
-    "total_priority": 171220,
+    "raw_priority": 25,
+    "total_priority": 185255,
+    "placed": true
+  },
+  {
+    "section_key": "2024-2",
+    "course_code": "2024",
+    "course_title": "TV/Film Process and Principles",
+    "department": "Communication Arts",
+    "section_num": 2,
+    "teacher_id": "122122",
+    "teacher_name": "Payne, Jamie",
+    "room": "I-111",
+    "period": null,
+    "term": "S1",
+    "enrolled": 0,
+    "cap": 12,
+    "raw_priority": 25,
+    "total_priority": 186290,
     "placed": true
   },
   {
@@ -913,8 +828,25 @@
     "term": "FY",
     "enrolled": 1,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 164895,
+    "raw_priority": 30,
+    "total_priority": 191160,
+    "placed": true
+  },
+  {
+    "section_key": "203-2",
+    "course_code": "203",
+    "course_title": "Guitar Ensemble",
+    "department": "Humanities",
+    "section_num": 2,
+    "teacher_id": "102255",
+    "teacher_name": "Lopez, Enrique",
+    "room": "J-120",
+    "period": "A",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 25,
+    "raw_priority": 30,
+    "total_priority": 191160,
     "placed": true
   },
   {
@@ -926,12 +858,12 @@
     "teacher_id": "122122",
     "teacher_name": "Payne, Jamie",
     "room": "I-111",
-    "period": "B",
+    "period": "A",
     "term": "S1",
-    "enrolled": 3,
+    "enrolled": 2,
     "cap": 12,
     "raw_priority": 50,
-    "total_priority": 169020,
+    "total_priority": 178600,
     "placed": true
   },
   {
@@ -943,12 +875,29 @@
     "teacher_id": "122122",
     "teacher_name": "Payne, Jamie",
     "room": "I-111",
-    "period": "A",
+    "period": "D",
     "term": "S1",
-    "enrolled": 4,
+    "enrolled": 6,
     "cap": 12,
-    "raw_priority": 50,
-    "total_priority": 167895,
+    "raw_priority": 25,
+    "total_priority": 182030,
+    "placed": true
+  },
+  {
+    "section_key": "2044-2",
+    "course_code": "2044",
+    "course_title": "TV/Film Production II",
+    "department": "Communication Arts",
+    "section_num": 2,
+    "teacher_id": "122122",
+    "teacher_name": "Payne, Jamie",
+    "room": "I-111",
+    "period": "E",
+    "term": "S1",
+    "enrolled": 5,
+    "cap": 12,
+    "raw_priority": 25,
+    "total_priority": 183120,
     "placed": true
   },
   {
@@ -960,12 +909,12 @@
     "teacher_id": "122122",
     "teacher_name": "Payne, Jamie",
     "room": "I-111",
-    "period": "C",
+    "period": "B",
     "term": "S1",
     "enrolled": 12,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 170125,
+    "total_priority": 179750,
     "placed": true
   },
   {
@@ -977,29 +926,12 @@
     "teacher_id": "122122",
     "teacher_name": "Payne, Jamie",
     "room": "I-111",
-    "period": "E",
+    "period": "C",
     "term": "S1",
     "enrolled": 12,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 172345,
-    "placed": true
-  },
-  {
-    "section_key": "2054-3",
-    "course_code": "2054",
-    "course_title": "Digital Media",
-    "department": "Communication Arts",
-    "section_num": 3,
-    "teacher_id": "122122",
-    "teacher_name": "Payne, Jamie",
-    "room": null,
-    "period": null,
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 12,
-    "raw_priority": 25,
-    "total_priority": 142850,
+    "total_priority": 180920,
     "placed": true
   },
   {
@@ -1011,12 +943,12 @@
     "teacher_id": "102255",
     "teacher_name": "Lopez, Enrique",
     "room": "J-120",
-    "period": "C",
+    "period": "B",
     "term": "FY",
-    "enrolled": 12,
+    "enrolled": 11,
     "cap": 40,
     "raw_priority": 25,
-    "total_priority": 167050,
+    "total_priority": 192275,
     "placed": true
   },
   {
@@ -1030,10 +962,10 @@
     "room": "J-120",
     "period": "D",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 3,
     "cap": 40,
     "raw_priority": 25,
-    "total_priority": 168010,
+    "total_priority": 194355,
     "placed": true
   },
   {
@@ -1045,12 +977,29 @@
     "teacher_id": "102255",
     "teacher_name": "Lopez, Enrique",
     "room": "J-120",
-    "period": "B",
+    "period": "C",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 3,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 165995,
+    "total_priority": 193345,
+    "placed": true
+  },
+  {
+    "section_key": "225-1",
+    "course_code": "225",
+    "course_title": "225",
+    "department": "Theater",
+    "section_num": 1,
+    "teacher_id": "112011",
+    "teacher_name": "Austria, Joseph",
+    "room": "AUD",
+    "period": "A",
+    "term": "S1",
+    "enrolled": 1,
+    "cap": 25,
+    "raw_priority": 50,
+    "total_priority": 450,
     "placed": true
   },
   {
@@ -1062,12 +1011,12 @@
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
     "room": "Auditorium",
-    "period": "C",
+    "period": "B",
     "term": "FY",
     "enrolled": 0,
     "cap": 20,
-    "raw_priority": 65,
-    "total_priority": 495,
+    "raw_priority": 80,
+    "total_priority": 500,
     "placed": true
   },
   {
@@ -1079,12 +1028,12 @@
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
     "room": "Auditorium",
-    "period": "C",
+    "period": "B",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 0,
     "cap": 20,
-    "raw_priority": 65,
-    "total_priority": 605,
+    "raw_priority": 80,
+    "total_priority": 625,
     "placed": true
   },
   {
@@ -1098,10 +1047,10 @@
     "room": "J-322",
     "period": "C",
     "term": "S1",
-    "enrolled": 19,
+    "enrolled": 17,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 135735,
+    "total_priority": 157440,
     "placed": true
   },
   {
@@ -1113,46 +1062,12 @@
     "teacher_id": "105810",
     "teacher_name": "Dennehy, Sheri",
     "room": "J-322",
-    "period": "E",
+    "period": "D",
     "term": "S1",
-    "enrolled": 7,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 138240,
-    "placed": true
-  },
-  {
-    "section_key": "241-3",
-    "course_code": "241",
-    "course_title": "Studio Art I",
-    "department": "Humanities",
-    "section_num": 3,
-    "teacher_id": "105810",
-    "teacher_name": "Dennehy, Sheri",
-    "room": "D-203",
-    "period": "F",
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 25,
-    "total_priority": 154765,
-    "placed": true
-  },
-  {
-    "section_key": "241-4",
-    "course_code": "241",
-    "course_title": "Studio Art I",
-    "department": "Humanities",
-    "section_num": 4,
-    "teacher_id": "105810",
-    "teacher_name": "Dennehy, Sheri",
-    "room": "S-233",
-    "period": "G",
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 25,
-    "total_priority": 155390,
+    "total_priority": 158695,
     "placed": true
   },
   {
@@ -1168,8 +1083,8 @@
     "term": "FY",
     "enrolled": 5,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 134485,
+    "raw_priority": 55,
+    "total_priority": 156235,
     "placed": true
   },
   {
@@ -1185,8 +1100,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 134485,
+    "raw_priority": 55,
+    "total_priority": 156235,
     "placed": true
   },
   {
@@ -1202,8 +1117,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 134485,
+    "raw_priority": 55,
+    "total_priority": 156220,
     "placed": true
   },
   {
@@ -1219,8 +1134,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 134485,
+    "raw_priority": 55,
+    "total_priority": 156220,
     "placed": true
   },
   {
@@ -1232,12 +1147,29 @@
     "teacher_id": "105810",
     "teacher_name": "Dennehy, Sheri",
     "room": "J-322",
-    "period": "D",
+    "period": "E",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 3,
     "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 136995,
+    "raw_priority": 25,
+    "total_priority": 159905,
+    "placed": true
+  },
+  {
+    "section_key": "249-2",
+    "course_code": "249",
+    "course_title": "Adv Painting",
+    "department": "Humanities",
+    "section_num": 2,
+    "teacher_id": "105810",
+    "teacher_name": "Dennehy, Sheri",
+    "room": "J-322",
+    "period": "F",
+    "term": "S1",
+    "enrolled": 1,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 161140,
     "placed": true
   },
   {
@@ -1253,8 +1185,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 70,
-    "total_priority": 133215,
+    "raw_priority": 85,
+    "total_priority": 154980,
     "placed": true
   },
   {
@@ -1270,8 +1202,8 @@
     "term": "FY",
     "enrolled": 1,
     "cap": 25,
-    "raw_priority": 70,
-    "total_priority": 133245,
+    "raw_priority": 85,
+    "total_priority": 154990,
     "placed": true
   },
   {
@@ -1287,8 +1219,8 @@
     "term": "FY",
     "enrolled": 1,
     "cap": 25,
-    "raw_priority": 70,
-    "total_priority": 133240,
+    "raw_priority": 85,
+    "total_priority": 154995,
     "placed": true
   },
   {
@@ -1305,7 +1237,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 177335,
+    "total_priority": 187785,
     "placed": true
   },
   {
@@ -1322,7 +1254,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 178045,
+    "total_priority": 188415,
     "placed": true
   },
   {
@@ -1336,10 +1268,10 @@
     "room": "S-235",
     "period": "C",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 17,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 178755,
+    "total_priority": 189045,
     "placed": true
   },
   {
@@ -1353,10 +1285,10 @@
     "room": "S-235",
     "period": "D",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 179325,
+    "total_priority": 189675,
     "placed": true
   },
   {
@@ -1370,10 +1302,10 @@
     "room": "S-235",
     "period": "E",
     "term": "FY",
-    "enrolled": 13,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 179895,
+    "total_priority": 190285,
     "placed": true
   },
   {
@@ -1390,7 +1322,7 @@
     "enrolled": 22,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 174915,
+    "total_priority": 183455,
     "placed": true
   },
   {
@@ -1407,7 +1339,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 25990,
+    "total_priority": 32690,
     "placed": true
   },
   {
@@ -1424,7 +1356,7 @@
     "enrolled": 15,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 27675,
+    "total_priority": 34375,
     "placed": true
   },
   {
@@ -1436,12 +1368,12 @@
     "teacher_id": "105729",
     "teacher_name": "Zawiski, Brian",
     "room": "S-236",
-    "period": "B",
+    "period": "C",
     "term": "FY",
     "enrolled": 23,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 22620,
+    "total_priority": 31020,
     "placed": true
   },
   {
@@ -1458,7 +1390,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 104535,
+    "total_priority": 91395,
     "placed": true
   },
   {
@@ -1475,7 +1407,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 105960,
+    "total_priority": 92805,
     "placed": true
   },
   {
@@ -1492,7 +1424,24 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175520,
+    "total_priority": 184065,
+    "placed": true
+  },
+  {
+    "section_key": "320-4",
+    "course_code": "320",
+    "course_title": "Spanish II",
+    "department": "World Language",
+    "section_num": 4,
+    "teacher_id": "105785",
+    "teacher_name": "Carr, Lynette",
+    "room": "S-231",
+    "period": "E",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 25,
+    "raw_priority": 20,
+    "total_priority": 185935,
     "placed": true
   },
   {
@@ -1506,10 +1455,10 @@
     "room": "S-231",
     "period": "C",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 3,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176140,
+    "total_priority": 184695,
     "placed": true
   },
   {
@@ -1523,27 +1472,10 @@
     "room": "S-231",
     "period": "D",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176760,
-    "placed": true
-  },
-  {
-    "section_key": "321-3",
-    "course_code": "321",
-    "course_title": "Spanish II H",
-    "department": "World Language",
-    "section_num": 3,
-    "teacher_id": "105785",
-    "teacher_name": "Carr, Lynette",
-    "room": "D-205",
-    "period": "E",
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 99850,
+    "total_priority": 185325,
     "placed": true
   },
   {
@@ -1557,10 +1489,27 @@
     "room": "S-237",
     "period": "E",
     "term": "FY",
-    "enrolled": 13,
+    "enrolled": 20,
     "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 167120,
+    "raw_priority": 20,
+    "total_priority": 194135,
+    "placed": true
+  },
+  {
+    "section_key": "322-2",
+    "course_code": "322",
+    "course_title": "Italian II",
+    "department": "World Language",
+    "section_num": 2,
+    "teacher_id": "106762",
+    "teacher_name": "Muscat, Nicole",
+    "room": "S-237",
+    "period": "F",
+    "term": "FY",
+    "enrolled": 16,
+    "cap": 25,
+    "raw_priority": 20,
+    "total_priority": 195315,
     "placed": true
   },
   {
@@ -1574,10 +1523,10 @@
     "room": "S-237",
     "period": "D",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 165935,
+    "total_priority": 192970,
     "placed": true
   },
   {
@@ -1589,29 +1538,12 @@
     "teacher_id": "105729",
     "teacher_name": "Zawiski, Brian",
     "room": "S-236",
-    "period": "C",
+    "period": "B",
     "term": "FY",
-    "enrolled": 23,
+    "enrolled": 25,
     "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 24315,
-    "placed": true
-  },
-  {
-    "section_key": "327-2",
-    "course_code": "327",
-    "course_title": "Latin II H",
-    "department": "World Language",
-    "section_num": 2,
-    "teacher_id": "105729",
-    "teacher_name": "Zawiski, Brian",
-    "room": "Success Center",
-    "period": "G",
-    "term": "FY",
-    "enrolled": 2,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 179840,
+    "raw_priority": 45,
+    "total_priority": 29335,
     "placed": true
   },
   {
@@ -1628,7 +1560,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 103150,
+    "total_priority": 89990,
     "placed": true
   },
   {
@@ -1642,10 +1574,10 @@
     "room": "S-232",
     "period": "D",
     "term": "FY",
-    "enrolled": 8,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 164895,
+    "total_priority": 192945,
     "placed": true
   },
   {
@@ -1659,10 +1591,10 @@
     "room": "S-232",
     "period": "E",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 11,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 165780,
+    "total_priority": 193755,
     "placed": true
   },
   {
@@ -1676,10 +1608,10 @@
     "room": "S-232",
     "period": "A",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 162125,
+    "total_priority": 190555,
     "placed": true
   },
   {
@@ -1693,10 +1625,10 @@
     "room": "S-232",
     "period": "B",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 163055,
+    "total_priority": 191365,
     "placed": true
   },
   {
@@ -1710,10 +1642,10 @@
     "room": "S-232",
     "period": "C",
     "term": "FY",
-    "enrolled": 8,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 163985,
+    "total_priority": 192175,
     "placed": true
   },
   {
@@ -1727,10 +1659,10 @@
     "room": "S-237",
     "period": "C",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 164755,
+    "total_priority": 191785,
     "placed": true
   },
   {
@@ -1744,10 +1676,10 @@
     "room": "S-237",
     "period": "A",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 3,
     "cap": 25,
-    "raw_priority": 60,
-    "total_priority": 162400,
+    "raw_priority": 75,
+    "total_priority": 189420,
     "placed": true
   },
   {
@@ -1763,25 +1695,8 @@
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 20930,
-    "placed": true
-  },
-  {
-    "section_key": "339-2",
-    "course_code": "339",
-    "course_title": "Latin III H",
-    "department": "World Language",
-    "section_num": 2,
-    "teacher_id": "105729",
-    "teacher_name": "Zawiski, Brian",
-    "room": "Success Center",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 6,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 179095,
+    "raw_priority": 45,
+    "total_priority": 27670,
     "placed": true
   },
   {
@@ -1795,10 +1710,10 @@
     "room": "I-118",
     "period": "A",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 97565,
+    "total_priority": 84385,
     "placed": true
   },
   {
@@ -1812,10 +1727,10 @@
     "room": "I-118",
     "period": "B",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 98995,
+    "total_priority": 85835,
     "placed": true
   },
   {
@@ -1831,25 +1746,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 163645,
-    "placed": true
-  },
-  {
-    "section_key": "352-2",
-    "course_code": "352",
-    "course_title": "AP Italian",
-    "department": "World Language",
-    "section_num": 2,
-    "teacher_id": "106762",
-    "teacher_name": "Muscat, Nicole",
-    "room": "D-110",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 6,
-    "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 146095,
+    "raw_priority": 75,
+    "total_priority": 190685,
     "placed": true
   },
   {
@@ -1865,8 +1763,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 90,
-    "total_priority": 210140,
+    "raw_priority": 105,
+    "total_priority": 246995,
     "placed": true
   },
   {
@@ -1877,13 +1775,13 @@
     "section_num": 1,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": "S-238",
-    "period": "E",
+    "room": null,
+    "period": null,
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 200,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -1894,13 +1792,13 @@
     "section_num": 2,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": "D-103",
-    "period": "F",
+    "room": null,
+    "period": null,
     "term": "FY",
-    "enrolled": 20,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 200,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -1911,13 +1809,13 @@
     "section_num": 3,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": "I-119",
-    "period": "G",
+    "room": null,
+    "period": null,
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 200,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -1929,12 +1827,12 @@
     "teacher_id": "106623",
     "teacher_name": "Willi, Mary",
     "room": "D-110",
-    "period": "A",
+    "period": "B",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172300,
+    "total_priority": 185825,
     "placed": true
   },
   {
@@ -1946,12 +1844,29 @@
     "teacher_id": "106623",
     "teacher_name": "Willi, Mary",
     "room": "D-110",
-    "period": "B",
+    "period": "C",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172940,
+    "total_priority": 186475,
+    "placed": true
+  },
+  {
+    "section_key": "410-6",
+    "course_code": "410",
+    "course_title": "Algebra I",
+    "department": "Mathematics",
+    "section_num": 6,
+    "teacher_id": "106623",
+    "teacher_name": "Willi, Mary",
+    "room": "D-110",
+    "period": "D",
+    "term": "FY",
+    "enrolled": 20,
+    "cap": 25,
+    "raw_priority": 20,
+    "total_priority": 187125,
     "placed": true
   },
   {
@@ -1963,29 +1878,12 @@
     "teacher_id": "106623",
     "teacher_name": "Willi, Mary",
     "room": "D-110",
-    "period": "C",
+    "period": "A",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 13,
     "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 173580,
-    "placed": true
-  },
-  {
-    "section_key": "411-2",
-    "course_code": "411",
-    "course_title": "Algebra I H",
-    "department": "Mathematics",
-    "section_num": 2,
-    "teacher_id": "106623",
-    "teacher_name": "Willi, Mary",
-    "room": "D-202",
-    "period": "E",
-    "term": "FY",
-    "enrolled": 6,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 100585,
+    "raw_priority": 45,
+    "total_priority": 185185,
     "placed": true
   },
   {
@@ -1996,7 +1894,7 @@
     "section_num": 1,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": "I-116",
+    "room": "D-104",
     "period": "G",
     "term": "FY",
     "enrolled": 21,
@@ -2019,7 +1917,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175,
+    "total_priority": 170,
     "placed": true
   },
   {
@@ -2036,7 +1934,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175,
+    "total_priority": 170,
     "placed": true
   },
   {
@@ -2047,13 +1945,13 @@
     "section_num": 1,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": "J-321",
-    "period": "E",
+    "room": "D-109",
+    "period": "F",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 230,
+    "total_priority": 240,
     "placed": true
   },
   {
@@ -2064,13 +1962,13 @@
     "section_num": 2,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": "J-120",
-    "period": "F",
+    "room": null,
+    "period": null,
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 230,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -2081,13 +1979,13 @@
     "section_num": 3,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": null,
-    "period": null,
+    "room": "D-205",
+    "period": "F",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -2098,13 +1996,13 @@
     "section_num": 4,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": null,
-    "period": null,
+    "room": "D-109",
+    "period": "G",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 22,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -2116,12 +2014,12 @@
     "teacher_id": "106623",
     "teacher_name": "Willi, Mary",
     "room": "D-110",
-    "period": "D",
+    "period": "E",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 174210,
+    "total_priority": 187775,
     "placed": true
   },
   {
@@ -2135,10 +2033,10 @@
     "room": "D-106",
     "period": "C",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175170,
+    "total_priority": 195875,
     "placed": true
   },
   {
@@ -2152,10 +2050,10 @@
     "room": "D-106",
     "period": "D",
     "term": "FY",
-    "enrolled": 9,
+    "enrolled": 17,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176080,
+    "total_priority": 196665,
     "placed": true
   },
   {
@@ -2169,27 +2067,10 @@
     "room": "D-106",
     "period": "E",
     "term": "FY",
-    "enrolled": 14,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176990,
-    "placed": true
-  },
-  {
-    "section_key": "421-4",
-    "course_code": "421",
-    "course_title": "Geometry H",
-    "department": "Mathematics",
-    "section_num": 4,
-    "teacher_id": "105826",
-    "teacher_name": "Ahn, Keun",
-    "room": "D-109",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 23,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 123025,
+    "total_priority": 197455,
     "placed": true
   },
   {
@@ -2203,10 +2084,10 @@
     "room": "D-107",
     "period": "D",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 125275,
+    "total_priority": 148000,
     "placed": true
   },
   {
@@ -2220,10 +2101,10 @@
     "room": "D-107",
     "period": "E",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 12,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 126640,
+    "total_priority": 149390,
     "placed": true
   },
   {
@@ -2237,10 +2118,10 @@
     "room": "D-106",
     "period": "B",
     "term": "FY",
-    "enrolled": 14,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 174280,
+    "total_priority": 195100,
     "placed": true
   },
   {
@@ -2257,7 +2138,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 123925,
+    "total_priority": 146665,
     "placed": true
   },
   {
@@ -2271,10 +2152,10 @@
     "room": "D-108",
     "period": "C",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 21,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 129880,
+    "total_priority": 152725,
     "placed": true
   },
   {
@@ -2288,10 +2169,10 @@
     "room": "D-108",
     "period": "D",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 22,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 131070,
+    "total_priority": 153915,
     "placed": true
   },
   {
@@ -2305,10 +2186,10 @@
     "room": "D-108",
     "period": "E",
     "term": "FY",
-    "enrolled": 8,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 132225,
+    "total_priority": 155075,
     "placed": true
   },
   {
@@ -2325,7 +2206,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 37070,
+    "total_priority": 45320,
     "placed": true
   },
   {
@@ -2342,7 +2223,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 38580,
+    "total_priority": 49920,
     "placed": true
   },
   {
@@ -2356,10 +2237,10 @@
     "room": "D-109",
     "period": "E",
     "term": "FY",
-    "enrolled": 12,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 41655,
+    "total_priority": 51465,
     "placed": true
   },
   {
@@ -2373,10 +2254,10 @@
     "room": "D-103",
     "period": "D",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 3,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 114700,
+    "total_priority": 192885,
     "placed": true
   },
   {
@@ -2393,7 +2274,7 @@
     "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 115910,
+    "total_priority": 193655,
     "placed": true
   },
   {
@@ -2405,12 +2286,12 @@
     "teacher_id": "105788",
     "teacher_name": "Gettler, Mary",
     "room": "D-105",
-    "period": "D",
+    "period": "E",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 120315,
+    "total_priority": 168795,
     "placed": true
   },
   {
@@ -2424,10 +2305,10 @@
     "room": "D-103",
     "period": "A",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 21,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 100335,
+    "total_priority": 122955,
     "placed": true
   },
   {
@@ -2441,10 +2322,10 @@
     "room": "D-103",
     "period": "B",
     "term": "FY",
-    "enrolled": 24,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 101725,
+    "total_priority": 124345,
     "placed": true
   },
   {
@@ -2461,7 +2342,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 107285,
+    "total_priority": 125735,
     "placed": true
   },
   {
@@ -2475,10 +2356,27 @@
     "room": "D-105",
     "period": "C",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 119140,
+    "total_priority": 133335,
+    "placed": true
+  },
+  {
+    "section_key": "440-5",
+    "course_code": "440",
+    "course_title": "Precalculus",
+    "department": "Mathematics",
+    "section_num": 5,
+    "teacher_id": "105788",
+    "teacher_name": "Gettler, Mary",
+    "room": "D-105",
+    "period": "D",
+    "term": "FY",
+    "enrolled": 24,
+    "cap": 25,
+    "raw_priority": 20,
+    "total_priority": 134585,
     "placed": true
   },
   {
@@ -2492,10 +2390,10 @@
     "room": "D-108",
     "period": "A",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 127405,
+    "total_priority": 150245,
     "placed": true
   },
   {
@@ -2509,10 +2407,10 @@
     "room": "D-108",
     "period": "B",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 17,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 128795,
+    "total_priority": 151635,
     "placed": true
   },
   {
@@ -2529,7 +2427,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 173430,
+    "total_priority": 194350,
     "placed": true
   },
   {
@@ -2543,10 +2441,10 @@
     "room": "D-105",
     "period": "A",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 116640,
+    "total_priority": 130815,
     "placed": true
   },
   {
@@ -2560,10 +2458,10 @@
     "room": "D-105",
     "period": "B",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 117900,
+    "total_priority": 132085,
     "placed": true
   },
   {
@@ -2577,10 +2475,10 @@
     "room": "D-107",
     "period": "A",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 121245,
+    "total_priority": 143985,
     "placed": true
   },
   {
@@ -2594,10 +2492,10 @@
     "room": "D-107",
     "period": "B",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 3,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 122635,
+    "total_priority": 145375,
     "placed": true
   },
   {
@@ -2611,10 +2509,10 @@
     "room": "D-109",
     "period": "B",
     "term": "FY",
-    "enrolled": 14,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 35680,
+    "total_priority": 43925,
     "placed": true
   },
   {
@@ -2631,7 +2529,7 @@
     "enrolled": 9,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 30810,
+    "total_priority": 37390,
     "placed": true
   },
   {
@@ -2642,81 +2540,13 @@
     "section_num": 1,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "J-020",
-    "period": "C",
-    "term": "FY",
-    "enrolled": 13,
-    "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 690,
-    "placed": true
-  },
-  {
-    "section_key": "456-2",
-    "course_code": "456",
-    "course_title": "AP Statistics",
-    "department": "Mathematics",
-    "section_num": 2,
-    "teacher_id": "105625",
-    "teacher_name": "Konopelski, Louis",
-    "room": "Auditorium",
-    "period": "D",
-    "term": "FY",
-    "enrolled": 3,
-    "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 600,
-    "placed": true
-  },
-  {
-    "section_key": "456-3",
-    "course_code": "456",
-    "course_title": "AP Statistics",
-    "department": "Mathematics",
-    "section_num": 3,
-    "teacher_id": "105625",
-    "teacher_name": "Konopelski, Louis",
-    "room": "J-020",
-    "period": "E",
+    "room": "J-321",
+    "period": "A",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 340,
-    "placed": true
-  },
-  {
-    "section_key": "456-4",
-    "course_code": "456",
-    "course_title": "AP Statistics",
-    "department": "Mathematics",
-    "section_num": 4,
-    "teacher_id": "105625",
-    "teacher_name": "Konopelski, Louis",
-    "room": "D-106",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 340,
-    "placed": true
-  },
-  {
-    "section_key": "456-5",
-    "course_code": "456",
-    "course_title": "AP Statistics",
-    "department": "Mathematics",
-    "section_num": 5,
-    "teacher_id": "105625",
-    "teacher_name": "Konopelski, Louis",
-    "room": "D-109",
-    "period": "G",
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 340,
+    "raw_priority": 75,
+    "total_priority": 775,
     "placed": true
   },
   {
@@ -2730,10 +2560,10 @@
     "room": "J-223",
     "period": "D",
     "term": "S1",
-    "enrolled": 13,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 80665,
+    "total_priority": 81255,
     "placed": true
   },
   {
@@ -2747,10 +2577,10 @@
     "room": "J-223",
     "period": "F",
     "term": "S1",
-    "enrolled": 4,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 83515,
+    "total_priority": 84070,
     "placed": true
   },
   {
@@ -2766,8 +2596,8 @@
     "term": "FY",
     "enrolled": 20,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 76280,
+    "raw_priority": 55,
+    "total_priority": 76895,
     "placed": true
   },
   {
@@ -2783,8 +2613,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 40,
-    "total_priority": 76280,
+    "raw_priority": 55,
+    "total_priority": 76895,
     "placed": true
   },
   {
@@ -2800,25 +2630,8 @@
     "term": "FY",
     "enrolled": 6,
     "cap": 25,
-    "raw_priority": 30,
-    "total_priority": 82130,
-    "placed": true
-  },
-  {
-    "section_key": "490-2",
-    "course_code": "490",
-    "course_title": "AP Computer Science A",
-    "department": "Computer Science",
-    "section_num": 2,
-    "teacher_id": "106753",
-    "teacher_name": "Calidas, Riddhi",
-    "room": "D-203",
-    "period": "G",
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 30,
-    "total_priority": 166110,
+    "raw_priority": 55,
+    "total_priority": 82730,
     "placed": true
   },
   {
@@ -2835,7 +2648,7 @@
     "enrolled": 5,
     "cap": 25,
     "raw_priority": 55,
-    "total_priority": 79200,
+    "total_priority": 79790,
     "placed": true
   },
   {
@@ -2849,10 +2662,10 @@
     "room": "J-223",
     "period": "A",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 4,
     "cap": 25,
-    "raw_priority": 65,
-    "total_priority": 76230,
+    "raw_priority": 80,
+    "total_priority": 76865,
     "placed": true
   },
   {
@@ -2869,7 +2682,7 @@
     "enrolled": 4,
     "cap": 25,
     "raw_priority": 55,
-    "total_priority": 77745,
+    "total_priority": 78335,
     "placed": true
   },
   {
@@ -2883,10 +2696,10 @@
     "room": "D-202",
     "period": "A",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 174560,
+    "total_priority": 191045,
     "placed": true
   },
   {
@@ -2898,12 +2711,12 @@
     "teacher_id": "105829",
     "teacher_name": "Janeczko, Douglas",
     "room": "D-202",
-    "period": "B",
+    "period": "C",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175260,
+    "total_priority": 192205,
     "placed": true
   },
   {
@@ -2920,7 +2733,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 148095,
+    "total_priority": 163890,
     "placed": true
   },
   {
@@ -2937,7 +2750,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 149280,
+    "total_priority": 165070,
     "placed": true
   },
   {
@@ -2949,12 +2762,12 @@
     "teacher_id": "105829",
     "teacher_name": "Janeczko, Douglas",
     "room": "D-202",
-    "period": "C",
+    "period": "B",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175945,
+    "total_priority": 191635,
     "placed": true
   },
   {
@@ -2968,10 +2781,27 @@
     "room": "D-202",
     "period": "D",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176645,
+    "total_priority": 192775,
+    "placed": true
+  },
+  {
+    "section_key": "510-5",
+    "course_code": "510",
+    "course_title": "Biology",
+    "department": "Science",
+    "section_num": 5,
+    "teacher_id": "105829",
+    "teacher_name": "Janeczko, Douglas",
+    "room": "D-202",
+    "period": "E",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 25,
+    "raw_priority": 20,
+    "total_priority": 193345,
     "placed": true
   },
   {
@@ -2988,7 +2818,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 135285,
+    "total_priority": 167200,
     "placed": true
   },
   {
@@ -3005,7 +2835,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 136575,
+    "total_priority": 168500,
     "placed": true
   },
   {
@@ -3019,10 +2849,10 @@
     "room": "D-201",
     "period": "D",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 137885,
+    "total_priority": 169810,
     "placed": true
   },
   {
@@ -3036,10 +2866,10 @@
     "room": "D-201",
     "period": "E",
     "term": "FY",
-    "enrolled": 14,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 139195,
+    "total_priority": 171120,
     "placed": true
   },
   {
@@ -3056,7 +2886,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 169095,
+    "total_priority": 183925,
     "placed": true
   },
   {
@@ -3070,10 +2900,10 @@
     "room": "D-203",
     "period": "B",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 20,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 169845,
+    "total_priority": 184555,
     "placed": true
   },
   {
@@ -3087,10 +2917,10 @@
     "room": "D-203",
     "period": "C",
     "term": "FY",
-    "enrolled": 13,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170595,
+    "total_priority": 185185,
     "placed": true
   },
   {
@@ -3104,10 +2934,10 @@
     "room": "D-203",
     "period": "D",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 171345,
+    "total_priority": 185815,
     "placed": true
   },
   {
@@ -3121,10 +2951,10 @@
     "room": "D-203",
     "period": "E",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172095,
+    "total_priority": 186445,
     "placed": true
   },
   {
@@ -3141,7 +2971,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 173445,
+    "total_priority": 187235,
     "placed": true
   },
   {
@@ -3158,7 +2988,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 174235,
+    "total_priority": 187905,
     "placed": true
   },
   {
@@ -3172,10 +3002,10 @@
     "room": "D-204",
     "period": "C",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175025,
+    "total_priority": 188575,
     "placed": true
   },
   {
@@ -3189,27 +3019,10 @@
     "room": "D-204",
     "period": "D",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 175815,
-    "placed": true
-  },
-  {
-    "section_key": "521-5",
-    "course_code": "521",
-    "course_title": "Chemistry H",
-    "department": "Science",
-    "section_num": 5,
-    "teacher_id": "112092",
-    "teacher_name": "McManus, Brianna",
-    "room": "D-202",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 25,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 115950,
+    "total_priority": 189245,
     "placed": true
   },
   {
@@ -3223,10 +3036,10 @@
     "room": "D-205",
     "period": "A",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 167360,
+    "total_priority": 188960,
     "placed": true
   },
   {
@@ -3240,10 +3053,10 @@
     "room": "D-205",
     "period": "B",
     "term": "FY",
-    "enrolled": 23,
+    "enrolled": 20,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 168120,
+    "total_priority": 189720,
     "placed": true
   },
   {
@@ -3257,10 +3070,10 @@
     "room": "D-205",
     "period": "C",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 168880,
+    "total_priority": 190480,
     "placed": true
   },
   {
@@ -3274,10 +3087,10 @@
     "room": "D-205",
     "period": "D",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 169640,
+    "total_priority": 191240,
     "placed": true
   },
   {
@@ -3291,10 +3104,10 @@
     "room": "D-204",
     "period": "E",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176600,
+    "total_priority": 189910,
     "placed": true
   },
   {
@@ -3311,7 +3124,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 49170,
+    "total_priority": 46865,
     "placed": true
   },
   {
@@ -3328,7 +3141,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 50690,
+    "total_priority": 48385,
     "placed": true
   },
   {
@@ -3340,9 +3153,9 @@
     "teacher_id": "107126",
     "teacher_name": "Guy, Libbie",
     "room": "J-321",
-    "period": "D",
+    "period": "C",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 515,
@@ -3356,13 +3169,30 @@
     "section_num": 1,
     "teacher_id": "107126",
     "teacher_name": "Guy, Libbie",
-    "room": "J-321",
-    "period": "C",
+    "room": "J-120",
+    "period": "E",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 21,
     "cap": 25,
-    "raw_priority": 25,
-    "total_priority": 575,
+    "raw_priority": 0,
+    "total_priority": 465,
+    "placed": true
+  },
+  {
+    "section_key": "543-2",
+    "course_code": "543",
+    "course_title": "Anatomy/Physiology H",
+    "department": "Science",
+    "section_num": 2,
+    "teacher_id": "107126",
+    "teacher_name": "Guy, Libbie",
+    "room": "S-236",
+    "period": "F",
+    "term": "FY",
+    "enrolled": 15,
+    "cap": 25,
+    "raw_priority": 0,
+    "total_priority": 445,
     "placed": true
   },
   {
@@ -3378,25 +3208,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 0,
-    "total_priority": 138645,
-    "placed": true
-  },
-  {
-    "section_key": "544-2",
-    "course_code": "544",
-    "course_title": "Sports Medicine",
-    "department": "Science",
-    "section_num": 2,
-    "teacher_id": "112009",
-    "teacher_name": "Connelly, Tiffany",
-    "room": "D-104",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 21,
-    "cap": 25,
-    "raw_priority": 0,
-    "total_priority": 149040,
+    "raw_priority": 25,
+    "total_priority": 160425,
     "placed": true
   },
   {
@@ -3413,7 +3226,7 @@
     "enrolled": 3,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 145785,
+    "total_priority": 161595,
     "placed": true
   },
   {
@@ -3427,10 +3240,10 @@
     "room": "D-206",
     "period": "C",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 19,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 146975,
+    "total_priority": 162785,
     "placed": true
   },
   {
@@ -3441,13 +3254,13 @@
     "section_num": 1,
     "teacher_id": "105623",
     "teacher_name": "Stoller, Timothy",
-    "room": "S-231",
+    "room": "J-321",
     "period": "E",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 325,
+    "total_priority": 295,
     "placed": true
   },
   {
@@ -3464,7 +3277,7 @@
     "enrolled": 6,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 134150,
+    "total_priority": 166090,
     "placed": true
   },
   {
@@ -3480,8 +3293,25 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
-    "raw_priority": 75,
-    "total_priority": 52085,
+    "raw_priority": 50,
+    "total_priority": 52875,
+    "placed": true
+  },
+  {
+    "section_key": "556-2",
+    "course_code": "556",
+    "course_title": "AP Physics",
+    "department": "Science",
+    "section_num": 2,
+    "teacher_id": "105746",
+    "teacher_name": "Tranate, John",
+    "room": "D-210",
+    "period": "E",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 25,
+    "raw_priority": 50,
+    "total_priority": 54425,
     "placed": true
   },
   {
@@ -3495,10 +3325,10 @@
     "room": "D-210",
     "period": "A",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 40115,
+    "total_priority": 39060,
     "placed": true
   },
   {
@@ -3510,12 +3340,12 @@
     "teacher_id": "117304",
     "teacher_name": "McConnell, George",
     "room": "S-338",
-    "period": "D",
+    "period": "E",
     "term": "S1",
-    "enrolled": 16,
+    "enrolled": 14,
     "cap": 20,
     "raw_priority": 25,
-    "total_priority": 46150,
+    "total_priority": 60385,
     "placed": true
   },
   {
@@ -3527,12 +3357,12 @@
     "teacher_id": "117304",
     "teacher_name": "McConnell, George",
     "room": "S-338",
-    "period": "F",
+    "period": null,
     "term": "S1",
     "enrolled": 0,
     "cap": 20,
     "raw_priority": 25,
-    "total_priority": 53610,
+    "total_priority": 64900,
     "placed": true
   },
   {
@@ -3549,7 +3379,7 @@
     "enrolled": 20,
     "cap": 20,
     "raw_priority": 25,
-    "total_priority": 44635,
+    "total_priority": 57360,
     "placed": true
   },
   {
@@ -3561,12 +3391,46 @@
     "teacher_id": "117304",
     "teacher_name": "McConnell, George",
     "room": "S-338",
-    "period": "E",
+    "period": "F",
     "term": "S1",
     "enrolled": 20,
     "cap": 20,
     "raw_priority": 25,
-    "total_priority": 47665,
+    "total_priority": 61890,
+    "placed": true
+  },
+  {
+    "section_key": "580-3",
+    "course_code": "580",
+    "course_title": "Robotics Engineering",
+    "department": "Engineering",
+    "section_num": 3,
+    "teacher_id": "117304",
+    "teacher_name": "McConnell, George",
+    "room": "S-338",
+    "period": "G",
+    "term": "S1",
+    "enrolled": 4,
+    "cap": 20,
+    "raw_priority": 25,
+    "total_priority": 63390,
+    "placed": true
+  },
+  {
+    "section_key": "580-4",
+    "course_code": "580",
+    "course_title": "Robotics Engineering",
+    "department": "Engineering",
+    "section_num": 4,
+    "teacher_id": "117304",
+    "teacher_name": "McConnell, George",
+    "room": "S-338",
+    "period": null,
+    "term": "S1",
+    "enrolled": 0,
+    "cap": 20,
+    "raw_priority": 25,
+    "total_priority": 64755,
     "placed": true
   },
   {
@@ -3580,10 +3444,10 @@
     "room": "S-338",
     "period": "B",
     "term": "S1",
-    "enrolled": 17,
+    "enrolled": 15,
     "cap": 20,
     "raw_priority": 25,
-    "total_priority": 43130,
+    "total_priority": 55865,
     "placed": true
   },
   {
@@ -3595,12 +3459,12 @@
     "teacher_id": "117304",
     "teacher_name": "McConnell, George",
     "room": "S-338",
-    "period": "G",
+    "period": "D",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 2,
     "cap": 20,
     "raw_priority": 25,
-    "total_priority": 55140,
+    "total_priority": 58875,
     "placed": true
   },
   {
@@ -3616,8 +3480,8 @@
     "term": "FY",
     "enrolled": 20,
     "cap": 20,
-    "raw_priority": 40,
-    "total_priority": 29065,
+    "raw_priority": 55,
+    "total_priority": 35695,
     "placed": true
   },
   {
@@ -3633,8 +3497,8 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 20,
-    "raw_priority": 40,
-    "total_priority": 29065,
+    "raw_priority": 55,
+    "total_priority": 35695,
     "placed": true
   },
   {
@@ -3650,8 +3514,25 @@
     "term": "FY",
     "enrolled": 0,
     "cap": 20,
-    "raw_priority": 65,
-    "total_priority": 29090,
+    "raw_priority": 55,
+    "total_priority": 35695,
+    "placed": true
+  },
+  {
+    "section_key": "591-2",
+    "course_code": "591",
+    "course_title": "Robotics Project II",
+    "department": "Engineering",
+    "section_num": 2,
+    "teacher_id": "117304",
+    "teacher_name": "McConnell, George",
+    "room": "S-338",
+    "period": "A",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 20,
+    "raw_priority": 55,
+    "total_priority": 35695,
     "placed": true
   },
   {
@@ -3663,12 +3544,29 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "G",
+    "period": "E",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 67690,
+    "total_priority": 138125,
+    "placed": true
+  },
+  {
+    "section_key": "610-10",
+    "course_code": "610",
+    "course_title": "Health/PE",
+    "department": "Physical Education",
+    "section_num": 10,
+    "teacher_id": "117479",
+    "teacher_name": "Biggs, Tyrell",
+    "room": "Gym",
+    "period": null,
+    "term": "S2",
+    "enrolled": 0,
+    "cap": 25,
+    "raw_priority": 45,
+    "total_priority": 157200,
     "placed": true
   },
   {
@@ -3680,12 +3578,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": null,
+    "period": "F",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 149830,
+    "total_priority": 139270,
     "placed": true
   },
   {
@@ -3697,12 +3595,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": null,
+    "period": "G",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 149830,
+    "total_priority": 140420,
     "placed": true
   },
   {
@@ -3719,7 +3617,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 149830,
+    "total_priority": 142655,
     "placed": true
   },
   {
@@ -3736,7 +3634,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 149830,
+    "total_priority": 142655,
     "placed": true
   },
   {
@@ -3748,12 +3646,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "D",
+    "period": "E",
     "term": "S2",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 149830,
+    "total_priority": 142655,
     "placed": true
   },
   {
@@ -3770,7 +3668,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 151945,
+    "total_priority": 154975,
     "placed": true
   },
   {
@@ -3787,7 +3685,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 152990,
+    "total_priority": 156095,
     "placed": true
   },
   {
@@ -3804,7 +3702,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 154040,
+    "total_priority": 157200,
     "placed": true
   },
   {
@@ -3821,7 +3719,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 61440,
+    "total_priority": 121615,
     "placed": true
   },
   {
@@ -3838,7 +3736,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 62685,
+    "total_priority": 135670,
     "placed": true
   },
   {
@@ -3850,12 +3748,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": "D",
+    "period": null,
     "term": "S1",
-    "enrolled": 25,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 63950,
+    "total_priority": 141550,
     "placed": true
   },
   {
@@ -3867,12 +3765,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": "E",
+    "period": null,
     "term": "S1",
-    "enrolled": 25,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 65210,
+    "total_priority": 141550,
     "placed": true
   },
   {
@@ -3889,7 +3787,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 150900,
+    "total_priority": 141550,
     "placed": true
   },
   {
@@ -3901,12 +3799,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": "E",
+    "period": "D",
     "term": "S2",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 150900,
+    "total_priority": 141550,
     "placed": true
   },
   {
@@ -3923,7 +3821,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 154030,
+    "total_priority": 157210,
     "placed": true
   },
   {
@@ -3940,24 +3838,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 154030,
-    "placed": true
-  },
-  {
-    "section_key": "620-9",
-    "course_code": "620",
-    "course_title": "Driver's Ed/PE",
-    "department": "Physical Education",
-    "section_num": 9,
-    "teacher_id": "105763",
-    "teacher_name": "Daniels, Torrence",
-    "room": "I-012",
-    "period": "A",
-    "term": "S2",
-    "enrolled": 25,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 137745,
+    "total_priority": 157210,
     "placed": true
   },
   {
@@ -3969,12 +3850,12 @@
     "teacher_id": "105747",
     "teacher_name": "Chiaravalloti, Michael",
     "room": "Gym",
-    "period": "F",
+    "period": "D",
     "term": "S1",
-    "enrolled": 25,
+    "enrolled": 19,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 66480,
+    "total_priority": 136945,
     "placed": true
   },
   {
@@ -3991,7 +3872,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 154010,
+    "total_priority": 157205,
     "placed": true
   },
   {
@@ -4008,58 +3889,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 58795,
-    "placed": true
-  },
-  {
-    "section_key": "631-4",
-    "course_code": "631",
-    "course_title": "CPR-AED Training/PE",
-    "department": "Physical Education",
-    "section_num": 4,
-    "teacher_id": "105747",
-    "teacher_name": "Chiaravalloti, Michael",
-    "room": "Success Center",
-    "period": "D",
-    "term": "S2",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 138180,
-    "placed": true
-  },
-  {
-    "section_key": "631-5",
-    "course_code": "631",
-    "course_title": "CPR-AED Training/PE",
-    "department": "Physical Education",
-    "section_num": 5,
-    "teacher_id": "105747",
-    "teacher_name": "Chiaravalloti, Michael",
-    "room": "Success Center",
-    "period": "E",
-    "term": "S2",
-    "enrolled": 2,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 138655,
-    "placed": true
-  },
-  {
-    "section_key": "631-6",
-    "course_code": "631",
-    "course_title": "CPR-AED Training/PE",
-    "department": "Physical Education",
-    "section_num": 6,
-    "teacher_id": "105747",
-    "teacher_name": "Chiaravalloti, Michael",
-    "room": "Success Center",
-    "period": "D",
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 139130,
+    "total_priority": 120345,
     "placed": true
   },
   {
@@ -4076,7 +3906,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 56000,
+    "total_priority": 116255,
     "placed": true
   },
   {
@@ -4090,10 +3920,10 @@
     "room": "Gym",
     "period": "B",
     "term": "S2",
-    "enrolled": 25,
+    "enrolled": 21,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 57450,
+    "total_priority": 117635,
     "placed": true
   },
   {
@@ -4107,61 +3937,10 @@
     "room": "Gym",
     "period": "C",
     "term": "S2",
-    "enrolled": 11,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 60135,
-    "placed": true
-  },
-  {
-    "section_key": "642-4",
-    "course_code": "642",
-    "course_title": "Nutrition & Fitness/PE",
-    "department": "Physical Education",
-    "section_num": 4,
-    "teacher_id": "105747",
-    "teacher_name": "Chiaravalloti, Michael",
-    "room": "Auditorium",
-    "period": "A",
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 136330,
-    "placed": true
-  },
-  {
-    "section_key": "642-5",
-    "course_code": "642",
-    "course_title": "Nutrition & Fitness/PE",
-    "department": "Physical Education",
-    "section_num": 5,
-    "teacher_id": "105747",
-    "teacher_name": "Chiaravalloti, Michael",
-    "room": "J-020",
-    "period": "B",
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 136805,
-    "placed": true
-  },
-  {
-    "section_key": "642-6",
-    "course_code": "642",
-    "course_title": "Nutrition & Fitness/PE",
-    "department": "Physical Education",
-    "section_num": 6,
-    "teacher_id": "105747",
-    "teacher_name": "Chiaravalloti, Michael",
-    "room": "Success Center",
-    "period": "C",
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 137280,
+    "total_priority": 119015,
     "placed": true
   },
   {
@@ -4172,7 +3951,7 @@
     "section_num": 1,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "I-116",
+    "room": "J-020",
     "period": "E",
     "term": "S1",
     "enrolled": 25,
@@ -4189,13 +3968,13 @@
     "section_num": 2,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "I-119",
+    "room": "D-203",
     "period": "F",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 445,
+    "total_priority": 425,
     "placed": true
   },
   {
@@ -4206,10 +3985,10 @@
     "section_num": 3,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "J-321",
+    "room": "I-111",
     "period": "A",
     "term": "S2",
-    "enrolled": 20,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 245,
@@ -4226,10 +4005,10 @@
     "room": "S-338",
     "period": "B",
     "term": "S2",
-    "enrolled": 3,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 245,
+    "total_priority": 225,
     "placed": true
   },
   {
@@ -4240,30 +4019,13 @@
     "section_num": 5,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "Success Center",
+    "room": "S-338",
     "period": "C",
     "term": "S2",
-    "enrolled": 8,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 245,
-    "placed": true
-  },
-  {
-    "section_key": "708-6",
-    "course_code": "708",
-    "course_title": "Introduction to Business",
-    "department": "Business",
-    "section_num": 6,
-    "teacher_id": "105808",
-    "teacher_name": "Sabella, Daniel",
-    "room": "D-202",
-    "period": "G",
-    "term": "S1",
-    "enrolled": 25,
-    "cap": 25,
-    "raw_priority": 25,
-    "total_priority": 245,
+    "total_priority": 225,
     "placed": true
   },
   {
@@ -4274,13 +4036,13 @@
     "section_num": 1,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": null,
-    "period": null,
+    "room": "D-203",
+    "period": "G",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 245,
+    "total_priority": 310,
     "placed": true
   },
   {
@@ -4297,7 +4059,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 245,
+    "total_priority": 290,
     "placed": true
   },
   {
@@ -4314,7 +4076,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 245,
+    "total_priority": 290,
     "placed": true
   },
   {
@@ -4331,7 +4093,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 160605,
+    "total_priority": 174970,
     "placed": true
   },
   {
@@ -4348,7 +4110,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 161800,
+    "total_priority": 176190,
     "placed": true
   },
   {
@@ -4360,46 +4122,12 @@
     "teacher_id": "105883",
     "teacher_name": "Winters, Jack",
     "room": "I-012",
-    "period": "D",
+    "period": "E",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 163010,
-    "placed": true
-  },
-  {
-    "section_key": "710-7",
-    "course_code": "710",
-    "course_title": "World History",
-    "department": "Social Studies",
-    "section_num": 7,
-    "teacher_id": "117711",
-    "teacher_name": "Saggio, Jack",
-    "room": null,
-    "period": null,
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 245,
-    "placed": true
-  },
-  {
-    "section_key": "710-8",
-    "course_code": "710",
-    "course_title": "World History",
-    "department": "Social Studies",
-    "section_num": 8,
-    "teacher_id": "117711",
-    "teacher_name": "Saggio, Jack",
-    "room": null,
-    "period": null,
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 245,
+    "total_priority": 178605,
     "placed": true
   },
   {
@@ -4411,12 +4139,12 @@
     "teacher_id": "105651",
     "teacher_name": "Quast, Richard",
     "room": "I-117",
-    "period": "D",
+    "period": "F",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 73495,
+    "total_priority": 74430,
     "placed": true
   },
   {
@@ -4428,12 +4156,12 @@
     "teacher_id": "105651",
     "teacher_name": "Quast, Richard",
     "room": "I-117",
-    "period": "E",
+    "period": "G",
     "term": "FY",
-    "enrolled": 9,
+    "enrolled": 12,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 74990,
+    "total_priority": 75935,
     "placed": true
   },
   {
@@ -4447,10 +4175,27 @@
     "room": "I-117",
     "period": "C",
     "term": "FY",
-    "enrolled": 22,
+    "enrolled": 18,
     "cap": 25,
-    "raw_priority": 75,
-    "total_priority": 72035,
+    "raw_priority": 50,
+    "total_priority": 69880,
+    "placed": true
+  },
+  {
+    "section_key": "713-2",
+    "course_code": "713",
+    "course_title": "AP World History",
+    "department": "Social Studies",
+    "section_num": 2,
+    "teacher_id": "105651",
+    "teacher_name": "Quast, Richard",
+    "room": "I-117",
+    "period": "D",
+    "term": "FY",
+    "enrolled": 9,
+    "cap": 25,
+    "raw_priority": 50,
+    "total_priority": 71395,
     "placed": true
   },
   {
@@ -4467,7 +4212,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 171735,
+    "total_priority": 190635,
     "placed": true
   },
   {
@@ -4484,7 +4229,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172385,
+    "total_priority": 191205,
     "placed": true
   },
   {
@@ -4498,10 +4243,10 @@
     "room": "I-114",
     "period": "C",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 173035,
+    "total_priority": 191755,
     "placed": true
   },
   {
@@ -4515,10 +4260,10 @@
     "room": "I-114",
     "period": "D",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 173685,
+    "total_priority": 192305,
     "placed": true
   },
   {
@@ -4532,27 +4277,10 @@
     "room": "I-114",
     "period": "E",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 174335,
-    "placed": true
-  },
-  {
-    "section_key": "720-6",
-    "course_code": "720",
-    "course_title": "U.S. History I",
-    "department": "Social Studies",
-    "section_num": 6,
-    "teacher_id": "105671",
-    "teacher_name": "Montegari, James",
-    "room": "D-205",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 25,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 101985,
+    "total_priority": 192855,
     "placed": true
   },
   {
@@ -4569,7 +4297,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 87225,
+    "total_priority": 94180,
     "placed": true
   },
   {
@@ -4583,10 +4311,10 @@
     "room": "I-011",
     "period": "D",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 88635,
+    "total_priority": 95595,
     "placed": true
   },
   {
@@ -4600,10 +4328,10 @@
     "room": "I-011",
     "period": "E",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 90060,
+    "total_priority": 97025,
     "placed": true
   },
   {
@@ -4617,10 +4345,10 @@
     "room": "I-119",
     "period": "D",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 12,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170110,
+    "total_priority": 186125,
     "placed": true
   },
   {
@@ -4634,10 +4362,10 @@
     "room": "I-119",
     "period": "E",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 171040,
+    "total_priority": 186935,
     "placed": true
   },
   {
@@ -4649,12 +4377,46 @@
     "teacher_id": "105630",
     "teacher_name": "Esposito, John",
     "room": "S-234",
-    "period": "C",
+    "period": "D",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 5800,
+    "raw_priority": 25,
+    "total_priority": 9660,
+    "placed": true
+  },
+  {
+    "section_key": "726-2",
+    "course_code": "726",
+    "course_title": "Business Concepts",
+    "department": "Business",
+    "section_num": 2,
+    "teacher_id": "105630",
+    "teacher_name": "Esposito, John",
+    "room": "S-234",
+    "period": "F",
+    "term": "S1",
+    "enrolled": 25,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 15520,
+    "placed": true
+  },
+  {
+    "section_key": "726-3",
+    "course_code": "726",
+    "course_title": "Business Concepts",
+    "department": "Business",
+    "section_num": 3,
+    "teacher_id": "105630",
+    "teacher_name": "Esposito, John",
+    "room": "S-234",
+    "period": "G",
+    "term": "S1",
+    "enrolled": 12,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 17490,
     "placed": true
   },
   {
@@ -4666,12 +4428,46 @@
     "teacher_id": "105712",
     "teacher_name": "Corcoran, Kevin",
     "room": "S-238",
-    "period": "B",
+    "period": "C",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 16495,
+    "raw_priority": 25,
+    "total_priority": 24960,
+    "placed": true
+  },
+  {
+    "section_key": "727-2",
+    "course_code": "727",
+    "course_title": "Sports and Entertainment Marketing",
+    "department": "Business",
+    "section_num": 2,
+    "teacher_id": "105712",
+    "teacher_name": "Corcoran, Kevin",
+    "room": "S-238",
+    "period": "D",
+    "term": "S1",
+    "enrolled": 25,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 26140,
+    "placed": true
+  },
+  {
+    "section_key": "727-3",
+    "course_code": "727",
+    "course_title": "Sports and Entertainment Marketing",
+    "department": "Business",
+    "section_num": 3,
+    "teacher_id": "105712",
+    "teacher_name": "Corcoran, Kevin",
+    "room": "S-238",
+    "period": "E",
+    "term": "S1",
+    "enrolled": 3,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 196260,
     "placed": true
   },
   {
@@ -4683,12 +4479,29 @@
     "teacher_id": "105630",
     "teacher_name": "Esposito, John",
     "room": "S-234",
-    "period": "D",
+    "period": "C",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
-    "raw_priority": 55,
-    "total_priority": 9740,
+    "raw_priority": 30,
+    "total_priority": 7690,
+    "placed": true
+  },
+  {
+    "section_key": "729-2",
+    "course_code": "729",
+    "course_title": "AP Business with Personal Finance",
+    "department": "Business",
+    "section_num": 2,
+    "teacher_id": "105630",
+    "teacher_name": "Esposito, John",
+    "room": "S-234",
+    "period": "E",
+    "term": "FY",
+    "enrolled": 18,
+    "cap": 25,
+    "raw_priority": 30,
+    "total_priority": 13550,
     "placed": true
   },
   {
@@ -4700,12 +4513,12 @@
     "teacher_id": "105832",
     "teacher_name": "Harris, Megan",
     "room": "I-113",
-    "period": "C",
+    "period": "B",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 111445,
+    "total_priority": 109375,
     "placed": true
   },
   {
@@ -4722,7 +4535,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 114290,
+    "total_priority": 113640,
     "placed": true
   },
   {
@@ -4734,12 +4547,12 @@
     "teacher_id": "105883",
     "teacher_name": "Winters, Jack",
     "room": "I-012",
-    "period": "E",
+    "period": "D",
     "term": "FY",
-    "enrolled": 15,
+    "enrolled": 21,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 164210,
+    "total_priority": 177400,
     "placed": true
   },
   {
@@ -4751,12 +4564,12 @@
     "teacher_id": "105832",
     "teacher_name": "Harris, Megan",
     "room": "I-113",
-    "period": "B",
+    "period": "C",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 110025,
+    "total_priority": 110805,
     "placed": true
   },
   {
@@ -4770,10 +4583,27 @@
     "room": "I-113",
     "period": "D",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 112875,
+    "total_priority": 112225,
+    "placed": true
+  },
+  {
+    "section_key": "731-3",
+    "course_code": "731",
+    "course_title": "U.S. History II H",
+    "department": "Social Studies",
+    "section_num": 3,
+    "teacher_id": "105883",
+    "teacher_name": "Winters, Jack",
+    "room": "I-012",
+    "period": "F",
+    "term": "FY",
+    "enrolled": 8,
+    "cap": 25,
+    "raw_priority": 20,
+    "total_priority": 179825,
     "placed": true
   },
   {
@@ -4790,7 +4620,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 14960,
+    "total_priority": 20650,
     "placed": true
   },
   {
@@ -4802,12 +4632,29 @@
     "teacher_id": "105620",
     "teacher_name": "Zawacki, Richard",
     "room": "S-233",
-    "period": "D",
+    "period": "C",
+    "term": "S1",
+    "enrolled": 12,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 172020,
+    "placed": true
+  },
+  {
+    "section_key": "732-3",
+    "course_code": "732",
+    "course_title": "Business Law",
+    "department": "Business",
+    "section_num": 3,
+    "teacher_id": "105620",
+    "teacher_name": "Zawacki, Richard",
+    "room": "S-233",
+    "period": "E",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 143455,
+    "total_priority": 174440,
     "placed": true
   },
   {
@@ -4821,10 +4668,10 @@
     "room": "I-119",
     "period": "A",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 167375,
+    "total_priority": 178095,
     "placed": true
   },
   {
@@ -4838,10 +4685,10 @@
     "room": "I-119",
     "period": "B",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 17,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 168305,
+    "total_priority": 179085,
     "placed": true
   },
   {
@@ -4855,10 +4702,10 @@
     "room": "I-119",
     "period": "C",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 169235,
+    "total_priority": 180015,
     "placed": true
   },
   {
@@ -4875,7 +4722,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 7765,
+    "total_priority": 5740,
     "placed": true
   },
   {
@@ -4892,7 +4739,7 @@
     "enrolled": 15,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 11685,
+    "total_priority": 11620,
     "placed": true
   },
   {
@@ -4903,10 +4750,10 @@
     "section_num": 1,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": "Success Center",
-    "period": "E",
+    "room": "J-321",
+    "period": "D",
     "term": "S1",
-    "enrolled": 25,
+    "enrolled": 11,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 495,
@@ -4921,12 +4768,29 @@
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
     "room": "I-116",
-    "period": "F",
+    "period": "E",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 495,
+    "placed": true
+  },
+  {
+    "section_key": "741-3",
+    "course_code": "741",
+    "course_title": "Psychology",
+    "department": "Social Studies",
+    "section_num": 3,
+    "teacher_id": "117711",
+    "teacher_name": "Saggio, Jack",
+    "room": "D-110",
+    "period": "F",
+    "term": "S1",
+    "enrolled": 19,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 385,
     "placed": true
   },
   {
@@ -4940,10 +4804,10 @@
     "room": "S-233",
     "period": "A",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 139835,
+    "total_priority": 169590,
     "placed": true
   },
   {
@@ -4957,10 +4821,10 @@
     "room": "S-233",
     "period": "B",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 141045,
+    "total_priority": 170810,
     "placed": true
   },
   {
@@ -4977,7 +4841,7 @@
     "enrolled": 5,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 69180,
+    "total_priority": 66990,
     "placed": true
   },
   {
@@ -4993,8 +4857,25 @@
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 70615,
+    "raw_priority": 25,
+    "total_priority": 68400,
+    "placed": true
+  },
+  {
+    "section_key": "744-2",
+    "course_code": "744",
+    "course_title": "Sociology",
+    "department": "Social Studies",
+    "section_num": 2,
+    "teacher_id": "105651",
+    "teacher_name": "Quast, Richard",
+    "room": "I-117",
+    "period": "E",
+    "term": "S1",
+    "enrolled": 8,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 72915,
     "placed": true
   },
   {
@@ -5011,7 +4892,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 40,
-    "total_priority": 1990,
+    "total_priority": 1965,
     "placed": true
   },
   {
@@ -5028,7 +4909,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 40,
-    "total_priority": 3970,
+    "total_priority": 3935,
     "placed": true
   },
   {
@@ -5039,30 +4920,13 @@
     "section_num": 1,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": "D-110",
-    "period": "G",
+    "room": "J-321",
+    "period": "B",
     "term": "S1",
-    "enrolled": 22,
+    "enrolled": 4,
     "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 465,
-    "placed": true
-  },
-  {
-    "section_key": "751-2",
-    "course_code": "751",
-    "course_title": "American Government & Politics",
-    "department": "Social Studies",
-    "section_num": 2,
-    "teacher_id": "117711",
-    "teacher_name": "Saggio, Jack",
-    "room": null,
-    "period": null,
-    "term": "S1",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 45,
-    "total_priority": 180,
+    "raw_priority": 70,
+    "total_priority": 515,
     "placed": true
   },
   {
@@ -5074,12 +4938,12 @@
     "teacher_id": "105620",
     "teacher_name": "Zawacki, Richard",
     "room": "S-233",
-    "period": "C",
+    "period": "D",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 142250,
+    "total_priority": 173235,
     "placed": true
   },
   {
@@ -5091,29 +4955,12 @@
     "teacher_id": "105620",
     "teacher_name": "Zawacki, Richard",
     "room": "S-233",
-    "period": "E",
-    "term": "FY",
-    "enrolled": 19,
-    "cap": 25,
-    "raw_priority": 0,
-    "total_priority": 144650,
-    "placed": true
-  },
-  {
-    "section_key": "752-3",
-    "course_code": "752",
-    "course_title": "Economics H",
-    "department": "Business",
-    "section_num": 3,
-    "teacher_id": "105620",
-    "teacher_name": "Zawacki, Richard",
-    "room": "S-233",
     "period": "F",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 149625,
+    "total_priority": 175625,
     "placed": true
   },
   {
@@ -5127,10 +4974,10 @@
     "room": "I-012",
     "period": "A",
     "term": "S1",
-    "enrolled": 3,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 159525,
+    "total_priority": 173880,
     "placed": true
   },
   {
@@ -5142,12 +4989,12 @@
     "teacher_id": "105712",
     "teacher_name": "Corcoran, Kevin",
     "room": "S-238",
-    "period": "C",
+    "period": "B",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 18035,
+    "total_priority": 22215,
     "placed": true
   },
   {
@@ -5159,12 +5006,29 @@
     "teacher_id": "105712",
     "teacher_name": "Corcoran, Kevin",
     "room": "S-238",
-    "period": "D",
+    "period": "F",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 19340,
+    "total_priority": 197070,
+    "placed": true
+  },
+  {
+    "section_key": "757-3",
+    "course_code": "757",
+    "course_title": "International Business Strategies",
+    "department": "Business",
+    "section_num": 3,
+    "teacher_id": "105712",
+    "teacher_name": "Corcoran, Kevin",
+    "room": "S-238",
+    "period": "G",
+    "term": "FY",
+    "enrolled": 8,
+    "cap": 25,
+    "raw_priority": 0,
+    "total_priority": 197895,
     "placed": true
   },
   {
@@ -5180,8 +5044,25 @@
     "term": "S2",
     "enrolled": 25,
     "cap": 25,
-    "raw_priority": 50,
-    "total_priority": 13255,
+    "raw_priority": 25,
+    "total_priority": 18880,
+    "placed": true
+  },
+  {
+    "section_key": "758-2",
+    "course_code": "758",
+    "course_title": "Bloomberg Market Concepts",
+    "department": "Business",
+    "section_num": 2,
+    "teacher_id": "105712",
+    "teacher_name": "Corcoran, Kevin",
+    "room": "S-238",
+    "period": "C",
+    "term": "S2",
+    "enrolled": 9,
+    "cap": 25,
+    "raw_priority": 25,
+    "total_priority": 23610,
     "placed": true
   },
   {
@@ -5195,44 +5076,10 @@
     "room": "I-113",
     "period": "A",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 1,
     "cap": 25,
-    "raw_priority": 30,
-    "total_priority": 108705,
-    "placed": true
-  },
-  {
-    "section_key": "761-2",
-    "course_code": "761",
-    "course_title": "AP Psychology",
-    "department": "Social Studies",
-    "section_num": 2,
-    "teacher_id": "105832",
-    "teacher_name": "Harris, Megan",
-    "room": "S-236",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 20,
-    "cap": 25,
-    "raw_priority": 30,
-    "total_priority": 168040,
-    "placed": true
-  },
-  {
-    "section_key": "761-3",
-    "course_code": "761",
-    "course_title": "AP Psychology",
-    "department": "Social Studies",
-    "section_num": 3,
-    "teacher_id": "105832",
-    "teacher_name": "Harris, Megan",
-    "room": "S-236",
-    "period": "G",
-    "term": "FY",
-    "enrolled": 0,
-    "cap": 25,
-    "raw_priority": 30,
-    "total_priority": 168245,
+    "raw_priority": 55,
+    "total_priority": 106650,
     "placed": true
   },
   {
@@ -5246,10 +5093,10 @@
     "room": "I-011",
     "period": "A",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 84480,
+    "total_priority": 87140,
     "placed": true
   },
   {
@@ -5266,7 +5113,7 @@
     "enrolled": 15,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 85940,
+    "total_priority": 88580,
     "placed": true
   },
   {
@@ -5282,8 +5129,8 @@
     "term": "FY",
     "enrolled": 1,
     "cap": 25,
-    "raw_priority": 90,
-    "total_priority": 133205,
+    "raw_priority": 105,
+    "total_priority": 154970,
     "placed": true
   },
   {
@@ -5294,13 +5141,30 @@
     "section_num": 1,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "J-321",
-    "period": "A",
+    "room": "J-020",
+    "period": "B",
     "term": "S1",
-    "enrolled": 16,
+    "enrolled": 0,
     "cap": 25,
-    "raw_priority": 80,
-    "total_priority": 780,
+    "raw_priority": 55,
+    "total_priority": 755,
+    "placed": true
+  },
+  {
+    "section_key": "765-2",
+    "course_code": "765",
+    "course_title": "AP Macroeconomics",
+    "department": "Social Studies",
+    "section_num": 2,
+    "teacher_id": "105625",
+    "teacher_name": "Konopelski, Louis",
+    "room": "J-020",
+    "period": "C",
+    "term": "S1",
+    "enrolled": 25,
+    "cap": 25,
+    "raw_priority": 55,
+    "total_priority": 755,
     "placed": true
   },
   {
@@ -5311,13 +5175,30 @@
     "section_num": 1,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "Auditorium",
-    "period": "B",
+    "room": "J-020",
+    "period": "D",
     "term": "S1",
-    "enrolled": 3,
+    "enrolled": 25,
     "cap": 25,
-    "raw_priority": 80,
-    "total_priority": 720,
+    "raw_priority": 55,
+    "total_priority": 695,
+    "placed": true
+  },
+  {
+    "section_key": "766-2",
+    "course_code": "766",
+    "course_title": "AP Microeconomics",
+    "department": "Social Studies",
+    "section_num": 2,
+    "teacher_id": "105625",
+    "teacher_name": "Konopelski, Louis",
+    "room": "D-205",
+    "period": "E",
+    "term": "S1",
+    "enrolled": 11,
+    "cap": 25,
+    "raw_priority": 55,
+    "total_priority": 600,
     "placed": true
   },
   {
@@ -5328,30 +5209,13 @@
     "section_num": 1,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": "D-108",
-    "period": "F",
-    "term": "FY",
-    "enrolled": 25,
-    "cap": 25,
-    "raw_priority": 20,
-    "total_priority": 270,
-    "placed": true
-  },
-  {
-    "section_key": "810-10",
-    "course_code": "810",
-    "course_title": "Theology 9",
-    "department": "Theology",
-    "section_num": 10,
-    "teacher_id": "122120",
-    "teacher_name": "Granieri, William",
     "room": null,
     "period": null,
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 240,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -5368,7 +5232,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 240,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -5385,7 +5249,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 240,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -5396,13 +5260,13 @@
     "section_num": 4,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": "S-234",
-    "period": "E",
+    "room": "D-202",
+    "period": "F",
     "term": "FY",
-    "enrolled": 23,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 200,
+    "total_priority": 210,
     "placed": true
   },
   {
@@ -5413,8 +5277,8 @@
     "section_num": 5,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": "D-105",
-    "period": "F",
+    "room": "D-110",
+    "period": "G",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
@@ -5430,13 +5294,13 @@
     "section_num": 6,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": "S-232",
-    "period": "G",
+    "room": null,
+    "period": null,
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 200,
+    "total_priority": 170,
     "placed": true
   },
   {
@@ -5453,7 +5317,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 160,
+    "total_priority": 170,
     "placed": true
   },
   {
@@ -5470,7 +5334,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 160,
+    "total_priority": 170,
     "placed": true
   },
   {
@@ -5482,12 +5346,12 @@
     "teacher_id": "105666",
     "teacher_name": "Lomascolo, Frank",
     "room": "J-320",
-    "period": "B",
+    "period": "A",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 169995,
+    "total_priority": 183965,
     "placed": true
   },
   {
@@ -5498,13 +5362,13 @@
     "section_num": 1,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": "D-101",
+    "room": "S-233",
     "period": "G",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 265,
+    "total_priority": 245,
     "placed": true
   },
   {
@@ -5521,7 +5385,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 240,
+    "total_priority": 235,
     "placed": true
   },
   {
@@ -5538,7 +5402,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 171375,
+    "total_priority": 187635,
     "placed": true
   },
   {
@@ -5555,7 +5419,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172135,
+    "total_priority": 189135,
     "placed": true
   },
   {
@@ -5572,7 +5436,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172905,
+    "total_priority": 189860,
     "placed": true
   },
   {
@@ -5584,12 +5448,12 @@
     "teacher_id": "105666",
     "teacher_name": "Lomascolo, Frank",
     "room": "J-320",
-    "period": "A",
+    "period": "B",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 169285,
+    "total_priority": 184655,
     "placed": true
   },
   {
@@ -5603,10 +5467,10 @@
     "room": "J-320",
     "period": "C",
     "term": "FY",
-    "enrolled": 24,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170695,
+    "total_priority": 185305,
     "placed": true
   },
   {
@@ -5620,10 +5484,10 @@
     "room": "J-320",
     "period": "D",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 171400,
+    "total_priority": 185955,
     "placed": true
   },
   {
@@ -5637,10 +5501,10 @@
     "room": "J-320",
     "period": "E",
     "term": "FY",
-    "enrolled": 19,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172110,
+    "total_priority": 186605,
     "placed": true
   },
   {
@@ -5651,13 +5515,13 @@
     "section_num": 1,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": "J-222",
-    "period": "E",
+    "room": "D-102",
+    "period": "F",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 280,
+    "total_priority": 270,
     "placed": true
   },
   {
@@ -5674,7 +5538,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 157195,
+    "total_priority": 180875,
     "placed": true
   },
   {
@@ -5691,7 +5555,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 158205,
+    "total_priority": 181765,
     "placed": true
   },
   {
@@ -5705,10 +5569,10 @@
     "room": "J-020",
     "period": "A",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 172325,
+    "total_priority": 186825,
     "placed": true
   },
   {
@@ -5722,10 +5586,10 @@
     "room": "J-221",
     "period": "A",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 24,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 159215,
+    "total_priority": 182655,
     "placed": true
   },
   {
@@ -5739,10 +5603,10 @@
     "room": "J-221",
     "period": "B",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 11,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 160225,
+    "total_priority": 183545,
     "placed": true
   },
   {
@@ -5756,10 +5620,10 @@
     "room": "J-221",
     "period": "C",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 161235,
+    "total_priority": 184435,
     "placed": true
   },
   {
@@ -5776,7 +5640,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 166455,
+    "total_priority": 185325,
     "placed": true
   },
   {
@@ -5793,7 +5657,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 177235,
+    "total_priority": 188405,
     "placed": true
   },
   {
@@ -5805,12 +5669,114 @@
     "teacher_id": "105767",
     "teacher_name": "Judge, Michelle",
     "room": "Success Center",
+    "period": "D",
+    "term": "FY",
+    "enrolled": 1,
+    "cap": 15,
+    "raw_priority": 0,
+    "total_priority": 114970,
+    "placed": true
+  },
+  {
+    "section_key": "955-2",
+    "course_code": "955",
+    "course_title": "Academic Support",
+    "department": "Special Education",
+    "section_num": 2,
+    "teacher_id": "105767",
+    "teacher_name": "Judge, Michelle",
+    "room": "Success Center",
+    "period": "E",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 15,
+    "raw_priority": 0,
+    "total_priority": 127080,
+    "placed": true
+  },
+  {
+    "section_key": "955-3",
+    "course_code": "955",
+    "course_title": "Academic Support",
+    "department": "Special Education",
+    "section_num": 3,
+    "teacher_id": "105767",
+    "teacher_name": "Judge, Michelle",
+    "room": "Success Center",
+    "period": "F",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 15,
+    "raw_priority": 0,
+    "total_priority": 128520,
+    "placed": true
+  },
+  {
+    "section_key": "955-4",
+    "course_code": "955",
+    "course_title": "Academic Support",
+    "department": "Special Education",
+    "section_num": 4,
+    "teacher_id": "105767",
+    "teacher_name": "Judge, Michelle",
+    "room": "Success Center",
+    "period": "G",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 15,
+    "raw_priority": 0,
+    "total_priority": 129960,
+    "placed": true
+  },
+  {
+    "section_key": "955-5",
+    "course_code": "955",
+    "course_title": "Academic Support",
+    "department": "Special Education",
+    "section_num": 5,
+    "teacher_id": "105642",
+    "teacher_name": "Mazella, Julie",
+    "room": "Success Center",
     "period": "A",
     "term": "FY",
     "enrolled": 15,
     "cap": 15,
-    "raw_priority": 25,
-    "total_priority": 92615,
+    "raw_priority": 0,
+    "total_priority": 99755,
+    "placed": true
+  },
+  {
+    "section_key": "955-6",
+    "course_code": "955",
+    "course_title": "Academic Support",
+    "department": "Special Education",
+    "section_num": 6,
+    "teacher_id": "105642",
+    "teacher_name": "Mazella, Julie",
+    "room": "Success Center",
+    "period": "B",
+    "term": "FY",
+    "enrolled": 12,
+    "cap": 15,
+    "raw_priority": 0,
+    "total_priority": 101115,
+    "placed": true
+  },
+  {
+    "section_key": "955-7",
+    "course_code": "955",
+    "course_title": "Academic Support",
+    "department": "Special Education",
+    "section_num": 7,
+    "teacher_id": "105642",
+    "teacher_name": "Mazella, Julie",
+    "room": "Success Center",
+    "period": "C",
+    "term": "FY",
+    "enrolled": 0,
+    "cap": 15,
+    "raw_priority": 0,
+    "total_priority": 108075,
     "placed": true
   }
 ]

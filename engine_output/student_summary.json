@@ -8,8 +8,8 @@
     "courses_placed": 6,
     "placement_rate": 54.5,
     "unplaced": [
+      "542",
       "849",
-      "143",
       "851",
       "242",
       "146"
@@ -21,13 +21,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 3,
-    "placement_rate": 33.3,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
       "765",
-      "766",
-      "351",
+      "763",
       "849",
       "851"
     ]
@@ -43,8 +41,8 @@
     "unplaced": [
       "849",
       "144",
-      "744",
-      "851"
+      "851",
+      "140"
     ]
   },
   {
@@ -58,8 +56,8 @@
     "unplaced": [
       "743",
       "849",
-      "440",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -68,11 +66,10 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 3,
-    "placement_rate": 30.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "359",
-      "766",
       "558",
       "450",
       "849",
@@ -92,7 +89,7 @@
       "849",
       "141",
       "595",
-      "440",
+      "144",
       "591",
       "851"
     ]
@@ -106,11 +103,11 @@
     "courses_placed": 4,
     "placement_rate": 40.0,
     "unplaced": [
+      "352",
       "849",
       "595",
       "546",
       "756",
-      "440",
       "851"
     ]
   },
@@ -120,12 +117,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "149",
       "558",
-      "351",
+      "763",
+      "206",
       "849",
       "851"
     ]
@@ -136,10 +134,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
+      "751",
       "557",
+      "761",
       "450",
       "849",
       "851"
@@ -151,13 +151,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 3,
-    "placement_rate": 33.3,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
       "496",
-      "765",
-      "766",
       "558",
+      "761",
       "849",
       "851"
     ]
@@ -202,12 +201,11 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 3,
-    "placement_rate": 30.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "453",
       "359",
-      "766",
       "557",
       "849",
       "745",
@@ -220,11 +218,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 3,
+    "placement_rate": 37.5,
     "unplaced": [
+      "761",
+      "206",
       "849",
-      "141",
       "851",
       "544"
     ]
@@ -240,8 +239,8 @@
     "unplaced": [
       "542",
       "849",
-      "744",
-      "851"
+      "851",
+      "140"
     ]
   },
   {
@@ -267,10 +266,11 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "255",
+      "352",
       "849",
       "141",
       "591",
@@ -286,9 +286,9 @@
     "courses_placed": 4,
     "placement_rate": 50.0,
     "unplaced": [
-      "351",
+      "453",
+      "763",
       "849",
-      "141",
       "851"
     ]
   },
@@ -298,11 +298,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "359",
       "557",
+      "761",
       "849",
       "203",
       "851"
@@ -314,14 +315,13 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "766",
+      "765",
       "849",
       "546",
       "745",
-      "440",
       "851"
     ]
   },
@@ -331,12 +331,10 @@
     "grade": 12,
     "raw_priority": 90,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
-      "543",
       "359",
-      "766",
       "849",
       "745",
       "851"
@@ -348,13 +346,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 11,
-    "courses_placed": 6,
-    "placement_rate": 54.5,
+    "courses_placed": 7,
+    "placement_rate": 63.6,
     "unplaced": [
-      "543",
-      "766",
-      "351",
+      "765",
       "849",
+      "642",
       "851"
     ]
   },
@@ -364,10 +361,9 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "955",
       "254",
       "849",
       "851",
@@ -385,10 +381,10 @@
     "placement_rate": 44.4,
     "unplaced": [
       "443",
-      "758",
       "849",
       "745",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -413,12 +409,10 @@
     "grade": 12,
     "raw_priority": 90,
     "courses_requested": 10,
-    "courses_placed": 2,
-    "placement_rate": 20.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "743",
-      "765",
-      "766",
       "557",
       "849",
       "473",
@@ -432,10 +426,9 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
       "849",
       "742",
       "546",
@@ -451,10 +444,10 @@
     "courses_placed": 5,
     "placement_rate": 55.6,
     "unplaced": [
-      "758",
       "849",
       "745",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -463,11 +456,12 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "453",
-      "766",
+      "149",
+      "456",
       "849",
       "745",
       "851"
@@ -479,14 +473,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
-      "543",
       "849",
+      "2054",
       "145",
-      "851",
-      "2044"
+      "851"
     ]
   },
   {
@@ -495,12 +488,13 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 11,
-    "courses_placed": 7,
-    "placement_rate": 63.6,
+    "courses_placed": 6,
+    "placement_rate": 54.5,
     "unplaced": [
       "849",
       "742",
       "745",
+      "144",
       "851"
     ]
   },
@@ -510,9 +504,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
+      "751",
       "849",
       "546",
       "756",
@@ -525,12 +520,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 2,
-    "placement_rate": 22.2,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
       "743",
-      "765",
-      "766",
       "557",
       "763",
       "849",
@@ -560,11 +553,11 @@
     "courses_placed": 5,
     "placement_rate": 50.0,
     "unplaced": [
-      "766",
-      "351",
+      "765",
       "849",
       "745",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -573,10 +566,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 11,
-    "courses_placed": 5,
-    "placement_rate": 45.5,
+    "courses_placed": 4,
+    "placement_rate": 36.4,
     "unplaced": [
       "849",
+      "2054",
       "595",
       "546",
       "851",
@@ -606,13 +600,15 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 11,
-    "courses_placed": 7,
-    "placement_rate": 63.6,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
     "unplaced": [
+      "751",
       "542",
       "849",
       "144",
-      "851"
+      "851",
+      "140"
     ]
   },
   {
@@ -621,14 +617,12 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
       "765",
-      "766",
       "351",
       "849",
-      "440",
       "851"
     ]
   },
@@ -653,13 +647,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
     "unplaced": [
-      "543",
       "849",
       "742",
-      "440",
       "851"
     ]
   },
@@ -669,12 +661,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
       "849",
       "742",
-      "756",
       "851",
       "146"
     ]
@@ -685,13 +676,11 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
     "unplaced": [
-      "543",
       "849",
       "745",
-      "440",
       "851"
     ]
   },
@@ -701,11 +690,14 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 2,
+    "placement_rate": 22.2,
     "unplaced": [
       "496",
       "558",
+      "761",
+      "456",
+      "206",
       "849",
       "851"
     ]
@@ -719,11 +711,11 @@
     "courses_placed": 5,
     "placement_rate": 50.0,
     "unplaced": [
+      "542",
       "849",
       "448",
       "851",
-      "2034",
-      "2044"
+      "2034"
     ]
   },
   {
@@ -732,11 +724,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "558",
       "351",
+      "456",
       "763",
       "849",
       "851"
@@ -763,11 +756,10 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
-      "443",
+      "761",
       "849",
       "745",
       "851"
@@ -779,13 +771,14 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "849",
+      "742",
       "756",
-      "851",
-      "140"
+      "144",
+      "851"
     ]
   },
   {
@@ -797,7 +790,7 @@
     "courses_placed": 5,
     "placement_rate": 50.0,
     "unplaced": [
-      "758",
+      "751",
       "849",
       "546",
       "851",
@@ -810,10 +803,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 3,
+    "placement_rate": 37.5,
     "unplaced": [
       "743",
+      "761",
       "450",
       "849",
       "851"
@@ -829,8 +823,8 @@
     "placement_rate": 40.0,
     "unplaced": [
       "455",
-      "766",
       "558",
+      "456",
       "849",
       "745",
       "851"
@@ -842,12 +836,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "849",
       "546",
       "440",
+      "741",
       "851"
     ]
   },
@@ -857,13 +852,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 3,
-    "placement_rate": 33.3,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
+      "453",
       "496",
-      "765",
-      "766",
-      "558",
+      "456",
       "849",
       "851"
     ]
@@ -874,11 +868,10 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 3,
-    "placement_rate": 30.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "765",
-      "766",
       "443",
       "849",
       "546",
@@ -892,14 +885,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "732",
       "849",
-      "143",
       "742",
       "851",
+      "544",
       "146"
     ]
   },
@@ -909,14 +901,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
       "849",
       "595",
-      "440",
-      "741",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -925,14 +916,12 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
-      "543",
-      "766",
+      "765",
       "849",
       "745",
-      "440",
       "851"
     ]
   },
@@ -947,9 +936,9 @@
     "unplaced": [
       "359",
       "765",
-      "766",
       "849",
       "745",
+      "144",
       "851"
     ]
   },
@@ -959,11 +948,10 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 3,
-    "placement_rate": 30.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "453",
-      "766",
       "558",
       "351",
       "849",
@@ -977,10 +965,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 6,
-    "placement_rate": 66.7,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
+      "751",
       "849",
+      "546",
       "756",
       "851"
     ]
@@ -995,8 +985,8 @@
     "placement_rate": 40.0,
     "unplaced": [
       "849",
-      "141",
       "595",
+      "546",
       "473",
       "448",
       "851"
@@ -1008,12 +998,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "542",
       "849",
       "742",
+      "144",
       "851"
     ]
   },
@@ -1040,12 +1031,11 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 3,
-    "placement_rate": 30.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "455",
       "359",
-      "766",
       "558",
       "849",
       "745",
@@ -1058,9 +1048,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
+      "751",
       "849",
       "742",
       "723",
@@ -1077,8 +1068,8 @@
     "placement_rate": 40.0,
     "unplaced": [
       "455",
-      "766",
       "558",
+      "456",
       "849",
       "745",
       "851"
@@ -1090,10 +1081,9 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
-      "955",
       "849",
       "448",
       "851",
@@ -1109,10 +1099,10 @@
     "courses_placed": 5,
     "placement_rate": 55.6,
     "unplaced": [
+      "542",
       "849",
       "742",
-      "851",
-      "140"
+      "851"
     ]
   },
   {
@@ -1124,9 +1114,9 @@
     "courses_placed": 5,
     "placement_rate": 50.0,
     "unplaced": [
+      "542",
       "359",
       "765",
-      "766",
       "849",
       "851"
     ]
@@ -1137,10 +1127,9 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "765",
       "766",
       "450",
       "849",
@@ -1154,15 +1143,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
-      "732",
       "849",
       "742",
-      "741",
-      "744",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -1174,10 +1161,10 @@
     "courses_placed": 4,
     "placement_rate": 44.4,
     "unplaced": [
+      "761",
       "351",
       "849",
       "473",
-      "440",
       "851"
     ]
   },
@@ -1187,13 +1174,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
-      "543",
+      "228",
       "450",
       "849",
-      "220",
       "851"
     ]
   },
@@ -1203,10 +1189,9 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "766",
       "351",
       "450",
       "849",
@@ -1220,11 +1205,9 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 9,
-    "courses_placed": 3,
-    "placement_rate": 33.3,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
-      "758",
       "849",
       "742",
       "745",
@@ -1242,7 +1225,7 @@
     "unplaced": [
       "743",
       "359",
-      "766",
+      "765",
       "849",
       "745",
       "851"
@@ -1254,14 +1237,15 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 11,
-    "courses_placed": 6,
-    "placement_rate": 54.5,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
     "unplaced": [
       "849",
       "723",
+      "145",
       "851",
-      "2034",
-      "2044"
+      "544",
+      "2034"
     ]
   },
   {
@@ -1270,12 +1254,11 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "453",
-      "765",
-      "766",
+      "352",
       "558",
       "849",
       "851"
@@ -1304,10 +1287,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "743",
+      "761",
       "351",
       "763",
       "849",
@@ -1325,8 +1309,8 @@
     "unplaced": [
       "849",
       "851",
+      "544",
       "2034",
-      "2044",
       "146"
     ]
   },
@@ -1336,11 +1320,9 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
     "unplaced": [
-      "543",
-      "758",
       "849",
       "745",
       "851"
@@ -1352,12 +1334,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 6,
-    "placement_rate": 66.7,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
+      "751",
       "849",
-      "440",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -1366,14 +1349,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
       "443",
-      "732",
       "849",
-      "141",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -1385,9 +1367,9 @@
     "courses_placed": 6,
     "placement_rate": 60.0,
     "unplaced": [
-      "543",
       "849",
       "745",
+      "144",
       "851"
     ]
   },
@@ -1402,8 +1384,8 @@
     "unplaced": [
       "455",
       "359",
-      "766",
       "558",
+      "456",
       "849",
       "745",
       "851"
@@ -1415,9 +1397,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
+      "761",
       "732",
       "849",
       "546",
@@ -1430,11 +1413,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "553",
       "359",
+      "761",
       "849",
       "851",
       "544"
@@ -1446,10 +1430,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
       "557",
+      "206",
       "849",
       "333",
       "851"
@@ -1461,9 +1446,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
+      "542",
       "359",
       "849",
       "742",
@@ -1481,7 +1467,7 @@
     "unplaced": [
       "849",
       "745",
-      "440",
+      "144",
       "851"
     ]
   },
@@ -1509,13 +1495,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "543",
       "359",
       "849",
-      "440",
       "851"
     ]
   },
@@ -1525,11 +1509,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "558",
       "351",
+      "456",
       "763",
       "849",
       "851"
@@ -1541,13 +1526,14 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "955",
-      "494",
       "849",
-      "851"
+      "756",
+      "851",
+      "544",
+      "140"
     ]
   },
   {
@@ -1559,8 +1545,8 @@
     "courses_placed": 4,
     "placement_rate": 40.0,
     "unplaced": [
-      "766",
       "558",
+      "456",
       "763",
       "849",
       "745",
@@ -1592,8 +1578,8 @@
     "courses_placed": 5,
     "placement_rate": 55.6,
     "unplaced": [
-      "765",
-      "558",
+      "352",
+      "456",
       "849",
       "851"
     ]
@@ -1604,12 +1590,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 6,
-    "placement_rate": 66.7,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
+      "751",
       "849",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -1622,10 +1609,10 @@
     "placement_rate": 44.4,
     "unplaced": [
       "743",
+      "761",
       "351",
       "849",
-      "851",
-      "2044"
+      "851"
     ]
   },
   {
@@ -1634,11 +1621,9 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 9,
-    "courses_placed": 3,
-    "placement_rate": 33.3,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
-      "758",
       "450",
       "849",
       "745",
@@ -1651,12 +1636,14 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 2,
+    "placement_rate": 20.0,
     "unplaced": [
       "558",
       "351",
+      "456",
       "763",
+      "206",
       "849",
       "Linear Algebra",
       "851"
@@ -1668,12 +1655,11 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
     "unplaced": [
-      "543",
-      "453",
       "849",
+      "144",
       "851"
     ]
   },
@@ -1683,13 +1669,14 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 3,
+    "placement_rate": 33.3,
     "unplaced": [
       "849",
       "742",
       "448",
       "851",
+      "544",
       "146"
     ]
   },
@@ -1699,12 +1686,14 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 3,
+    "placement_rate": 33.3,
     "unplaced": [
+      "751",
       "542",
       "849",
-      "642",
+      "742",
+      "448",
       "851"
     ]
   },
@@ -1714,10 +1703,11 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 9,
-    "courses_placed": 3,
-    "placement_rate": 33.3,
+    "courses_placed": 2,
+    "placement_rate": 22.2,
     "unplaced": [
       "557",
+      "761",
       "763",
       "450",
       "849",
@@ -1731,12 +1721,13 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 7,
-    "placement_rate": 70.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
       "849",
       "745",
-      "851"
+      "851",
+      "140"
     ]
   },
   {
@@ -1745,13 +1736,14 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "758",
       "849",
       "742",
-      "851"
+      "756",
+      "851",
+      "544"
     ]
   },
   {
@@ -1776,12 +1768,11 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 3,
-    "placement_rate": 30.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
       "455",
-      "765",
-      "766",
+      "761",
       "351",
       "849",
       "745",
@@ -1797,9 +1788,9 @@
     "courses_placed": 4,
     "placement_rate": 44.4,
     "unplaced": [
-      "765",
-      "766",
       "557",
+      "761",
+      "456",
       "849",
       "851"
     ]
@@ -1810,14 +1801,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "359",
       "765",
-      "763",
       "849",
-      "440",
+      "642",
       "851"
     ]
   },
@@ -1827,12 +1817,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
     "unplaced": [
-      "543",
+      "352",
       "849",
-      "440",
       "851"
     ]
   },
@@ -1845,9 +1834,9 @@
     "courses_placed": 4,
     "placement_rate": 44.4,
     "unplaced": [
-      "955",
       "849",
       "742",
+      "448",
       "851",
       "146"
     ]
@@ -1858,12 +1847,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 2,
-    "placement_rate": 22.2,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
       "743",
-      "765",
-      "766",
       "557",
       "450",
       "849",
@@ -1876,9 +1863,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
+      "751",
       "849",
       "742",
       "723",
@@ -1891,12 +1879,11 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
     "unplaced": [
       "849",
       "742",
-      "448",
       "851"
     ]
   },
@@ -1906,13 +1893,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
       "849",
-      "546",
       "220",
-      "744",
+      "144",
       "851"
     ]
   },
@@ -1922,12 +1908,14 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 2,
+    "placement_rate": 20.0,
     "unplaced": [
       "455",
       "496",
       "558",
+      "761",
+      "456",
       "849",
       "591",
       "851"
@@ -1943,8 +1931,8 @@
     "placement_rate": 60.0,
     "unplaced": [
       "849",
-      "546",
-      "744",
+      "742",
+      "144",
       "851"
     ]
   },
@@ -1954,13 +1942,11 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 11,
-    "courses_placed": 6,
-    "placement_rate": 54.5,
+    "courses_placed": 8,
+    "placement_rate": 72.7,
     "unplaced": [
-      "543",
-      "765",
       "849",
-      "440",
+      "144",
       "851"
     ]
   },
@@ -1970,10 +1956,9 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
       "743",
       "849",
       "756",
@@ -1986,11 +1971,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "849",
       "851",
+      "544",
       "242",
       "243"
     ]
@@ -2017,13 +2003,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
-      "543",
       "359",
-      "765",
-      "766",
+      "456",
       "849",
       "851"
     ]
@@ -2038,10 +2022,10 @@
     "placement_rate": 54.5,
     "unplaced": [
       "849",
-      "143",
       "756",
       "851",
-      "2044"
+      "544",
+      "140"
     ]
   },
   {
@@ -2050,12 +2034,14 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 2,
+    "placement_rate": 22.2,
     "unplaced": [
       "228",
       "743",
       "443",
+      "761",
+      "206",
       "849",
       "851"
     ]
@@ -2066,11 +2052,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "359",
       "558",
+      "761",
+      "456",
       "849",
       "851"
     ]
@@ -2081,12 +2069,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "542",
       "849",
       "742",
+      "144",
       "851"
     ]
   },
@@ -2101,8 +2090,8 @@
     "unplaced": [
       "542",
       "849",
-      "143",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -2111,13 +2100,14 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
+      "751",
       "849",
       "742",
-      "440",
-      "851"
+      "851",
+      "140"
     ]
   },
   {
@@ -2126,12 +2116,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 3,
-    "placement_rate": 30.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "543",
       "765",
-      "766",
       "763",
       "849",
       "756",
@@ -2149,8 +2137,8 @@
     "unplaced": [
       "359",
       "557",
-      "758",
       "849",
+      "141",
       "595",
       "851"
     ]
@@ -2161,13 +2149,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
       "359",
-      "732",
       "849",
-      "546",
+      "742",
       "851"
     ]
   },
@@ -2177,13 +2164,14 @@
     "grade": 12,
     "raw_priority": 115,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
-      "758",
+      "450",
       "849",
       "745",
-      "851"
+      "851",
+      "544"
     ]
   },
   {
@@ -2192,13 +2180,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 11,
-    "courses_placed": 6,
-    "placement_rate": 54.5,
+    "courses_placed": 7,
+    "placement_rate": 63.6,
     "unplaced": [
       "849",
-      "143",
-      "741",
       "851",
+      "544",
       "242"
     ]
   },
@@ -2208,11 +2195,13 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 4,
+    "placement_rate": 40.0,
     "unplaced": [
+      "751",
       "849",
       "851",
+      "544",
       "242",
       "146"
     ]
@@ -2223,11 +2212,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "543",
-      "331"
+      "131"
     ]
   },
   {
@@ -2236,10 +2224,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "955",
       "530"
     ]
   },
@@ -2249,11 +2236,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "131",
-      "530"
+      "131"
     ]
   },
   {
@@ -2268,7 +2254,7 @@
       "445",
       "139",
       "557",
-      "733"
+      "331"
     ]
   },
   {
@@ -2290,12 +2276,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "131",
-      "331",
-      "731"
+      "331"
     ]
   },
   {
@@ -2308,8 +2293,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "248",
-      "249",
-      "332"
+      "332",
+      "530"
     ]
   },
   {
@@ -2336,8 +2321,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "332",
-      "144",
-      "727"
+      "530",
+      "144"
     ]
   },
   {
@@ -2359,11 +2344,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "330",
-      "730"
+      "130"
     ]
   },
   {
@@ -2377,7 +2361,7 @@
     "unplaced": [
       "131",
       "331",
-      "727"
+      "830"
     ]
   },
   {
@@ -2386,13 +2370,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "445",
       "553",
       "139",
-      "733",
       "331"
     ]
   },
@@ -2406,7 +2389,7 @@
     "placement_rate": 57.1,
     "unplaced": [
       "139",
-      "733",
+      "206",
       "333"
     ]
   },
@@ -2419,8 +2402,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "732",
-      "332"
+      "332",
+      "530"
     ]
   },
   {
@@ -2429,12 +2412,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "139",
       "557",
-      "443",
       "733",
       "331"
     ]
@@ -2448,7 +2430,7 @@
     "courses_placed": 6,
     "placement_rate": 85.7,
     "unplaced": [
-      "730"
+      "130"
     ]
   },
   {
@@ -2462,7 +2444,7 @@
     "unplaced": [
       "445",
       "553",
-      "733"
+      "131"
     ]
   },
   {
@@ -2475,7 +2457,7 @@
     "placement_rate": 71.4,
     "unplaced": [
       "491",
-      "730"
+      "531"
     ]
   },
   {
@@ -2484,13 +2466,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 3,
-    "placement_rate": 42.9,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
       "445",
-      "543",
       "139",
-      "733"
+      "331"
     ]
   },
   {
@@ -2517,8 +2498,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "733",
-      "331",
-      "727"
+      "131",
+      "331"
     ]
   },
   {
@@ -2532,7 +2513,7 @@
     "unplaced": [
       "445",
       "139",
-      "733"
+      "331"
     ]
   },
   {
@@ -2546,7 +2527,7 @@
     "unplaced": [
       "557",
       "131",
-      "732"
+      "330"
     ]
   },
   {
@@ -2572,8 +2553,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "330",
-      "730"
+      "432",
+      "330"
     ]
   },
   {
@@ -2585,9 +2566,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "955",
-      "530",
-      "830"
+      "432",
+      "631",
+      "530"
     ]
   },
   {
@@ -2596,13 +2577,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
     "unplaced": [
-      "543",
       "849",
-      "440",
-      "744",
+      "741",
       "851"
     ]
   },
@@ -2615,8 +2594,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "720"
+      "620",
+      "144"
     ]
   },
   {
@@ -2625,12 +2604,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "553",
       "139",
-      "443",
       "331"
     ]
   },
@@ -2643,8 +2621,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "331",
-      "727"
+      "130",
+      "631"
     ]
   },
   {
@@ -2653,11 +2631,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "530",
-      "727"
+      "432",
+      "631",
+      "730"
     ]
   },
   {
@@ -2669,7 +2648,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "733",
+      "521",
       "333"
     ]
   },
@@ -2679,9 +2658,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "432",
       "130",
       "732"
     ]
@@ -2707,12 +2687,13 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "445",
       "139",
-      "557"
+      "557",
+      "339"
     ]
   },
   {
@@ -2721,12 +2702,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "726",
-      "420"
+      "320"
     ]
   },
   {
@@ -2752,8 +2732,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "430",
-      "206"
+      "530",
+      "730"
     ]
   },
   {
@@ -2762,13 +2742,15 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 11,
-    "courses_placed": 7,
-    "placement_rate": 63.6,
+    "courses_placed": 5,
+    "placement_rate": 45.5,
     "unplaced": [
+      "751",
       "849",
       "595",
       "851",
-      "544"
+      "544",
+      "140"
     ]
   },
   {
@@ -2777,10 +2759,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "530"
+      "130",
+      "530",
+      "241"
     ]
   },
   {
@@ -2808,7 +2792,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "530",
-      "727"
+      "331"
     ]
   },
   {
@@ -2817,10 +2801,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "331"
+      "530",
+      "331",
+      "830"
     ]
   },
   {
@@ -2832,9 +2818,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "129",
+      "620",
       "323",
-      "721"
+      "820"
     ]
   },
   {
@@ -2846,7 +2832,7 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "732",
+      "443",
       "530",
       "331"
     ]
@@ -2871,11 +2857,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "557",
       "443",
+      "131",
       "333"
     ]
   },
@@ -2889,8 +2876,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "248",
-      "249",
-      "131"
+      "131",
+      "830"
     ]
   },
   {
@@ -2918,8 +2905,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "322",
-      "727"
+      "727",
+      "720"
     ]
   },
   {
@@ -2928,12 +2915,13 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "139",
       "557",
-      "733"
+      "733",
+      "339"
     ]
   },
   {
@@ -2942,12 +2930,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "332",
-      "530",
-      "727"
+      "530"
     ]
   },
   {
@@ -2959,8 +2946,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "330",
-      "731"
+      "130",
+      "531"
     ]
   },
   {
@@ -2972,7 +2959,7 @@
     "courses_placed": 6,
     "placement_rate": 85.7,
     "unplaced": [
-      "731"
+      "130"
     ]
   },
   {
@@ -2985,7 +2972,7 @@
     "placement_rate": 71.4,
     "unplaced": [
       "557",
-      "733"
+      "830"
     ]
   },
   {
@@ -2994,11 +2981,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "131",
-      "830"
+      "131"
     ]
   },
   {
@@ -3007,9 +2993,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
+      "751",
       "849",
       "723",
       "448",
@@ -3028,7 +3015,7 @@
       "445",
       "553",
       "139",
-      "733"
+      "331"
     ]
   },
   {
@@ -3037,11 +3024,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "332",
-      "730"
+      "332"
     ]
   },
   {
@@ -3050,11 +3036,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "757",
-      "531"
+      "131"
     ]
   },
   {
@@ -3063,11 +3048,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "557",
       "733",
+      "131",
       "331"
     ]
   },
@@ -3077,11 +3063,10 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "131",
-      "732",
       "331"
     ]
   },
@@ -3091,12 +3076,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "139",
       "557",
-      "733",
       "331"
     ]
   },
@@ -3106,11 +3090,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "332",
-      "530"
+      "332"
     ]
   },
   {
@@ -3119,12 +3102,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "757",
-      "330",
-      "730"
+      "432",
+      "330"
     ]
   },
   {
@@ -3136,7 +3118,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "733",
+      "443",
       "530"
     ]
   },
@@ -3146,11 +3128,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "243",
-      "830"
+      "432",
+      "530",
+      "243"
     ]
   },
   {
@@ -3162,9 +3145,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "733",
+      "131",
       "144",
-      "727"
+      "830"
     ]
   },
   {
@@ -3173,11 +3156,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "733",
-      "631"
+      "130",
+      "531",
+      "830"
     ]
   },
   {
@@ -3186,11 +3170,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "332",
-      "730"
+      "332"
     ]
   },
   {
@@ -3202,8 +3185,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "332",
-      "530"
+      "530",
+      "830"
     ]
   },
   {
@@ -3212,11 +3195,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "557",
       "443",
+      "131",
       "331"
     ]
   },
@@ -3226,10 +3210,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "443",
       "530",
       "331"
     ]
@@ -3243,9 +3226,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "430",
-      "530",
-      "727"
+      "130",
+      "631",
+      "730"
     ]
   },
   {
@@ -3259,7 +3242,7 @@
     "unplaced": [
       "530",
       "331",
-      "2024"
+      "830"
     ]
   },
   {
@@ -3271,8 +3254,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "720"
+      "521",
+      "620"
     ]
   },
   {
@@ -3285,7 +3268,7 @@
     "placement_rate": 62.5,
     "unplaced": [
       "131",
-      "220",
+      "330",
       "830"
     ]
   },
@@ -3295,12 +3278,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "631",
-      "727",
-      "830"
+      "130",
+      "631"
     ]
   },
   {
@@ -3322,12 +3304,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "510",
-      "726",
-      "321"
+      "321",
+      "820"
     ]
   },
   {
@@ -3336,11 +3317,13 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
+      "131",
+      "631",
       "530",
-      "727"
+      "730"
     ]
   },
   {
@@ -3352,8 +3335,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "322",
-      "727"
+      "727",
+      "720"
     ]
   },
   {
@@ -3366,7 +3349,7 @@
     "placement_rate": 71.4,
     "unplaced": [
       "733",
-      "131"
+      "830"
     ]
   },
   {
@@ -3378,7 +3361,7 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "733",
+      "131",
       "332",
       "530"
     ]
@@ -3389,11 +3372,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "443",
       "733",
+      "131",
       "331"
     ]
   },
@@ -3415,13 +3399,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "455",
       "553",
       "139",
-      "733",
       "225"
     ]
   },
@@ -3431,13 +3414,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 3,
-    "placement_rate": 42.9,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
       "445",
-      "543",
       "139",
-      "733"
+      "331"
     ]
   },
   {
@@ -3446,9 +3428,10 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "130",
       "732",
       "331"
     ]
@@ -3459,11 +3442,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "139",
-      "733",
       "333"
     ]
   },
@@ -3473,10 +3455,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 3,
+    "placement_rate": 42.9,
     "unplaced": [
-      "729",
+      "431",
+      "121",
+      "521",
       "321"
     ]
   },
@@ -3486,11 +3470,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "248",
-      "249",
       "131"
     ]
   },
@@ -3503,8 +3486,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "955",
       "131",
+      "631",
       "530"
     ]
   },
@@ -3514,12 +3497,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 3,
-    "placement_rate": 42.9,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
       "553",
       "139",
-      "733",
       "331"
     ]
   },
@@ -3529,11 +3511,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "130",
-      "530"
+      "530",
+      "331"
     ]
   },
   {
@@ -3556,11 +3539,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "729",
-      "420"
+      "121"
     ]
   },
   {
@@ -3572,8 +3554,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "757",
-      "830"
+      "130",
+      "530"
     ]
   },
   {
@@ -3582,9 +3564,10 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "130",
       "732",
       "530"
     ]
@@ -3598,8 +3581,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "120",
       "510",
-      "726",
       "321"
     ]
   },
@@ -3609,11 +3592,10 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "732",
-      "531",
+      "130",
       "331"
     ]
   },
@@ -3628,7 +3610,7 @@
     "unplaced": [
       "139",
       "733",
-      "440"
+      "531"
     ]
   },
   {
@@ -3637,11 +3619,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "733",
-      "131"
+      "131",
+      "339"
     ]
   },
   {
@@ -3650,11 +3633,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "557",
       "733",
+      "131",
       "331"
     ]
   },
@@ -3678,10 +3662,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "733",
       "530",
       "331"
     ]
@@ -3692,11 +3675,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "757",
-      "830"
+      "339"
     ]
   },
   {
@@ -3705,9 +3687,10 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "352",
       "733",
       "131"
     ]
@@ -3718,11 +3701,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "757",
-      "531"
+      "131"
     ]
   },
   {
@@ -3735,7 +3717,7 @@
     "placement_rate": 62.5,
     "unplaced": [
       "131",
-      "631",
+      "330",
       "243"
     ]
   },
@@ -3745,12 +3727,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "530",
-      "310",
-      "830"
+      "2034"
     ]
   },
   {
@@ -3759,10 +3740,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "440",
+      "130",
+      "333",
       "830"
     ]
   },
@@ -3772,10 +3754,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "435",
+      "521",
+      "620",
       "820"
     ]
   },
@@ -3785,12 +3768,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "955",
-      "443",
-      "733"
+      "733",
+      "131"
     ]
   },
   {
@@ -3803,7 +3785,7 @@
     "placement_rate": 62.5,
     "unplaced": [
       "139",
-      "733",
+      "521",
       "333"
     ]
   },
@@ -3816,8 +3798,8 @@
     "courses_placed": 4,
     "placement_rate": 66.7,
     "unplaced": [
-      "631",
-      "830"
+      "130",
+      "530"
     ]
   },
   {
@@ -3826,12 +3808,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "520",
-      "420"
+      "120",
+      "720"
     ]
   },
   {
@@ -3840,12 +3821,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "131",
-      "530",
-      "331"
+      "530"
     ]
   },
   {
@@ -3854,11 +3834,10 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "733",
-      "131",
       "331"
     ]
   },
@@ -3871,8 +3850,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "121",
-      "521",
+      "620",
+      "421",
       "820"
     ]
   },
@@ -3882,11 +3861,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "733",
-      "131"
+      "131",
+      "331",
+      "830"
     ]
   },
   {
@@ -3909,11 +3889,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "130",
-      "727"
+      "432",
+      "631",
+      "730"
     ]
   },
   {
@@ -3922,9 +3903,10 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "130",
       "732",
       "330"
     ]
@@ -3938,8 +3920,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "757",
-      "830"
+      "130",
+      "530"
     ]
   },
   {
@@ -3948,13 +3930,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "445",
       "139",
       "557",
-      "733",
       "331"
     ]
   },
@@ -3967,8 +3948,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "121",
-      "520",
+      "620",
+      "421",
       "820"
     ]
   },
@@ -3981,8 +3962,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "2054",
-      "710"
+      "310",
+      "810"
     ]
   },
   {
@@ -3994,8 +3975,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
-      "708"
+      "425",
+      "810"
     ]
   },
   {
@@ -4008,7 +3989,7 @@
     "placement_rate": 57.1,
     "unplaced": [
       "139",
-      "206",
+      "530",
       "331"
     ]
   },
@@ -4018,11 +3999,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "130",
-      "727"
+      "631",
+      "330"
     ]
   },
   {
@@ -4043,12 +4025,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "733",
-      "331",
-      "727"
+      "331"
     ]
   },
   {
@@ -4061,8 +4042,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "722",
-      "321",
-      "820"
+      "620",
+      "321"
     ]
   },
   {
@@ -4071,11 +4052,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "732",
-      "730"
+      "430",
+      "130",
+      "732"
     ]
   },
   {
@@ -4089,7 +4071,7 @@
     "unplaced": [
       "553",
       "139",
-      "733"
+      "331"
     ]
   },
   {
@@ -4104,7 +4086,7 @@
       "445",
       "553",
       "139",
-      "733"
+      "331"
     ]
   },
   {
@@ -4113,9 +4095,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "130",
       "530",
       "2024"
     ]
@@ -4126,11 +4109,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "521",
-      "820"
+      "620",
+      "421"
     ]
   },
   {
@@ -4139,10 +4123,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "332",
       "530"
     ]
   },
@@ -4152,12 +4135,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "440",
-      "727",
-      "830"
+      "531",
+      "730"
     ]
   },
   {
@@ -4179,11 +4161,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "330",
-      "730"
+      "130"
     ]
   },
   {
@@ -4192,11 +4173,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "530",
-      "730"
+      "530"
     ]
   },
   {
@@ -4219,12 +4199,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "732",
-      "530",
-      "830"
+      "530"
     ]
   },
   {
@@ -4251,8 +4230,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "435",
-      "333"
+      "333",
+      "830"
     ]
   },
   {
@@ -4266,7 +4245,7 @@
     "unplaced": [
       "139",
       "733",
-      "131"
+      "2054"
     ]
   },
   {
@@ -4278,8 +4257,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "510",
-      "610"
+      "810",
+      "710"
     ]
   },
   {
@@ -4288,12 +4267,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "435",
-      "551",
-      "323"
+      "722",
+      "551"
     ]
   },
   {
@@ -4316,11 +4294,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "131",
-      "731"
+      "631",
+      "241"
     ]
   },
   {
@@ -4329,10 +4308,9 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "425",
       "111",
       "610"
     ]
@@ -4343,11 +4321,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "531",
-      "731"
+      "131"
     ]
   },
   {
@@ -4372,7 +4349,7 @@
     "placement_rate": 71.4,
     "unplaced": [
       "139",
-      "531"
+      "830"
     ]
   },
   {
@@ -4386,7 +4363,7 @@
     "unplaced": [
       "450",
       "849",
-      "546",
+      "144",
       "851",
       "225"
     ]
@@ -4397,10 +4374,9 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "729",
       "720"
     ]
   },
@@ -4410,10 +4386,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "733",
+      "131",
       "530",
       "331"
     ]
@@ -4424,11 +4401,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "111",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -4437,11 +4415,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
-    "unplaced": [
-      "430"
-    ]
+    "courses_placed": 7,
+    "placement_rate": 100.0,
+    "unplaced": []
   },
   {
     "student_id": "108808",
@@ -4466,9 +4442,9 @@
     "courses_placed": 4,
     "placement_rate": 57.1,
     "unplaced": [
-      "729",
-      "321",
-      "820"
+      "120",
+      "521",
+      "321"
     ]
   },
   {
@@ -4494,9 +4470,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "530",
-      "2044",
-      "730"
+      "430",
+      "130",
+      "2044"
     ]
   },
   {
@@ -4505,11 +4481,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "726",
-      "321"
+      "120",
+      "321",
+      "720"
     ]
   },
   {
@@ -4521,8 +4498,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "330",
-      "730"
+      "432",
+      "330"
     ]
   },
   {
@@ -4531,10 +4508,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "430"
+      "130",
+      "530"
     ]
   },
   {
@@ -4543,12 +4521,13 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "553",
       "139",
-      "733"
+      "733",
+      "339"
     ]
   },
   {
@@ -4560,8 +4539,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "330",
-      "730"
+      "432",
+      "330"
     ]
   },
   {
@@ -4570,10 +4549,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "110",
+      "810"
     ]
   },
   {
@@ -4599,8 +4579,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -4609,11 +4589,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
       "139",
       "733",
+      "339",
       "530"
     ]
   },
@@ -4623,12 +4604,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "520",
-      "420"
+      "120",
+      "720"
     ]
   },
   {
@@ -4637,11 +4617,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "420",
-      "320",
+      "620",
       "720"
     ]
   },
@@ -4654,7 +4633,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "206",
+      "530",
       "830"
     ]
   },
@@ -4668,7 +4647,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "710"
+      "110"
     ]
   },
   {
@@ -4694,7 +4673,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "420",
-      "322"
+      "720"
     ]
   },
   {
@@ -4703,12 +4682,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "732",
       "332",
-      "741"
+      "530"
     ]
   },
   {
@@ -4717,10 +4695,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "144",
+      "130",
+      "530",
       "830"
     ]
   },
@@ -4730,10 +4709,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
       "491",
+      "131",
       "332"
     ]
   },
@@ -4743,11 +4723,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "131",
-      "757"
+      "131"
     ]
   },
   {
@@ -4756,11 +4735,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "129",
-      "322"
+      "521",
+      "421",
+      "820"
     ]
   },
   {
@@ -4769,11 +4749,13 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 4,
+    "placement_rate": 50.0,
     "unplaced": [
-      "726",
-      "321"
+      "521",
+      "620",
+      "321",
+      "820"
     ]
   },
   {
@@ -4782,11 +4764,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "726",
-      "420"
+      "620"
     ]
   },
   {
@@ -4798,8 +4779,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "420",
-      "322"
+      "120",
+      "520"
     ]
   },
   {
@@ -4808,11 +4789,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "420",
-      "580",
+      "120",
       "720"
     ]
   },
@@ -4837,13 +4817,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 3,
-    "placement_rate": 42.9,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "543",
       "139",
-      "733",
-      "206"
+      "733"
     ]
   },
   {
@@ -4852,12 +4830,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "120",
-      "420",
-      "720"
+      "620"
     ]
   },
   {
@@ -4866,12 +4842,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "530",
-      "331",
-      "727"
+      "331"
     ]
   },
   {
@@ -4886,7 +4861,7 @@
       "445",
       "139",
       "557",
-      "733"
+      "331"
     ]
   },
   {
@@ -4898,7 +4873,7 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "111",
+      "425",
       "2054",
       "610"
     ]
@@ -4909,12 +4884,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "553",
       "139",
-      "733",
       "333"
     ]
   },
@@ -4927,9 +4901,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "130",
       "332",
-      "530",
-      "727"
+      "530"
     ]
   },
   {
@@ -4953,9 +4927,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "631",
       "530",
-      "830"
+      "830",
+      "730"
     ]
   },
   {
@@ -4964,11 +4938,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
       "139",
-      "733"
+      "733",
+      "531"
     ]
   },
   {
@@ -4977,10 +4952,9 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "425",
       "111",
       "610"
     ]
@@ -4991,11 +4965,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "432",
       "130",
-      "730"
+      "631"
     ]
   },
   {
@@ -5007,8 +4982,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "729",
-      "420"
+      "120",
+      "520"
     ]
   },
   {
@@ -5020,9 +4995,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "430",
-      "530",
-      "727"
+      "130",
+      "631",
+      "730"
     ]
   },
   {
@@ -5031,10 +5006,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "732",
       "530",
       "331"
     ]
@@ -5045,12 +5019,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "445",
-      "139",
-      "733"
+      "139"
     ]
   },
   {
@@ -5059,12 +5032,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "129",
-      "321",
-      "820"
+      "421",
+      "321"
     ]
   },
   {
@@ -5073,12 +5045,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "430",
-      "530",
-      "2024"
+      "130"
     ]
   },
   {
@@ -5087,9 +5058,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
+      "521",
       "321",
       "820"
     ]
@@ -5103,8 +5075,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "732",
-      "830"
+      "130",
+      "732"
     ]
   },
   {
@@ -5113,10 +5085,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "955",
       "530"
     ]
   },
@@ -5143,7 +5114,7 @@
     "placement_rate": 71.4,
     "unplaced": [
       "510",
-      "810"
+      "110"
     ]
   },
   {
@@ -5155,9 +5126,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "430",
+      "130",
       "530",
-      "727"
+      "730"
     ]
   },
   {
@@ -5166,11 +5137,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "432",
       "130",
-      "730"
+      "241"
     ]
   },
   {
@@ -5195,8 +5167,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "430",
-      "530"
+      "530",
+      "830"
     ]
   },
   {
@@ -5205,12 +5177,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "420",
-      "321",
-      "2024"
+      "120",
+      "321"
     ]
   },
   {
@@ -5222,8 +5193,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "741",
-      "830"
+      "530",
+      "330"
     ]
   },
   {
@@ -5235,9 +5206,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "130",
       "530",
-      "331",
-      "727"
+      "331"
     ]
   },
   {
@@ -5246,11 +5217,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "130",
       "732",
-      "727"
+      "520"
     ]
   },
   {
@@ -5277,8 +5249,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "430",
-      "322"
+      "620",
+      "820"
     ]
   },
   {
@@ -5287,11 +5259,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "713",
-      "111",
+      "425",
       "610"
     ]
   },
@@ -5304,8 +5275,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -5314,10 +5285,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "129",
+      "521",
       "321"
     ]
   },
@@ -5330,9 +5302,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "129",
-      "323",
-      "220"
+      "722",
+      "521",
+      "820"
     ]
   },
   {
@@ -5341,11 +5313,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "206",
-      "331"
+      "131",
+      "331",
+      "830"
     ]
   },
   {
@@ -5354,10 +5327,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -5366,10 +5340,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "121",
+      "620",
+      "421",
       "323"
     ]
   },
@@ -5383,7 +5358,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "726"
+      "620"
     ]
   },
   {
@@ -5392,13 +5367,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "543",
       "557",
       "849",
-      "440",
       "851"
     ]
   },
@@ -5408,9 +5381,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "708",
+      "310",
       "710"
     ]
   },
@@ -5420,10 +5395,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "726",
+      "521",
+      "620",
       "720"
     ]
   },
@@ -5433,12 +5409,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "411",
       "610",
-      "711"
+      "810"
     ]
   },
   {
@@ -5450,8 +5425,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "320"
+      "620",
+      "708"
     ]
   },
   {
@@ -5460,11 +5435,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "727",
-      "830"
+      "631",
+      "530",
+      "730"
     ]
   },
   {
@@ -5476,8 +5452,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "610",
       "321",
+      "810",
       "710"
     ]
   },
@@ -5487,11 +5463,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "729",
-      "321"
+      "720"
     ]
   },
   {
@@ -5500,11 +5475,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "129",
-      "744"
+      "722",
+      "521",
+      "820"
     ]
   },
   {
@@ -5513,11 +5489,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "521",
-      "620"
+      "2054",
+      "620",
+      "320"
     ]
   },
   {
@@ -5526,12 +5503,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "726",
-      "420"
+      "720"
     ]
   },
   {
@@ -5540,11 +5516,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "435",
-      "323"
+      "722",
+      "521",
+      "820"
     ]
   },
   {
@@ -5556,8 +5533,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "120",
+      "620"
     ]
   },
   {
@@ -5569,8 +5546,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "332",
-      "820"
+      "620",
+      "332"
     ]
   },
   {
@@ -5582,8 +5559,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
-      "610"
+      "410",
+      "810"
     ]
   },
   {
@@ -5592,12 +5569,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "120",
       "510",
-      "320"
+      "720"
     ]
   },
   {
@@ -5622,7 +5598,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "722",
+      "521",
       "820"
     ]
   },
@@ -5635,7 +5611,7 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "722",
+      "620",
       "322",
       "820"
     ]
@@ -5649,8 +5625,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "120",
+      "720"
     ]
   },
   {
@@ -5659,9 +5635,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "110",
       "610",
       "810"
     ]
@@ -5672,12 +5649,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "131",
-      "530",
-      "331"
+      "530"
     ]
   },
   {
@@ -5689,9 +5665,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "420",
+      "520",
       "727",
-      "820"
+      "720"
     ]
   },
   {
@@ -5703,7 +5679,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "322",
+      "420",
       "720"
     ]
   },
@@ -5713,10 +5689,9 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "435",
       "551",
       "321"
     ]
@@ -5730,9 +5705,9 @@
     "courses_placed": 4,
     "placement_rate": 57.1,
     "unplaced": [
-      "729",
+      "120",
       "520",
-      "820"
+      "720"
     ]
   },
   {
@@ -5741,10 +5716,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "129",
+      "620",
+      "421",
       "820"
     ]
   },
@@ -5754,12 +5730,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "520",
-      "620"
+      "820",
+      "720"
     ]
   },
   {
@@ -5771,9 +5746,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "733",
       "494",
-      "473"
+      "473",
+      "531"
     ]
   },
   {
@@ -5785,7 +5760,7 @@
     "courses_placed": 6,
     "placement_rate": 85.7,
     "unplaced": [
-      "720"
+      "520"
     ]
   },
   {
@@ -5798,8 +5773,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "435",
-      "321",
-      "820"
+      "620",
+      "321"
     ]
   },
   {
@@ -5811,8 +5786,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -5821,12 +5796,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "420",
-      "322",
-      "820"
+      "520"
     ]
   },
   {
@@ -5838,7 +5811,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "729",
+      "520",
       "720"
     ]
   },
@@ -5848,12 +5821,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "2054",
-      "620",
-      "720"
+      "520",
+      "320"
     ]
   },
   {
@@ -5865,7 +5837,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
+      "620",
       "420"
     ]
   },
@@ -5889,10 +5861,11 @@
     "grade": 10,
     "raw_priority": 45,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "206"
+      "206",
+      "520"
     ]
   },
   {
@@ -5901,11 +5874,10 @@
     "grade": 10,
     "raw_priority": 45,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "420",
-      "820"
+      "720"
     ]
   },
   {
@@ -5914,11 +5886,10 @@
     "grade": 10,
     "raw_priority": 45,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "510",
-      "720"
+      "510"
     ]
   },
   {
@@ -5930,8 +5901,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "120",
-      "521",
+      "421",
+      "323",
       "820"
     ]
   },
@@ -5957,8 +5928,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "310"
+      "310",
+      "810"
     ]
   },
   {
@@ -5967,12 +5938,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "129",
-      "322",
-      "721"
+      "820"
     ]
   },
   {
@@ -5984,7 +5953,7 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "435",
+      "722",
       "129",
       "242"
     ]
@@ -5998,8 +5967,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "321",
-      "820"
+      "421",
+      "321"
     ]
   },
   {
@@ -6013,7 +5982,7 @@
     "unplaced": [
       "120",
       "510",
-      "620"
+      "820"
     ]
   },
   {
@@ -6022,11 +5991,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "120",
-      "820"
+      "720"
     ]
   },
   {
@@ -6035,11 +6003,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "810",
-      "710"
+      "2054",
+      "310",
+      "810"
     ]
   },
   {
@@ -6048,12 +6017,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "420",
-      "820",
-      "720"
+      "121"
     ]
   },
   {
@@ -6065,9 +6032,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "521",
       "220",
-      "321",
-      "820"
+      "321"
     ]
   },
   {
@@ -6076,10 +6043,9 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "425",
       "111",
       "610"
     ]
@@ -6102,10 +6068,9 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "120",
       "820",
       "720"
     ]
@@ -6120,7 +6085,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "420",
-      "322"
+      "720"
     ]
   },
   {
@@ -6144,12 +6109,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420",
-      "321"
+      "321",
+      "720"
     ]
   },
   {
@@ -6158,11 +6122,9 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "420",
-      "322",
       "720"
     ]
   },
@@ -6172,11 +6134,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "121",
-      "726"
+      "521",
+      "620",
+      "421"
     ]
   },
   {
@@ -6185,10 +6148,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "121",
+      "620",
+      "421",
       "323"
     ]
   },
@@ -6198,10 +6162,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "729"
+      "431",
+      "121",
+      "320"
     ]
   },
   {
@@ -6214,7 +6180,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "420",
-      "322"
+      "720"
     ]
   },
   {
@@ -6223,11 +6189,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "131",
-      "757",
       "531"
     ]
   },
@@ -6237,12 +6202,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "520",
-      "420",
-      "820"
+      "720"
     ]
   },
   {
@@ -6251,12 +6215,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 3,
-    "placement_rate": 33.3,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
       "743",
-      "765",
-      "766",
       "443",
       "849",
       "851"
@@ -6268,12 +6230,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "520",
-      "2054",
-      "420"
+      "620"
     ]
   },
   {
@@ -6299,8 +6260,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "820"
+      "620",
+      "720"
     ]
   },
   {
@@ -6309,10 +6270,9 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "733",
       "530",
       "331"
     ]
@@ -6323,10 +6283,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "530",
+      "331",
       "830"
     ]
   },
@@ -6336,10 +6297,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "726",
+      "521",
+      "620",
       "321"
     ]
   },
@@ -6352,7 +6314,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "708",
+      "810",
       "710"
     ]
   },
@@ -6362,9 +6324,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
+      "130",
       "830"
     ]
   },
@@ -6378,7 +6341,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "111",
-      "810"
+      "421"
     ]
   },
   {
@@ -6390,9 +6353,9 @@
     "courses_placed": 5,
     "placement_rate": 55.6,
     "unplaced": [
-      "732",
       "849",
       "742",
+      "144",
       "851"
     ]
   },
@@ -6407,10 +6370,10 @@
     "unplaced": [
       "849",
       "145",
+      "741",
       "144",
       "851",
-      "2034",
-      "2044"
+      "2034"
     ]
   },
   {
@@ -6419,12 +6382,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "520",
-      "420"
+      "120",
+      "720"
     ]
   },
   {
@@ -6457,8 +6419,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "521",
-      "321",
-      "820"
+      "620",
+      "321"
     ]
   },
   {
@@ -6470,8 +6432,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "120",
+      "620"
     ]
   },
   {
@@ -6484,7 +6446,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "420",
-      "322"
+      "720"
     ]
   },
   {
@@ -6509,9 +6471,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "420",
-      "321",
-      "727"
+      "520",
+      "727",
+      "720"
     ]
   },
   {
@@ -6525,7 +6487,7 @@
     "unplaced": [
       "435",
       "722",
-      "129"
+      "620"
     ]
   },
   {
@@ -6547,11 +6509,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "120",
-      "322"
+      "421",
+      "820",
+      "720"
     ]
   },
   {
@@ -6560,11 +6523,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "420",
+      "620",
       "720"
     ]
   },
@@ -6574,9 +6536,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
+      "751",
       "849",
       "595",
       "332",
@@ -6594,7 +6557,7 @@
     "unplaced": [
       "120",
       "510",
-      "320"
+      "620"
     ]
   },
   {
@@ -6606,7 +6569,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "729",
+      "120",
       "321"
     ]
   },
@@ -6616,12 +6579,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "120",
-      "420",
-      "720"
+      "620"
     ]
   },
   {
@@ -6630,11 +6591,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "727",
-      "820"
+      "521",
+      "620",
+      "727"
     ]
   },
   {
@@ -6646,8 +6608,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "430",
       "521",
+      "620",
       "820"
     ]
   },
@@ -6657,12 +6619,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "129",
-      "322",
-      "721"
+      "521",
+      "820"
     ]
   },
   {
@@ -6671,11 +6632,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "129",
-      "620"
+      "620",
+      "320",
+      "820"
     ]
   },
   {
@@ -6684,9 +6646,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "520",
       "727",
       "720"
     ]
@@ -6700,8 +6663,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "321",
+      "810"
     ]
   },
   {
@@ -6713,8 +6676,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "120",
+      "620"
     ]
   },
   {
@@ -6723,11 +6686,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "708",
+      "810",
+      "710"
     ]
   },
   {
@@ -6736,11 +6700,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "708",
+      "810",
+      "710"
     ]
   },
   {
@@ -6752,8 +6717,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "510",
+      "110"
     ]
   },
   {
@@ -6762,12 +6727,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "521",
-      "420",
-      "820"
+      "620"
     ]
   },
   {
@@ -6776,12 +6740,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "520",
-      "620"
+      "620",
+      "720"
     ]
   },
   {
@@ -6793,10 +6756,10 @@
     "courses_placed": 6,
     "placement_rate": 60.0,
     "unplaced": [
+      "751",
       "849",
       "144",
-      "851",
-      "140"
+      "851"
     ]
   },
   {
@@ -6808,8 +6771,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "722",
-      "129"
+      "320",
+      "820"
     ]
   },
   {
@@ -6821,8 +6784,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -6835,7 +6798,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "710"
+      "110"
     ]
   },
   {
@@ -6847,9 +6810,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "610",
       "708",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -6861,9 +6824,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "435",
-      "521",
-      "321"
+      "722",
+      "321",
+      "820"
     ]
   },
   {
@@ -6875,8 +6838,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "420",
-      "323"
+      "323",
+      "820"
     ]
   },
   {
@@ -6888,8 +6851,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "729",
-      "420"
+      "121",
+      "320"
     ]
   },
   {
@@ -6901,9 +6864,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "120",
       "620",
-      "580",
-      "720"
+      "320"
     ]
   },
   {
@@ -6915,9 +6878,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "521",
       "620",
-      "321",
-      "820"
+      "321"
     ]
   },
   {
@@ -6940,9 +6903,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "410",
+      "708",
       "710"
     ]
   },
@@ -6952,12 +6917,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "520",
-      "420",
-      "2024"
+      "120",
+      "620"
     ]
   },
   {
@@ -6966,9 +6930,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "110",
       "610",
       "810"
     ]
@@ -6982,8 +6947,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "720"
+      "620",
+      "144"
     ]
   },
   {
@@ -6995,8 +6960,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "820",
-      "2024"
+      "520",
+      "720"
     ]
   },
   {
@@ -7005,11 +6970,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "729",
-      "321"
+      "720"
     ]
   },
   {
@@ -7021,8 +6985,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "425",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -7034,8 +6998,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "120",
+      "620"
     ]
   },
   {
@@ -7047,8 +7011,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "435",
-      "129"
+      "521",
+      "820"
     ]
   },
   {
@@ -7071,9 +7035,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "121",
       "521",
       "620"
     ]
@@ -7087,9 +7052,9 @@
     "courses_placed": 4,
     "placement_rate": 57.1,
     "unplaced": [
-      "430",
-      "729",
-      "520"
+      "121",
+      "520",
+      "820"
     ]
   },
   {
@@ -7098,10 +7063,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "521",
+      "620",
       "820"
     ]
   },
@@ -7114,9 +7080,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "121",
-      "321",
-      "727"
+      "620",
+      "421",
+      "321"
     ]
   },
   {
@@ -7129,7 +7095,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "2024"
+      "720"
     ]
   },
   {
@@ -7141,9 +7107,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "510",
+      "120",
       "723",
-      "322"
+      "720"
     ]
   },
   {
@@ -7152,12 +7118,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "144",
-      "320"
+      "620"
     ]
   },
   {
@@ -7170,8 +7135,8 @@
     "placement_rate": 50.0,
     "unplaced": [
       "557",
-      "443",
       "733",
+      "131",
       "331"
     ]
   },
@@ -7181,12 +7146,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "111",
-      "310",
-      "810"
+      "610",
+      "310"
     ]
   },
   {
@@ -7198,8 +7162,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "520"
+      "520",
+      "620"
     ]
   },
   {
@@ -7211,8 +7175,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "322"
+      "420",
+      "720"
     ]
   },
   {
@@ -7221,12 +7185,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "520",
-      "620"
+      "620",
+      "720"
     ]
   },
   {
@@ -7238,8 +7201,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "710"
+      "110",
+      "610"
     ]
   },
   {
@@ -7248,13 +7211,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "248",
-      "722",
       "551",
-      "129"
+      "820"
     ]
   },
   {
@@ -7263,11 +7225,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "143",
-      "420",
+      "620",
       "820"
     ]
   },
@@ -7280,9 +7241,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "420",
-      "723",
-      "820"
+      "521",
+      "620",
+      "723"
     ]
   },
   {
@@ -7291,12 +7252,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "420",
-      "322"
+      "720"
     ]
   },
   {
@@ -7308,8 +7268,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "120",
+      "620"
     ]
   },
   {
@@ -7318,11 +7278,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "551",
-      "129",
       "227"
     ]
   },
@@ -7361,8 +7320,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "321",
-      "820"
+      "421",
+      "321"
     ]
   },
   {
@@ -7374,7 +7333,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "729",
+      "520",
       "720"
     ]
   },
@@ -7388,7 +7347,7 @@
     "placement_rate": 62.5,
     "unplaced": [
       "510",
-      "322",
+      "620",
       "820"
     ]
   },
@@ -7401,8 +7360,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "120",
-      "420"
+      "620",
+      "720"
     ]
   },
   {
@@ -7411,12 +7370,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "551",
-      "129",
-      "206"
+      "129"
     ]
   },
   {
@@ -7425,12 +7383,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "521",
-      "820",
-      "720"
+      "820"
     ]
   },
   {
@@ -7439,10 +7396,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "130",
+      "530",
       "730"
     ]
   },
@@ -7452,9 +7410,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "708",
+      "810",
       "710"
     ]
   },
@@ -7467,8 +7427,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "310"
+      "111",
+      "610"
     ]
   },
   {
@@ -7480,7 +7440,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
+      "520",
       "321"
     ]
   },
@@ -7494,7 +7454,7 @@
     "placement_rate": 62.5,
     "unplaced": [
       "521",
-      "580",
+      "620",
       "820"
     ]
   },
@@ -7504,12 +7464,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "420",
-      "720"
+      "620",
+      "420"
     ]
   },
   {
@@ -7521,8 +7480,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "620",
+      "720"
     ]
   },
   {
@@ -7545,12 +7504,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
       "510",
-      "422"
+      "620"
     ]
   },
   {
@@ -7559,11 +7517,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "708",
+      "810",
+      "710"
     ]
   },
   {
@@ -7572,11 +7531,9 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "120",
-      "420",
       "720"
     ]
   },
@@ -7590,7 +7547,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "726"
+      "620"
     ]
   },
   {
@@ -7599,12 +7556,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "708",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -7613,10 +7569,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "810"
+      "411",
+      "810",
+      "710"
     ]
   },
   {
@@ -7625,13 +7583,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "722",
       "551",
-      "129",
-      "321"
+      "321",
+      "820"
     ]
   },
   {
@@ -7640,10 +7597,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "708",
+      "310"
     ]
   },
   {
@@ -7655,8 +7613,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "955",
-      "510"
+      "510",
+      "720"
     ]
   },
   {
@@ -7668,8 +7626,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "2054",
-      "710"
+      "310",
+      "810"
     ]
   },
   {
@@ -7678,12 +7636,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "420",
-      "720"
+      "620"
     ]
   },
   {
@@ -7692,10 +7649,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "121",
+      "620",
+      "421",
       "323"
     ]
   },
@@ -7708,8 +7666,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "726",
-      "321",
+      "120",
+      "620",
       "720"
     ]
   },
@@ -7719,12 +7677,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "435",
-      "129",
-      "321"
+      "321",
+      "820"
     ]
   },
   {
@@ -7733,12 +7690,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "420",
-      "322"
+      "720"
     ]
   },
   {
@@ -7750,9 +7706,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "511",
       "111",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -7761,12 +7717,11 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 6,
-    "placement_rate": 60.0,
+    "courses_placed": 7,
+    "placement_rate": 70.0,
     "unplaced": [
       "450",
       "849",
-      "530",
       "851"
     ]
   },
@@ -7779,7 +7734,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "713",
+      "111",
       "610"
     ]
   },
@@ -7793,7 +7748,7 @@
     "placement_rate": 57.1,
     "unplaced": [
       "120",
-      "520",
+      "620",
       "321"
     ]
   },
@@ -7803,12 +7758,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
       "510",
-      "422"
+      "620"
     ]
   },
   {
@@ -7820,8 +7774,8 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "121",
       "620",
+      "421",
       "727"
     ]
   },
@@ -7831,11 +7785,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "520",
-      "420",
       "720"
     ]
   },
@@ -7850,7 +7803,7 @@
     "unplaced": [
       "722",
       "129",
-      "820"
+      "620"
     ]
   },
   {
@@ -7863,7 +7816,7 @@
     "placement_rate": 54.5,
     "unplaced": [
       "849",
-      "143",
+      "2054",
       "201",
       "220",
       "851"
@@ -7879,7 +7832,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "520",
-      "620"
+      "720"
     ]
   },
   {
@@ -7888,12 +7841,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "708",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -7906,7 +7858,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "726"
+      "620"
     ]
   },
   {
@@ -7918,8 +7870,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "425",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -7928,10 +7880,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "323",
+      "121",
+      "521",
       "820"
     ]
   },
@@ -7941,11 +7894,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "111",
-      "610"
+      "810"
     ]
   },
   {
@@ -7957,7 +7909,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "511",
+      "620",
       "820"
     ]
   },
@@ -7983,8 +7935,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "520"
+      "520",
+      "620"
     ]
   },
   {
@@ -7997,7 +7949,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "112",
-      "810"
+      "500"
     ]
   },
   {
@@ -8022,7 +7974,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "2054",
+      "500",
       "810"
     ]
   },
@@ -8035,7 +7987,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
+      "620",
       "420"
     ]
   },
@@ -8049,7 +8001,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "2024"
+      "620"
     ]
   },
   {
@@ -8058,12 +8010,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "520",
-      "420",
-      "2024"
+      "120",
+      "620"
     ]
   },
   {
@@ -8075,8 +8026,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "410",
+      "510"
     ]
   },
   {
@@ -8088,8 +8039,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "520"
+      "520",
+      "330"
     ]
   },
   {
@@ -8101,9 +8052,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "521",
+      "620",
       "321",
-      "820"
+      "721"
     ]
   },
   {
@@ -8115,8 +8066,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "510",
+      "110"
     ]
   },
   {
@@ -8125,12 +8076,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
       "520",
-      "420"
+      "323"
     ]
   },
   {
@@ -8142,9 +8092,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "726",
-      "420",
-      "321"
+      "120",
+      "321",
+      "720"
     ]
   },
   {
@@ -8153,9 +8103,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "144",
       "810",
       "710"
     ]
@@ -8166,12 +8117,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "420",
-      "720"
+      "620"
     ]
   },
   {
@@ -8183,8 +8133,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "720"
+      "120",
+      "620"
     ]
   },
   {
@@ -8196,9 +8146,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "121",
-      "521",
-      "820"
+      "620",
+      "820",
+      "721"
     ]
   },
   {
@@ -8207,10 +8157,9 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
       "510",
       "620"
     ]
@@ -8224,9 +8173,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "610",
+      "410",
       "708",
-      "810"
+      "710"
     ]
   },
   {
@@ -8248,10 +8197,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "708",
+      "310"
     ]
   },
   {
@@ -8263,8 +8213,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "510",
-      "322"
+      "120",
+      "720"
     ]
   },
   {
@@ -8276,9 +8226,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "722",
-      "129",
-      "321"
+      "521",
+      "321",
+      "820"
     ]
   },
   {
@@ -8287,10 +8237,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "310",
+      "810"
     ]
   },
   {
@@ -8302,8 +8253,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "708",
-      "810"
+      "500",
+      "708"
     ]
   },
   {
@@ -8315,8 +8266,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "120",
-      "729"
+      "521",
+      "820"
     ]
   },
   {
@@ -8325,9 +8276,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "410",
+      "708",
       "710"
     ]
   },
@@ -8337,11 +8290,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "729",
-      "321"
+      "421",
+      "321",
+      "721"
     ]
   },
   {
@@ -8354,7 +8308,7 @@
     "placement_rate": 71.4,
     "unplaced": [
       "206",
-      "310"
+      "810"
     ]
   },
   {
@@ -8363,9 +8317,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
+      "521",
       "321"
     ]
   },
@@ -8375,11 +8330,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "510",
-      "720"
+      "620",
+      "422"
     ]
   },
   {
@@ -8391,8 +8347,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "420"
+      "120",
+      "620"
     ]
   },
   {
@@ -8401,11 +8357,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "120",
-      "420",
+      "520",
       "720"
     ]
   },
@@ -8415,10 +8370,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -8430,8 +8386,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -8443,8 +8399,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
-      "610"
+      "144",
+      "810"
     ]
   },
   {
@@ -8453,12 +8409,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "225",
-      "810"
+      "412",
+      "225"
     ]
   },
   {
@@ -8467,9 +8422,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
+      "510",
       "810"
     ]
   },
@@ -8482,8 +8438,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -8495,9 +8451,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "435",
       "722",
-      "551"
+      "551",
+      "620"
     ]
   },
   {
@@ -8509,7 +8465,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "708",
+      "410",
       "810"
     ]
   },
@@ -8523,7 +8479,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "610",
-      "710"
+      "810"
     ]
   },
   {
@@ -8532,11 +8488,12 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 7,
-    "placement_rate": 70.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
       "450",
       "849",
+      "144",
       "851"
     ]
   },
@@ -8549,8 +8506,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "321"
+      "520",
+      "720"
     ]
   },
   {
@@ -8562,7 +8519,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
+      "810",
       "710"
     ]
   },
@@ -8576,7 +8533,7 @@
     "placement_rate": 62.5,
     "unplaced": [
       "551",
-      "320",
+      "620",
       "820"
     ]
   },
@@ -8586,12 +8543,13 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 3,
-    "placement_rate": 37.5,
+    "courses_placed": 2,
+    "placement_rate": 25.0,
     "unplaced": [
       "253",
       "743",
       "443",
+      "761",
       "849",
       "851"
     ]
@@ -8605,8 +8563,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -8631,12 +8589,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "420",
-      "320"
+      "720"
     ]
   },
   {
@@ -8648,8 +8605,8 @@
     "courses_placed": 4,
     "placement_rate": 57.1,
     "unplaced": [
-      "520",
       "321",
+      "820",
       "720"
     ]
   },
@@ -8659,11 +8616,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "412",
+      "810",
+      "710"
     ]
   },
   {
@@ -8672,9 +8630,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "144",
+      "310",
       "710"
     ]
   },
@@ -8700,8 +8660,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "322"
+      "420",
+      "720"
     ]
   },
   {
@@ -8713,7 +8673,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "129",
+      "521",
       "620"
     ]
   },
@@ -8739,7 +8699,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "708",
+      "410",
       "810"
     ]
   },
@@ -8749,11 +8709,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "729",
-      "720"
+      "120"
     ]
   },
   {
@@ -8765,7 +8724,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
+      "820",
       "720"
     ]
   },
@@ -8791,10 +8750,10 @@
     "courses_placed": 5,
     "placement_rate": 55.6,
     "unplaced": [
-      "955",
       "849",
       "530",
-      "851"
+      "851",
+      "140"
     ]
   },
   {
@@ -8806,9 +8765,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "2054",
-      "610",
-      "810"
+      "110",
+      "810",
+      "710"
     ]
   },
   {
@@ -8817,12 +8776,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "412",
-      "500",
-      "710"
+      "810"
     ]
   },
   {
@@ -8831,12 +8789,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
-      "520",
-      "620"
+      "820",
+      "720"
     ]
   },
   {
@@ -8848,7 +8805,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "425",
+      "310",
       "810"
     ]
   },
@@ -8858,11 +8815,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "543",
-      "131"
+      "531"
     ]
   },
   {
@@ -8874,8 +8830,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "310"
+      "310",
+      "810"
     ]
   },
   {
@@ -8888,7 +8844,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "112",
-      "710"
+      "810"
     ]
   },
   {
@@ -8897,12 +8853,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "511",
-      "610",
-      "310"
+      "111",
+      "610"
     ]
   },
   {
@@ -8911,11 +8866,12 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "131",
-      "727"
+      "450",
+      "830"
     ]
   },
   {
@@ -8928,7 +8884,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "425",
-      "713"
+      "610"
     ]
   },
   {
@@ -8953,7 +8909,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "708",
+      "421",
       "810"
     ]
   },
@@ -8963,11 +8919,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "425",
       "610",
-      "580"
+      "711"
     ]
   },
   {
@@ -8990,11 +8947,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "726",
-      "321"
+      "620",
+      "321",
+      "820"
     ]
   },
   {
@@ -9003,12 +8961,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "310",
-      "810",
-      "710"
+      "110",
+      "310"
     ]
   },
   {
@@ -9020,7 +8977,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
+      "410",
       "810"
     ]
   },
@@ -9033,9 +8990,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "511",
       "610",
-      "321"
+      "321",
+      "810"
     ]
   },
   {
@@ -9048,7 +9005,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "610",
-      "710"
+      "810"
     ]
   },
   {
@@ -9057,11 +9014,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "708"
+      "410",
+      "708",
+      "710"
     ]
   },
   {
@@ -9070,11 +9028,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "410",
-      "710"
+      "110",
+      "310",
+      "810"
     ]
   },
   {
@@ -9086,7 +9045,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "425",
+      "310",
       "810"
     ]
   },
@@ -9122,11 +9081,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "510",
-      "320"
+      "620",
+      "2044"
     ]
   },
   {
@@ -9135,12 +9095,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "510",
-      "321",
-      "710"
+      "410",
+      "110"
     ]
   },
   {
@@ -9152,7 +9111,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "510",
+      "610",
       "311"
     ]
   },
@@ -9165,7 +9124,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
+      "620",
       "420"
     ]
   },
@@ -9178,8 +9137,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "726",
-      "720"
+      "120",
+      "620"
     ]
   },
   {
@@ -9188,10 +9147,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "310",
+      "810"
     ]
   },
   {
@@ -9200,11 +9160,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "425",
-      "713"
+      "610",
+      "310"
     ]
   },
   {
@@ -9213,12 +9174,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "510",
-      "610",
-      "710"
+      "410",
+      "610"
     ]
   },
   {
@@ -9230,9 +9190,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "511",
+      "410",
       "610",
-      "711"
+      "570"
     ]
   },
   {
@@ -9255,8 +9215,8 @@
     "placement_rate": 62.5,
     "unplaced": [
       "120",
-      "420",
-      "310"
+      "310",
+      "720"
     ]
   },
   {
@@ -9265,11 +9225,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "729",
-      "820"
+      "120",
+      "521",
+      "720"
     ]
   },
   {
@@ -9281,8 +9242,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "510",
+      "110"
     ]
   },
   {
@@ -9294,7 +9255,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
+      "810",
       "710"
     ]
   },
@@ -9307,7 +9268,7 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "206",
+      "111",
       "810"
     ]
   },
@@ -9317,10 +9278,9 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "543",
       "849",
       "742",
       "851"
@@ -9335,8 +9295,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
-      "112"
+      "112",
+      "500"
     ]
   },
   {
@@ -9345,10 +9305,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "310",
+      "810"
     ]
   },
   {
@@ -9360,8 +9321,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "955",
-      "2044"
+      "432",
+      "520"
     ]
   },
   {
@@ -9373,9 +9334,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "500",
       "610",
-      "710"
+      "570",
+      "810"
     ]
   },
   {
@@ -9384,11 +9345,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "510",
-      "610"
+      "110",
+      "610",
+      "810"
     ]
   },
   {
@@ -9400,8 +9362,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "733",
-      "143"
+      "741",
+      "830"
     ]
   },
   {
@@ -9410,10 +9372,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "110",
+      "810"
     ]
   },
   {
@@ -9425,8 +9388,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -9435,11 +9398,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "420",
-      "321",
+      "120",
       "720"
     ]
   },
@@ -9452,8 +9414,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
-      "112"
+      "112",
+      "500"
     ]
   },
   {
@@ -9462,11 +9424,10 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "139",
-      "733",
       "331"
     ]
   },
@@ -9479,8 +9440,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
-      "708"
+      "425",
+      "810"
     ]
   },
   {
@@ -9489,9 +9450,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "708",
+      "810",
       "710"
     ]
   },
@@ -9501,10 +9464,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "111",
+      "421",
       "610"
     ]
   },
@@ -9517,7 +9481,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "741",
+      "130",
       "727"
     ]
   },
@@ -9533,8 +9497,8 @@
       "542",
       "849",
       "530",
-      "440",
-      "851"
+      "851",
+      "140"
     ]
   },
   {
@@ -9543,12 +9507,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "551",
-      "321",
-      "209"
+      "321"
     ]
   },
   {
@@ -9557,12 +9520,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "520",
-      "741",
-      "730"
+      "432",
+      "130"
     ]
   },
   {
@@ -9571,10 +9533,11 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 4,
+    "placement_rate": 44.4,
     "unplaced": [
       "849",
+      "742",
       "546",
       "851",
       "140"
@@ -9586,13 +9549,12 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 9,
-    "courses_placed": 4,
-    "placement_rate": 44.4,
+    "courses_placed": 5,
+    "placement_rate": 55.6,
     "unplaced": [
-      "543",
+      "751",
       "450",
       "849",
-      "744",
       "851"
     ]
   },
@@ -9605,8 +9567,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
-      "112"
+      "112",
+      "500"
     ]
   },
   {
@@ -9615,11 +9577,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "511",
-      "610"
+      "111",
+      "610",
+      "810"
     ]
   },
   {
@@ -9631,8 +9594,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -9644,8 +9607,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -9657,8 +9620,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "112",
-      "710"
+      "412",
+      "112"
     ]
   },
   {
@@ -9670,8 +9633,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "510",
-      "610"
+      "810",
+      "710"
     ]
   },
   {
@@ -9680,9 +9643,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "410",
+      "708",
       "710"
     ]
   },
@@ -9692,9 +9657,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 9,
-    "courses_placed": 8,
-    "placement_rate": 88.9,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
     "unplaced": [
+      "751",
+      "131",
       "530"
     ]
   },
@@ -9707,9 +9674,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "610",
       "708",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -9721,7 +9688,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
+      "410",
       "810"
     ]
   },
@@ -9731,10 +9698,9 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "120",
       "620",
       "420"
     ]
@@ -9745,11 +9711,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 7,
-    "courses_placed": 4,
-    "placement_rate": 57.1,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
       "425",
-      "206",
       "111"
     ]
   },
@@ -9759,10 +9724,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -9774,8 +9740,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "708",
-      "710"
+      "421",
+      "810"
     ]
   },
   {
@@ -9784,10 +9750,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "111",
+      "144",
       "810"
     ]
   },
@@ -9810,12 +9777,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "120",
       "510",
-      "720"
+      "620"
     ]
   },
   {
@@ -9827,8 +9793,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
-      "112"
+      "112",
+      "500"
     ]
   },
   {
@@ -9837,10 +9803,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "810"
+      "410",
+      "110"
     ]
   },
   {
@@ -9849,12 +9816,11 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "420",
-      "322",
-      "820"
+      "120",
+      "720"
     ]
   },
   {
@@ -9863,11 +9829,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "708"
+      "410",
+      "708",
+      "710"
     ]
   },
   {
@@ -9879,8 +9846,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "410",
+      "610"
     ]
   },
   {
@@ -9892,7 +9859,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
+      "713",
       "610"
     ]
   },
@@ -9905,7 +9872,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
+      "410",
       "810"
     ]
   },
@@ -9918,9 +9885,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "410",
       "610",
-      "810",
-      "711"
+      "810"
     ]
   },
   {
@@ -9933,7 +9900,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "610",
-      "310"
+      "810"
     ]
   },
   {
@@ -9942,11 +9909,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
       "111",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -9959,7 +9927,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "610",
-      "710"
+      "810"
     ]
   },
   {
@@ -9984,9 +9952,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
+      "410",
       "2054",
-      "610",
-      "711"
+      "610"
     ]
   },
   {
@@ -9998,8 +9966,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "510",
+      "110"
     ]
   },
   {
@@ -10011,8 +9979,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -10021,10 +9989,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "412",
+      "810"
     ]
   },
   {
@@ -10033,11 +10002,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "708",
+      "810",
+      "710"
     ]
   },
   {
@@ -10049,8 +10019,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "225",
-      "710"
+      "510",
+      "810"
     ]
   },
   {
@@ -10062,8 +10032,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
-      "112"
+      "112",
+      "500"
     ]
   },
   {
@@ -10075,8 +10045,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "500",
+      "810"
     ]
   },
   {
@@ -10085,12 +10055,11 @@
     "grade": 12,
     "raw_priority": 65,
     "courses_requested": 10,
-    "courses_placed": 4,
-    "placement_rate": 40.0,
+    "courses_placed": 5,
+    "placement_rate": 50.0,
     "unplaced": [
       "453",
-      "765",
-      "766",
+      "456",
       "763",
       "849",
       "851"
@@ -10102,10 +10071,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
+      "708",
+      "810",
       "710"
     ]
   },
@@ -10115,11 +10085,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "708"
+      "410",
+      "708",
+      "710"
     ]
   },
   {
@@ -10128,11 +10099,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "708",
+      "810",
+      "710"
     ]
   },
   {
@@ -10157,8 +10129,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "310"
+      "411",
+      "610"
     ]
   },
   {
@@ -10167,9 +10139,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "410",
+      "708",
       "710"
     ]
   },
@@ -10182,8 +10156,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
-      "708"
+      "425",
+      "810"
     ]
   },
   {
@@ -10192,11 +10166,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "410",
-      "710"
+      "110",
+      "310",
+      "810"
     ]
   },
   {
@@ -10208,8 +10183,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "310"
+      "310",
+      "810"
     ]
   },
   {
@@ -10218,12 +10193,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "225",
-      "810"
+      "412",
+      "225"
     ]
   },
   {
@@ -10232,10 +10206,9 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "412",
       "810"
     ]
   },
@@ -10245,11 +10218,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "708"
+      "410",
+      "708",
+      "710"
     ]
   },
   {
@@ -10258,10 +10232,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "708",
+      "310"
     ]
   },
   {
@@ -10270,10 +10245,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "110",
+      "810"
     ]
   },
   {
@@ -10282,10 +10258,9 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "411",
       "206",
       "610"
     ]
@@ -10296,10 +10271,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "310",
+      "810"
     ]
   },
   {
@@ -10311,9 +10287,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "955",
-      "530",
-      "830"
+      "432",
+      "130",
+      "530"
     ]
   },
   {
@@ -10325,8 +10301,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "510",
-      "810"
+      "206",
+      "110"
     ]
   },
   {
@@ -10335,10 +10311,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
+    "courses_placed": 5,
+    "placement_rate": 71.4,
     "unplaced": [
-      "810"
+      "206",
+      "500"
     ]
   },
   {
@@ -10347,10 +10324,9 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 7,
-    "courses_placed": 5,
-    "placement_rate": 71.4,
+    "courses_placed": 6,
+    "placement_rate": 85.7,
     "unplaced": [
-      "510",
       "810"
     ]
   },
@@ -10364,7 +10340,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "510",
-      "710"
+      "110"
     ]
   },
   {
@@ -10373,10 +10349,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "510",
+      "110",
+      "310",
       "810"
     ]
   },
@@ -10389,7 +10366,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
+      "810",
       "710"
     ]
   },
@@ -10402,9 +10379,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "111",
-      "610",
-      "144"
+      "144",
+      "310",
+      "810"
     ]
   },
   {
@@ -10413,11 +10390,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "120",
-      "420"
+      "520"
     ]
   },
   {
@@ -10426,10 +10402,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "112"
+      "112",
+      "810"
     ]
   },
   {
@@ -10438,11 +10415,10 @@
     "grade": 12,
     "raw_priority": 40,
     "courses_requested": 10,
-    "courses_placed": 5,
-    "placement_rate": 50.0,
+    "courses_placed": 6,
+    "placement_rate": 60.0,
     "unplaced": [
       "248",
-      "249",
       "450",
       "849",
       "851"
@@ -10470,8 +10446,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "510",
+      "110"
     ]
   },
   {
@@ -10483,8 +10459,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "500",
+      "810"
     ]
   },
   {
@@ -10493,11 +10469,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "708",
+      "810",
+      "710"
     ]
   },
   {
@@ -10510,7 +10487,7 @@
     "placement_rate": 66.7,
     "unplaced": [
       "145",
-      "741",
+      "530",
       "830"
     ]
   },
@@ -10523,8 +10500,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "321"
+      "321",
+      "810"
     ]
   },
   {
@@ -10537,7 +10514,7 @@
     "placement_rate": 75.0,
     "unplaced": [
       "723",
-      "727"
+      "720"
     ]
   },
   {
@@ -10546,12 +10523,11 @@
     "grade": 11,
     "raw_priority": 55,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "530",
-      "727",
-      "830"
+      "440"
     ]
   },
   {
@@ -10563,8 +10539,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -10576,8 +10552,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "510",
+      "110"
     ]
   },
   {
@@ -10589,8 +10565,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -10599,11 +10575,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "511",
-      "610"
+      "111",
+      "610",
+      "810"
     ]
   },
   {
@@ -10612,10 +10589,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "708",
+      "310"
     ]
   },
   {
@@ -10627,7 +10605,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
+      "500",
       "810"
     ]
   },
@@ -10637,11 +10615,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "412",
+      "810",
+      "710"
     ]
   },
   {
@@ -10663,9 +10642,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "410",
       "708",
       "810"
     ]
@@ -10676,11 +10656,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "610",
-      "708",
       "810"
     ]
   },
@@ -10690,10 +10669,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "310",
+      "810"
     ]
   },
   {
@@ -10702,10 +10682,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -10717,7 +10698,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "412",
+      "500",
       "810"
     ]
   },
@@ -10730,9 +10711,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "610",
       "708",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -10767,10 +10748,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "410",
+      "810"
     ]
   },
   {
@@ -10779,11 +10761,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "810",
-      "710"
+      "412",
+      "708",
+      "810"
     ]
   },
   {
@@ -10792,13 +10775,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 9,
-    "courses_placed": 5,
-    "placement_rate": 55.6,
+    "courses_placed": 6,
+    "placement_rate": 66.7,
     "unplaced": [
       "139",
-      "443",
-      "830",
-      "731"
+      "241",
+      "830"
     ]
   },
   {
@@ -10810,8 +10792,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "810",
-      "710"
+      "510",
+      "110"
     ]
   },
   {
@@ -10823,9 +10805,9 @@
     "courses_placed": 5,
     "placement_rate": 62.5,
     "unplaced": [
-      "713",
       "111",
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -10834,11 +10816,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "708"
+      "410",
+      "708",
+      "710"
     ]
   },
   {
@@ -10847,11 +10830,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
-      "810"
+      "708",
+      "810",
+      "710"
     ]
   },
   {
@@ -10860,10 +10844,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "610",
+      "708",
+      "810",
       "710"
     ]
   },
@@ -10883,10 +10868,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "810",
+      "410",
+      "708",
       "710"
     ]
   },
@@ -10899,8 +10885,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "810"
+      "810",
+      "710"
     ]
   },
   {
@@ -10909,11 +10895,12 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "120",
       "310",
-      "727"
+      "720"
     ]
   },
   {
@@ -10922,11 +10909,10 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 7,
+    "placement_rate": 87.5,
     "unplaced": [
-      "425",
-      "610"
+      "810"
     ]
   },
   {
@@ -10940,8 +10926,8 @@
     "unplaced": [
       "450",
       "849",
-      "642",
-      "851"
+      "851",
+      "241"
     ]
   },
   {
@@ -10953,8 +10939,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "610",
-      "710"
+      "412",
+      "810"
     ]
   },
   {
@@ -10976,10 +10962,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "610"
+      "610",
+      "810"
     ]
   },
   {
@@ -10988,11 +10975,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "511",
-      "610"
+      "111",
+      "610",
+      "810"
     ]
   },
   {
@@ -11001,10 +10989,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 6,
-    "courses_placed": 5,
-    "placement_rate": 83.3,
+    "courses_placed": 4,
+    "placement_rate": 66.7,
     "unplaced": [
-      "631"
+      "733",
+      "830"
     ]
   },
   {
@@ -11016,8 +11005,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "411",
-      "610"
+      "310",
+      "810"
     ]
   },
   {
@@ -11026,12 +11015,11 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 5,
-    "placement_rate": 62.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "631",
-      "741",
-      "331"
+      "331",
+      "720"
     ]
   },
   {
@@ -11040,11 +11028,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "110",
       "2054",
-      "710"
+      "810"
     ]
   },
   {
@@ -11053,11 +11042,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
-      "331",
-      "727"
+      "131",
+      "631",
+      "331"
     ]
   },
   {
@@ -11066,12 +11056,10 @@
     "grade": 10,
     "raw_priority": 20,
     "courses_requested": 8,
-    "courses_placed": 4,
-    "placement_rate": 50.0,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
       "120",
-      "620",
-      "420",
       "225"
     ]
   },
@@ -11081,11 +11069,12 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 6,
-    "placement_rate": 75.0,
+    "courses_placed": 5,
+    "placement_rate": 62.5,
     "unplaced": [
+      "412",
       "112",
-      "710"
+      "500"
     ]
   },
   {
@@ -11097,8 +11086,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "209",
-      "810"
+      "110",
+      "209"
     ]
   },
   {
@@ -11110,7 +11099,7 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "111",
+      "310",
       "810"
     ]
   },
@@ -11123,8 +11112,8 @@
     "courses_placed": 6,
     "placement_rate": 75.0,
     "unplaced": [
-      "713",
-      "520"
+      "520",
+      "620"
     ]
   },
   {
@@ -11133,10 +11122,12 @@
     "grade": 11,
     "raw_priority": 30,
     "courses_requested": 7,
-    "courses_placed": 6,
-    "placement_rate": 85.7,
+    "courses_placed": 4,
+    "placement_rate": 57.1,
     "unplaced": [
-      "130"
+      "130",
+      "631",
+      "530"
     ]
   },
   {
@@ -11148,8 +11139,8 @@
     "courses_placed": 5,
     "placement_rate": 71.4,
     "unplaced": [
-      "330",
-      "830"
+      "130",
+      "530"
     ]
   },
   {
@@ -11158,10 +11149,11 @@
     "grade": 9,
     "raw_priority": 10,
     "courses_requested": 8,
-    "courses_placed": 7,
-    "placement_rate": 87.5,
+    "courses_placed": 6,
+    "placement_rate": 75.0,
     "unplaced": [
-      "710"
+      "510",
+      "810"
     ]
   }
 ]

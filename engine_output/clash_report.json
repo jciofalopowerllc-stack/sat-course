@@ -1,6 +1,6 @@
 [
   {
-    "section": "610-2",
+    "section": "570-2",
     "reason": "No valid period/room combination available for term S1",
     "blocking_section": null,
     "resolution_options": [
@@ -11,7 +11,40 @@
     ]
   },
   {
-    "section": "610-3",
+    "section": "580-4",
+    "reason": "No valid period/room combination available for term S1",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "620-3",
+    "reason": "No valid period/room combination available for term S1",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "620-4",
+    "reason": "No valid period/room combination available for term S1",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "620-5",
     "reason": "No valid period/room combination available for term S1",
     "blocking_section": null,
     "resolution_options": [
@@ -35,28 +68,6 @@
   {
     "section": "610-5",
     "reason": "No valid period/room combination available for term S1",
-    "blocking_section": null,
-    "resolution_options": [
-      {
-        "option": "A",
-        "change": "Check teacher availability and room constraints"
-      }
-    ]
-  },
-  {
-    "section": "620-5",
-    "reason": "No valid period/room combination available for term S1",
-    "blocking_section": null,
-    "resolution_options": [
-      {
-        "option": "A",
-        "change": "Check teacher availability and room constraints"
-      }
-    ]
-  },
-  {
-    "section": "610-9",
-    "reason": "No valid period/room combination available for term S2",
     "blocking_section": null,
     "resolution_options": [
       {
@@ -99,7 +110,29 @@
     ]
   },
   {
-    "section": "2054-3",
+    "section": "610-9",
+    "reason": "No valid period/room combination available for term S2",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "610-10",
+    "reason": "No valid period/room combination available for term S2",
+    "blocking_section": null,
+    "resolution_options": [
+      {
+        "option": "A",
+        "change": "Check teacher availability and room constraints"
+      }
+    ]
+  },
+  {
+    "section": "2024-2",
     "reason": "No valid period/room combination available for term S1",
     "blocking_section": null,
     "resolution_options": [
@@ -110,8 +143,8 @@
     ]
   },
   {
-    "section": "110-8",
-    "reason": "No valid period/room combination available for term FY",
+    "section": "2014-2",
+    "reason": "No valid period/room combination available for term S1",
     "blocking_section": null,
     "resolution_options": [
       {
@@ -122,12 +155,6 @@
   },
   {
     "section": "130-3",
-    "reason": "No room available for any valid period in term FY",
-    "blocking_section": null,
-    "resolution_options": []
-  },
-  {
-    "section": "710-1",
     "reason": "No room available for any valid period in term FY",
     "blocking_section": null,
     "resolution_options": []
@@ -145,13 +172,13 @@
     "resolution_options": []
   },
   {
-    "section": "710-7",
+    "section": "820-2",
     "reason": "No room available for any valid period in term FY",
     "blocking_section": null,
     "resolution_options": []
   },
   {
-    "section": "710-8",
+    "section": "810-1",
     "reason": "No room available for any valid period in term FY",
     "blocking_section": null,
     "resolution_options": []
@@ -169,13 +196,7 @@
     "resolution_options": []
   },
   {
-    "section": "810-10",
-    "reason": "No room available for any valid period in term FY",
-    "blocking_section": null,
-    "resolution_options": []
-  },
-  {
-    "section": "820-2",
+    "section": "120-3",
     "reason": "No room available for any valid period in term FY",
     "blocking_section": null,
     "resolution_options": []
@@ -193,20 +214,8 @@
     "resolution_options": []
   },
   {
-    "section": "420-3",
+    "section": "420-2",
     "reason": "No room available for any valid period in term FY",
-    "blocking_section": null,
-    "resolution_options": []
-  },
-  {
-    "section": "420-4",
-    "reason": "No room available for any valid period in term FY",
-    "blocking_section": null,
-    "resolution_options": []
-  },
-  {
-    "section": "751-2",
-    "reason": "No room available for any valid period in term S1",
     "blocking_section": null,
     "resolution_options": []
   },
@@ -223,6 +232,12 @@
     "resolution_options": []
   },
   {
+    "section": "810-6",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  },
+  {
     "section": "810-7",
     "reason": "No room available for any valid period in term FY",
     "blocking_section": null,
@@ -230,6 +245,24 @@
   },
   {
     "section": "810-8",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  },
+  {
+    "section": "410-1",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  },
+  {
+    "section": "410-2",
+    "reason": "No room available for any valid period in term FY",
+    "blocking_section": null,
+    "resolution_options": []
+  },
+  {
+    "section": "410-3",
     "reason": "No room available for any valid period in term FY",
     "blocking_section": null,
     "resolution_options": []
