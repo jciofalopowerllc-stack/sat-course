@@ -478,8 +478,8 @@
     "code": "631",
     "title": "CPR-AED Training/PE",
     "dept": "Physical Education",
-    "total_sections": 5,
-    "designation": "SPLIT (3\u00d7S1, 2\u00d7S2)",
+    "total_sections": 4,
+    "designation": "SPLIT (2\u00d7S1, 2\u00d7S2)",
     "category": "PRESCRIBED SPLIT (S1+S2 per section)",
     "section_details": [
       {
@@ -494,16 +494,11 @@
       },
       {
         "sec": 3,
-        "semester": "S1",
-        "teacher": "Chiaravalloti, Michael"
-      },
-      {
-        "sec": 4,
         "semester": "S2",
         "teacher": "Chiaravalloti, Michael"
       },
       {
-        "sec": 5,
+        "sec": 4,
         "semester": "S2",
         "teacher": "Chiaravalloti, Michael"
       }
@@ -513,33 +508,38 @@
     "code": "642",
     "title": "Nutrition & Fitness/PE",
     "dept": "Physical Education",
-    "total_sections": 5,
-    "designation": "SPLIT (2\u00d7S1, 3\u00d7S2)",
+    "total_sections": 6,
+    "designation": "SPLIT (3\u00d7S1, 3\u00d7S2)",
     "category": "PRESCRIBED SPLIT (S1+S2 per section)",
     "section_details": [
       {
         "sec": 1,
-        "semester": "S2",
+        "semester": "S1",
         "teacher": "Chiaravalloti, Michael"
       },
       {
         "sec": 2,
-        "semester": "S2",
+        "semester": "S1",
         "teacher": "Chiaravalloti, Michael"
       },
       {
         "sec": 3,
-        "semester": "S2",
+        "semester": "S1",
         "teacher": "Chiaravalloti, Michael"
       },
       {
         "sec": 4,
-        "semester": "S1",
+        "semester": "S2",
         "teacher": "Chiaravalloti, Michael"
       },
       {
         "sec": 5,
-        "semester": "S1",
+        "semester": "S2",
+        "teacher": "Chiaravalloti, Michael"
+      },
+      {
+        "sec": 6,
+        "semester": "S2",
         "teacher": "Chiaravalloti, Michael"
       }
     ]
