@@ -22,6 +22,12 @@
 - **Lopez, Enrique (102255)**: 201 Introduction to Guitar × 2 semester sections (co-scheduled with 203 Guitar Ensemble, same period/room); 203 Guitar Ensemble is full-year (5 credits, 2 sections)
 - Sections defined in Template 6 Sheet 2 ("Teacher-Course Assignments"), one row per section
 
+### Grade 12 Science Requirement Exceptions (2026-27)
+- 39 specific Grade 12 student-course pairs are treated as **graduation_required** priority even though Science is not a standard Gr12 required department
+- Courses affected: 543 Anatomy/Physiology H (9 students), 546 Forensics (27 students), 530 Physics (1 student), 531 Physics H (2 students)
+- Defined in `student_priority_overrides.json`, loaded by engine at startup
+- Engine's `student_prio()` and `_is_grad_req_dept()` check these overrides
+
 ### Pinned Periods (2026-27)
 - **745 LEO I**: Period C (S1), Period E (S1)
 - **734 LEO II**: Period C (S2), Period D (S2)
@@ -32,10 +38,11 @@
 - `detect_pathways.py` — Pathway detection from Historical Grades + Course Requests
 - `templates/` — All input templates (T2, T4, T6, T7, T8, T9, Prior Year, Historical Grades)
 - `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
-- `schedule_solution_v3.json` — Engine output (current: v2.2, 99 clashes, 98.4% placement)
+- `student_priority_overrides.json` — Student-specific priority overrides (Grade 12 science exceptions)
+- `schedule_solution_v3.json` — Engine output
 
-### Current Results (v2.4)
-- 69 clashes (Gr9: 1, Gr11: 22, Gr12: 46), 98.9% placement
-- 0 graduation requirement clashes, 100% grad req fulfillment
+### Current Results (v2.5)
+- 54 clashes (Gr9: 1, Gr11: 33, Gr12: 20), 99.1% placement
+- 0 graduation requirement clashes, 100% grad req fulfillment (includes 39 Gr12 science overrides)
 - 0 P4+ (Required Core) clashes
-- Root cause: 68 all_periods_blocked, 1 singleton_collision
+- Root cause: 52 all_periods_blocked, 2 singleton_collision

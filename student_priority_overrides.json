@@ -1,0 +1,317 @@
+{
+  "description": "Student-specific priority overrides. These student-course pairs are treated as graduation_required priority even though their department is not in the standard graduation requirements for their grade level.",
+  "overrides": [
+    {
+      "student_id": "106283",
+      "student_name": "Skennion, Liam",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106264",
+      "student_name": "Hanna, Joseph",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106263",
+      "student_name": "Velez, Cristian",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106206",
+      "student_name": "DiMaulo, William",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106199",
+      "student_name": "Dos Santos, Antonio",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106234",
+      "student_name": "Abromowicz, Gavin",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106336",
+      "student_name": "Kang, Won",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106332",
+      "student_name": "Scialla, Rocco",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106333",
+      "student_name": "Minnich, Andrew",
+      "course_code": "543",
+      "course_title": "Anatomy/Physiology H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106255",
+      "student_name": "Gaida, Robert",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106322",
+      "student_name": "Jensen, Finn",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106253",
+      "student_name": "McLaughlin, Colin",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106236",
+      "student_name": "Ambrosio, Anthony",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106213",
+      "student_name": "Silvestri, Lucas",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106316",
+      "student_name": "Olivero Gamez, Josue",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "112468",
+      "student_name": "Gil, Nicholas",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106333",
+      "student_name": "Minnich, Andrew",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106219",
+      "student_name": "Konecni, Joshua",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "110478",
+      "student_name": "Weintraub, Jason",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106290",
+      "student_name": "Potenza, Nicolas",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106196",
+      "student_name": "Hauck, Thomas",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106241",
+      "student_name": "Kosoff, Luke",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106277",
+      "student_name": "Schulz, Christopher",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106222",
+      "student_name": "Esquivel, Alejandro",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106233",
+      "student_name": "McLaughlin, Joseph",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "108756",
+      "student_name": "Pacheco Guerrero, Adam",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106249",
+      "student_name": "Larrondo, Gavin",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "112051",
+      "student_name": "Lane, Dashiell",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106235",
+      "student_name": "Mena, Giancarlo",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106218",
+      "student_name": "Zervoudis, Stylianos",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106239",
+      "student_name": "DeFilippo, Daniel",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106323",
+      "student_name": "Gebert, Evan",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "107254",
+      "student_name": "Butler, Jayden",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "113957",
+      "student_name": "Svec, Dylan",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "106169",
+      "student_name": "Infantolino, Anthony",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "111850",
+      "student_name": "Dukes, Steven",
+      "course_code": "546",
+      "course_title": "Forensics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "116044",
+      "student_name": "Brudney, Denzin",
+      "course_code": "530",
+      "course_title": "Physics",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "117247",
+      "student_name": "Ohnegian, Michael",
+      "course_code": "531",
+      "course_title": "Physics H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    },
+    {
+      "student_id": "115730",
+      "student_name": "Skirmants, Henrijs",
+      "course_code": "531",
+      "course_title": "Physics H",
+      "override_priority": "graduation_required",
+      "reason": "Grade 12 science requirement exception"
+    }
+  ]
+}

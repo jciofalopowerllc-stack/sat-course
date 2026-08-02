@@ -110,12 +110,25 @@ def _pyramid_label(score):
         return 'limited_choice'
     return 'flexible'
 
-def _is_grad_req_dept(cid, student_grade):
-    """Check if a course belongs to a department required for the student's grade level."""
+def _is_grad_req_dept(cid, student_grade, pid=None):
+    """Check if a course belongs to a department required for the student's grade level,
+    or if the student-course pair has a priority override."""
+    if pid and (str(pid), str(cid)) in _STUDENT_PRIO_OVERRIDES:
+        return True
     dept = _course_dept_map.get(str(cid), '')
     return dept in GRAD_REQ_DEPTS.get(student_grade, set())
 
 _COURSE_SECTION_COUNTS = {}
+
+# ── Student-specific priority overrides ──
+_STUDENT_PRIO_OVERRIDES = set()
+_spo_path = os.path.join(os.path.dirname(__file__) or '.', 'student_priority_overrides.json')
+if os.path.exists(_spo_path):
+    with open(_spo_path) as _spof:
+        _spo_data = json.load(_spof)
+    for _ov in _spo_data.get('overrides', []):
+        _STUDENT_PRIO_OVERRIDES.add((str(_ov['student_id']).strip(), str(_ov['course_code']).strip()))
+    print(f"  Student priority overrides loaded: {len(_STUDENT_PRIO_OVERRIDES)} pairs")
 
 def student_prio(pid, cid):
     """Pyramid level for a student-course placement.
@@ -124,6 +137,8 @@ def student_prio(pid, cid):
     Level 3 (25+):  limited-choice elective — P3+ with 3 or fewer sections.
     Level 4 (0-5):  flexible elective — many sections, easy to reschedule."""
     base = prio(cid)
+    if (str(pid), str(cid)) in _STUDENT_PRIO_OVERRIDES:
+        return LEVEL_GRAD_REQ + base
     g = grade.get(str(pid), 0)
     if g and _is_grad_req_dept(cid, g):
         return LEVEL_GRAD_REQ + base
@@ -2573,8 +2588,8 @@ print(f"  Students affected: {len(set(c['student'] for c in clash))}")
 print(f"  Placed: {total_placed}/{total_requested} ({placement_rate:.1f}%)")
 
 # Item 4: Disaggregated fulfillment preview
-_preview_grad_req = sum(1 for p in students for c in sreq[p] if _is_grad_req_dept(c, grade.get(str(p), 0)))
-_preview_grad_placed = sum(1 for p in students for c in sreq[p] if _is_grad_req_dept(c, grade.get(str(p), 0)) and c in assign.get(p, {}))
+_preview_grad_req = sum(1 for p in students for c in sreq[p] if _is_grad_req_dept(c, grade.get(str(p), 0), pid=p))
+_preview_grad_placed = sum(1 for p in students for c in sreq[p] if _is_grad_req_dept(c, grade.get(str(p), 0), pid=p) and c in assign.get(p, {}))
 _preview_ap = sum(1 for p in students for c in sreq[p] if prio(c) >= 4)
 _preview_ap_placed = sum(1 for p in students for c in sreq[p] if prio(c) >= 4 and c in assign.get(p, {}))
 print(f"  Graduation requirement fulfillment: {_preview_grad_placed}/{_preview_grad_req} ({100*_preview_grad_placed/_preview_grad_req:.1f}%)" if _preview_grad_req else "  Graduation requirement fulfillment: N/A")
@@ -2752,7 +2767,7 @@ _ap_honors_placed = 0
 for _pid in students:
     for _cid in sreq[_pid]:
         _g = grade.get(str(_pid), 0)
-        if _g and _is_grad_req_dept(_cid, _g):
+        if _g and _is_grad_req_dept(_cid, _g, pid=_pid):
             _grad_req_requested += 1
             if _cid in assign.get(_pid, {}):
                 _grad_req_placed += 1
@@ -3170,8 +3185,8 @@ try:
             alt_dept = alt_sec['dept']
             alt_prio = prio(alt_sec['code'])
             alt_g = grade.get(str(pid_rank), 0)
-            is_grad_req = _is_grad_req_dept(alt_sec['code'], alt_g) if alt_g else False
-            bumped_is_grad = _is_grad_req_dept(bumped_code, alt_g) if alt_g else False
+            is_grad_req = _is_grad_req_dept(alt_sec['code'], alt_g, pid=pid_rank) if alt_g else False
+            bumped_is_grad = _is_grad_req_dept(bumped_code, alt_g, pid=pid_rank) if alt_g else False
 
             if alt_dept == bumped_dept and alt_prio == bumped_prio:
                 return 0  # Same subject, same rigor
