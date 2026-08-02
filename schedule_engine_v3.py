@@ -334,6 +334,7 @@ for r in range(3, _t7ws_ci.max_row + 1):
 
 _t7wb_ci.close()
 print(f"  Courses loaded from Template 7: {len(course_info)}")
+HARD_CAP_ENFORCEMENT = True
 
 # ── Semester designations ──
 _semester_designations = {}
@@ -1865,6 +1866,10 @@ while _placed_count_b < len(_all_requests):
                 break
             continue
         opts = sec_by_code[cid]
+        if HARD_CAP_ENFORCEMENT:
+            _hc_opts = [sid for sid in opts if secfill[sid] < sections[sid]['cap']]
+            if _hc_opts:
+                opts = _hc_opts
         best = min(opts, key=lambda sid: (
             added_conflicts(pid, sid),
             max(0, secfill[sid] + 1 - sections[sid]['cap']),
@@ -1922,7 +1927,12 @@ def resolve_student(pid):
         if i == len(others):
             return True
         c = others[i]
-        opts = sorted(sec_by_code.get(c, []),
+        _csp_opts = sec_by_code.get(c, [])
+        if HARD_CAP_ENFORCEMENT:
+            _csp_hc = [sid for sid in _csp_opts if secfill[sid] < sections[sid]['cap']]
+            if _csp_hc:
+                _csp_opts = _csp_hc
+        opts = sorted(_csp_opts,
                        key=lambda sid: (secfill[sid] >= sections[sid]['cap'], secfill[sid]))
         for sid in opts:
             cells = occ_cells(sid)
@@ -2185,7 +2195,12 @@ def full_reseat():
                     add_place(pid, cid, min(sec_by_code[cid],
                               key=lambda sid: (added_conflicts(pid, sid), secfill[sid])))
                 continue
-            add_place(pid, cid, min(sec_by_code[cid], key=lambda sid: (
+            _fr_opts = sec_by_code[cid]
+            if HARD_CAP_ENFORCEMENT:
+                _fr_hc = [sid for sid in _fr_opts if secfill[sid] < sections[sid]['cap']]
+                if _fr_hc:
+                    _fr_opts = _fr_hc
+            add_place(pid, cid, min(_fr_opts, key=lambda sid: (
                 added_conflicts(pid, sid),
                 max(0, secfill[sid] + 1 - sections[sid]['cap']),
                 secfill[sid])))
@@ -2254,6 +2269,8 @@ def full_reseat():
         for alt in sec_by_code.get(cid, []):
             if any(x in used for x in occ_cells(alt)):
                 continue
+            if HARD_CAP_ENFORCEMENT and secfill[alt] >= sections[alt]['cap']:
+                continue
             sc = (max(0, secfill[alt] + 1 - sections[alt]['cap']), secfill[alt])
             if bsc is None or sc < bsc:
                 bsc, best = sc, alt
@@ -2277,6 +2294,8 @@ def full_reseat():
         best, bsc = None, None
         for alt in sec_by_code.get(cid, []):
             if any(x in used for x in occ_cells(alt)):
+                continue
+            if HARD_CAP_ENFORCEMENT and secfill[alt] >= sections[alt]['cap']:
                 continue
             sc = (max(0, secfill[alt] + 1 - sections[alt]['cap']), secfill[alt])
             if bsc is None or sc < bsc:
@@ -2310,7 +2329,12 @@ def full_reseat_fast():
                     add_place(pid, cid, min(sec_by_code[cid],
                               key=lambda sid: (added_conflicts(pid, sid), secfill[sid])))
                 continue
-            add_place(pid, cid, min(sec_by_code[cid], key=lambda sid: (
+            _fr2_opts = sec_by_code[cid]
+            if HARD_CAP_ENFORCEMENT:
+                _fr2_hc = [sid for sid in _fr2_opts if secfill[sid] < sections[sid]['cap']]
+                if _fr2_hc:
+                    _fr2_opts = _fr2_hc
+            add_place(pid, cid, min(_fr2_opts, key=lambda sid: (
                 added_conflicts(pid, sid),
                 max(0, secfill[sid] + 1 - sections[sid]['cap']),
                 secfill[sid])))
@@ -2367,6 +2391,8 @@ def full_reseat_fast():
             best, bsc = None, None
             for alt in sec_by_code.get(cid, []):
                 if any(x in used for x in occ_cells(alt)):
+                    continue
+                if HARD_CAP_ENFORCEMENT and secfill[alt] >= sections[alt]['cap']:
                     continue
                 sc = (max(0, secfill[alt] + 1 - sections[alt]['cap']), secfill[alt])
                 if bsc is None or sc < bsc:
