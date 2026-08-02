@@ -399,7 +399,17 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Unfulfilled Requests Report generated (Excel): 301 requests, 290 students, sorted by priority band
 - [x] 9 interactive HTML boards generated: clash report, conflict console, recommendations, singleton board, constraint builder, master schedule builder, credit validation, data audit, dashboard index
 
-### 6.4 Future
+### 6.4 In Progress (v2.2 — Pathway Course Elevation)
+
+- [ ] Pathway detection from Historical Grades: identify each student's pathway (Business, CS, Engineering, Fine Arts, Music Arts, Communication Arts, Theater) using completed course history
+- [ ] Detection rules: G12 = 2+ courses, G11 = 1+ course, G10 = G9 history + G10 requests, G9 = elective request match. Tie-break = most matches. All LEO = Business pathway
+- [ ] Add `pathway_courses` mapping to `course_priorities.json` (8 pathways, 45 course codes total)
+- [ ] Update Template 8 Pathway column: replace Y/N with pathway name for all 805 students
+- [ ] Modify `student_prio()`: elevate pathway courses to Level 2 (No Alternative) for enrolled pathway students
+- [ ] Target: reduce 229 pathway-department clashes (76% of total 301) by giving pathway courses higher seating priority
+- [ ] 6 pathway courses not in Template 7: App Development, Chorus, Music Service, Music Service Project, Tech Theater Level I, The Story Lab
+
+### 6.5 Future
 
 - [ ] Admin interface for entering/adjusting all 10 priority inputs
 - [ ] Real-time constraint count and weighted sum display during data entry

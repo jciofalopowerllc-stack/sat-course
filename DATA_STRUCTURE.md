@@ -85,6 +85,60 @@ This is the rulebook — not a parent, not a shared resource, not a historical f
 - **Resource Room Exception:** World Language waived, 125 total credits (vs. 140 standard)
 - **PE Exceptions (grades 9-10):** Band, String Orchestra, and other special circumstances may exempt students from PE
 
+### Pathway Programs (SSP — Student Special Population)
+
+Don Bosco Prep has 8 elective pathway programs. A student enrolled in a pathway must complete a sequence of courses across their 4 years. Pathway courses are **not optional electives** for pathway students — they are required for pathway completion and cannot be substituted.
+
+**Pathway Detection Rules (using Historical Grades + Course Requests):**
+
+| Grade | Rule |
+|-------|------|
+| 12 | Completed 2+ courses from a pathway in prior 3 years → enrolled in that pathway |
+| 11 | Completed 1+ course from a pathway in prior 3 years → enrolled in that pathway |
+| 10 | Completed a pathway course in grade 9 AND grade 10 requests match same pathway → that pathway. If grade 10 requests match a different pathway → assign to grade 10 pathway |
+| 9 | Elective course request matching a pathway → auto-enroll in that pathway |
+
+**Tie-breaking:** If a student's history matches multiple pathways, assign to the pathway with the most matches.
+
+**LEO Rule:** All LEO students are in the Business pathway. Not all Business pathway students are in LEO.
+
+**Engine Treatment:** Pathway courses are elevated to Level 2 (No Alternative) in the pyramid priority system for students enrolled in that pathway. For non-pathway students requesting the same course, it remains Level 4 (Flexible).
+
+**Pathway Course Code Mapping:**
+
+| # | Pathway | Course Codes |
+|---|---------|-------------|
+| 1 | **Business** | 708 (Introduction to Business), 726 (Business Concepts), 727 (Sports and Entertainment Marketing), 729 (AP Business with Personal Finance), 732 (Business Law), 742 (Economics), 752 (Economics H), 757 (International Business Strategies) |
+| 2 | **L.E.O.** | 708, 726, 729, 734 (LEO Program I), 745 (LEO Program II), 742, 752, 765 (AP Macroeconomics), 766 (AP Microeconomics) — subset of Business pathway |
+| 3 | **Computer Science** | 472 (Web Design), 473 (Introduction to Programming), 490 (AP Computer Science A), 491 (AP Computer Science Principles), 494 (Applied Programming), 496 (AP Cybersecurity) |
+| 4 | **Engineering** | 570 (Introduction to Robotics), 580 (Robotics Engineering), 585 (Robotics Design), 590 (Robotics Project), 595 (Engineering Design) |
+| 5 | **Fine Arts** | 241 (Studio Art I), 242 (Studio Art II), 243 (Studio Art III), 248 (Adv Drawing), 249 (Adv Painting), 253 (AP Drawing), 254 (AP 2-D Art and Design), 255 (AP 3-D Art and Design), 764 (AP Art History) |
+| 6 | **Music Arts** | 201 (Introduction to Guitar), 203 (Guitar Ensemble), 206 (Band), 209 (String Orchestra), 220 (Music Theory) |
+| 7 | **Communication Arts** | 2014 (Multi-Media Production), 2024 (TV/Film Process and Principles), 2034 (TV/Film Production & Editing I), 2044 (TV/Film Production II), 2054 (Digital Media) |
+| 8 | **Theater** | 225 (Introduction to Theater), 227 (Intermediate Theater), 228 (Adv Theater Production) |
+
+**Courses NOT in Template 7 (not schedulable):** App Development (CS Pathway), Chorus (Music), Music Service (Music), Music Service Project (Music), Tech Theater Level I (Theater), The Story Lab: Analyze, Create, & Act (Theater)
+
+**Grade-Level Pathway Sequences (from 2026-2027 Course Catalog):**
+
+**Business:** G9: 708 → G10: 729, 727, 726 → G11: 732, 757, 727 → G12: 742, 752, 708, 732
+
+**L.E.O.:** G9: 708 → G10: 729, 726 → G11: 734 → G12: 745, 742, 752, 765, 766
+
+**Computer Science:** G9: 473 → G10: 473, 494, 491 → G11: 494, 491, 490 → G12: 496 (+ App Development, not in Template 7)
+
+**Engineering:** G9: 570 → G10: 580 → G11: 585, 590 → G12: 590, 595
+
+**Fine Arts:** G9: 241 → G10: 242, 248, 249 → G11: 243, 248, 249, 253, 254, 255, 764 → G12: 248, 249, 253, 254, 255, 764
+
+**Music Arts:** G9-G12: 206 or 209 or 203 or 201 (choose one instrument/ensemble, continue all 4 years) + 220 (Music Theory, G10+)
+
+**Communication Arts:** G9: 2014, 2054 → G10: 2024, 2054 → G11: 2034, 2054 → G12: 2054, 2044
+
+**Theater:** G9: 225 → G10: 225, 227 → G11: 227, 228 → G12: 228
+
+**Source:** Don Bosco Preparatory High School Course Catalog 2026-2027, pages 4-6 (Elective Course Progression) and pages 46-49 (Pathway Flowcharts)
+
 ---
 
 ## Universal Rules
@@ -122,7 +176,7 @@ The engine processes each student's data in this order:
 | 13 | Assign Point Value | Student > Cohort Priority Value | Points assigned if LEO II = Y |
 | 14 | Confirm | Student > LEO I (Y/N) | Cross-File Validation confirms Special Student Population membership |
 | 15 | Confirm | Student > Academic Support (Y/N) | Cross-File Validation confirms Special Student Population membership |
-| 16 | Confirm | Student > Pathway (Y/N) | Cross-File Validation confirms Special Student Population membership |
+| 16 | Confirm | Student > Pathway (name or N) | Cross-File Validation confirms pathway membership using Historical Grades + Course Requests. Pathway name identifies which program (Business, Engineering, CS, etc.) — used to elevate pathway courses to Level 2 for that student |
 | 17 | Assign Point Value | Student > Special Student Population Priority Value | Points assigned based on Special Student Population programs — stacks with Cohort unless LEO I → LEO II (same program, no stacking) |
 | 18 | **Calculate** | **Student > Raw Priority Value** | **Grade Level + Cohort (if any) + Special Student Population (if any) — who the student IS. FIXED for the school year. No course, teacher, or room data. Saved to student's profile by school year.** |
 | 19 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — includes the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only |
@@ -193,7 +247,7 @@ The student data is split across two sheets in the same file. Sheet 1 holds stud
 | F | LEO II | REQUIRED | Y/N — cohort membership |
 | G | LEO I | REQUIRED | Y/N — Special Student Population membership |
 | H | Academic Support | REQUIRED | Y/N — Special Student Population membership |
-| I | Pathway | REQUIRED | Y/N — Special Student Population membership |
+| I | Pathway | REQUIRED | Pathway name (Business, Computer Science, Engineering, Fine Arts, Music Arts, Communication Arts, Theater) or N — detected from Historical Grades + Course Requests |
 | J | Cohort Name | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not in a cohort |
 | K | Cohort Locked | OPTIONAL | Y/N — confirms cross-file cohort result. If Y and data doesn't match, engine flags conflict for user to resolve. Null = not applicable |
 

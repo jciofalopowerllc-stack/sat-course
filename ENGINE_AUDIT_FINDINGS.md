@@ -126,12 +126,49 @@ Fixes were applied in this order:
 7. **IMP-4** — Priority-weighted conflict estimation
 8. **BUG-6** — Graduation requirement misclassification fix (2026-08-02)
 9. **DOC** — All project documents updated
+10. **IMP-5** — Pathway course elevation (2026-08-02) — IN PROGRESS
+
+---
+
+## Upcoming: IMP-5 — Pathway Course Elevation
+
+**Severity:** High — 229 of 301 clashes (76%) are in pathway department courses
+
+**Problem:** The engine treats pathway courses as Level 4 (Flexible) electives for all students, but pathway students cannot substitute these courses — they are required for pathway completion. Template 8's Pathway column is Y/N only (no pathway name), only populated for grades 11-12, and the SSP column does not exist in the file.
+
+**Solution:** Use Historical Grades + Course Requests to detect each student's pathway membership, then elevate their pathway courses to Level 2 (No Alternative) in `student_prio()`.
+
+**Pathway Detection Rules:**
+- Grade 12: Completed 2+ courses from a pathway in prior 3 years
+- Grade 11: Completed 1+ course from a pathway in prior 3 years
+- Grade 10: Completed pathway course in G9 + G10 requests match same pathway (or assign to G10 pathway if different)
+- Grade 9: Elective course request matching a pathway → auto-enroll
+- Tie-breaking: Most matches wins
+- LEO rule: All LEO students are Business pathway
+
+**8 Pathways identified from 2026-2027 Course Catalog:**
+1. Business: 708, 726, 727, 729, 732, 742, 752, 757
+2. L.E.O.: 708, 726, 729, 734, 745, 742, 752, 765, 766 (subset of Business)
+3. Computer Science: 472, 473, 490, 491, 494, 496
+4. Engineering: 570, 580, 585, 590, 595
+5. Fine Arts: 241, 242, 243, 248, 249, 253, 254, 255, 764
+6. Music Arts: 201, 203, 206, 209, 220
+7. Communication Arts: 2014, 2024, 2034, 2044, 2054
+8. Theater: 225, 227, 228
+
+**Impact:** Expected to reduce clashes significantly by ensuring pathway courses compete at Level 2 priority during Phase B seating, preventing graduation requirements from saturating all periods before pathway courses can be placed.
+
+**Implementation:**
+1. Add `pathway_courses` mapping to `course_priorities.json`
+2. Add pathway detection logic to engine startup (reads Historical Grades)
+3. Update Template 8 Pathway column: replace Y/N with pathway name
+4. Modify `student_prio()` to elevate pathway courses to Level 2 for enrolled students
 
 ---
 
 ## Resolution Status
 
-All findings have been resolved.
+All audit findings have been resolved. IMP-5 (Pathway Course Elevation) is in progress.
 
 | Finding | Status | Result |
 |---------|--------|--------|
@@ -148,6 +185,7 @@ All findings have been resolved.
 | DISC-1: Grade-dependent P5 | DOCUMENTED | Correct per graduation rules — not a bug |
 | DISC-2: AP elective weight | RESOLVED | Level 2 (No Alternative) in pyramid system |
 | DISC-3: Three-band system | SUPERSEDED | Four-level pyramid system implemented |
+| IMP-5: Pathway course elevation | IN PROGRESS | Detect pathway from Historical Grades, elevate to Level 2 |
 
 ### Final Results
 
