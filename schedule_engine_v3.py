@@ -44,6 +44,93 @@ OUTPUT_DIR = os.path.dirname(__file__) or '.'
 PERIODS = list('ABCDEFG')
 
 # ============================================================
+# REPORT DEFINITIONS — names, formats, and column layouts
+# ============================================================
+REPORT_FORMATS = {
+    'master_section_report': {
+        'filename': 'Master_Section_Report_2026_27.xlsx',
+        'title': 'Master Section Report',
+        'description': 'One row per section showing teacher, period, term, enrollment.',
+        'source': 'schedule_solution_v3.json + Template 6 (teacher IDs)',
+        'columns': [
+            {'header': 'Teacher ID', 'width': 12, 'align': 'center'},
+            {'header': 'Teacher Name', 'width': 25, 'align': 'left'},
+            {'header': 'Period', 'width': 8, 'align': 'center'},
+            {'header': 'Term', 'width': 6, 'align': 'center', 'values': 'S1 | S2 | FY'},
+            {'header': 'Course Code', 'width': 12, 'align': 'center'},
+            {'header': 'Section #', 'width': 10, 'align': 'center'},
+            {'header': 'Course Title', 'width': 40, 'align': 'left'},
+            {'header': 'Section Enrollment', 'width': 18, 'align': 'center'},
+        ],
+        'sort_order': 'Teacher Name → Period',
+        'features': ['auto-filter', 'freeze row 1', 'alternating row shading'],
+    },
+    'teacher_schedule_review': {
+        'filename': 'Teacher_Schedule_Review_and_Tally.xlsx',
+        'title': 'Teacher Schedule Review & Tally',
+        'description': 'Side-by-side 2025-26 vs 2026-27 schedules per teacher with tally.',
+        'source': 'schedule_solution_v3.json + 202526_Master_Schedule_With_Teacher_ID.xlsx',
+        'layout': {
+            'col_A': 'Teacher Name (repeated per period row)',
+            'col_B': 'Period (A-G)',
+            'col_C': 'Spacer (gray)',
+            'col_D': '2026-27 S1 courses',
+            'col_E': '2026-27 S2 courses',
+            'col_F': 'Spacer (gray)',
+            'col_G': '2025-26 S1 courses',
+            'col_H': '2025-26 S2 courses',
+        },
+        'per_teacher_rows': '7 period rows + TOTAL SECTIONS + TOTAL CONSECUTIVE PERIODS + blank separator',
+        'tally_rules': 'Red font when consecutive periods >= 4',
+        'features': ['UNASSIGNED in bold for empty slots', 'teacher ID row'],
+    },
+    'remaining_clashes': {
+        'filename': 'Remaining_Clashes_v2.5.xlsx',
+        'title': 'Remaining Clashes',
+        'description': 'All unplaced student-course pairs with root cause analysis.',
+        'source': 'schedule_solution_v3.json clashes array',
+        'columns': [
+            {'header': 'Student ID', 'width': 12, 'align': 'center'},
+            {'header': 'Student Name', 'width': 22, 'align': 'left'},
+            {'header': 'Grade', 'width': 8, 'align': 'center'},
+            {'header': 'Course Code', 'width': 12, 'align': 'center'},
+            {'header': 'Course Title', 'width': 35, 'align': 'left'},
+            {'header': 'Priority', 'width': 8, 'align': 'center'},
+            {'header': 'Priority Band', 'width': 18, 'align': 'center'},
+            {'header': 'Grad Req?', 'width': 10, 'align': 'center', 'values': 'Yes | No'},
+            {'header': 'Lost Period', 'width': 12, 'align': 'center'},
+            {'header': 'Lost Semester', 'width': 12, 'align': 'center'},
+            {'header': 'Root Cause', 'width': 20, 'align': 'left'},
+            {'header': 'Blocking Courses', 'width': 45, 'align': 'left'},
+        ],
+        'sort_order': 'Effective Priority (desc) → Grade',
+        'tabs': ['Remaining Clashes (detail)', 'Summary (by grade, band, grad req count)'],
+        'features': ['auto-filter', 'freeze row 1', 'alternating row shading', 'dark-red header'],
+    },
+    'student_schedule_report': {
+        'filename': 'Student_Schedule_Report_2026_27.xlsx',
+        'title': 'Student Schedule Report',
+        'description': 'Complete student schedules with S1/S2 split per period, credits, and clashes.',
+        'source': 'schedule_solution_v3.json assignments + Template 7 (credits)',
+        'layout': {
+            'row_1': 'Merged period headers (Period A through Period G)',
+            'row_2': 'S1 / S2 sub-headers under each period',
+            'col_A': 'Student ID',
+            'col_B': 'Student Name',
+            'col_C': 'Grade',
+            'cols_D_Q': 'Period A(S1) / Period A(S2) through Period G(S1) / Period G(S2) — 14 columns',
+            'col_R': 'Total Sections',
+            'col_S': 'Total Credits',
+            'col_T': 'Clashes (unplaced courses listed)',
+        },
+        'cell_format': 'CourseCode: CourseTitle (Credits cr)',
+        'empty_cell': 'UNASSIGNED (bold red)',
+        'sort_order': 'Grade → Student Name',
+        'features': ['auto-filter', 'freeze row 2', 'alternating row shading', 'merged period headers'],
+    },
+}
+
+# ============================================================
 # LOAD PRIORITY SCALE AND 8-INPUT SCORING
 # ============================================================
 with open(os.path.join(os.path.dirname(__file__) or '.', 'course_priorities.json')) as _pf:
