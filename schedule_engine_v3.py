@@ -152,6 +152,25 @@ REPORT_FORMATS = {
         'tabs': ['Incomplete Schedules (detail)', 'Summary (by grade, slot distribution)'],
         'features': ['auto-filter', 'freeze row 2', 'alternating row shading', 'merged period headers', 'dark-red header'],
     },
+    'course_request_report': {
+        'filename': 'Course_Request_Report_2026_27.xlsx',
+        'title': 'Course Request Report',
+        'description': 'Per-course fulfillment: total requests, scheduled, unscheduled, percentage.',
+        'source': 'Template 2 (requests) + schedule_solution_v3.json assignments + Template 7 (course info)',
+        'columns': [
+            {'header': 'Course Code', 'width': 13, 'align': 'center'},
+            {'header': 'Course Title', 'width': 42, 'align': 'left'},
+            {'header': 'Department', 'width': 22, 'align': 'left'},
+            {'header': 'Total Requests', 'width': 16, 'align': 'center'},
+            {'header': 'Requests Scheduled', 'width': 18, 'align': 'center'},
+            {'header': 'Requests Unscheduled', 'width': 20, 'align': 'center', 'font_rule': 'bold red if > 0'},
+            {'header': '% Scheduled', 'width': 14, 'align': 'center', 'format': '0.0%',
+             'font_rule': 'green if 100%, red if < 75%, amber if < 90%'},
+        ],
+        'sort_order': 'Course Code (numeric ascending)',
+        'grand_total_row': 'Bottom row with GRAND TOTAL label, blue fill',
+        'features': ['auto-filter', 'freeze row 1', 'alternating row shading'],
+    },
 }
 
 # ============================================================

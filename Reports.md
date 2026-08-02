@@ -175,7 +175,30 @@ Only students who have at least one UNASSIGNED period/semester slot. Same layout
 
 ---
 
-## 6. Preflight Validation Report
+## 6. Course Request Report
+
+**File:** `Course_Request_Report_2026_27.xlsx`
+
+Per-course fulfillment showing total requests vs scheduled vs unscheduled with percentage.
+
+| Column | Header | Width | Align | Notes |
+|--------|--------|-------|-------|-------|
+| A | Course Code | 13 | Center | Numeric, ascending |
+| B | Course Title | 42 | Left | From Template 7 |
+| C | Department | 22 | Left | From Template 7 |
+| D | Total Requests | 16 | Center | Count of students requesting this course |
+| E | Requests Scheduled | 18 | Center | Count successfully placed |
+| F | Requests Unscheduled | 20 | Center | Bold red if > 0 |
+| G | % Scheduled | 14 | Center | Format: 0.0% — green if 100%, red if < 75%, amber if < 90% |
+
+- **Grand Total Row:** Bottom row with "GRAND TOTAL" label, blue fill, all columns summed
+- **Sort:** Course Code (numeric ascending)
+- **Source:** Template 2 (student requests) + `schedule_solution_v3.json` assignments + Template 7 (course info)
+- **Features:** Auto-filter, freeze row 1, alternating row shading
+
+---
+
+## 7. Preflight Validation Report
 
 **File:** `Preflight_Validation_Report.xlsx`
 
