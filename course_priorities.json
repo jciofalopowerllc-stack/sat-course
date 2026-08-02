@@ -1088,6 +1088,17 @@
     "766",
     "2014"
   ],
+  "pathway_courses": {
+    "Business": [708, 726, 727, 729, 732, 742, 752, 757],
+    "LEO": [708, 726, 729, 734, 745, 742, 752, 765, 766],
+    "Computer Science": [472, 473, 490, 491, 494, 496],
+    "Engineering": [570, 580, 585, 590, 595],
+    "Fine Arts": [241, 242, 243, 248, 249, 253, 254, 255, 764],
+    "Music Arts": [201, 203, 206, 209, 220],
+    "Communication Arts": [2014, 2024, 2034, 2044, 2054],
+    "Theater": [225, 227, 228],
+    "_notes": "LEO is a subset of Business. All LEO students are Business pathway. Course codes from 2026-2027 Course Catalog pathway flowcharts."
+  },
   "graduation_requirements": {
     "grades_9_10_11": {
       "required_departments": [

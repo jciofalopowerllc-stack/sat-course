@@ -54,6 +54,11 @@ for _plevel, _pinfo in _prio_data['scale'].items():
         COURSE_PRIORITY[str(_pc)] = int(_plevel)
 SINGLETON_COURSES = set(str(c) for c in _prio_data.get('singleton_courses', []))
 
+# ── Pathway Course Mapping ──
+_pathway_cfg = _prio_data.get('pathway_courses', {})
+_pathway_cfg.pop('_notes', None)
+PATHWAY_COURSE_SETS = {name: set(str(c) for c in codes) for name, codes in _pathway_cfg.items()}
+
 # ── Graduation-Requirement Subject Mapping ──
 # Required departments by grade level (from DON_BOSCO_PREP_REQUIRED_SUBJECTS_AND_CREDITS.xlsx)
 # Priority is DYNAMIC per student: a course's effective priority depends on whether
@@ -115,7 +120,7 @@ _COURSE_SECTION_COUNTS = {}
 def student_prio(pid, cid):
     """Pyramid level for a student-course placement.
     Level 1 (100+): graduation requirement for this student's grade.
-    Level 2 (50+):  no-alternative elective — singleton or P5, no substitute exists.
+    Level 2 (50+):  no-alternative elective — singleton, P5, or pathway course for enrolled student.
     Level 3 (25+):  limited-choice elective — P3+ with 3 or fewer sections.
     Level 4 (0-5):  flexible elective — many sections, easy to reschedule."""
     base = prio(cid)
@@ -124,6 +129,12 @@ def student_prio(pid, cid):
         return LEVEL_GRAD_REQ + base
     if base >= 5 or str(cid) in SINGLETON_COURSES:
         return LEVEL_NO_ALTERNATIVE + base
+    sp = student_profiles.get(str(pid), {})
+    pw = sp.get('pathway_name', 'N')
+    if pw != 'N':
+        pw_codes = PATHWAY_COURSE_SETS.get(pw, set())
+        if str(cid) in pw_codes:
+            return LEVEL_NO_ALTERNATIVE + base
     if base >= 3 and _COURSE_SECTION_COUNTS.get(str(cid), 0) <= 3:
         return LEVEL_LIMITED_CHOICE + base
     return LEVEL_FLEXIBLE + base
@@ -615,7 +626,9 @@ try:
         _ssp_col = _t8col('SSP')
         _grade_col = _t8col('Grade Level')
         is_leo = str(t8_profile_sheet.cell(r, _leo_col).value or 'N').upper() == 'Y' if _leo_col else False
-        is_pathway = str(t8_profile_sheet.cell(r, _pathway_col).value or 'N').upper() == 'Y' if _pathway_col else False
+        _pathway_raw = str(t8_profile_sheet.cell(r, _pathway_col).value or 'N').strip() if _pathway_col else 'N'
+        is_pathway = _pathway_raw not in ('N', 'n', '')
+        _pathway_name = _pathway_raw if is_pathway else 'N'
         is_acad_support = str(t8_profile_sheet.cell(r, _acad_col).value or 'N').upper() == 'Y' if _acad_col else False
         ssp_val = t8_profile_sheet.cell(r, _ssp_col).value if _ssp_col else None
         ssp_score = int(ssp_val) if ssp_val and str(ssp_val).strip().isdigit() else None
@@ -632,6 +645,7 @@ try:
         student_profiles[sid_str] = {
             'is_leo': is_leo,
             'is_pathway': is_pathway,
+            'pathway_name': _pathway_name,
             'is_acad_support': is_acad_support,
             'ssp': ssp_score,
             'grade': str(grade_val or ''),
@@ -640,7 +654,15 @@ try:
     _leo_count = sum(1 for sp in student_profiles.values() if sp['is_leo'])
     _pathway_count = sum(1 for sp in student_profiles.values() if sp['is_pathway'])
     _acad_count = sum(1 for sp in student_profiles.values() if sp['is_acad_support'])
+    _pw_names = {}
+    for sp in student_profiles.values():
+        pn = sp.get('pathway_name', 'N')
+        if pn != 'N':
+            _pw_names[pn] = _pw_names.get(pn, 0) + 1
+    _pw_summary = ', '.join(f"{k}={v}" for k, v in sorted(_pw_names.items(), key=lambda x: -x[1]))
     print(f"  Student profiles loaded: {len(student_profiles)} (LEO={_leo_count}, Pathway={_pathway_count}, AcadSupport={_acad_count})")
+    if _pw_summary:
+        print(f"  Pathway breakdown: {_pw_summary}")
 except FileNotFoundError:
     print("  Template 8 not found — skipping student profiles")
 except Exception as _e:
