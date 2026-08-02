@@ -74,9 +74,16 @@ This requires its own file because a co-schedule group can contain 2, 3, or 4 co
 
 | # | File | What it holds |
 |---|------|--------------|
-| 8 | **School Settings** | Credit cap (35), periods (A-G), graduation requirements by grade level |
+| 8 | **School Settings** | Credit cap (35), periods (A-G), graduation requirements by grade level. Stored in `course_priorities.json` |
 
 This is the rulebook — not a parent, not a shared resource, not a historical file. It defines the constraints the engine must enforce for the entire school.
+
+**Graduation Requirements by Grade Level (Don Bosco Prep):**
+- **Grades 9-10:** English, Mathematics, Science, Social Studies, World Language, Theology, Physical Education (7 required departments)
+- **Grade 11:** English, Mathematics, Science, Social Studies, World Language, Theology (6 required departments — PE not required)
+- **Grade 12:** English, Mathematics, Theology (3 required), plus Social Studies OR Business (1 of 2). No Science, World Language, or PE requirement for seniors.
+- **Resource Room Exception:** World Language waived, 125 total credits (vs. 140 standard)
+- **PE Exceptions (grades 9-10):** Band, String Orchestra, and other special circumstances may exempt students from PE
 
 ---
 
@@ -430,7 +437,7 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 | H | Max Enrollment per Section | REQUIRED | Seat cap (e.g., 25) |
 | I | Singleton | REQUIRED | Y/N — only one section exists |
 | J | AP | REQUIRED | Y/N — is this an AP course |
-| K | Graduation Requirement | OPTIONAL | Subject area satisfied (e.g., English, Math, Science, History, Theology) — null = elective |
+| K | Graduation Requirement | OPTIONAL | Subject area satisfied (e.g., English, Mathematics, Science, Social Studies, World Language, Theology, Physical Education) — null = elective |
 | L | Cohort | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not a cohort course |
 | M | NCAA | OPTIONAL | Y/N — is this course NCAA approved — null = not applicable |
 | N | Prerequisites | OPTIONAL | Course codes, comma-separated (e.g., 110, 421) — null = none |
@@ -438,7 +445,17 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 
 15 columns total.
 
-**Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English" or "Theology"). If the field is null, the course is an elective. The engine uses this field combined with the School Settings file (graduation requirements by grade level) to verify that every student's course requests include all required subject areas for their grade.
+**Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English", "World Language", "Physical Education"). If the field is null, the course is an elective. The engine uses the course's department name (matched against `course_priorities.json` graduation requirement rules) to determine if a course is a graduation requirement for a specific student's grade level.
+
+**Graduation requirements are grade-specific:**
+
+| Grades | Required Departments |
+|--------|---------------------|
+| 9-10 | English, Mathematics, Science, Social Studies, World Language, Theology, Physical Education |
+| 11 | English, Mathematics, Science, Social Studies, World Language, Theology |
+| 12 | English, Mathematics, Theology, Social Studies OR Business |
+
+Physical Education is required for grades 9-10 only. Exceptions exist for students enrolled in Band, String Orchestra, and other special circumstances. World Language and Science are required through grade 11 but not grade 12. Department names in the config must exactly match Template 7's Department column (e.g., "World Language" not "Language").
 
 **Columns removed from the original Template 7 (not needed by Don Bosco engine):**
 

@@ -4,7 +4,7 @@
 **Developer:** JCiofalo Power LLC
 **Pilot School:** Don Bosco Preparatory High School (2026-27 Academic Year)
 **Version:** 1.0
-**Last Updated:** 2026-07-29
+**Last Updated:** 2026-08-02
 
 ---
 
@@ -18,13 +18,14 @@ Don Bosco Preparatory High School serves as the pilot implementation for the 202
 
 | Parameter | Value |
 |-----------|-------|
-| Students | 800 |
-| Courses | 141 |
-| Sections | 350 |
-| Teachers | 64 |
+| Students | 805 |
+| Courses | 144 |
+| Sections | 340 |
+| Teachers | 62 |
 | Periods | 7 (A–G) |
 | Semesters | 2 (S1, S2) |
-| Course Requests | 6,512 |
+| Course Requests | 6,530+ |
+| Rooms | 48 |
 
 ### 1.1 Design Principles
 
@@ -43,26 +44,28 @@ The core algorithm runs in four phases:
 
 | Phase | Name | Function |
 |-------|------|----------|
-| A | Assign Periods | Place 350 sections across 7 periods (A–G) using multi-restart greedy optimization |
-| B | Seat Students | Place 6,512 course requests using pyramid-level ordering with batch recalculation and ripple scoring |
+| A | Assign Periods | Place 340 sections across 7 periods (A–G) using multi-restart greedy optimization |
+| B | Seat Students | Place 6,530+ course requests using pyramid-level ordering with batch recalculation and ripple scoring |
 | C | Bump Conflicts | Resolve remaining conflicts by bumping lower-priority courses, with CSP recovery |
 | D | Multi-Restart Optimization | 16 random seeds × 60-iteration priority-aware optimization, keep best solution |
 
-**Current Performance:** Under active optimization. Baseline before audit fixes: 325 clashes, 95.1% placement. Three-band priority system reduced to 240 clashes. Full pyramid-level + ripple scoring system committed, pending first run.
+**Current Performance:** 301 clashes, 95.1% placement, 0 graduation requirement clashes, 0 P4+ clashes. All 5,033 graduation requirements fulfilled (100%). All 2,104 AP/Honors placements fulfilled (100%). Remaining 301 clashes are electives only (253 P1, 40 P2, 8 P3).
 
 ### 2.2 Data Inputs
 
-| Source File | Contents |
-|-------------|----------|
-| Course Sectioning Template | Course codes, titles, departments, credits, types, section counts, teacher assignments, rooms |
-| Student Course Requests | Student ID, grade, 8 course requests per student (800 students) |
-| LEO II Cohorts A & B | 36 students in LEO learning community with pinned schedules |
-| Principals Prescribed Course Sections | Authoritative section/teacher/period assignments |
-| Semester Designations | S1/S2 locks, full freedom courses, split rules |
-| Course Priorities | 0–5 priority scale for 141 courses |
-| Co-Schedule Groups | Course groups that must share a period (AP Art, Guitar, Theater, etc.) |
-| Teacher Profiles (Template 6) | 48 columns: departments, load caps, per-semester 6-period approval, period availability, SSP Teacher flag, certifications, computed MTP |
-| Student Profiles (Template 8) | 21 columns: grade, SSP, multi-membership flags (LEO, Pathway, Academic Support), IEP, cohort |
+| Source File | Template | Contents |
+|-------------|----------|----------|
+| Student Course Requests | Template 2 | 2-column format: Student ID, Course Code. 6,530+ requests (805 students) |
+| Co-Schedule Groups | Template 4 | 4 columns: Group Name, Course Code, Teacher ID, Prescribed Room. 7 groups, 16 entries |
+| Teacher Profiles | Template 6, Sheet 1 | 17 columns: ID, name, department, load caps, per-semester 6-period approval, period availability (A-G), SSP Teacher flag, co-schedule approval. 62 teachers |
+| Teacher-Course Assignments | Template 6, Sheet 2 | 6 columns: Teacher ID, Course Code, Prescribed Room/Period/Term/Cohort. 340 assignments |
+| Course Profiles | Template 7 | 15 columns: code, title, department, credits, term, grade levels, sections, max enrollment, singleton, AP, graduation requirement, cohort, NCAA, prerequisites, corequisites. 144 courses |
+| Student Profiles | Template 8, Sheet 1 | 11 columns: ID, name, grade, NCAA, LEO II, LEO I, Academic Support, Pathway, Cohort Name, Cohort Locked. 805 students |
+| Room Profiles | Template 9 | 5 columns: Room ID, capacity, available periods, available terms, shared room. 48 rooms |
+| Historical Grades | Template_Historical_Grades | 7 columns: Student ID, School Year, Course Code, Section, Final Grade, Pass/Fail, Final Exam Grade. 10,346 records |
+| Prior Year Master Schedule | Template_Prior_Year_Master_Schedule | 8 columns: School Year, Course Code, Section, Teacher ID, Room, Period, Term, Enrollment. 398 records |
+| Course Priorities | course_priorities.json | 0–5 priority scale for 144 courses with department metadata and graduation requirement rules |
+| Semester Designations | semester_designations.json | 43 semester placement rules: pinned, prescribed S1/S2, split, builder choice |
 
 ### 2.3 Constraint System
 
@@ -71,10 +74,10 @@ The core algorithm runs in four phases:
 | Semester Lock | Course must run in S1 or S2 only (e.g., 766→S1, 765→S2) |
 | Full Freedom | Course sections split freely across semesters (e.g., 849, 851) |
 | Period Pin | Section locked to a specific period (LEO courses, co-schedule groups) |
-| Teacher Load | Max 5 periods per semester per teacher (6 with approval) |
-| Room Exclusivity | One section per room per period |
+| Teacher Load | Max 5 periods per semester per teacher (6 with approval: FY, S1-only, or S2-only) |
+| Room Exclusivity | One section per room per period (except shared rooms with capacity ≥ 100, e.g., Gymnasium) |
 | Co-Schedule | Multiple course codes share a single period (e.g., AP Art: 253, 254, 255, 764) |
-| Protected Courses (PROT) | P5 courses never bumped during conflict resolution |
+| Graduation Requirements | Grade-specific department requirements enforced via pyramid Level 1 protection |
 
 ---
 
@@ -229,22 +232,33 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 | File | Format | Purpose |
 |------|--------|---------|
-| `course_priorities.json` | JSON | Priority scale (0–5) for 141 courses with department and section metadata |
-| `semester_designations.json` | JSON | 45 semester placement rules: pinned, prescribed S1/S2, split, builder choice |
-| `schedule_solution.json` | JSON | Complete engine output: sections, student assignments, clashes, room assignments |
+| `course_priorities.json` | JSON | Priority scale (0–5) for 144 courses, department metadata, graduation requirement rules by grade level |
+| `semester_designations.json` | JSON | 43 semester placement rules: pinned, prescribed S1/S2, split, builder choice |
+| `priority_assignments.json` | JSON | Weighted scoring system: 10 input weights, per-course/student/teacher priority assignments |
+| `schedule_solution_v3.json` | JSON | Complete engine output: sections, student assignments, clashes, room assignments, stats |
 
-### 4.2 Interactive Tools
+### 4.2 Interactive Boards (9 HTML files in `boards/`)
+
+| File | Purpose |
+|------|---------|
+| `index.html` | Dashboard hub with summary stats (clashes, placement rate, students, sections) |
+| `master_schedule_builder.html` | Full course catalog (144 courses) with student request management and validation |
+| `student_clash_report.html` | Drag-and-drop schedule grid for students with conflicts, visual period/semester layout |
+| `conflict_resolution_console.html` | Course-level clash analysis with fix recommendations for affected courses |
+| `student_request_recommendations.html` | Alternative course options for bumped requests with availability details |
+| `singleton_board.html` | Scheduling grid for 47 singleton courses, teacher-period conflict view |
+| `constraint_builder.html` | Configure semester locks, period locks, and co-schedule constraints for 138 courses |
+| `credit_validation_report.html` | Students exceeding the 35-credit cap with priority-ranked drop candidates |
+| `data_source_audit_report.html` | Cross-file integrity checks and data quality findings |
+
+### 4.3 Reports
 
 | File | Format | Purpose |
 |------|--------|---------|
-| `master_schedule_builder.html` | HTML | Master worksheet with course tally, manual review, grade-level views |
-| `singleton_board.html` | HTML | Drag-and-drop scheduling board with zoom, conflict detection, export |
-| `conflict_resolution_console.html` | HTML | Interactive console for resolving remaining scheduling conflicts |
-| `constraint_builder.html` | HTML | Structured constraint entry form: semester locks, full freedom, co-schedule |
-| `student_clash_report.html` | HTML | Per-student conflict report with drag-drop reassignment and impact analysis |
-| `student_request_recommendations.html` | HTML | Course request analysis and recommendations |
+| `Unfulfilled_Requests_Report.xlsx` | Excel | 301 unfulfilled requests: Student ID, name, grade, course, priority band, root cause, blocking courses |
+| `Preflight_Validation_Report.xlsx` | Excel | Pre-build validation: credit checks, prerequisite verification, duplicate detection |
 
-### 4.3 Analytics
+### 4.4 Analytics
 
 | File | Format | Purpose |
 |------|--------|---------|
@@ -258,29 +272,63 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 ### 5.1 Engine Results History
 
-| Version | Clashes | Placement | Level 1+2 Clashes | Notes |
-|---------|---------|-----------|-------------------|-------|
+| Version | Clashes | Placement | Grad Req Clashes | Notes |
+|---------|---------|-----------|------------------|-------|
 | v1.0 (single-tier) | 207 | 96.8% | 0 P5 | Original engine, single priority scale |
 | v1.1 (composite scoring) | 325 | 95.1% | 0 P5 | Phase B refactor regressed ordering |
 | v1.2 (three-band fix) | 240 | 95.1% | 0 P5 | Three-band priority + priority-aware optimization |
-| v2.0 (pyramid + ripple) | TBD | TBD | TBD | Four-level pyramid + ripple scoring + batch recalculation |
+| v2.0 (pyramid + ripple) | 338 | 94.5% | 0 (incorrect) | Four-level pyramid system. Graduation req detection bug: "Language" vs "World Language" mismatch, PE missing |
+| v2.1 (grad req fix) | **301** | **95.1%** | **0 (verified)** | Fixed graduation req config: "World Language" match, PE added for grades 9-10. All 5,033 grad reqs fulfilled |
 
 ### 5.2 Current Configuration
 
 | Metric | Value |
 |--------|-------|
-| Total Sections | 350 |
-| Total Courses | 141 |
-| Total Teachers | 64 |
-| Total Students | 800 |
-| Total Requests | 6,512 |
+| Total Sections | 340 |
+| Total Courses | 144 |
+| Total Teachers | 62 |
+| Total Students | 805 |
+| Total Rooms | 48 |
+| Total Requests | 6,530+ |
 | Pyramid Levels | 4 (Graduation Required, No Alternative, Limited Choice, Flexible) |
 | Protected Levels | 1 and 2 (cannot be bumped) |
 | Restart Seeds | 16 |
 | Optimization Iterations | 60 per restart |
 | Batch Recalculation Size | 1,500 placements |
 
-### 5.3 Target (v2.0 with Pyramid + Ripple)
+### 5.3 Current Results (v2.1)
+
+| Metric | Value |
+|--------|-------|
+| Clashes | 301 |
+| Placement Rate | 95.1% (5,850/6,151) |
+| Graduation Req Fulfillment | 100% (5,033/5,033) |
+| AP/Honors Fulfillment | 100% (2,104/2,104) |
+| P4+ Clashes | 0 |
+| Students Affected | 290 |
+| Prior-Year Alignment | 236/316 |
+
+### 5.4 Clash Breakdown (v2.1)
+
+| Category | Count |
+|----------|-------|
+| P1 (Elective-Standard) | 253 |
+| P2 (Departmental Core) | 40 |
+| P3 (Sequence/Honors) | 8 |
+| P4+ (Required Core) | 0 |
+
+| Department | Count |
+|------------|-------|
+| Business | 136 |
+| Physical Education | 39 |
+| Communication Arts | 37 |
+| Science | 33 |
+| Engineering | 32 |
+| Humanities | 12 |
+| Computer Science | 11 |
+| Theater Arts | 1 |
+
+### 5.5 Target
 
 | Metric | Target |
 |--------|--------|
@@ -308,11 +356,11 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 ### 6.2 Completed (v2.0 — Student Rank Score + Pyramid + Ripple)
 
 - [x] 10-input weighted priority scoring per student-course-section placement (CFP, CYRP, SSP, MTP, CTAP, TL, PL, RL, SC, CR)
-- [x] Student ranking 1-800 by constraint density
+- [x] Student ranking 1-805 by constraint density
 - [x] SSP multi-membership: students belong to 1, 2, or all 3 populations (LEO, Pathway, Academic Support)
 - [x] TSSP (Teacher Special Population Priority): derived from SSP Teacher flag in Template 6
 - [x] Per-semester approved 6-period load (Full-Year, S1-only, S2-only)
-- [x] Template 6 header-based column lookup (48 columns, no hardcoded indices)
+- [x] Template 6 header-based column lookup (17 columns, no hardcoded indices)
 - [x] Template 8 student profiles reading (LEO, Pathway, Academic Support flags)
 - [x] Engine reads TSSP from Template 6 SSP Teacher flag and SSP from Template 8
 - [x] Course-Teacher Lock codes read from Template 6 instead of hardcoded
@@ -331,7 +379,27 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Conflict risk fix — any period overlap (not just single-period exact match)
 - [x] Memory optimization — fast reseat for optimizer, workbook cleanup, garbage collection between restarts
 
-### 6.3 Future
+### 6.3 Completed (v2.1 — Data Loading Adaptation + Graduation Requirement Fix)
+
+- [x] V3 engine data loading rewritten to read current v4-format templates (DO NOT change templates)
+- [x] Teacher ID→Name mapping built from Template 6 Sheet 1 (v3 keys on teacher names, not IDs)
+- [x] Template 2 loader: 2-column format (Student ID, Course Code), joins names/grades from Template 8
+- [x] Template 6 loader: fixed header names ("Avail Period X", "Special Student Population Teacher", "Approved 6th Period FY"), data starts row 3
+- [x] Template 7 loader: header-based column lookup, 15 columns, skips non-numeric course codes
+- [x] Template 8 loader: fixed data start row 2→3, reads LEO/Pathway/Academic Support/Cohort flags
+- [x] Transcript loader: reads from Template_Historical_Grades.xlsx (10,346 records) instead of empty Template 8 Sheet 2
+- [x] Prior year loader: reads Template_Prior_Year_Master_Schedule.xlsx (398 records), maps teacher IDs to names
+- [x] Co-schedule loader: reads new format (one course per row, 4 columns, grouped by name)
+- [x] Template 9 room profiles: 48 rooms with capacity, availability, shared room flag
+- [x] Shared room fix: only Gymnasium (capacity ≥ 100 AND Shared=Y) allows simultaneous sections — prevents 46/48 rooms from being treated as shared
+- [x] Graduation requirement bug fix: "Language" → "World Language" in course_priorities.json to match Template 7 department names
+- [x] Physical Education added to graduation requirements for grades 9-10 only (not required grades 11-12)
+- [x] Engine reads grade-specific PE requirements via `grades_9_10_extra` config section in course_priorities.json
+- [x] Result: 338→301 clashes, 94.5%→95.1% placement, 0 graduation requirement clashes (verified correct)
+- [x] Unfulfilled Requests Report generated (Excel): 301 requests, 290 students, sorted by priority band
+- [x] 9 interactive HTML boards generated: clash report, conflict console, recommendations, singleton board, constraint builder, master schedule builder, credit validation, data audit, dashboard index
+
+### 6.4 Future
 
 - [ ] Admin interface for entering/adjusting all 10 priority inputs
 - [ ] Real-time constraint count and weighted sum display during data entry
