@@ -15,6 +15,7 @@
 
 ### Teacher Section Prescriptions (2026-27)
 - **Chiaravalloti, Michael (105747)**: 631 CPR-AED Training/PE × 4 semester sections + 642 Nutrition & Fitness/PE × 6 semester sections = 10 total (5 per semester)
+- **Fisk, Mary Pat (105819)**: 131 British Literature H × 3 full-year sections
 - Sections defined in Template 6 Sheet 2 ("Teacher-Course Assignments"), one row per section
 
 ### Pinned Periods (2026-27)

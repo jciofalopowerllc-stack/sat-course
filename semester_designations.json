@@ -978,5 +978,30 @@
         "teacher": "Park, Sam"
       }
     ]
+  },
+  {
+    "code": "131",
+    "title": "British Literature H",
+    "dept": "English",
+    "total_sections": 3,
+    "designation": "ALL FULL-YEAR (3 sections)",
+    "category": "FULL-YEAR",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "FY",
+        "teacher": "Fisk, Mary Pat"
+      },
+      {
+        "sec": 2,
+        "semester": "FY",
+        "teacher": "Fisk, Mary Pat"
+      },
+      {
+        "sec": 3,
+        "semester": "FY",
+        "teacher": "Fisk, Mary Pat"
+      }
+    ]
   }
 ]
