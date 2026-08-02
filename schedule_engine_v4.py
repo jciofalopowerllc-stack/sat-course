@@ -715,6 +715,80 @@ def load_semester_designations(path):
     return result
 
 
+def load_historical_grades(path, students):
+    """Load historical grades and populate student transcripts.
+
+    A=Student ID, B=School Year, C=Course Code, D=Section,
+    E=Final Grade, F=Pass/Fail, G=Final Exam Grade
+    """
+    if not os.path.exists(path):
+        print("       (file not found, skipping)")
+        return 0
+    wb = openpyxl.load_workbook(path)
+    ws = wb.active
+    loaded = 0
+    for row in ws.iter_rows(min_row=2, values_only=False):
+        vals = [c.value for c in row]
+        sid = str(vals[0]).strip() if vals[0] else None
+        if not sid or sid.upper() in ("STUDENT ID", "REQUIRED", "OPTIONAL"):
+            continue
+        if sid not in students:
+            continue
+        course_code = str(vals[2]).strip() if vals[2] else None
+        if not course_code:
+            continue
+        students[sid].transcript.append({
+            "year": str(vals[1] or ""),
+            "course_code": course_code,
+            "course_title": "",
+            "department": "",
+            "credits": None,
+            "final_grade": vals[4],
+            "passed": yn(vals[5]),
+            "grade_level": None,
+            "notes": "",
+            "section": vals[3],
+            "exam_grade": vals[6] if len(vals) > 6 else None,
+        })
+        loaded += 1
+    return loaded
+
+
+def load_prior_year_schedule(path):
+    """Load prior year master schedule for continuity hints.
+
+    A=School Year, B=Course Code, C=Section, D=Teacher ID, E=Room,
+    F=Period, G=Term, H=Credits
+    Returns list of dicts.
+    """
+    if not os.path.exists(path):
+        print("       (file not found, skipping)")
+        return []
+    wb = openpyxl.load_workbook(path)
+    ws = wb.active
+    records = []
+    for row in ws.iter_rows(min_row=2, values_only=False):
+        vals = [c.value for c in row]
+        code = vals[1]
+        if code is None:
+            continue
+        code = str(code).strip()
+        if not code or code.upper() in ("COURSE CODE", "REQUIRED", "OPTIONAL"):
+            continue
+        rec = {
+            "year": str(vals[0] or ""),
+            "course_code": code,
+            "section": vals[2],
+            "teacher_id": str(vals[3]).strip() if vals[3] else None,
+            "room": str(vals[4]).strip() if vals[4] else None,
+            "period": str(vals[5]).strip().upper() if len(vals) > 5 and vals[5] else None,
+            "term": str(vals[6]).strip().upper() if len(vals) > 6 and vals[6] else None,
+            "credits": float(vals[7]) if len(vals) > 7 and vals[7] else None,
+        }
+        records.append(rec)
+    return records
+
+
 # ===================================================================
 # PRE-BUILD VALIDATION
 # ===================================================================
@@ -1060,7 +1134,7 @@ def find_room_for_section(section, period, term, rooms, grid):
     if section.assigned_room:
         if grid.is_slot_free_for_room(section.assigned_room, period, term):
             return section.assigned_room
-        return None
+        # Fall through to general room search instead of giving up
 
     best_room = None
     best_capacity = float("inf")
@@ -1472,11 +1546,11 @@ def main():
     print("=" * 60)
 
     # --- LOAD DATA ---
-    print("\n[1/9] Loading students...")
+    print("\n[1/11] Loading students...")
     students = load_students(os.path.join(template_dir, "Template_8_Student_Profiles.xlsx"))
     print(f"       Loaded {len(students)} students")
 
-    print("[2/9] Loading course requests...")
+    print("[2/11] Loading course requests...")
     load_course_requests(
         os.path.join(template_dir, "Template_2_Student_Course_Requests.xlsx"),
         students
@@ -1484,33 +1558,43 @@ def main():
     total_requests = sum(len(s.course_requests) for s in students.values())
     print(f"       Loaded {total_requests} course requests")
 
-    print("[3/9] Loading teachers...")
+    print("[3/11] Loading teachers...")
     teachers = load_teachers(
         os.path.join(template_dir, "Template_6_Teacher_Profiles.xlsx"),
     )
     print(f"       Loaded {len(teachers)} teachers")
 
-    print("[4/9] Loading rooms...")
+    print("[4/11] Loading rooms...")
     rooms = load_rooms(os.path.join(template_dir, "Template_9_Room_Profiles.xlsx"))
     print(f"       Loaded {len(rooms)} rooms")
 
-    print("[5/9] Loading courses...")
+    print("[5/11] Loading courses...")
     courses = load_courses(os.path.join(template_dir, "Template_7_Course_Profiles.xlsx"))
     print(f"       Loaded {len(courses)} courses")
 
-    print("[6/9] Loading co-schedule groups...")
+    print("[6/11] Loading co-schedule groups...")
     co_groups = load_co_schedule_groups(
         os.path.join(template_dir, "Template_4_CoSchedule_Groups.xlsx")
     )
     print(f"       Loaded {len(co_groups)} co-schedule groups")
 
-    print("[7/9] Loading semester designations...")
+    print("[7/11] Loading semester designations...")
     sem_path = "semester_designations.json"
     semester_designations = load_semester_designations(sem_path)
     print(f"       Loaded {len(semester_designations)} section designations")
 
+    print("[8/11] Loading historical grades...")
+    hg_path = os.path.join(template_dir, "Template_Historical_Grades.xlsx")
+    hg_count = load_historical_grades(hg_path, students)
+    print(f"       Loaded {hg_count} historical grade records")
+
+    print("[9/11] Loading prior year schedule...")
+    py_path = os.path.join(template_dir, "Template_Prior_Year_Master_Schedule.xlsx")
+    prior_year = load_prior_year_schedule(py_path)
+    print(f"       Loaded {len(prior_year)} prior year section records")
+
     # --- PRE-BUILD VALIDATION ---
-    print("\n[8/9] Running pre-build validation...")
+    print("\n[10/11] Running pre-build validation...")
     errors, warnings = validate_pre_build(students, courses, teachers)
     if warnings:
         print(f"       {len(warnings)} warnings found")
@@ -1526,7 +1610,7 @@ def main():
             print(f"       ... and {len(errors) - 10} more")
 
     # --- GENERATE SECTIONS ---
-    print("\n[9/9] Generating sections...")
+    print("\n[11/11] Generating sections...")
     sections = generate_sections(courses, teachers, semester_designations)
     print(f"       Generated {len(sections)} sections")
 
