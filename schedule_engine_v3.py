@@ -128,6 +128,30 @@ REPORT_FORMATS = {
         'sort_order': 'Grade → Student Name',
         'features': ['auto-filter', 'freeze row 2', 'alternating row shading', 'merged period headers'],
     },
+    'incomplete_student_schedules': {
+        'filename': 'Incomplete_Student_Schedules_2026_27.xlsx',
+        'title': 'Incomplete Student Schedules',
+        'description': 'Only students with at least one UNASSIGNED period/semester slot.',
+        'source': 'schedule_solution_v3.json assignments + Template 7 (credits)',
+        'filter': 'Students where any Period A-G × S1/S2 slot is UNASSIGNED',
+        'layout': {
+            'row_1': 'Merged period headers (Period A through Period G)',
+            'row_2': 'S1 / S2 sub-headers under each period',
+            'col_A': 'Student ID',
+            'col_B': 'Student Name',
+            'col_C': 'Grade',
+            'cols_D_Q': 'Period A(S1) / Period A(S2) through Period G(S1) / Period G(S2) — 14 columns',
+            'col_R': 'Total Sections',
+            'col_S': 'Total Credits',
+            'col_T': 'Unassigned Slots (count, bold red)',
+            'col_U': 'Clashes (unplaced courses listed)',
+        },
+        'cell_format': 'CourseCode: CourseTitle (Credits cr)',
+        'empty_cell': 'UNASSIGNED (bold red)',
+        'sort_order': 'Unassigned Slots (desc) → Grade → Student Name',
+        'tabs': ['Incomplete Schedules (detail)', 'Summary (by grade, slot distribution)'],
+        'features': ['auto-filter', 'freeze row 2', 'alternating row shading', 'merged period headers', 'dark-red header'],
+    },
 }
 
 # ============================================================

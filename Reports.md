@@ -130,7 +130,52 @@ Complete student schedules with S1/S2 split per period, credit values, and clash
 
 ---
 
-## 5. Preflight Validation Report
+## 5. Incomplete Student Schedules
+
+**File:** `Incomplete_Student_Schedules_2026_27.xlsx`
+
+Only students who have at least one UNASSIGNED period/semester slot. Same layout as the Student Schedule Report with an added Unassigned Slots column.
+
+**Header rows:**
+- Row 1: Student ID, Student Name, Grade, then merged "Period A" through "Period G" headers, Total Sections, Total Credits, Unassigned Slots, Clashes
+- Row 2: Blank under first 3 cols, then S1/S2 sub-headers under each period
+
+| Column | Content |
+|--------|---------|
+| A | Student ID |
+| B | Student Name |
+| C | Grade |
+| D | Period A — S1 |
+| E | Period A — S2 |
+| F | Period B — S1 |
+| G | Period B — S2 |
+| H | Period C — S1 |
+| I | Period C — S2 |
+| J | Period D — S1 |
+| K | Period D — S2 |
+| L | Period E — S1 |
+| M | Period E — S2 |
+| N | Period F — S1 |
+| O | Period F — S2 |
+| P | Period G — S1 |
+| Q | Period G — S2 |
+| R | Total Sections |
+| S | Total Credits |
+| T | Unassigned Slots |
+| U | Clashes |
+
+- **Filter:** Students where any Period A–G × S1/S2 slot is UNASSIGNED
+- **Cell format:** `CourseCode: CourseTitle (Credits cr)`
+- **Empty semester slot:** "UNASSIGNED" (bold red font)
+- **Unassigned Slots:** Count of empty S1/S2 slots across all 7 periods (bold red)
+- **Sort:** Unassigned Slots (descending), then Grade, then Student Name
+- **Tabs:** "Incomplete Schedules" (detail) + "Summary" (by grade, slot count distribution)
+- **Source:** `schedule_solution_v3.json` assignments + Template 7 (credits)
+- **Features:** Auto-filter, freeze row 2, alternating row shading, merged period headers, dark-red header
+
+---
+
+## 6. Preflight Validation Report
 
 **File:** `Preflight_Validation_Report.xlsx`
 
