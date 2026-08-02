@@ -951,8 +951,13 @@ def generate_sections(courses, teachers, semester_designations):
             if cc:
                 teacher_course_map[cc].append((tid, ca))
 
+    skipped_no_teacher = 0
     for code, course in courses.items():
         assignments = teacher_course_map.get(code, [])
+
+        if not assignments:
+            skipped_no_teacher += course.sections_needed
+            continue
 
         for sec_num in range(1, course.sections_needed + 1):
             tid = None
@@ -970,16 +975,15 @@ def generate_sections(courses, teachers, semester_designations):
                 elif "S2" in sem or "Spring" in sem:
                     p_term = "S2"
 
-            if assignments:
-                if sec_num <= len(assignments):
-                    tid, ca = assignments[sec_num - 1]
-                    p_room = ca["prescribed_room"]
-                    p_period = ca["prescribed_period"]
-                    if ca["prescribed_term"]:
-                        p_term = ca["prescribed_term"]
-                    p_cohort = ca["prescribed_cohort"]
-                else:
-                    tid, ca = assignments[0]
+            if sec_num <= len(assignments):
+                tid, ca = assignments[sec_num - 1]
+                p_room = ca["prescribed_room"]
+                p_period = ca["prescribed_period"]
+                if ca["prescribed_term"]:
+                    p_term = ca["prescribed_term"]
+                p_cohort = ca["prescribed_cohort"]
+            else:
+                tid, ca = assignments[0]
 
             sec = Section(
                 course_code=code,
@@ -991,6 +995,9 @@ def generate_sections(courses, teachers, semester_designations):
                 prescribed_cohort=p_cohort,
             )
             sections[sec.key] = sec
+
+    if skipped_no_teacher:
+        print(f"       Skipped {skipped_no_teacher} sections (no teacher assigned)")
 
     return sections
 
