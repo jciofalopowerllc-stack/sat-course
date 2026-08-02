@@ -61,9 +61,10 @@ SINGLETON_COURSES = set(str(c) for c in _prio_data.get('singleton_courses', []))
 # Courses in required departments get a graduation-requirement bonus.
 # All other courses are electives regardless of AP/Honors status.
 _grad_req = _prio_data.get('graduation_requirements', {})
+_pe_extra = set(_grad_req.get('grades_9_10_extra', {}).get('additional_required_departments', []))
 GRAD_REQ_DEPTS = {
-    9:  set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])),
-    10: set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])),
+    9:  set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])) | _pe_extra,
+    10: set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])) | _pe_extra,
     11: set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])),
     12: set(_grad_req.get('grade_12', {}).get('required_departments', []))
          | set(_grad_req.get('grade_12', {}).get('required_either', [])),

@@ -1095,11 +1095,17 @@
         "Mathematics",
         "Science",
         "Social Studies",
-        "Language",
+        "World Language",
         "Theology"
       ],
       "elective_slots": 1,
       "credits_per_year": 35
+    },
+    "grades_9_10_extra": {
+      "additional_required_departments": [
+        "Physical Education"
+      ],
+      "notes": "PE required for grades 9-10 only. Exceptions exist for Band, String Orchestra, and other special circumstances."
     },
     "grade_12": {
       "required_departments": [
