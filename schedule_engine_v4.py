@@ -1027,8 +1027,10 @@ class ScheduleGrid:
                 return False
         return True
 
-    def is_slot_free_for_room(self, room_id, period, term):
+    def is_slot_free_for_room(self, room_id, period, term, rooms=None):
         if not room_id:
+            return True
+        if rooms and room_id in rooms and rooms[room_id].shared:
             return True
         slots_to_check = [(period, term)]
         if term == "FY":
@@ -1092,7 +1094,7 @@ class ScheduleGrid:
 
         for p in periods_to_try:
             if self.is_slot_free_for_teacher(teacher_id, p, term):
-                if self.is_slot_free_for_room(room_id, p, term):
+                if self.is_slot_free_for_room(room_id, p, term, rooms):
                     valid.append(p)
 
         return valid
@@ -1139,7 +1141,7 @@ class ClashReport:
 
 def find_room_for_section(section, period, term, rooms, grid):
     if section.assigned_room:
-        if grid.is_slot_free_for_room(section.assigned_room, period, term):
+        if grid.is_slot_free_for_room(section.assigned_room, period, term, rooms):
             return section.assigned_room
         # Fall through to general room search instead of giving up
 
@@ -1151,7 +1153,7 @@ def find_room_for_section(section, period, term, rooms, grid):
             continue
         if room.available_terms and term not in room.available_terms:
             continue
-        if not grid.is_slot_free_for_room(rid, period, term):
+        if not grid.is_slot_free_for_room(rid, period, term, rooms):
             continue
         if room.capacity < best_capacity:
             best_room = rid
@@ -1296,7 +1298,7 @@ def place_single_section(sec, students, teachers, rooms, courses, grid,
             sec.placed = True
             return False
 
-        if room_id and not grid.is_slot_free_for_room(room_id, period, term):
+        if room_id and not grid.is_slot_free_for_room(room_id, period, term, rooms):
             new_room = find_room_for_section(
                 Section(sec.course_code, sec.section_num, sec.teacher_id,
                         None, sec.prescribed_period, sec.prescribed_term,

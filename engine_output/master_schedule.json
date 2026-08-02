@@ -30,7 +30,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186995,
+    "total_priority": 194855,
     "placed": true
   },
   {
@@ -44,10 +44,10 @@
     "room": "D-102",
     "period": "B",
     "term": "FY",
-    "enrolled": 24,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187565,
+    "total_priority": 195425,
     "placed": true
   },
   {
@@ -61,10 +61,10 @@
     "room": "D-102",
     "period": "C",
     "term": "FY",
-    "enrolled": 18,
+    "enrolled": 24,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188135,
+    "total_priority": 195995,
     "placed": true
   },
   {
@@ -78,10 +78,10 @@
     "room": "D-102",
     "period": "D",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 12,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188665,
+    "total_priority": 196565,
     "placed": true
   },
   {
@@ -95,10 +95,10 @@
     "room": "D-102",
     "period": "E",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189175,
+    "total_priority": 197095,
     "placed": true
   },
   {
@@ -112,10 +112,10 @@
     "room": "J-222",
     "period": "C",
     "term": "FY",
-    "enrolled": 12,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187655,
+    "total_priority": 197615,
     "placed": true
   },
   {
@@ -129,10 +129,10 @@
     "room": "J-222",
     "period": "D",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188285,
+    "total_priority": 198225,
     "placed": true
   },
   {
@@ -146,10 +146,10 @@
     "room": "J-222",
     "period": "E",
     "term": "FY",
-    "enrolled": 18,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188915,
+    "total_priority": 198835,
     "placed": true
   },
   {
@@ -160,13 +160,13 @@
     "section_num": 1,
     "teacher_id": "105767",
     "teacher_name": "Judge, Michelle",
-    "room": "Auditorium",
-    "period": "A",
+    "room": "Success Center",
+    "period": "E",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 184320,
+    "total_priority": 191540,
     "placed": true
   },
   {
@@ -177,13 +177,13 @@
     "section_num": 1,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": "D-101",
-    "period": "F",
+    "room": "Success Center",
+    "period": "A",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 220,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -194,13 +194,13 @@
     "section_num": 2,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": "D-102",
-    "period": "G",
+    "room": "Success Center",
+    "period": "B",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -211,13 +211,13 @@
     "section_num": 3,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "C",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -228,13 +228,13 @@
     "section_num": 4,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "D",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -245,13 +245,13 @@
     "section_num": 5,
     "teacher_id": "122119",
     "teacher_name": "Gioni, Christopher",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "E",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180,
+    "total_priority": 230,
     "placed": true
   },
   {
@@ -268,7 +268,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189910,
+    "total_priority": 201810,
     "placed": true
   },
   {
@@ -314,7 +314,7 @@
     "teacher_id": "105642",
     "teacher_name": "Mazella, Julie",
     "room": "I-011",
-    "period": "F",
+    "period": "A",
     "term": "FY",
     "enrolled": 7,
     "cap": 25,
@@ -333,10 +333,10 @@
     "room": "J-222",
     "period": "A",
     "term": "FY",
-    "enrolled": 22,
+    "enrolled": 17,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 186385,
+    "total_priority": 193375,
     "placed": true
   },
   {
@@ -350,10 +350,10 @@
     "room": "J-222",
     "period": "B",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 187025,
+    "total_priority": 197030,
     "placed": true
   },
   {
@@ -367,10 +367,10 @@
     "room": "I-115",
     "period": "D",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 195105,
+    "total_priority": 207775,
     "placed": true
   },
   {
@@ -387,7 +387,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 196105,
+    "total_priority": 208760,
     "placed": true
   },
   {
@@ -398,13 +398,13 @@
     "section_num": 3,
     "teacher_id": "105768",
     "teacher_name": "Umbrino, Philip",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "D",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 310,
+    "total_priority": 335,
     "placed": true
   },
   {
@@ -421,7 +421,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 194770,
+    "total_priority": 204910,
     "placed": true
   },
   {
@@ -435,10 +435,10 @@
     "room": "I-116",
     "period": "D",
     "term": "FY",
-    "enrolled": 20,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 195550,
+    "total_priority": 205690,
     "placed": true
   },
   {
@@ -449,13 +449,13 @@
     "section_num": 1,
     "teacher_id": "105768",
     "teacher_name": "Umbrino, Philip",
-    "room": "S-236",
-    "period": "G",
+    "room": "Success Center",
+    "period": "C",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 335,
+    "total_priority": 365,
     "placed": true
   },
   {
@@ -472,7 +472,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 193250,
+    "total_priority": 203390,
     "placed": true
   },
   {
@@ -489,7 +489,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 194030,
+    "total_priority": 204170,
     "placed": true
   },
   {
@@ -506,7 +506,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186395,
+    "total_priority": 198295,
     "placed": true
   },
   {
@@ -523,7 +523,7 @@
     "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187585,
+    "total_priority": 199485,
     "placed": true
   },
   {
@@ -540,7 +540,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188775,
+    "total_priority": 200675,
     "placed": true
   },
   {
@@ -557,7 +557,7 @@
     "enrolled": 23,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 102465,
+    "total_priority": 100995,
     "placed": true
   },
   {
@@ -574,7 +574,7 @@
     "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 103935,
+    "total_priority": 102465,
     "placed": true
   },
   {
@@ -591,7 +591,7 @@
     "enrolled": 24,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 105265,
+    "total_priority": 103795,
     "placed": true
   },
   {
@@ -602,13 +602,13 @@
     "section_num": 1,
     "teacher_id": "105768",
     "teacher_name": "Umbrino, Philip",
-    "room": "D-104",
-    "period": "F",
+    "room": "Success Center",
+    "period": "B",
     "term": "S1",
-    "enrolled": 18,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 400,
+    "total_priority": 435,
     "placed": true
   },
   {
@@ -619,10 +619,10 @@
     "section_num": 1,
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
-    "room": "Auditorium",
-    "period": "C",
+    "room": "Success Center",
+    "period": "B",
     "term": "S1",
-    "enrolled": 6,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 595,
@@ -636,13 +636,13 @@
     "section_num": 2,
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
-    "room": "Auditorium",
-    "period": "D",
+    "room": "Success Center",
+    "period": "C",
     "term": "S1",
-    "enrolled": 6,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 565,
+    "total_priority": 595,
     "placed": true
   },
   {
@@ -653,10 +653,10 @@
     "section_num": 3,
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
-    "room": "I-012",
-    "period": "A",
+    "room": "Success Center",
+    "period": "B",
     "term": "S2",
-    "enrolled": 6,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 565,
@@ -670,10 +670,10 @@
     "section_num": 1,
     "teacher_id": "105768",
     "teacher_name": "Umbrino, Philip",
-    "room": "Auditorium",
-    "period": "E",
+    "room": "Success Center",
+    "period": "A",
     "term": "S1",
-    "enrolled": 2,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 50,
     "total_priority": 440,
@@ -693,7 +693,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 185270,
+    "total_priority": 197170,
     "placed": true
   },
   {
@@ -741,10 +741,10 @@
     "room": "J-120",
     "period": "A",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 80,
-    "total_priority": 191210,
+    "total_priority": 201930,
     "placed": true
   },
   {
@@ -758,10 +758,10 @@
     "room": "I-111",
     "period": "F",
     "term": "S1",
-    "enrolled": 11,
+    "enrolled": 10,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 184185,
+    "total_priority": 195805,
     "placed": true
   },
   {
@@ -778,7 +778,7 @@
     "enrolled": 0,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 186185,
+    "total_priority": 197920,
     "placed": true
   },
   {
@@ -795,7 +795,7 @@
     "enrolled": 12,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 185255,
+    "total_priority": 196875,
     "placed": true
   },
   {
@@ -812,7 +812,7 @@
     "enrolled": 0,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 186290,
+    "total_priority": 197910,
     "placed": true
   },
   {
@@ -829,7 +829,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 30,
-    "total_priority": 191160,
+    "total_priority": 201880,
     "placed": true
   },
   {
@@ -846,7 +846,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 30,
-    "total_priority": 191160,
+    "total_priority": 201880,
     "placed": true
   },
   {
@@ -863,7 +863,7 @@
     "enrolled": 2,
     "cap": 12,
     "raw_priority": 50,
-    "total_priority": 178600,
+    "total_priority": 190220,
     "placed": true
   },
   {
@@ -880,7 +880,7 @@
     "enrolled": 6,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 182030,
+    "total_priority": 193650,
     "placed": true
   },
   {
@@ -897,7 +897,7 @@
     "enrolled": 5,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 183120,
+    "total_priority": 194740,
     "placed": true
   },
   {
@@ -914,7 +914,7 @@
     "enrolled": 12,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 179750,
+    "total_priority": 191370,
     "placed": true
   },
   {
@@ -931,7 +931,7 @@
     "enrolled": 12,
     "cap": 12,
     "raw_priority": 25,
-    "total_priority": 180920,
+    "total_priority": 192540,
     "placed": true
   },
   {
@@ -945,10 +945,10 @@
     "room": "J-120",
     "period": "B",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 10,
     "cap": 40,
     "raw_priority": 25,
-    "total_priority": 192275,
+    "total_priority": 202995,
     "placed": true
   },
   {
@@ -965,7 +965,7 @@
     "enrolled": 3,
     "cap": 40,
     "raw_priority": 25,
-    "total_priority": 194355,
+    "total_priority": 205075,
     "placed": true
   },
   {
@@ -979,10 +979,10 @@
     "room": "J-120",
     "period": "C",
     "term": "S1",
-    "enrolled": 3,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 193345,
+    "total_priority": 204065,
     "placed": true
   },
   {
@@ -1011,7 +1011,7 @@
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
     "room": "Auditorium",
-    "period": "B",
+    "period": "A",
     "term": "FY",
     "enrolled": 0,
     "cap": 20,
@@ -1028,7 +1028,7 @@
     "teacher_id": "122002",
     "teacher_name": "Ferrante-Martin, Elena",
     "room": "Auditorium",
-    "period": "B",
+    "period": "A",
     "term": "FY",
     "enrolled": 0,
     "cap": 20,
@@ -1047,10 +1047,10 @@
     "room": "J-322",
     "period": "C",
     "term": "S1",
-    "enrolled": 17,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 157440,
+    "total_priority": 169940,
     "placed": true
   },
   {
@@ -1064,10 +1064,10 @@
     "room": "J-322",
     "period": "D",
     "term": "S1",
-    "enrolled": 4,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 158695,
+    "total_priority": 171195,
     "placed": true
   },
   {
@@ -1081,10 +1081,10 @@
     "room": "J-322",
     "period": "B",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 55,
-    "total_priority": 156235,
+    "total_priority": 168735,
     "placed": true
   },
   {
@@ -1101,7 +1101,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 55,
-    "total_priority": 156235,
+    "total_priority": 168735,
     "placed": true
   },
   {
@@ -1118,7 +1118,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 55,
-    "total_priority": 156220,
+    "total_priority": 168720,
     "placed": true
   },
   {
@@ -1135,7 +1135,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 55,
-    "total_priority": 156220,
+    "total_priority": 168720,
     "placed": true
   },
   {
@@ -1152,7 +1152,7 @@
     "enrolled": 3,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 159905,
+    "total_priority": 172405,
     "placed": true
   },
   {
@@ -1169,7 +1169,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 161140,
+    "total_priority": 173620,
     "placed": true
   },
   {
@@ -1186,7 +1186,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 85,
-    "total_priority": 154980,
+    "total_priority": 167480,
     "placed": true
   },
   {
@@ -1203,7 +1203,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 85,
-    "total_priority": 154990,
+    "total_priority": 167490,
     "placed": true
   },
   {
@@ -1220,7 +1220,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 85,
-    "total_priority": 154995,
+    "total_priority": 167495,
     "placed": true
   },
   {
@@ -1237,7 +1237,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187785,
+    "total_priority": 196165,
     "placed": true
   },
   {
@@ -1254,7 +1254,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188415,
+    "total_priority": 196835,
     "placed": true
   },
   {
@@ -1268,10 +1268,10 @@
     "room": "S-235",
     "period": "C",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189045,
+    "total_priority": 197505,
     "placed": true
   },
   {
@@ -1285,10 +1285,10 @@
     "room": "S-235",
     "period": "D",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189675,
+    "total_priority": 198135,
     "placed": true
   },
   {
@@ -1302,10 +1302,10 @@
     "room": "S-235",
     "period": "E",
     "term": "FY",
-    "enrolled": 14,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190285,
+    "total_priority": 198745,
     "placed": true
   },
   {
@@ -1319,10 +1319,10 @@
     "room": "S-231",
     "period": "A",
     "term": "FY",
-    "enrolled": 22,
+    "enrolled": 19,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 183455,
+    "total_priority": 192995,
     "placed": true
   },
   {
@@ -1421,10 +1421,10 @@
     "room": "S-231",
     "period": "B",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 22,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 184065,
+    "total_priority": 193605,
     "placed": true
   },
   {
@@ -1441,7 +1441,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185935,
+    "total_priority": 195475,
     "placed": true
   },
   {
@@ -1455,10 +1455,10 @@
     "room": "S-231",
     "period": "C",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 184695,
+    "total_priority": 194235,
     "placed": true
   },
   {
@@ -1472,10 +1472,10 @@
     "room": "S-231",
     "period": "D",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185325,
+    "total_priority": 194865,
     "placed": true
   },
   {
@@ -1489,10 +1489,10 @@
     "room": "S-237",
     "period": "E",
     "term": "FY",
-    "enrolled": 20,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 194135,
+    "total_priority": 206135,
     "placed": true
   },
   {
@@ -1506,10 +1506,10 @@
     "room": "S-237",
     "period": "F",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 19,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 195315,
+    "total_priority": 207315,
     "placed": true
   },
   {
@@ -1526,7 +1526,7 @@
     "enrolled": 7,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 192970,
+    "total_priority": 204970,
     "placed": true
   },
   {
@@ -1574,10 +1574,10 @@
     "room": "S-232",
     "period": "D",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 192945,
+    "total_priority": 203385,
     "placed": true
   },
   {
@@ -1591,10 +1591,10 @@
     "room": "S-232",
     "period": "E",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 193755,
+    "total_priority": 204195,
     "placed": true
   },
   {
@@ -1608,10 +1608,10 @@
     "room": "S-232",
     "period": "A",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190555,
+    "total_priority": 200995,
     "placed": true
   },
   {
@@ -1625,10 +1625,10 @@
     "room": "S-232",
     "period": "B",
     "term": "FY",
-    "enrolled": 8,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 191365,
+    "total_priority": 201805,
     "placed": true
   },
   {
@@ -1645,7 +1645,7 @@
     "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 192175,
+    "total_priority": 202615,
     "placed": true
   },
   {
@@ -1659,10 +1659,10 @@
     "room": "S-237",
     "period": "C",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 191785,
+    "total_priority": 203785,
     "placed": true
   },
   {
@@ -1679,7 +1679,7 @@
     "enrolled": 3,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 189420,
+    "total_priority": 201420,
     "placed": true
   },
   {
@@ -1747,7 +1747,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 190685,
+    "total_priority": 202685,
     "placed": true
   },
   {
@@ -1764,7 +1764,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 105,
-    "total_priority": 246995,
+    "total_priority": 262795,
     "placed": true
   },
   {
@@ -1775,13 +1775,13 @@
     "section_num": 1,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "C",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 160,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -1792,13 +1792,13 @@
     "section_num": 2,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "D",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 160,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -1809,13 +1809,13 @@
     "section_num": 3,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "E",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 160,
+    "total_priority": 180,
     "placed": true
   },
   {
@@ -1832,7 +1832,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185825,
+    "total_priority": 193885,
     "placed": true
   },
   {
@@ -1849,7 +1849,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186475,
+    "total_priority": 194535,
     "placed": true
   },
   {
@@ -1863,10 +1863,10 @@
     "room": "D-110",
     "period": "D",
     "term": "FY",
-    "enrolled": 20,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187125,
+    "total_priority": 195185,
     "placed": true
   },
   {
@@ -1883,7 +1883,7 @@
     "enrolled": 13,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 185185,
+    "total_priority": 193245,
     "placed": true
   },
   {
@@ -1894,13 +1894,13 @@
     "section_num": 1,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": "D-104",
-    "period": "G",
+    "room": "Success Center",
+    "period": "C",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 220,
+    "total_priority": 185,
     "placed": true
   },
   {
@@ -1911,13 +1911,13 @@
     "section_num": 2,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "D",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170,
+    "total_priority": 185,
     "placed": true
   },
   {
@@ -1928,13 +1928,13 @@
     "section_num": 3,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "E",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170,
+    "total_priority": 185,
     "placed": true
   },
   {
@@ -1945,13 +1945,13 @@
     "section_num": 1,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": "D-109",
-    "period": "F",
+    "room": "Success Center",
+    "period": "A",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 240,
+    "total_priority": 200,
     "placed": true
   },
   {
@@ -1962,13 +1962,13 @@
     "section_num": 2,
     "teacher_id": "115019",
     "teacher_name": "Hartmann, Katy",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "B",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180,
+    "total_priority": 200,
     "placed": true
   },
   {
@@ -1979,13 +1979,13 @@
     "section_num": 3,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": "D-205",
-    "period": "F",
+    "room": "Success Center",
+    "period": "A",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180,
+    "total_priority": 200,
     "placed": true
   },
   {
@@ -1996,13 +1996,13 @@
     "section_num": 4,
     "teacher_id": "122121",
     "teacher_name": "Oh, Burton",
-    "room": "D-109",
-    "period": "G",
+    "room": "Success Center",
+    "period": "B",
     "term": "FY",
-    "enrolled": 22,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180,
+    "total_priority": 200,
     "placed": true
   },
   {
@@ -2016,10 +2016,10 @@
     "room": "D-110",
     "period": "E",
     "term": "FY",
-    "enrolled": 9,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187775,
+    "total_priority": 195775,
     "placed": true
   },
   {
@@ -2033,10 +2033,10 @@
     "room": "D-106",
     "period": "C",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 195875,
+    "total_priority": 206355,
     "placed": true
   },
   {
@@ -2050,10 +2050,10 @@
     "room": "D-106",
     "period": "D",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 196665,
+    "total_priority": 207145,
     "placed": true
   },
   {
@@ -2070,7 +2070,7 @@
     "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 197455,
+    "total_priority": 207935,
     "placed": true
   },
   {
@@ -2084,7 +2084,7 @@
     "room": "D-107",
     "period": "D",
     "term": "FY",
-    "enrolled": 13,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
     "total_priority": 148000,
@@ -2101,7 +2101,7 @@
     "room": "D-107",
     "period": "E",
     "term": "FY",
-    "enrolled": 12,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 20,
     "total_priority": 149390,
@@ -2118,10 +2118,10 @@
     "room": "D-106",
     "period": "B",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 195100,
+    "total_priority": 205575,
     "placed": true
   },
   {
@@ -2152,7 +2152,7 @@
     "room": "D-108",
     "period": "C",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 20,
     "total_priority": 152725,
@@ -2169,7 +2169,7 @@
     "room": "D-108",
     "period": "D",
     "term": "FY",
-    "enrolled": 22,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
     "total_priority": 153915,
@@ -2186,10 +2186,10 @@
     "room": "D-108",
     "period": "E",
     "term": "FY",
-    "enrolled": 15,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 155075,
+    "total_priority": 155065,
     "placed": true
   },
   {
@@ -2254,10 +2254,10 @@
     "room": "D-103",
     "period": "D",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 192885,
+    "total_priority": 200825,
     "placed": true
   },
   {
@@ -2271,10 +2271,10 @@
     "room": "D-103",
     "period": "E",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 193655,
+    "total_priority": 201595,
     "placed": true
   },
   {
@@ -2288,10 +2288,10 @@
     "room": "D-105",
     "period": "E",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 168795,
+    "total_priority": 189615,
     "placed": true
   },
   {
@@ -2305,10 +2305,10 @@
     "room": "D-103",
     "period": "A",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 122955,
+    "total_priority": 122875,
     "placed": true
   },
   {
@@ -2322,10 +2322,10 @@
     "room": "D-103",
     "period": "B",
     "term": "FY",
-    "enrolled": 23,
+    "enrolled": 20,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 124345,
+    "total_priority": 124265,
     "placed": true
   },
   {
@@ -2342,7 +2342,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 125735,
+    "total_priority": 125655,
     "placed": true
   },
   {
@@ -2359,7 +2359,7 @@
     "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 133335,
+    "total_priority": 133255,
     "placed": true
   },
   {
@@ -2376,7 +2376,7 @@
     "enrolled": 24,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 134585,
+    "total_priority": 134505,
     "placed": true
   },
   {
@@ -2427,7 +2427,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 194350,
+    "total_priority": 204830,
     "placed": true
   },
   {
@@ -2441,10 +2441,10 @@
     "room": "D-105",
     "period": "A",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 130815,
+    "total_priority": 130735,
     "placed": true
   },
   {
@@ -2458,10 +2458,10 @@
     "room": "D-105",
     "period": "B",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 132085,
+    "total_priority": 132005,
     "placed": true
   },
   {
@@ -2475,7 +2475,7 @@
     "room": "D-107",
     "period": "A",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
     "total_priority": 143985,
@@ -2492,7 +2492,7 @@
     "room": "D-107",
     "period": "B",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
     "total_priority": 145375,
@@ -2540,7 +2540,7 @@
     "section_num": 1,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "J-321",
+    "room": "Success Center",
     "period": "A",
     "term": "FY",
     "enrolled": 0,
@@ -2696,10 +2696,10 @@
     "room": "D-202",
     "period": "A",
     "term": "FY",
-    "enrolled": 9,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 191045,
+    "total_priority": 199425,
     "placed": true
   },
   {
@@ -2711,12 +2711,12 @@
     "teacher_id": "105829",
     "teacher_name": "Janeczko, Douglas",
     "room": "D-202",
-    "period": "C",
+    "period": "B",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 192205,
+    "total_priority": 200015,
     "placed": true
   },
   {
@@ -2733,7 +2733,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 163890,
+    "total_priority": 181660,
     "placed": true
   },
   {
@@ -2750,7 +2750,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 165070,
+    "total_priority": 182840,
     "placed": true
   },
   {
@@ -2762,12 +2762,12 @@
     "teacher_id": "105829",
     "teacher_name": "Janeczko, Douglas",
     "room": "D-202",
-    "period": "B",
+    "period": "C",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 191635,
+    "total_priority": 200600,
     "placed": true
   },
   {
@@ -2781,10 +2781,10 @@
     "room": "D-202",
     "period": "D",
     "term": "FY",
-    "enrolled": 8,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 192775,
+    "total_priority": 201190,
     "placed": true
   },
   {
@@ -2798,10 +2798,10 @@
     "room": "D-202",
     "period": "E",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 193345,
+    "total_priority": 201780,
     "placed": true
   },
   {
@@ -2818,7 +2818,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 167200,
+    "total_priority": 173750,
     "placed": true
   },
   {
@@ -2832,10 +2832,10 @@
     "room": "D-201",
     "period": "C",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 22,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 168500,
+    "total_priority": 175060,
     "placed": true
   },
   {
@@ -2849,10 +2849,10 @@
     "room": "D-201",
     "period": "D",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 169810,
+    "total_priority": 176355,
     "placed": true
   },
   {
@@ -2866,10 +2866,10 @@
     "room": "D-201",
     "period": "E",
     "term": "FY",
-    "enrolled": 18,
+    "enrolled": 22,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 171120,
+    "total_priority": 177665,
     "placed": true
   },
   {
@@ -2886,7 +2886,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 183925,
+    "total_priority": 191265,
     "placed": true
   },
   {
@@ -2900,10 +2900,10 @@
     "room": "D-203",
     "period": "B",
     "term": "FY",
-    "enrolled": 20,
+    "enrolled": 21,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 184555,
+    "total_priority": 191895,
     "placed": true
   },
   {
@@ -2917,10 +2917,10 @@
     "room": "D-203",
     "period": "C",
     "term": "FY",
-    "enrolled": 7,
+    "enrolled": 11,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185185,
+    "total_priority": 192525,
     "placed": true
   },
   {
@@ -2934,10 +2934,10 @@
     "room": "D-203",
     "period": "D",
     "term": "FY",
-    "enrolled": 9,
+    "enrolled": 8,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185815,
+    "total_priority": 193155,
     "placed": true
   },
   {
@@ -2951,10 +2951,10 @@
     "room": "D-203",
     "period": "E",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186445,
+    "total_priority": 193785,
     "placed": true
   },
   {
@@ -2971,7 +2971,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187235,
+    "total_priority": 195835,
     "placed": true
   },
   {
@@ -2988,7 +2988,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187905,
+    "total_priority": 196505,
     "placed": true
   },
   {
@@ -3005,7 +3005,7 @@
     "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188575,
+    "total_priority": 197175,
     "placed": true
   },
   {
@@ -3022,7 +3022,7 @@
     "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189245,
+    "total_priority": 197845,
     "placed": true
   },
   {
@@ -3036,10 +3036,10 @@
     "room": "D-205",
     "period": "A",
     "term": "FY",
-    "enrolled": 5,
+    "enrolled": 3,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188960,
+    "total_priority": 197920,
     "placed": true
   },
   {
@@ -3053,10 +3053,10 @@
     "room": "D-205",
     "period": "B",
     "term": "FY",
-    "enrolled": 20,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189720,
+    "total_priority": 198680,
     "placed": true
   },
   {
@@ -3073,7 +3073,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190480,
+    "total_priority": 199440,
     "placed": true
   },
   {
@@ -3087,10 +3087,10 @@
     "room": "D-205",
     "period": "D",
     "term": "FY",
-    "enrolled": 4,
+    "enrolled": 12,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 191240,
+    "total_priority": 200200,
     "placed": true
   },
   {
@@ -3104,10 +3104,10 @@
     "room": "D-204",
     "period": "E",
     "term": "FY",
-    "enrolled": 8,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189910,
+    "total_priority": 198510,
     "placed": true
   },
   {
@@ -3152,10 +3152,10 @@
     "section_num": 1,
     "teacher_id": "107126",
     "teacher_name": "Guy, Libbie",
-    "room": "J-321",
-    "period": "C",
+    "room": "Success Center",
+    "period": "A",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 515,
@@ -3169,10 +3169,10 @@
     "section_num": 1,
     "teacher_id": "107126",
     "teacher_name": "Guy, Libbie",
-    "room": "J-120",
-    "period": "E",
+    "room": "Success Center",
+    "period": "B",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 0,
     "total_priority": 465,
@@ -3186,13 +3186,13 @@
     "section_num": 2,
     "teacher_id": "107126",
     "teacher_name": "Guy, Libbie",
-    "room": "S-236",
-    "period": "F",
+    "room": "Success Center",
+    "period": "C",
     "term": "FY",
-    "enrolled": 15,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 445,
+    "total_priority": 465,
     "placed": true
   },
   {
@@ -3209,7 +3209,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 160425,
+    "total_priority": 178195,
     "placed": true
   },
   {
@@ -3223,10 +3223,10 @@
     "room": "D-206",
     "period": "B",
     "term": "FY",
-    "enrolled": 3,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 161595,
+    "total_priority": 179365,
     "placed": true
   },
   {
@@ -3240,10 +3240,10 @@
     "room": "D-206",
     "period": "C",
     "term": "FY",
-    "enrolled": 19,
+    "enrolled": 17,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 162785,
+    "total_priority": 180555,
     "placed": true
   },
   {
@@ -3254,13 +3254,13 @@
     "section_num": 1,
     "teacher_id": "105623",
     "teacher_name": "Stoller, Timothy",
-    "room": "J-321",
-    "period": "E",
+    "room": "Success Center",
+    "period": "A",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 295,
+    "total_priority": 305,
     "placed": true
   },
   {
@@ -3277,7 +3277,7 @@
     "enrolled": 6,
     "cap": 25,
     "raw_priority": 75,
-    "total_priority": 166090,
+    "total_priority": 172640,
     "placed": true
   },
   {
@@ -3544,12 +3544,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "E",
+    "period": "A",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 138125,
+    "total_priority": 139345,
     "placed": true
   },
   {
@@ -3561,12 +3561,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": null,
+    "period": "E",
     "term": "S2",
-    "enrolled": 0,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 157200,
+    "total_priority": 165135,
     "placed": true
   },
   {
@@ -3578,12 +3578,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "F",
+    "period": "B",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 139270,
+    "total_priority": 140490,
     "placed": true
   },
   {
@@ -3595,12 +3595,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "G",
+    "period": "C",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 140420,
+    "total_priority": 141640,
     "placed": true
   },
   {
@@ -3612,12 +3612,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": null,
+    "period": "D",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 142655,
+    "total_priority": 155190,
     "placed": true
   },
   {
@@ -3629,12 +3629,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": null,
+    "period": "E",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 142655,
+    "total_priority": 157425,
     "placed": true
   },
   {
@@ -3646,12 +3646,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "E",
+    "period": "A",
     "term": "S2",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 142655,
+    "total_priority": 158545,
     "placed": true
   },
   {
@@ -3663,12 +3663,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "F",
+    "period": "B",
     "term": "S2",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 154975,
+    "total_priority": 160760,
     "placed": true
   },
   {
@@ -3680,12 +3680,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": "G",
+    "period": "C",
     "term": "S2",
-    "enrolled": 25,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 156095,
+    "total_priority": 162935,
     "placed": true
   },
   {
@@ -3697,12 +3697,12 @@
     "teacher_id": "117479",
     "teacher_name": "Biggs, Tyrell",
     "room": "Gym",
-    "period": null,
+    "period": "D",
     "term": "S2",
-    "enrolled": 0,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 157200,
+    "total_priority": 164035,
     "placed": true
   },
   {
@@ -3719,7 +3719,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 121615,
+    "total_priority": 121555,
     "placed": true
   },
   {
@@ -3736,7 +3736,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 135670,
+    "total_priority": 135610,
     "placed": true
   },
   {
@@ -3748,12 +3748,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": null,
+    "period": "D",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 141550,
+    "total_priority": 142770,
     "placed": true
   },
   {
@@ -3765,12 +3765,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": null,
+    "period": "E",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 141550,
+    "total_priority": 156315,
     "placed": true
   },
   {
@@ -3782,12 +3782,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": null,
+    "period": "F",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 141550,
+    "total_priority": 159660,
     "placed": true
   },
   {
@@ -3799,12 +3799,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": "D",
+    "period": "A",
     "term": "S2",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 141550,
+    "total_priority": 161845,
     "placed": true
   },
   {
@@ -3816,12 +3816,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": null,
+    "period": "B",
     "term": "S2",
-    "enrolled": 0,
+    "enrolled": 10,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 157210,
+    "total_priority": 166225,
     "placed": true
   },
   {
@@ -3833,12 +3833,12 @@
     "teacher_id": "105763",
     "teacher_name": "Daniels, Torrence",
     "room": "Gym",
-    "period": null,
+    "period": "C",
     "term": "S2",
-    "enrolled": 0,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 157210,
+    "total_priority": 167315,
     "placed": true
   },
   {
@@ -3850,12 +3850,12 @@
     "teacher_id": "105747",
     "teacher_name": "Chiaravalloti, Michael",
     "room": "Gym",
-    "period": "D",
+    "period": "A",
     "term": "S1",
-    "enrolled": 19,
+    "enrolled": 20,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 136945,
+    "total_priority": 136885,
     "placed": true
   },
   {
@@ -3867,12 +3867,12 @@
     "teacher_id": "105747",
     "teacher_name": "Chiaravalloti, Michael",
     "room": "Gym",
-    "period": null,
+    "period": "B",
     "term": "S1",
-    "enrolled": 0,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 157205,
+    "total_priority": 138165,
     "placed": true
   },
   {
@@ -3889,7 +3889,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 120345,
+    "total_priority": 120285,
     "placed": true
   },
   {
@@ -3906,7 +3906,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 116255,
+    "total_priority": 114815,
     "placed": true
   },
   {
@@ -3920,10 +3920,10 @@
     "room": "Gym",
     "period": "B",
     "term": "S2",
-    "enrolled": 21,
+    "enrolled": 22,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 117635,
+    "total_priority": 117575,
     "placed": true
   },
   {
@@ -3937,10 +3937,10 @@
     "room": "Gym",
     "period": "C",
     "term": "S2",
-    "enrolled": 15,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 45,
-    "total_priority": 119015,
+    "total_priority": 118955,
     "placed": true
   },
   {
@@ -3951,8 +3951,8 @@
     "section_num": 1,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "J-020",
-    "period": "E",
+    "room": "Success Center",
+    "period": "A",
     "term": "S1",
     "enrolled": 25,
     "cap": 25,
@@ -3968,10 +3968,10 @@
     "section_num": 2,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "D-203",
-    "period": "F",
+    "room": "Success Center",
+    "period": "B",
     "term": "S1",
-    "enrolled": 25,
+    "enrolled": 23,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 425,
@@ -3985,13 +3985,13 @@
     "section_num": 3,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "I-111",
+    "room": "Success Center",
     "period": "A",
     "term": "S2",
-    "enrolled": 25,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 245,
+    "total_priority": 425,
     "placed": true
   },
   {
@@ -4002,13 +4002,13 @@
     "section_num": 4,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "S-338",
+    "room": "Success Center",
     "period": "B",
     "term": "S2",
-    "enrolled": 9,
+    "enrolled": 21,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 225,
+    "total_priority": 425,
     "placed": true
   },
   {
@@ -4019,13 +4019,13 @@
     "section_num": 5,
     "teacher_id": "105808",
     "teacher_name": "Sabella, Daniel",
-    "room": "S-338",
+    "room": "Success Center",
     "period": "C",
     "term": "S2",
-    "enrolled": 10,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 225,
+    "total_priority": 425,
     "placed": true
   },
   {
@@ -4036,13 +4036,13 @@
     "section_num": 1,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": "D-203",
-    "period": "G",
+    "room": "Success Center",
+    "period": "E",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 310,
+    "total_priority": 340,
     "placed": true
   },
   {
@@ -4053,13 +4053,13 @@
     "section_num": 2,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "F",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 290,
+    "total_priority": 340,
     "placed": true
   },
   {
@@ -4070,13 +4070,13 @@
     "section_num": 3,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "G",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 290,
+    "total_priority": 320,
     "placed": true
   },
   {
@@ -4093,7 +4093,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 174970,
+    "total_priority": 185950,
     "placed": true
   },
   {
@@ -4105,12 +4105,12 @@
     "teacher_id": "105883",
     "teacher_name": "Winters, Jack",
     "room": "I-012",
-    "period": "C",
+    "period": "D",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 176190,
+    "total_priority": 188375,
     "placed": true
   },
   {
@@ -4127,7 +4127,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 178605,
+    "total_priority": 189580,
     "placed": true
   },
   {
@@ -4212,7 +4212,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 190635,
+    "total_priority": 198375,
     "placed": true
   },
   {
@@ -4229,7 +4229,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 191205,
+    "total_priority": 198945,
     "placed": true
   },
   {
@@ -4243,10 +4243,10 @@
     "room": "I-114",
     "period": "C",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 191755,
+    "total_priority": 199495,
     "placed": true
   },
   {
@@ -4260,10 +4260,10 @@
     "room": "I-114",
     "period": "D",
     "term": "FY",
-    "enrolled": 1,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 192305,
+    "total_priority": 200045,
     "placed": true
   },
   {
@@ -4277,10 +4277,10 @@
     "room": "I-114",
     "period": "E",
     "term": "FY",
-    "enrolled": 2,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 192855,
+    "total_priority": 200595,
     "placed": true
   },
   {
@@ -4348,7 +4348,7 @@
     "enrolled": 12,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186125,
+    "total_priority": 196560,
     "placed": true
   },
   {
@@ -4362,10 +4362,10 @@
     "room": "I-119",
     "period": "E",
     "term": "FY",
-    "enrolled": 6,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186935,
+    "total_priority": 197370,
     "placed": true
   },
   {
@@ -4464,10 +4464,10 @@
     "room": "S-238",
     "period": "E",
     "term": "S1",
-    "enrolled": 3,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 196260,
+    "total_priority": 205980,
     "placed": true
   },
   {
@@ -4530,12 +4530,12 @@
     "teacher_id": "105832",
     "teacher_name": "Harris, Megan",
     "room": "I-113",
-    "period": "E",
+    "period": "C",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 113640,
+    "total_priority": 110805,
     "placed": true
   },
   {
@@ -4547,12 +4547,12 @@
     "teacher_id": "105883",
     "teacher_name": "Winters, Jack",
     "room": "I-012",
-    "period": "D",
+    "period": "C",
     "term": "FY",
-    "enrolled": 21,
+    "enrolled": 4,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 177400,
+    "total_priority": 187170,
     "placed": true
   },
   {
@@ -4564,12 +4564,12 @@
     "teacher_id": "105832",
     "teacher_name": "Harris, Megan",
     "room": "I-113",
-    "period": "C",
+    "period": "D",
     "term": "FY",
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 110805,
+    "total_priority": 112235,
     "placed": true
   },
   {
@@ -4581,12 +4581,12 @@
     "teacher_id": "105832",
     "teacher_name": "Harris, Megan",
     "room": "I-113",
-    "period": "D",
+    "period": "E",
     "term": "FY",
-    "enrolled": 23,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 112225,
+    "total_priority": 113630,
     "placed": true
   },
   {
@@ -4600,10 +4600,10 @@
     "room": "I-012",
     "period": "F",
     "term": "FY",
-    "enrolled": 8,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 179825,
+    "total_priority": 190780,
     "placed": true
   },
   {
@@ -4634,10 +4634,10 @@
     "room": "S-233",
     "period": "C",
     "term": "S1",
-    "enrolled": 12,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 172020,
+    "total_priority": 183000,
     "placed": true
   },
   {
@@ -4654,7 +4654,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 174440,
+    "total_priority": 185420,
     "placed": true
   },
   {
@@ -4671,7 +4671,7 @@
     "enrolled": 7,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 178095,
+    "total_priority": 188535,
     "placed": true
   },
   {
@@ -4685,10 +4685,10 @@
     "room": "I-119",
     "period": "B",
     "term": "FY",
-    "enrolled": 17,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 179085,
+    "total_priority": 189525,
     "placed": true
   },
   {
@@ -4702,10 +4702,10 @@
     "room": "I-119",
     "period": "C",
     "term": "FY",
-    "enrolled": 13,
+    "enrolled": 15,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 180015,
+    "total_priority": 190455,
     "placed": true
   },
   {
@@ -4750,10 +4750,10 @@
     "section_num": 1,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": "J-321",
-    "period": "D",
+    "room": "Success Center",
+    "period": "B",
     "term": "S1",
-    "enrolled": 11,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 495,
@@ -4767,10 +4767,10 @@
     "section_num": 2,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": "I-116",
-    "period": "E",
+    "room": "Success Center",
+    "period": "C",
     "term": "S1",
-    "enrolled": 25,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 25,
     "total_priority": 495,
@@ -4784,13 +4784,13 @@
     "section_num": 3,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": "D-110",
-    "period": "F",
+    "room": "Success Center",
+    "period": "D",
     "term": "S1",
-    "enrolled": 19,
+    "enrolled": 11,
     "cap": 25,
     "raw_priority": 25,
-    "total_priority": 385,
+    "total_priority": 485,
     "placed": true
   },
   {
@@ -4807,7 +4807,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 169590,
+    "total_priority": 180570,
     "placed": true
   },
   {
@@ -4824,7 +4824,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 170810,
+    "total_priority": 181790,
     "placed": true
   },
   {
@@ -4920,10 +4920,10 @@
     "section_num": 1,
     "teacher_id": "117711",
     "teacher_name": "Saggio, Jack",
-    "room": "J-321",
-    "period": "B",
+    "room": "Success Center",
+    "period": "A",
     "term": "S1",
-    "enrolled": 4,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 70,
     "total_priority": 515,
@@ -4943,7 +4943,7 @@
     "enrolled": 23,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 173235,
+    "total_priority": 184215,
     "placed": true
   },
   {
@@ -4960,7 +4960,7 @@
     "enrolled": 7,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 175625,
+    "total_priority": 186605,
     "placed": true
   },
   {
@@ -4977,7 +4977,7 @@
     "enrolled": 2,
     "cap": 25,
     "raw_priority": 50,
-    "total_priority": 173880,
+    "total_priority": 184860,
     "placed": true
   },
   {
@@ -5011,7 +5011,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 197070,
+    "total_priority": 206825,
     "placed": true
   },
   {
@@ -5028,7 +5028,7 @@
     "enrolled": 8,
     "cap": 25,
     "raw_priority": 0,
-    "total_priority": 197895,
+    "total_priority": 207650,
     "placed": true
   },
   {
@@ -5130,7 +5130,7 @@
     "enrolled": 1,
     "cap": 25,
     "raw_priority": 105,
-    "total_priority": 154970,
+    "total_priority": 167470,
     "placed": true
   },
   {
@@ -5141,7 +5141,7 @@
     "section_num": 1,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "J-020",
+    "room": "Success Center",
     "period": "B",
     "term": "S1",
     "enrolled": 0,
@@ -5158,7 +5158,7 @@
     "section_num": 2,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "J-020",
+    "room": "Success Center",
     "period": "C",
     "term": "S1",
     "enrolled": 25,
@@ -5175,7 +5175,7 @@
     "section_num": 1,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "J-020",
+    "room": "Success Center",
     "period": "D",
     "term": "S1",
     "enrolled": 25,
@@ -5192,7 +5192,7 @@
     "section_num": 2,
     "teacher_id": "105625",
     "teacher_name": "Konopelski, Louis",
-    "room": "D-205",
+    "room": "Success Center",
     "period": "E",
     "term": "S1",
     "enrolled": 11,
@@ -5209,13 +5209,13 @@
     "section_num": 1,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "D",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 5,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 230,
+    "total_priority": 240,
     "placed": true
   },
   {
@@ -5226,13 +5226,13 @@
     "section_num": 2,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "E",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 230,
+    "total_priority": 240,
     "placed": true
   },
   {
@@ -5243,13 +5243,13 @@
     "section_num": 3,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "F",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 230,
+    "total_priority": 240,
     "placed": true
   },
   {
@@ -5260,13 +5260,13 @@
     "section_num": 4,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": "D-202",
-    "period": "F",
+    "room": "Success Center",
+    "period": "A",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 14,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 210,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -5277,13 +5277,13 @@
     "section_num": 5,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": "D-110",
-    "period": "G",
+    "room": "Success Center",
+    "period": "B",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 7,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 200,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -5294,13 +5294,13 @@
     "section_num": 6,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "C",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -5311,13 +5311,13 @@
     "section_num": 7,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "D",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -5328,13 +5328,13 @@
     "section_num": 8,
     "teacher_id": "122084",
     "teacher_name": "Junis, Thomas",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "E",
     "term": "FY",
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 170,
+    "total_priority": 160,
     "placed": true
   },
   {
@@ -5351,7 +5351,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 183965,
+    "total_priority": 194055,
     "placed": true
   },
   {
@@ -5362,13 +5362,13 @@
     "section_num": 1,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": "S-233",
-    "period": "G",
+    "room": "Success Center",
+    "period": "B",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 13,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 245,
+    "total_priority": 255,
     "placed": true
   },
   {
@@ -5379,13 +5379,13 @@
     "section_num": 2,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": null,
-    "period": null,
+    "room": "Success Center",
+    "period": "C",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 2,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 235,
+    "total_priority": 250,
     "placed": true
   },
   {
@@ -5402,7 +5402,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 187635,
+    "total_priority": 198805,
     "placed": true
   },
   {
@@ -5419,7 +5419,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189135,
+    "total_priority": 199535,
     "placed": true
   },
   {
@@ -5436,7 +5436,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 189860,
+    "total_priority": 200260,
     "placed": true
   },
   {
@@ -5453,7 +5453,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 184655,
+    "total_priority": 194720,
     "placed": true
   },
   {
@@ -5467,10 +5467,10 @@
     "room": "J-320",
     "period": "C",
     "term": "FY",
-    "enrolled": 23,
+    "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185305,
+    "total_priority": 195390,
     "placed": true
   },
   {
@@ -5484,10 +5484,10 @@
     "room": "J-320",
     "period": "D",
     "term": "FY",
-    "enrolled": 13,
+    "enrolled": 9,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185955,
+    "total_priority": 196060,
     "placed": true
   },
   {
@@ -5501,10 +5501,10 @@
     "room": "J-320",
     "period": "E",
     "term": "FY",
-    "enrolled": 10,
+    "enrolled": 1,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186605,
+    "total_priority": 196730,
     "placed": true
   },
   {
@@ -5515,10 +5515,10 @@
     "section_num": 1,
     "teacher_id": "122120",
     "teacher_name": "Granieri, William",
-    "room": "D-102",
-    "period": "F",
+    "room": "Success Center",
+    "period": "A",
     "term": "FY",
-    "enrolled": 25,
+    "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
     "total_priority": 270,
@@ -5538,7 +5538,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 180875,
+    "total_priority": 191315,
     "placed": true
   },
   {
@@ -5555,7 +5555,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 181765,
+    "total_priority": 192205,
     "placed": true
   },
   {
@@ -5572,7 +5572,7 @@
     "enrolled": 0,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 186825,
+    "total_priority": 196025,
     "placed": true
   },
   {
@@ -5586,10 +5586,10 @@
     "room": "J-221",
     "period": "A",
     "term": "FY",
-    "enrolled": 24,
+    "enrolled": 16,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 182655,
+    "total_priority": 193095,
     "placed": true
   },
   {
@@ -5603,10 +5603,10 @@
     "room": "J-221",
     "period": "B",
     "term": "FY",
-    "enrolled": 11,
+    "enrolled": 6,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 183545,
+    "total_priority": 193985,
     "placed": true
   },
   {
@@ -5620,10 +5620,10 @@
     "room": "J-221",
     "period": "C",
     "term": "FY",
-    "enrolled": 16,
+    "enrolled": 18,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 184435,
+    "total_priority": 194875,
     "placed": true
   },
   {
@@ -5640,7 +5640,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 185325,
+    "total_priority": 195765,
     "placed": true
   },
   {
@@ -5657,7 +5657,7 @@
     "enrolled": 25,
     "cap": 25,
     "raw_priority": 20,
-    "total_priority": 188405,
+    "total_priority": 198075,
     "placed": true
   },
   {
@@ -5669,12 +5669,12 @@
     "teacher_id": "105767",
     "teacher_name": "Judge, Michelle",
     "room": "Success Center",
-    "period": "D",
+    "period": "A",
     "term": "FY",
     "enrolled": 1,
     "cap": 15,
     "raw_priority": 0,
-    "total_priority": 114970,
+    "total_priority": 116210,
     "placed": true
   },
   {
@@ -5686,7 +5686,7 @@
     "teacher_id": "105767",
     "teacher_name": "Judge, Michelle",
     "room": "Success Center",
-    "period": "E",
+    "period": "B",
     "term": "FY",
     "enrolled": 0,
     "cap": 15,
@@ -5703,7 +5703,7 @@
     "teacher_id": "105767",
     "teacher_name": "Judge, Michelle",
     "room": "Success Center",
-    "period": "F",
+    "period": "C",
     "term": "FY",
     "enrolled": 0,
     "cap": 15,
@@ -5720,7 +5720,7 @@
     "teacher_id": "105767",
     "teacher_name": "Judge, Michelle",
     "room": "Success Center",
-    "period": "G",
+    "period": "D",
     "term": "FY",
     "enrolled": 0,
     "cap": 15,
@@ -5737,7 +5737,7 @@
     "teacher_id": "105642",
     "teacher_name": "Mazella, Julie",
     "room": "Success Center",
-    "period": "A",
+    "period": "B",
     "term": "FY",
     "enrolled": 15,
     "cap": 15,
@@ -5754,12 +5754,12 @@
     "teacher_id": "105642",
     "teacher_name": "Mazella, Julie",
     "room": "Success Center",
-    "period": "B",
+    "period": "C",
     "term": "FY",
-    "enrolled": 12,
+    "enrolled": 9,
     "cap": 15,
     "raw_priority": 0,
-    "total_priority": 101115,
+    "total_priority": 105235,
     "placed": true
   },
   {
@@ -5771,9 +5771,9 @@
     "teacher_id": "105642",
     "teacher_name": "Mazella, Julie",
     "room": "Success Center",
-    "period": "C",
+    "period": "D",
     "term": "FY",
-    "enrolled": 0,
+    "enrolled": 3,
     "cap": 15,
     "raw_priority": 0,
     "total_priority": 108075,
