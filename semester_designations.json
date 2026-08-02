@@ -58,13 +58,23 @@
     "code": "201",
     "title": "Introduction to Guitar",
     "dept": "Music/Art",
-    "total_sections": 1,
-    "designation": "AI CHOICE",
+    "total_sections": 3,
+    "designation": "SPLIT (2\u00d7S1, 1\u00d7S2)",
     "category": "BUILDER CHOICE (engine decides)",
     "section_details": [
       {
         "sec": 1,
-        "semester": "Builder Choice",
+        "semester": "S1",
+        "teacher": "Lopez, Enrique"
+      },
+      {
+        "sec": 2,
+        "semester": "S1",
+        "teacher": "Lopez, Enrique"
+      },
+      {
+        "sec": 3,
+        "semester": "S2",
         "teacher": "Lopez, Enrique"
       }
     ]
@@ -343,13 +353,18 @@
     "code": "595",
     "title": "Engineering Design",
     "dept": "Engineering",
-    "total_sections": 1,
-    "designation": "AI CHOICE",
+    "total_sections": 2,
+    "designation": "SPLIT (1\u00d7S1, 1\u00d7S2)",
     "category": "BUILDER CHOICE (engine decides)",
     "section_details": [
       {
         "sec": 1,
-        "semester": "Builder Choice",
+        "semester": "S1",
+        "teacher": "Kozak, Bernadette"
+      },
+      {
+        "sec": 2,
+        "semester": "S2",
         "teacher": "Kozak, Bernadette"
       }
     ]
@@ -1001,6 +1016,44 @@
         "sec": 3,
         "semester": "FY",
         "teacher": "Fisk, Mary Pat"
+      }
+    ]
+  },
+  {
+    "code": "130",
+    "title": "British Literature",
+    "dept": "English",
+    "total_sections": 7,
+    "designation": "ALL FULL-YEAR (7 sections)",
+    "category": "FULL-YEAR",
+    "section_details": [
+      {
+        "sec": 1,
+        "semester": "FY"
+      },
+      {
+        "sec": 2,
+        "semester": "FY"
+      },
+      {
+        "sec": 3,
+        "semester": "FY"
+      },
+      {
+        "sec": 4,
+        "semester": "FY"
+      },
+      {
+        "sec": 5,
+        "semester": "FY"
+      },
+      {
+        "sec": 6,
+        "semester": "FY"
+      },
+      {
+        "sec": 7,
+        "semester": "FY"
       }
     ]
   }

@@ -16,6 +16,10 @@
 ### Teacher Section Prescriptions (2026-27)
 - **Chiaravalloti, Michael (105747)**: 631 CPR-AED Training/PE × 4 semester sections + 642 Nutrition & Fitness/PE × 6 semester sections = 10 total (5 per semester)
 - **Fisk, Mary Pat (105819)**: 131 British Literature H × 3 full-year sections
+- **Kozak, Bernadette (105628)**: 595 Engineering Design × 2 semester sections (1 S1 + 1 S2)
+- **Laracy, John (106760)**: 851 Spirituality of Vocation × 8 semester sections
+- **Umbrino, Philip (105768)**: 130 British Literature × 2 full-year sections (added to existing pool)
+- **Lopez, Enrique (102255)**: 201 Introduction to Guitar × 2 semester sections (co-scheduled with 203 Guitar Ensemble, same period/room); 203 Guitar Ensemble is full-year (5 credits, 2 sections)
 - Sections defined in Template 6 Sheet 2 ("Teacher-Course Assignments"), one row per section
 
 ### Pinned Periods (2026-27)
@@ -30,8 +34,8 @@
 - `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
 - `schedule_solution_v3.json` — Engine output (current: v2.2, 99 clashes, 98.4% placement)
 
-### Current Results (v2.3)
-- 64 clashes (Gr9: 1, Gr11: 35, Gr12: 28), 99.0% placement
+### Current Results (v2.4)
+- 69 clashes (Gr9: 1, Gr11: 22, Gr12: 46), 98.9% placement
 - 0 graduation requirement clashes, 100% grad req fulfillment
 - 0 P4+ (Required Core) clashes
-- Root cause: 63 all_periods_blocked, 1 singleton_collision
+- Root cause: 68 all_periods_blocked, 1 singleton_collision

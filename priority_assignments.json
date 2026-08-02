@@ -141,7 +141,7 @@
     "130": {
       "title": "British Literature",
       "department": "English",
-      "sections": 5,
+      "sections": 7,
       "requests": 82,
       "CFP": 4,
       "CYRP": 2,
@@ -151,7 +151,8 @@
       "RL": 0,
       "teachers": [
         "Dwyer, Kevin",
-        "New ENGLISH Teacher (TBD)"
+        "New ENGLISH Teacher (TBD)",
+        "Umbrino, Philip"
       ]
     },
     "131": {
@@ -307,7 +308,7 @@
     "201": {
       "title": "Introduction to Guitar",
       "department": "Music/Art",
-      "sections": 1,
+      "sections": 3,
       "requests": 3,
       "CFP": 5,
       "CYRP": 5,
@@ -322,7 +323,7 @@
     "203": {
       "title": "Guitar Ensemble",
       "department": "Music/Art",
-      "sections": 1,
+      "sections": 2,
       "requests": 2,
       "CFP": 5,
       "CYRP": 5,
@@ -1469,7 +1470,7 @@
     "595": {
       "title": "Engineering Design",
       "department": "Engineering",
-      "sections": 1,
+      "sections": 2,
       "requests": 13,
       "CFP": 5,
       "CYRP": 5,
