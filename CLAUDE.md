@@ -8,6 +8,9 @@
 3. Stop immediately when told to stop — no extra tool calls, no "one more thing"
 4. Do not claim to understand something when you do not — ask instead
 5. Be 100% honest and accurate — facts and solutions only, no false reassurance
+6. Every file edit must be immediately followed by commit and push in the same response — no batching, no waiting
+7. Read and follow COMMERCIAL_PRODUCT_SPEC.md before writing any engine code — the spec is the design, implement it exactly
+8. Identify and fix your own mistakes proactively — do not wait for JC to find them
 
 ### Engine
 - Use **schedule_engine_v3.py** (v3 engine) — NOT v4
