@@ -280,6 +280,34 @@ def _clear_priority_caches():
     _student_total_cache.clear()
     _section_raw_cache.clear()
 
+# ── Priority audit log (per-placement save/remove/recalculate/re-rank) ──
+_priority_audit = {
+    'phase_a': {'initial_snapshot': None, 'placements': [], 'final_snapshot': None},
+    'phase_b': {'initial_snapshot': None, 'placements': [], 'final_snapshot': None},
+}
+
+def _capture_snapshot():
+    """Capture all current priority values for audit trail."""
+    snap = {'students': {}, 'teachers': {}, 'rooms': {}, 'courses': {}}
+    for pid in students:
+        snap['students'][pid] = {
+            'name': students[pid], 'grade': grade.get(pid),
+            'raw': student_raw_priority(pid), 'total': student_total_priority(pid),
+        }
+    _teachers_set = set(s['teacher'] for s in sections if s.get('teacher', 'TBD') != 'TBD')
+    for tname in sorted(_teachers_set):
+        snap['teachers'][tname] = {
+            'raw': teacher_raw_priority(tname), 'total': teacher_total_priority(tname),
+        }
+    _rooms_set = set(s['room'] for s in sections if s.get('room', 'TBD') != 'TBD')
+    for rid in sorted(_rooms_set):
+        snap['rooms'][rid] = {
+            'raw': room_raw_priority(rid), 'total': room_total_priority(rid),
+        }
+    for cid in sorted(sec_by_code.keys()):
+        snap['courses'][cid] = {'section_raw': course_section_raw(cid)}
+    return snap
+
 def course_request_priority(pid, cid):
     key = (str(pid), str(cid))
     if key in _crp_cache:
@@ -1740,20 +1768,27 @@ def _build_co_enrollment():
                 co[cid_b][cid_a].append(pid)
     return co
 
+_top_student_cache = {}
+
+def _refresh_top_students():
+    """Precompute top student total for each course. O(students x courses_per_student)."""
+    _top_student_cache.clear()
+    for pid in students:
+        st = student_total_priority(pid)
+        for cid in sreq.get(pid, []):
+            if cid not in _top_student_cache or st > _top_student_cache[cid]:
+                _top_student_cache[cid] = st
+
 def _section_priority_key(s):
     """Sort key for section placement order using the DATA_STRUCTURE.md priority system.
     Course Section Total = Course Section Raw + Top Student Total + Teacher Total + Room Total.
-    Highest-priority sections are placed first (most negative sort values)."""
+    Highest-priority sections are placed first (most negative sort values).
+    Uses _top_student_cache (call _refresh_top_students() after each _clear_priority_caches())."""
     code = s['code']
     teacher = s['teacher']
     room = s.get('room', 'TBD')
     cs_raw = course_section_raw(code)
-    max_student_total = 0
-    for pid in students:
-        if code in sreq[pid]:
-            st = student_total_priority(pid)
-            if st > max_student_total:
-                max_student_total = st
+    max_student_total = _top_student_cache.get(code, 0)
     t_raw = teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0
     t_total = t_raw + max_student_total
     r_raw = room_raw_priority(room) if room and room != 'TBD' else 0
@@ -1789,14 +1824,37 @@ def _predict_clash_score(code, period, halves, co_enroll):
             break
     return clash_score
 
-def greedy_assign_periods(seed=42):
+def greedy_assign_periods(seed=42, audit=False):
+    """Assign each section to a period using per-placement save/remove/recalculate/re-rank.
+    After every section placement, priority caches are cleared, all remaining sections'
+    priority values are recalculated, and the ranking is rebuilt before the next placement."""
     rng = random.Random(seed)
     co_enroll = _build_co_enrollment()
-    unassigned = [s for s in sections if s['period'] is None]
-    rng.shuffle(unassigned)
-    unassigned.sort(key=_section_priority_key)
 
-    for s in unassigned:
+    if audit:
+        _clear_priority_caches()
+        _refresh_top_students()
+        _priority_audit['phase_a']['initial_snapshot'] = _capture_snapshot()
+        _priority_audit['phase_a']['placements'] = []
+
+    step = 0
+    while True:
+        # RECALCULATE: clear caches so priorities reflect current state
+        _clear_priority_caches()
+        _refresh_top_students()
+
+        # Collect remaining unassigned sections
+        unassigned = [s for s in sections if s['period'] is None]
+        if not unassigned:
+            break
+
+        # RE-RANK: deterministic shuffle for tiebreak, then sort by priority
+        rng_step = random.Random(seed + step)
+        rng_step.shuffle(unassigned)
+        unassigned.sort(key=_section_priority_key)
+
+        # PLACE: take #1 ranked section, find its best period
+        s = unassigned[0]
         teacher = s['teacher']
         room = s['room']
         halves = s['halves']
@@ -1809,13 +1867,17 @@ def greedy_assign_periods(seed=42):
 
         best_period = None
         best_score = float('inf')
+        period_scores = {}
 
         for p in PERIODS:
             if teacher and teacher != 'TBD' and teacher_busy(teacher, p, halves, s['sid']):
+                period_scores[p] = 'teacher_busy'
                 continue
             if teacher_would_exceed_cap(teacher, p, halves):
+                period_scores[p] = 'load_cap'
                 continue
             if teacher and teacher != 'TBD' and not teacher_available(teacher, p):
+                period_scores[p] = 'unavailable'
                 continue
             score = 0
             clash_penalty = _predict_clash_score(code, p, halves, co_enroll)
@@ -1838,6 +1900,7 @@ def greedy_assign_periods(seed=42):
             if prior_prefs and p in prior_prefs:
                 score -= 0.5
             score += rng.random() * 0.01
+            period_scores[p] = round(score, 4)
 
             if score < best_score:
                 best_score = score
@@ -1861,7 +1924,39 @@ def greedy_assign_periods(seed=42):
                 loads = Counter(sec['period'] for sec in sections if sec['period'])
                 s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
 
-greedy_assign_periods(seed=42)
+        step += 1
+
+        # SAVE: record placement with priority values used
+        if audit:
+            cs_raw_val = course_section_raw(code)
+            t_raw_val = teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0
+            t_total_val = teacher_total_priority(teacher) if teacher and teacher != 'TBD' else 0
+            r_raw_val = room_raw_priority(room) if room and room != 'TBD' else 0
+            r_total_val = room_total_priority(room) if room and room != 'TBD' else 0
+            top_st = _top_student_cache.get(code, 0)
+            _priority_audit['phase_a']['placements'].append({
+                'step': step, 'sid': s['sid'], 'code': code,
+                'title': s['title'], 'section': s['section'],
+                'teacher': teacher, 'room': room,
+                'period_assigned': s['period'], 'halves': list(s['halves']),
+                'cs_raw': cs_raw_val, 'top_student_total': top_st,
+                'teacher_raw': t_raw_val, 'teacher_total': t_total_val,
+                'room_raw': r_raw_val, 'room_total': r_total_val,
+                'cs_total': cs_raw_val + top_st + t_total_val + r_total_val,
+                'period_scores': period_scores,
+                'remaining_sections': len(unassigned) - 1,
+            })
+        # REMOVE: section now has a period — excluded from next iteration's unassigned list
+
+        if step % 50 == 0:
+            print(f"    Step {step}: {len(unassigned)-1} sections remaining")
+
+    if audit:
+        _clear_priority_caches()
+        _refresh_top_students()
+        _priority_audit['phase_a']['final_snapshot'] = _capture_snapshot()
+
+greedy_assign_periods(seed=42, audit=True)
 
 assigned_count = sum(1 for s in sections if s['period'])
 print(f"  Sections assigned: {assigned_count}/{len(sections)}")
@@ -2006,63 +2101,79 @@ for pid in sorted_students:
 # Sort by course request priority + student total priority
 _all_requests.sort(key=_full_sort_key)
 
-# ── Place in batches, recalculate between batches ──
-# After each batch, clear priority caches and re-sort so totals
-# reflect students already placed (removed from remaining pool).
-_BATCH_SIZE = 1500
+# ── Per-placement save/remove/recalculate/re-rank (Job 2) ──
+_priority_audit['phase_b']['initial_snapshot'] = _capture_snapshot()
 _placed_set = set()
 _placed_count_b = 0
+_total_requests = len(_all_requests)
+_step_b = 0
 
-while _placed_count_b < len(_all_requests):
-    # Place the next batch in current sort order
-    batch_placed = 0
-    for pid, cid in _all_requests:
-        if (pid, cid) in _placed_set:
-            continue
-        if cid not in sec_by_code:
-            _placed_set.add((pid, cid))
-            continue
-        if cid == '745':
-            if pid in cohA and leo2C is not None:
-                add_place(pid, cid, leo2C)
-            elif pid in cohB and leo2E is not None:
-                add_place(pid, cid, leo2E)
-            else:
-                opts = sec_by_code[cid]
-                best = min(opts, key=lambda sid: (added_conflicts(pid, sid), secfill[sid]))
-                add_place(pid, cid, best)
-            _placed_set.add((pid, cid))
-            _placed_count_b += 1
-            batch_placed += 1
-            if batch_placed >= _BATCH_SIZE:
-                break
-            continue
+while _all_requests:
+    pid, cid = _all_requests[0]
+
+    if cid not in sec_by_code:
+        _placed_set.add((pid, cid))
+        _all_requests.pop(0)
+        continue
+
+    chosen_sid = None
+    if cid == '745':
+        if pid in cohA and leo2C is not None:
+            chosen_sid = leo2C
+        elif pid in cohB and leo2E is not None:
+            chosen_sid = leo2E
+        else:
+            opts = sec_by_code[cid]
+            chosen_sid = min(opts, key=lambda sid: (added_conflicts(pid, sid), secfill[sid]))
+    else:
         opts = sec_by_code[cid]
         if HARD_CAP_ENFORCEMENT:
             _hc_opts = [sid for sid in opts if secfill[sid] < sections[sid]['cap']]
             if _hc_opts:
                 opts = _hc_opts
-        best = min(opts, key=lambda sid: (
+        chosen_sid = min(opts, key=lambda sid: (
             added_conflicts(pid, sid),
             max(0, secfill[sid] + 1 - sections[sid]['cap']),
             secfill[sid]
         ))
-        add_place(pid, cid, best)
-        _placed_set.add((pid, cid))
-        _placed_count_b += 1
-        batch_placed += 1
-        if batch_placed >= _BATCH_SIZE:
-            break
 
-    if batch_placed == 0:
-        break
+    add_place(pid, cid, chosen_sid)
+    _placed_set.add((pid, cid))
+    _placed_count_b += 1
+    _step_b += 1
 
-    # Recalculate: the pond has changed, update priorities and re-sort remaining
-    if _placed_count_b < len(_all_requests):
-        _clear_priority_caches()
-        # Re-sort only remaining unplaced requests
-        _all_requests = [pc for pc in _all_requests if pc not in _placed_set]
-        _all_requests.sort(key=_full_sort_key)
+    _priority_audit['phase_b']['placements'].append({
+        'step': _step_b,
+        'student_id': pid,
+        'student_name': students.get(pid, ''),
+        'code': cid,
+        'section_id': chosen_sid,
+        'crp': course_request_priority(pid, cid),
+        'student_raw': student_raw_priority(pid),
+        'student_total': student_total_priority(pid),
+        'cs_raw': course_section_raw(cid),
+        'section_fill': secfill[chosen_sid],
+        'section_cap': sections[chosen_sid]['cap'],
+        'conflicts_added': added_conflicts(pid, chosen_sid),
+        'remaining_requests': len(_all_requests) - 1,
+    })
+
+    if _step_b % 500 == 0:
+        print(f"    Phase B step {_step_b}/{_total_requests}")
+
+    _clear_priority_caches()
+    _all_requests = [pc for pc in _all_requests[1:] if pc not in _placed_set]
+    _all_requests.sort(key=_full_sort_key)
+
+_priority_audit['phase_b']['final_snapshot'] = _capture_snapshot()
+print(f"  Phase B complete: {_placed_count_b} placements in {_step_b} steps")
+
+# ── Save priority audit log ──
+import json as _json_audit
+_audit_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'priority_audit_log.json')
+with open(_audit_path, 'w') as _af:
+    _json_audit.dump(_priority_audit, _af, indent=2, default=str)
+print(f"  Priority audit log saved to {_audit_path}")
 
 conf_count = 0
 for pid in students:
