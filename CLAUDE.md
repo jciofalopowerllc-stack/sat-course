@@ -60,6 +60,11 @@
 - **734 LEO I**: S2 only (period determined by engine priority placement)
 - No course sections are required to be placed in a specific period of the day
 
+### Room Assignment Rules
+- Sections without a prescribed room may be placed into any room that is free for that period and term
+- Prescribed rooms are NOT exclusively reserved — they are available to other sections in any period/term when the prescribed section is not using them
+- 66 of 371 sections have no prescribed room — this is correct (not a data gap)
+
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization)
 - `course_priorities.json` — Graduation requirements, pathway courses, singleton courses
