@@ -2044,6 +2044,17 @@ def resolve_student(pid):
     for pc in assign[pid]:
         if student_prio(pid, pc) >= PROT_THRESHOLD:
             pins[pc] = assign[pid][pc]
+    # If pinned courses conflict with each other, demote lower-priority pins
+    pin_cells = {}
+    for c, sid in list(pins.items()):
+        for x in occ_cells(sid):
+            pin_cells.setdefault(x, []).append(c)
+    for x, cs in pin_cells.items():
+        if len(cs) > 1:
+            cs_sorted = sorted(cs, key=lambda c: (-student_prio(pid, c), -int(is_singleton(c))))
+            for c in cs_sorted[1:]:
+                if c in pins:
+                    del pins[c]
     others = [c for c in sreq[pid] if c not in pins and c in assign[pid]]
     used = set()
     for c, sid in pins.items():
@@ -2197,7 +2208,7 @@ for pid in students:
             _score_fn = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
             keep = min(cs, key=_score_fn)
             for c in cs:
-                if c != keep and student_prio(pid, c) < PROT_THRESHOLD:
+                if c != keep:
                     bump.add(c)
                     bump_reason[c] = keep
     for c in bump:
@@ -2362,7 +2373,7 @@ def full_reseat():
                 _sf = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
                 kp = min(cs, key=_sf)
                 for c in cs:
-                    if c != kp and student_prio(pid, c) < PROT_THRESHOLD:
+                    if c != kp:
                         bmp.add(c)
                         bmp_reason[c] = kp
         for c in bmp:
@@ -2389,7 +2400,7 @@ def full_reseat():
             rm_place(pid, c)
     for cl_item in list(nc):
         pid, cid = cl_item['student'], cl_item['code']
-        if student_prio(pid, cid) >= PROT_THRESHOLD or cid in assign.get(pid, {}):
+        if cid in assign.get(pid, {}):
             continue
         used = set()
         for c2, s2 in assign.get(pid, {}).items():
@@ -2497,7 +2508,7 @@ def full_reseat_fast():
                 _sf = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
                 kp = min(cs, key=_sf)
                 for c in cs:
-                    if c != kp and student_prio(pid, c) < PROT_THRESHOLD:
+                    if c != kp:
                         bmp.add(c)
         for c in bmp:
             rm_place(pid, c)
