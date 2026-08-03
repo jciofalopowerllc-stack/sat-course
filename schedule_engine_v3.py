@@ -2316,13 +2316,15 @@ for _pid in _reseat_pid_order:
         key=lambda c, _p=_pid: (-student_prio(_p, c), -ripple_score(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
     )
 
-
 def full_reseat():
     _invalidate_occ_cache()
     for pid in students:
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
+    # Two-pass greedy with student-by-student ordering
+    # Pass 1: place zero-conflict sections + always place high-priority (grad req/protected)
+    deferred = []
     for pid in _reseat_pid_order:
         for cid in _reseat_course_order[pid]:
             if cid not in sec_by_code:
@@ -2341,11 +2343,47 @@ def full_reseat():
                 _fr_hc = [sid for sid in _fr_opts if secfill[sid] < sections[sid]['cap']]
                 if _fr_hc:
                     _fr_opts = _fr_hc
-            add_place(pid, cid, min(_fr_opts, key=lambda sid: (
+            best = min(_fr_opts, key=lambda sid: (
                 added_conflicts(pid, sid),
                 max(0, secfill[sid] + 1 - sections[sid]['cap']),
-                secfill[sid])))
-    for rnd in range(3):
+                secfill[sid]))
+            _sp = student_prio(pid, cid)
+            if added_conflicts(pid, best) == 0 or _sp >= PROT_THRESHOLD:
+                add_place(pid, cid, best)
+            else:
+                deferred.append((pid, cid))
+    # Pass 2: retry deferred — landscape changed, some may now fit conflict-free
+    still_deferred = []
+    for pid, cid in deferred:
+        if cid not in sec_by_code:
+            continue
+        _fr_opts = sec_by_code[cid]
+        if HARD_CAP_ENFORCEMENT:
+            _fr_hc = [sid for sid in _fr_opts if secfill[sid] < sections[sid]['cap']]
+            if _fr_hc:
+                _fr_opts = _fr_hc
+        best = min(_fr_opts, key=lambda sid: (
+            added_conflicts(pid, sid),
+            max(0, secfill[sid] + 1 - sections[sid]['cap']),
+            secfill[sid]))
+        if added_conflicts(pid, best) == 0:
+            add_place(pid, cid, best)
+        else:
+            still_deferred.append((pid, cid))
+    # Pass 3: force-place remaining (accept conflicts for CSP/bump to resolve)
+    for pid, cid in still_deferred:
+        if cid not in sec_by_code:
+            continue
+        _fr_opts = sec_by_code[cid]
+        if HARD_CAP_ENFORCEMENT:
+            _fr_hc = [sid for sid in _fr_opts if secfill[sid] < sections[sid]['cap']]
+            if _fr_hc:
+                _fr_opts = _fr_hc
+        add_place(pid, cid, min(_fr_opts, key=lambda sid: (
+            added_conflicts(pid, sid),
+            max(0, secfill[sid] + 1 - sections[sid]['cap']),
+            secfill[sid])))
+    for rnd in range(6):
         cpids = [pid for pid in students
                  if any(cell_usage.get((pid, x), 0) > 1
                         for cid, sid in assign[pid].items() for x in occ_cells(sid))]
@@ -2457,6 +2495,8 @@ def full_reseat_fast():
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
+    # Two-pass greedy with student-by-student ordering
+    deferred = []
     for pid in _reseat_pid_order:
         for cid in _reseat_course_order[pid]:
             if cid not in sec_by_code:
@@ -2475,11 +2515,45 @@ def full_reseat_fast():
                 _fr2_hc = [sid for sid in _fr2_opts if secfill[sid] < sections[sid]['cap']]
                 if _fr2_hc:
                     _fr2_opts = _fr2_hc
-            add_place(pid, cid, min(_fr2_opts, key=lambda sid: (
+            best = min(_fr2_opts, key=lambda sid: (
                 added_conflicts(pid, sid),
                 max(0, secfill[sid] + 1 - sections[sid]['cap']),
-                secfill[sid])))
-    for rnd in range(3):
+                secfill[sid]))
+            _sp = student_prio(pid, cid)
+            if added_conflicts(pid, best) == 0 or _sp >= PROT_THRESHOLD:
+                add_place(pid, cid, best)
+            else:
+                deferred.append((pid, cid))
+    still_deferred = []
+    for pid, cid in deferred:
+        if cid not in sec_by_code:
+            continue
+        _fr2_opts = sec_by_code[cid]
+        if HARD_CAP_ENFORCEMENT:
+            _fr2_hc = [sid for sid in _fr2_opts if secfill[sid] < sections[sid]['cap']]
+            if _fr2_hc:
+                _fr2_opts = _fr2_hc
+        best = min(_fr2_opts, key=lambda sid: (
+            added_conflicts(pid, sid),
+            max(0, secfill[sid] + 1 - sections[sid]['cap']),
+            secfill[sid]))
+        if added_conflicts(pid, best) == 0:
+            add_place(pid, cid, best)
+        else:
+            still_deferred.append((pid, cid))
+    for pid, cid in still_deferred:
+        if cid not in sec_by_code:
+            continue
+        _fr2_opts = sec_by_code[cid]
+        if HARD_CAP_ENFORCEMENT:
+            _fr2_hc = [sid for sid in _fr2_opts if secfill[sid] < sections[sid]['cap']]
+            if _fr2_hc:
+                _fr2_opts = _fr2_hc
+        add_place(pid, cid, min(_fr2_opts, key=lambda sid: (
+            added_conflicts(pid, sid),
+            max(0, secfill[sid] + 1 - sections[sid]['cap']),
+            secfill[sid])))
+    for rnd in range(6):
         cpids = [pid for pid in students
                  if any(cell_usage.get((pid, x), 0) > 1
                         for cid, sid in assign[pid].items() for x in occ_cells(sid))]
@@ -2518,8 +2592,45 @@ def full_reseat_fast():
             elif sp >= LEVEL_LIMITED_CHOICE:
                 mid += 1
             total += 1
-    # Greedy re-add for bumped courses (no diagnostic tracking)
+    # Greedy re-add for bumped courses
     for pid in students:
+        for cid in sreq[pid]:
+            if cid in assign.get(pid, {}):
+                continue
+            if cid not in sec_by_code:
+                continue
+            used = set()
+            for c2, s2 in assign.get(pid, {}).items():
+                for x in occ_cells(s2):
+                    used.add(x)
+            best, bsc = None, None
+            for alt in sec_by_code.get(cid, []):
+                if any(x in used for x in occ_cells(alt)):
+                    continue
+                if HARD_CAP_ENFORCEMENT and secfill[alt] >= sections[alt]['cap']:
+                    continue
+                sc = (max(0, secfill[alt] + 1 - sections[alt]['cap']), secfill[alt])
+                if bsc is None or sc < bsc:
+                    bsc, best = sc, alt
+            if best is not None:
+                add_place(pid, cid, best)
+                total -= 1
+                sp = student_prio(pid, cid)
+                if sp >= LEVEL_NO_ALTERNATIVE:
+                    top -= 1
+                elif sp >= LEVEL_LIMITED_CHOICE:
+                    mid -= 1
+    # CSP recovery for students with bumped courses
+    bumped_pids = set()
+    for pid in students:
+        for cid in sreq[pid]:
+            if cid not in assign.get(pid, {}) and cid in sec_by_code:
+                bumped_pids.add(pid)
+                break
+    for pid in bumped_pids:
+        resolve_student(pid)
+    # Final greedy re-add after CSP recovery
+    for pid in bumped_pids:
         for cid in sreq[pid]:
             if cid in assign.get(pid, {}):
                 continue
@@ -2556,6 +2667,30 @@ def _clash_quality(cl):
     mid_clashes = sum(1 for c in cl if LEVEL_LIMITED_CHOICE <= student_prio(c['student'], c['code']) < LEVEL_NO_ALTERNATIVE)
     return (top_clashes, mid_clashes, len(cl))
 
+def _can_move_section(sid, new_period):
+    """Check if section can move to new_period without teacher conflicts."""
+    if sid in PINNED_SIDS or sid in COGROUP_SIDS:
+        return False
+    s = sections[sid]
+    if new_period == s['period']:
+        return False
+    t = s['teacher']
+    if t and t != 'TBD':
+        if any(sections[ts]['period'] == new_period
+               and set(sections[ts]['halves']) & set(s['halves'])
+               and not in_same_cogroup(sid, ts)
+               for ts in teacher_sections.get(t, []) if ts != sid):
+            return False
+        old_p = s['period']
+        s['period'] = None
+        exc = teacher_would_exceed_cap(t, new_period, s['halves'])
+        s['period'] = old_p
+        if exc:
+            return False
+        if not teacher_available(t, new_period):
+            return False
+    return True
+
 def run_optimization_pass(cl=None):
     if cl is None:
         cl = full_reseat()
@@ -2573,7 +2708,6 @@ def run_optimization_pass(cl=None):
             for cid_cl, sid_cl in assign.get(pid_cl, {}).items():
                 if sections[sid_cl]['period'] == c['lost_period']:
                     sec_sc[sid_cl] += 1
-        # v3: also weight by priority — P4 clashes score 3x, P3 score 2x
         for c in cl:
             p = c.get('priority', 1)
             if p >= 4:
@@ -2590,22 +2724,8 @@ def run_optimization_pass(cl=None):
                 continue
             s = sections[sid]
             for p in PERIODS:
-                if p == s['period']:
+                if not _can_move_section(sid, p):
                     continue
-                if s['teacher'] and s['teacher'] != 'TBD':
-                    if any(sections[ts]['period'] == p
-                           and set(sections[ts]['halves']) & set(s['halves'])
-                           and not in_same_cogroup(sid, ts)
-                           for ts in teacher_sections.get(s['teacher'], []) if ts != sid):
-                        continue
-                    old_p = s['period']
-                    s['period'] = None
-                    exc = teacher_would_exceed_cap(s['teacher'], p, s['halves'])
-                    s['period'] = old_p
-                    if exc:
-                        continue
-                    if not teacher_available(s['teacher'], p):
-                        continue
                 new_conf = 0
                 for rpid in code_requesters.get(s['code'], set()):
                     for rc in sreq[rpid]:
@@ -2647,6 +2767,57 @@ def run_optimization_pass(cl=None):
             _invalidate_occ_cache()
         if not improved:
             stalled += 1
+    # Phase 2: two-section swap — try swapping periods between pairs of high-clash sections
+    import time as _swap_time
+    _swap_start = _swap_time.time()
+    stalled2 = 0
+    for d_iter2 in range(20):
+        if stalled2 >= 4:
+            break
+        if _swap_time.time() - _swap_start > 60:
+            break
+        sec_sc2 = Counter()
+        for c in cl:
+            for sid in sec_by_code.get(c['code'], []):
+                sec_sc2[sid] += 1
+        top_sids = [sid for sid, _ in sec_sc2.most_common(30)
+                    if sid not in PINNED_SIDS and sid not in COGROUP_SIDS]
+        improved2 = False
+        for i in range(len(top_sids)):
+            if improved2:
+                break
+            if _swap_time.time() - _swap_start > 60:
+                break
+            sid1 = top_sids[i]
+            s1 = sections[sid1]
+            p1 = s1['period']
+            for j in range(i + 1, min(i + 15, len(top_sids))):
+                sid2 = top_sids[j]
+                s2 = sections[sid2]
+                p2 = s2['period']
+                if p1 == p2:
+                    continue
+                if s1['teacher'] == s2['teacher']:
+                    continue
+                if not _can_move_section(sid1, p2):
+                    continue
+                if not _can_move_section(sid2, p1):
+                    continue
+                s1['period'] = p2
+                s2['period'] = p1
+                _invalidate_occ_cache()
+                tc_q = full_reseat_fast()
+                if tc_q < best_q:
+                    best_q = tc_q
+                    cl = full_reseat()
+                    improved2 = True
+                    stalled2 = 0
+                    break
+                s1['period'] = p1
+                s2['period'] = p2
+                _invalidate_occ_cache()
+        if not improved2:
+            stalled2 += 1
     return cl
 
 # v3: 16 restart seeds (doubled from 8)

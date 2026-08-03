@@ -63,12 +63,21 @@
 - **Granieri (122120)**: Reassigned from 810/820/830 to 849×8 + 830×1; former sections transferred to TBD Theology (999999)
 - **TBD Theology (999999)**: 830 section removed — 830 should have 9 total sections, not 10
 
-### Current Results (v3 post-corrections)
-- 74 clashes (Gr9: 1, Gr11: 41, Gr12: 32), 98.9% placement (6464/6538)
-- 0 graduation requirement clashes, 100% grad req fulfillment (5427/5427, includes 39 Gr12 science overrides)
-- 0 AP/Honors clashes (2465/2465)
-- 0 P4+ (Required Core) clashes
-- Root cause: 72 all_periods_blocked, 2 singleton_collision
+### Current Results (v3 post-double-booking-fix + placement improvements)
+- 911 clashes (Gr9: 182, Gr10: 178, Gr11: 239, Gr12: 312), 86.1% placement (5627/6538)
+- 0 double-bookings (critical fix: students may only occupy one course per period-semester slot)
+- Graduation requirement fulfillment: 5042/5427 (92.9%)
+- AP/Honors fulfillment: 2318/2465 (94.0%)
+- P4 (Required Core) clashes: 5
+- Root cause: 683 all_periods_blocked, 503 singleton_collision, 2 period_conflict
 - Hard enrollment cap of 28 enforced for 310 Spanish I and 520 Chemistry
 - 371 sections across 143 courses, 63 teachers
-- Top unscheduled courses: 631 CPR-AED (13), 241 Studio Art I (8), 546 Forensics (8), 2054 Digital Media (7)
+- Top unscheduled courses: 708 Intro to Business (44), 726 Business Concepts (37), 727 Sports Marketing (34), 734 LEO I (24), 732 Business Law (18)
+
+### Engine Improvements Applied
+- **Double-booking fix**: Removed `PROT_THRESHOLD` guard from bump logic (Phase C, `full_reseat()`, `full_reseat_fast()`) — previously courses with priority >= 50 were never bumped even when double-booked
+- **Pin-conflict demotion in CSP**: `resolve_student()` now demotes lower-priority pins when two protected courses conflict with each other
+- **Two-pass greedy placement**: Pass 1 places zero-conflict and high-priority sections; defers low-priority conflicts. Pass 2 retries deferred items after landscape changes. Pass 3 force-places remaining.
+- **Two-section swap optimization**: After single-section moves stall, tries swapping periods between pairs of high-clash sections (time-limited to 60s per restart)
+- **Enhanced CSP**: Increased from 3 to 6 rounds in `full_reseat()` and `full_reseat_fast()`
+- **CSP recovery in fast path**: Added post-bump CSP recovery and greedy re-add to `full_reseat_fast()` (previously only in `full_reseat()`)
