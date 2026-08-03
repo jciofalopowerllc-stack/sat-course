@@ -318,7 +318,8 @@ def student_raw_priority(pid):
         raw += COHORT_POINTS
     pw = sp.get('pathway_name', 'N')
     acad = sp.get('is_acad_support', False)
-    if pw != 'N' or acad:
+    leo_i = sp.get('is_leo_i', False)
+    if pw != 'N' or acad or leo_i:
         raw += SSP_POINTS
     return raw
 
@@ -368,9 +369,8 @@ def _count_section_locks(s):
     sem = s.get('sem_raw', 'FY')
     if sem in ('S1', 'S2'):
         locks += 1
-    ci = course_info.get(s.get('code', ''), {})
-    cohort = ci.get('cohort_flag', '')
-    if cohort and cohort not in ('', 'N', None):
+    pc = s.get('prescribed_cohort', '')
+    if pc:
         locks += 1
     return locks
 
@@ -403,8 +403,54 @@ def teacher_raw_priority(tname):
     return locks * PTS_LOCK
 
 def room_raw_priority(rid):
-    demand = sum(1 for s in sections if s.get('room') == str(rid))
-    return demand * PTS_ROOM_DEMAND
+    rid_s = str(rid)
+    rp = room_profiles.get(rid_s, {})
+    unavail_p = len(rp.get('unavailable_periods', set()))
+    unavail_t = len(rp.get('unavailable_terms', set()))
+    demand = sum(1 for s in sections if s.get('room') == rid_s)
+    return (unavail_p * PTS_LOCK) + (unavail_t * PTS_LOCK) + (demand * PTS_ROOM_DEMAND)
+
+def teacher_total_priority(tname):
+    raw = teacher_raw_priority(tname)
+    top_student = 0
+    for sid_idx in teacher_sections.get(tname, []):
+        s = sections[sid_idx]
+        cid = s.get('code', '')
+        for pid in sreq:
+            if cid in sreq[pid]:
+                st = student_total_priority(pid)
+                if st > top_student:
+                    top_student = st
+    prescribed_room_raw = 0
+    for sid_idx in teacher_sections.get(tname, []):
+        s = sections[sid_idx]
+        rm = s.get('room', 'TBD')
+        if rm != 'TBD':
+            rr = room_raw_priority(rm)
+            if rr > prescribed_room_raw:
+                prescribed_room_raw = rr
+    return raw + top_student + prescribed_room_raw
+
+def room_total_priority(rid):
+    raw = room_raw_priority(rid)
+    rid_s = str(rid)
+    top_teacher = 0
+    top_student = 0
+    for s in sections:
+        if s.get('room') != rid_s:
+            continue
+        tname = s.get('teacher', 'TBD')
+        if tname != 'TBD':
+            tt = teacher_total_priority(tname)
+            if tt > top_teacher:
+                top_teacher = tt
+        cid = s.get('code', '')
+        for pid in sreq:
+            if cid in sreq[pid]:
+                st = student_total_priority(pid)
+                if st > top_student:
+                    top_student = st
+    return raw + top_teacher + top_student
 
 def is_protected(pid, cid):
     g = grade.get(str(pid), 0)
@@ -530,6 +576,7 @@ for r in range(3, _t6ws_assign.max_row + 1):
     room = _t6ws_assign.cell(r, 3).value
     prescribed_period = _t6ws_assign.cell(r, 4).value
     prescribed_term = _t6ws_assign.cell(r, 5).value
+    prescribed_cohort = _t6ws_assign.cell(r, 6).value
 
     if code is None:
         continue
@@ -579,12 +626,14 @@ for r in range(3, _t6ws_assign.max_row + 1):
     cap = _course_max_enrollment.get(cid, 25)
 
     sid = len(sections)
+    _pc_str = str(prescribed_cohort).strip() if prescribed_cohort and str(prescribed_cohort).strip().upper() not in ('', 'NONE', 'N', 'NO') else ''
     sec = {
         'sid': sid, 'code': cid, 'section': secnum,
         'period': period, 'halves': halves, 'cap': cap,
         'teacher': teacher_name, 'room': room_str,
         'title': ci.get('title', cid), 'dept': ci.get('dept', ''),
-        'is_fy': is_fy, 'sem_raw': sem_str or str(prescribed_term or '')
+        'is_fy': is_fy, 'sem_raw': sem_str or str(prescribed_term or ''),
+        'prescribed_cohort': _pc_str,
     }
     sections.append(sec)
     sec_by_code[cid].append(sid)
@@ -603,9 +652,13 @@ t9_path = os.path.join(TEMPLATES, 'Template_9_Room_Profiles.xlsx')
 try:
     _t9wb = openpyxl.load_workbook(t9_path, data_only=True)
     _t9ws = _t9wb.active
+    _all_periods = set(PERIODS)
+    _all_terms = {'FY', 'S1', 'S2'}
     for r in range(3, _t9ws.max_row + 1):
         _rid = _t9ws.cell(r, 1).value
         _rcap = _t9ws.cell(r, 2).value
+        _ravail_p = _t9ws.cell(r, 3).value
+        _ravail_t = _t9ws.cell(r, 4).value
         _rshared = _t9ws.cell(r, 5).value
         if not _rid:
             continue
@@ -614,12 +667,24 @@ try:
         _is_simultaneous = _cap >= 100 and str(_rshared or 'N').upper() == 'Y'
         if _is_simultaneous:
             SHARED_ROOMS.add(rid)
+        _avail_periods = set(p.strip().upper() for p in str(_ravail_p or 'A,B,C,D,E,F,G').split(',')) if _ravail_p else set(_all_periods)
+        _unavail_periods = _all_periods - _avail_periods
+        _avail_terms_raw = str(_ravail_t or 'FY,S1,S2').split(',')
+        _avail_terms = set(t.strip().upper() for t in _avail_terms_raw) if _ravail_t else set(_all_terms)
+        if 'FY' in _avail_terms:
+            _avail_terms |= {'S1', 'S2'}
+        _unavail_terms = _all_terms - _avail_terms
         room_profiles[rid] = {
             'capacity': _cap,
             'shared': _is_simultaneous,
+            'available_periods': _avail_periods,
+            'unavailable_periods': _unavail_periods,
+            'available_terms': _avail_terms,
+            'unavailable_terms': _unavail_terms,
         }
     _t9wb.close()
-    print(f"  Room profiles loaded: {len(room_profiles)} rooms (simultaneous-use: {SHARED_ROOMS or 'none'})")
+    _restricted_rooms = sum(1 for rp in room_profiles.values() if rp['unavailable_periods'] or rp['unavailable_terms'])
+    print(f"  Room profiles loaded: {len(room_profiles)} rooms (simultaneous-use: {SHARED_ROOMS or 'none'}, restricted: {_restricted_rooms})")
 except FileNotFoundError:
     print("  Template 9 not found — using defaults for room profiles")
 
@@ -804,11 +869,13 @@ try:
             continue
         sid_str = str(sid).strip()
         _leo_col = _t8col('LEO II')
+        _leo1_col = _t8col('LEO I')
         _pathway_col = _t8col('Pathway')
         _acad_col = _t8col('Academic Support')
         _ssp_col = _t8col('SSP')
         _grade_col = _t8col('Grade Level')
         is_leo = str(t8_profile_sheet.cell(r, _leo_col).value or 'N').upper() == 'Y' if _leo_col else False
+        is_leo_i = str(t8_profile_sheet.cell(r, _leo1_col).value or 'N').upper() == 'Y' if _leo1_col else False
         _pathway_raw = str(t8_profile_sheet.cell(r, _pathway_col).value or 'N').strip() if _pathway_col else 'N'
         is_pathway = _pathway_raw not in ('N', 'n', '')
         _pathway_name = _pathway_raw if is_pathway else 'N'
@@ -827,6 +894,7 @@ try:
                 ssp_score = 1
         student_profiles[sid_str] = {
             'is_leo': is_leo,
+            'is_leo_i': is_leo_i,
             'is_pathway': is_pathway,
             'pathway_name': _pathway_name,
             'is_acad_support': is_acad_support,
@@ -835,6 +903,7 @@ try:
         }
     t8wb2.close()
     _leo_count = sum(1 for sp in student_profiles.values() if sp['is_leo'])
+    _leo1_count = sum(1 for sp in student_profiles.values() if sp.get('is_leo_i', False))
     _pathway_count = sum(1 for sp in student_profiles.values() if sp['is_pathway'])
     _acad_count = sum(1 for sp in student_profiles.values() if sp['is_acad_support'])
     _pw_names = {}
@@ -843,7 +912,7 @@ try:
         if pn != 'N':
             _pw_names[pn] = _pw_names.get(pn, 0) + 1
     _pw_summary = ', '.join(f"{k}={v}" for k, v in sorted(_pw_names.items(), key=lambda x: -x[1]))
-    print(f"  Student profiles loaded: {len(student_profiles)} (LEO={_leo_count}, Pathway={_pathway_count}, AcadSupport={_acad_count})")
+    print(f"  Student profiles loaded: {len(student_profiles)} (LEO II={_leo_count}, LEO I={_leo1_count}, Pathway={_pathway_count}, AcadSupport={_acad_count})")
     if _pw_summary:
         print(f"  Pathway breakdown: {_pw_summary}")
 except FileNotFoundError:
