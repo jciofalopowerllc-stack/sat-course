@@ -63,10 +63,12 @@
 - **Granieri (122120)**: Reassigned from 810/820/830 to 849×8 + 830×1; former sections transferred to TBD Theology (999999)
 - **TBD Theology (999999)**: 830 section removed — 830 should have 9 total sections, not 10
 
-### Current Results (v2.5 + hard cap)
-- 55 clashes (Gr9: 1, Gr11: 37, Gr12: 17), 99.1% placement
-- 0 graduation requirement clashes, 100% grad req fulfillment (includes 39 Gr12 science overrides)
+### Current Results (v3 post-corrections)
+- 74 clashes (Gr9: 1, Gr11: 41, Gr12: 32), 98.9% placement (6464/6538)
+- 0 graduation requirement clashes, 100% grad req fulfillment (5427/5427, includes 39 Gr12 science overrides)
+- 0 AP/Honors clashes (2465/2465)
 - 0 P4+ (Required Core) clashes
-- Root cause: 53 all_periods_blocked, 2 singleton_collision
+- Root cause: 72 all_periods_blocked, 2 singleton_collision
 - Hard enrollment cap of 28 enforced for 310 Spanish I and 520 Chemistry
-- **Note:** Results are from last engine run BEFORE the latest template corrections (557, 248, 849, 723 additions; 556/Linear Algebra removals). Re-run engine to get updated results.
+- 371 sections across 143 courses, 63 teachers
+- Top unscheduled courses: 631 CPR-AED (13), 241 Studio Art I (8), 546 Forensics (8), 2054 Digital Media (7)
