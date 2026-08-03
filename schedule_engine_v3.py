@@ -2318,18 +2318,39 @@ for _pid in _reseat_pid_order:
         key=lambda c, _p=_pid: (-student_prio(_p, c), -ripple_score(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
     )
 
+BATCH_SIZE = 1500
+
+def _recalc_batch_scores():
+    """Recalculate scarcity, conflict risk, ripple, and clear caches between batches."""
+    _compute_scarcity()
+    _compute_conflict_risk()
+    _compute_ripple()
+    _placement_cache.clear()
+    _course_composite_cache.clear()
+
 def full_reseat():
     _invalidate_occ_cache()
     for pid in students:
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
-    # Two-pass greedy with student-by-student ordering
-    # Pass 1: place zero-conflict sections + always place high-priority (grad req/protected)
-    deferred = []
-    for pid in _reseat_pid_order:
-        for cid in _reseat_course_order[pid]:
+    # Global placement ordering per COMMERCIAL_PRODUCT_SPEC.md section 3.7:
+    # All student-course pairs sorted globally by 5-key ordering, placed in
+    # batches of 1500 with score recalculation between batches.
+    all_placements = []
+    for pid in students:
+        for cid in sreq[pid]:
             if cid not in sec_by_code:
+                continue
+            all_placements.append((pid, cid))
+    all_placements.sort(key=_full_sort_key)
+    placed_count = 0
+    deferred = []
+    while all_placements:
+        batch = all_placements[:BATCH_SIZE]
+        all_placements = all_placements[BATCH_SIZE:]
+        for pid, cid in batch:
+            if cid in assign.get(pid, {}):
                 continue
             if cid == '745':
                 if pid in cohA and leo2C is not None:
@@ -2339,6 +2360,7 @@ def full_reseat():
                 else:
                     add_place(pid, cid, min(sec_by_code[cid],
                               key=lambda sid: (added_conflicts(pid, sid), secfill[sid])))
+                placed_count += 1
                 continue
             _fr_opts = sec_by_code[cid]
             if HARD_CAP_ENFORCEMENT:
@@ -2352,11 +2374,18 @@ def full_reseat():
             _sp = student_prio(pid, cid)
             if added_conflicts(pid, best) == 0 or _sp >= PROT_THRESHOLD:
                 add_place(pid, cid, best)
+                placed_count += 1
             else:
                 deferred.append((pid, cid))
-    # Pass 2: retry deferred — landscape changed, some may now fit conflict-free
+        if all_placements:
+            _recalc_batch_scores()
+            all_placements.sort(key=_full_sort_key)
+    # Deferred pass: retry with updated landscape, sorted by priority
+    deferred.sort(key=_full_sort_key)
     still_deferred = []
     for pid, cid in deferred:
+        if cid in assign.get(pid, {}):
+            continue
         if cid not in sec_by_code:
             continue
         _fr_opts = sec_by_code[cid]
@@ -2372,8 +2401,10 @@ def full_reseat():
             add_place(pid, cid, best)
         else:
             still_deferred.append((pid, cid))
-    # Pass 3: force-place remaining (accept conflicts for CSP/bump to resolve)
+    # Force-place remaining (accept conflicts for CSP/bump to resolve)
     for pid, cid in still_deferred:
+        if cid in assign.get(pid, {}):
+            continue
         if cid not in sec_by_code:
             continue
         _fr_opts = sec_by_code[cid]
