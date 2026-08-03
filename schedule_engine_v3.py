@@ -291,7 +291,7 @@ _COURSE_SECTION_COUNTS.update({str(k): v.get('sections', 0) for k, v in PRIO_ASS
 _PA_WEIGHTS = PRIO_ASSIGN['metadata']['weights']
 _W = (_PA_WEIGHTS['CFP'], _PA_WEIGHTS['CYRP'], _PA_WEIGHTS['SSP'], _PA_WEIGHTS['MTP'],
       _PA_WEIGHTS['CTAP'], _PA_WEIGHTS['TL'], _PA_WEIGHTS['PL'], _PA_WEIGHTS['RL'],
-      _PA_WEIGHTS.get('SC', 1.5), _PA_WEIGHTS.get('CR', 1.5))
+      _PA_WEIGHTS.get('SC', 1.5), _PA_WEIGHTS.get('CR', 1.5), _PA_WEIGHTS.get('TSSP', 1.5))
 
 _COURSE_PRIO = PRIO_ASSIGN.get('course_priorities', {})
 _STUDENT_PRIO = PRIO_ASSIGN.get('student_priorities', {})
@@ -331,13 +331,14 @@ def placement_score(pid, cid):
     ssp = sp.get('SSP', 1)
     teachers = cp.get('teachers', [])
     mtp = max(((_TEACHER_PRIO.get(t, {}).get('MTP', 1)) for t in teachers), default=1) if teachers else 1
+    tssp = max(((_TEACHER_PRIO.get(t, {}).get('TSSP', 1)) for t in teachers), default=1) if teachers else 1
     ctap = cp.get('CTAP', 0)
     tl = cp.get('TL', 0)
     pl = cp.get('PL', 0)
     rl = cp.get('RL', 0)
     sc = _scarcity_scores.get(key[1], 1)
     cr = _conflict_risk_scores.get(key, 0)
-    vals = (cfp, cyrp, ssp, mtp, ctap, tl, pl, rl, sc, cr)
+    vals = (cfp, cyrp, ssp, mtp, ctap, tl, pl, rl, sc, cr, tssp)
     ws = sum(v * w for v, w in zip(vals, _W))
     cc = sum(1 for v in vals if v >= 4)
     result = (ws, cc)
@@ -363,9 +364,10 @@ def course_composite(cid):
     rl = cp.get('RL', 0)
     teachers = cp.get('teachers', [])
     mtp = max(((_TEACHER_PRIO.get(t, {}).get('MTP', 1)) for t in teachers), default=1) if teachers else 1
+    tssp = max(((_TEACHER_PRIO.get(t, {}).get('TSSP', 1)) for t in teachers), default=1) if teachers else 1
     sc = _scarcity_scores.get(cid_s, 1)
-    total = cfp * _W[0] + cyrp * _W[1] + mtp * _W[3] + ctap * _W[4] + tl * _W[5] + pl * _W[6] + rl * _W[7] + sc * _W[8]
-    cc = sum(1 for v in (cfp, cyrp, mtp, ctap, tl, pl, rl, sc) if v >= 4)
+    total = cfp * _W[0] + cyrp * _W[1] + mtp * _W[3] + ctap * _W[4] + tl * _W[5] + pl * _W[6] + rl * _W[7] + sc * _W[8] + tssp * _W[10]
+    cc = sum(1 for v in (cfp, cyrp, mtp, ctap, tl, pl, rl, sc, tssp) if v >= 4)
     result = (-cc, -total)
     _course_composite_cache[cid_s] = result
     return result
