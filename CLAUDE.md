@@ -9,7 +9,7 @@
 4. Do not claim to understand something when you do not — ask instead
 5. Be 100% honest and accurate — facts and solutions only, no false reassurance
 6. Every file edit must be immediately followed by commit and push in the same response — no batching, no waiting
-7. Read and follow COMMERCIAL_PRODUCT_SPEC.md before writing any engine code — the spec is the design, implement it exactly
+7. Read and follow DATA_STRUCTURE.md before writing any engine code — the data structure defines the priority system, implement it exactly
 8. Identify and fix your own mistakes proactively — do not wait for JC to find them
 
 ### Engine Architecture (from JC Iofalo — non-negotiable)
@@ -53,7 +53,7 @@
 - 39 specific Grade 12 student-course pairs are treated as **graduation_required** priority even though Science is not a standard Gr12 required department
 - Courses affected: 543 Anatomy/Physiology H (9 students), 546 Forensics (27 students), 530 Physics (1 student), 531 Physics H (2 students)
 - Defined in `student_priority_overrides.json`, loaded by engine at startup
-- Engine's `student_prio()` and `_is_grad_req_dept()` check these overrides
+- Engine's `course_request_priority()` and `_is_grad_req_for_student()` check these overrides
 
 ### Pinned Periods (2026-27)
 - **745 LEO I**: Period C (S1), Period E (S1)
@@ -61,7 +61,7 @@
 
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization)
-- `course_priorities.json` — Graduation requirements, pathway courses, priority config
+- `course_priorities.json` — Graduation requirements, pathway courses, singleton courses
 - `detect_pathways.py` — Pathway detection from Historical Grades + Course Requests
 - `templates/` — All input templates (T2, T4, T6, T7, T8, T9, Prior Year, Historical Grades)
 - `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
@@ -72,7 +72,7 @@
 ### Reports (formats defined in `REPORT_FORMATS` dict in engine)
 1. **Master Section Report** (`Master_Section_Report_2026_27.xlsx`) — One row per section: Teacher ID, Teacher Name, Period, Term (S1/S2/FY), Course Code, Section #, Course Title, Section Enrollment
 2. **Teacher Schedule Review & Tally** (`Teacher_Schedule_Review_and_Tally.xlsx`) — Side-by-side 2025-26 vs 2026-27 per teacher, periods A-G with S1/S2 courses, total sections and consecutive period tallies
-3. **Remaining Clashes** (`Remaining_Clashes_v2.5.xlsx`) — All unplaced student-course pairs with priority band, grad req flag, root cause, blocking courses; Summary tab with counts by grade/band
+3. **Remaining Clashes** (`Remaining_Clashes_v2.5.xlsx`) — All unplaced student-course pairs with priority label, grad req flag, root cause, blocking courses; Summary tab with counts by grade/label
 4. **Student Schedule Report** (`Student_Schedule_Report_2026_27.xlsx`) — All students with S1/S2 split per period (14 period columns), credit value per course, total credits, clashes; UNASSIGNED for empty semester slots
 5. **Incomplete Student Schedules** (`Incomplete_Student_Schedules_2026_27.xlsx`) — Only students with UNASSIGNED slots; same S1/S2 split layout plus Unassigned Slots count; sorted by most gaps first
 6. **Course Request Report** (`Course_Request_Report_2026_27.xlsx`) — Per-course: Total Requests, Requests Scheduled, Requests Unscheduled, % Scheduled; grand total row
@@ -85,28 +85,34 @@
 - **Granieri (122120)**: Reassigned from 810/820/830 to 849×8 + 830×1; former sections transferred to TBD Theology (999999)
 - **TBD Theology (999999)**: 830 section removed — 830 should have 9 total sections, not 10
 
-### Current Results (v3 post-double-booking-fix + placement improvements)
+### Current Results (v3 — pre-priority-rewrite baseline)
 - 911 clashes (Gr9: 182, Gr10: 178, Gr11: 239, Gr12: 312), 86.1% placement (5627/6538)
 - 0 double-bookings (critical fix: students may only occupy one course per period-semester slot)
 - Graduation requirement fulfillment: 5042/5427 (92.9%)
 - AP/Honors fulfillment: 2318/2465 (94.0%)
-- P4 (Required Core) clashes: 5
+- Protected course (graduation_required) clashes: 5
 - Root cause: 683 all_periods_blocked, 503 singleton_collision, 2 period_conflict
 - Hard enrollment cap of 28 enforced for 310 Spanish I and 520 Chemistry
 - 371 sections across 143 courses, 63 teachers
 - Top unscheduled courses: 708 Intro to Business (44), 726 Business Concepts (37), 727 Sports Marketing (34), 734 LEO I (24), 732 Business Law (18)
+- **NOTE:** These results are from the OLD priority system. Engine has been rewritten with the DATA_STRUCTURE.md priority system but NOT yet re-run.
 
-### Engine Improvements Applied
-- **Double-booking fix**: Removed `PROT_THRESHOLD` guard from bump logic (Phase C, `full_reseat()`, `full_reseat_fast()`) — previously courses with priority >= 50 were never bumped even when double-booked
-- **Pin-conflict demotion in CSP**: `resolve_student()` now demotes lower-priority pins when two protected courses conflict with each other
-- **Global placement ordering (spec §3.7)**: Both `full_reseat()` and `full_reseat_fast()` now sort ALL student-course pairs globally using the 5-key ordering (pyramid level → ripple → composite → section count → student rank) instead of per-student iteration
-- **Batch recalculation**: Scarcity, conflict risk, and ripple scores recalculated every 1,500 placements; remaining placements re-sorted with updated scores between batches
-- **TSSP integrated**: Teacher Special Student Population priority (computed from Template 6) now included in `placement_score()` and `course_composite()` as an 11th weighted input (×1.5)
-- **Teacher load enforcement**: `teacher_would_exceed_cap()` now uses per-teacher profile caps from `get_max_load()` (5 default, 6 with per-semester approval) instead of hard cap of 6 for all teachers
+### Priority System (DATA_STRUCTURE.md — current engine implementation)
+- **Two-level priority:** Course Section Priority determines section placement order; Student Priority determines student fill order
+- **8 stacking course characteristics:** AP (30), Singleton (25), Graduation Requirement (20), Gr12 PAE (20), Semester Only (15), Cohort Course (15), Co-Schedule Group (15), Prescribed Term (10)
+- **Student Raw** = Grade Level (10/20/30/40) + Cohort LEO II (50) + SSP (25)
+- **Student Total** = Raw + sum of course request priorities
+- **Course Section Total** = Course Section Raw + Top Student Total + Teacher Total + Room Total
+- **Protection:** Courses with Graduation Requirement OR Gr12 PAE OR Singleton flag cannot be bumped
+- **Tiebreaker:** When two sections have the same Total, Course Section Raw breaks the tie
+- **Recalculation:** After every batch of placements, caches are cleared and all totals re-ranked
+
+### Engine Improvements Applied (retained from prior work)
+- **Double-booking fix**: Students may only occupy one course per period-semester slot — bump logic enforces this unconditionally
+- **Pin-conflict demotion in CSP**: `resolve_student()` demotes lower-priority pins when two protected courses conflict
+- **Global placement ordering**: Both `full_reseat()` and `full_reseat_fast()` sort ALL student-course pairs globally using `course_request_priority` → `student_total_priority` → `course_section_raw` → section count
+- **Batch recalculation**: Priority caches cleared and re-ranked every 1,500 placements
+- **Teacher load enforcement**: `teacher_would_exceed_cap()` uses per-teacher profile caps from `get_max_load()` (5 default, 6 with per-semester approval)
 - **Two-section swap optimization**: After single-section moves stall, tries swapping periods between pairs of high-clash sections (time-limited to 60s per restart)
-- **Enhanced CSP**: Increased from 3 to 6 rounds in `full_reseat()` and `full_reseat_fast()`
-- **CSP recovery in fast path**: Added post-bump CSP recovery and greedy re-add to `full_reseat_fast()`
-
-### Spec Audit (2026-08-03)
-- 24/30 checks PASS, 3 FAIL fixed (full_reseat_fast global ordering), 3 PARTIAL (1 fixed: teacher load; 2 minor: student rank aggregation method, Phase D fast path now matches)
-- Engine has NOT been re-run since these fixes — results above are pre-fix baseline
+- **Enhanced CSP**: 6 rounds in `full_reseat()` and `full_reseat_fast()`
+- **CSP recovery in fast path**: Post-bump CSP recovery and greedy re-add in `full_reseat_fast()`

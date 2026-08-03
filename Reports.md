@@ -71,16 +71,16 @@ All unplaced student-course pairs with diagnostic root cause analysis.
 | C | Grade | 8 | Center |
 | D | Course Code | 12 | Center |
 | E | Course Title | 35 | Left |
-| F | Priority | 8 | Center |
-| G | Priority Band | 18 | Center |
+| F | Course Request Priority | 8 | Center |
+| G | Priority Label | 18 | Center |
 | H | Grad Req? | 10 | Center |
 | I | Lost Period | 12 | Center |
 | J | Lost Semester | 12 | Center |
 | K | Root Cause | 20 | Left |
 | L | Blocking Courses | 45 | Left |
 
-- **Sort:** Effective Priority (descending), then Grade
-- **Tabs:** "Remaining Clashes" (detail) + "Summary" (by grade, priority band, grad req count)
+- **Sort:** Course Request Priority (descending), then Grade
+- **Tabs:** "Remaining Clashes" (detail) + "Summary" (by grade, priority label, grad req count)
 - **Source:** `schedule_solution_v3.json` clashes array
 - **Features:** Auto-filter, freeze row 1, alternating row shading, dark-red header
 
