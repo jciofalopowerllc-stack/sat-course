@@ -1708,12 +1708,76 @@ for gi, sids_in_group in cogroup_sids.items():
     print(f"  Co-schedule group '{cogroups[gi]['name']}' -> Period {best_period}")
 
 # --- STEP 2: Enhanced greedy assignment ---
+def _build_co_enrollment():
+    """Build co-enrollment index: for each course, which other courses share students.
+    Returns dict: cid -> {other_cid: [list of student pids sharing both courses]}"""
+    co = defaultdict(lambda: defaultdict(list))
+    for pid in students:
+        reqs = sreq[pid]
+        for i, cid_a in enumerate(reqs):
+            for cid_b in reqs[i + 1:]:
+                co[cid_a][cid_b].append(pid)
+                co[cid_b][cid_a].append(pid)
+    return co
+
+def _section_priority_key(s):
+    """Sort key for section placement order using all four priority dimensions.
+    Highest-priority sections are placed first (most negative sort values).
+    Analyzes: student priorities, course priorities, teacher priorities, room constraints."""
+    code = s['code']
+    teacher = s['teacher']
+    cc_score, cc_total = course_composite(code)
+    max_student_prio = 0
+    for pid in students:
+        if code in sreq[pid]:
+            sp = student_prio(pid, code)
+            if sp > max_student_prio:
+                max_student_prio = sp
+    tp = _TEACHER_PRIO.get(teacher, {})
+    mtp = tp.get('MTP', 1)
+    tssp = tp.get('TSSP', 1)
+    teacher_score = mtp * _W[3] + tssp * _W[10]
+    rl = _COURSE_PRIO.get(str(code), {}).get('RL', 0)
+    room_score = rl * _W[7]
+    return (
+        -max_student_prio,
+        cc_score,
+        cc_total,
+        -teacher_score,
+        -room_score,
+        -_course_demand.get(code, 0),
+        len(sec_by_code[code]),
+        code,
+        s['section']
+    )
+
+def _predict_clash_score(code, period, halves, co_enroll):
+    """Predict how many weighted student clashes placing this course in this period would cause.
+    Checks every co-enrolled course: if that course has a section already in this period
+    with overlapping semesters, each shared student is a potential clash weighted by priority."""
+    clash_score = 0
+    co_courses = co_enroll.get(code, {})
+    for other_cid, shared_students in co_courses.items():
+        other_sids = sec_by_code.get(other_cid, [])
+        for osid in other_sids:
+            os = sections[osid]
+            if os['period'] != period:
+                continue
+            if not (set(halves) & set(os['halves'])):
+                continue
+            for pid in shared_students:
+                prio_this = student_prio(pid, code)
+                prio_other = student_prio(pid, other_cid)
+                clash_score += max(prio_this, prio_other)
+            break
+    return clash_score
+
 def greedy_assign_periods(seed=42):
     rng = random.Random(seed)
+    co_enroll = _build_co_enrollment()
     unassigned = [s for s in sections if s['period'] is None]
     rng.shuffle(unassigned)
-    # Item 6: sort by composite score, then by demand (more students affected = assign first)
-    unassigned.sort(key=lambda s: (course_composite(s['code']), -_course_demand.get(s['code'], 0), len(sec_by_code[s['code']]), s['code'], s['section']))
+    unassigned.sort(key=_section_priority_key)
 
     for s in unassigned:
         teacher = s['teacher']
@@ -1737,20 +1801,20 @@ def greedy_assign_periods(seed=42):
             if teacher and teacher != 'TBD' and not teacher_available(teacher, p):
                 continue
             score = 0
+            clash_penalty = _predict_clash_score(code, p, halves, co_enroll)
+            score += clash_penalty * 0.5
             if p in used_periods:
                 score += 10
             period_load = sum(1 for sec in sections if sec['period'] == p)
             score += period_load * 0.1
             if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
                 score += 5
-            # Teacher preference scoring
             tp = teacher_profiles.get(teacher, {})
             if tp:
                 if p in tp.get('avoid_periods', []):
                     score += 2
                 if p in tp.get('preferred_periods', []):
                     score -= 1
-            # Prior year alignment bonus
             prior_prefs = prior_teacher_periods.get((code, teacher), set())
             if not prior_prefs:
                 prior_prefs = prior_course_periods.get(code, set())
