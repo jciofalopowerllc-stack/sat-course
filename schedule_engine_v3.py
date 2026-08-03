@@ -1,25 +1,25 @@
 """Don Bosco Prep 2026-27 Scheduling Engine — ENHANCED BUILD (v3)
-Incorporates all 11 template inputs from the product spec:
+Implements the DATA_STRUCTURE.md priority system:
+  - Course Section Priority Value determines section placement order
+  - Student Priority Value determines which students fill each section
+  - All course characteristics stack (AP, Singleton, Grad Req, Gr12 PAE, etc.)
+  - Protection: Graduation Required, Gr12 Priority Academic Elective, Singleton
+
+Template inputs:
   - Templates 1-5: Core data (sectioning, requests, LEO, co-schedule, prior year)
   - Template 6: Teacher Profiles (load caps, period availability, preferences)
-  - Template 7: Course Profiles (8-input scoring, prerequisites, room requirements)
+  - Template 7: Course Profiles (characteristics, prerequisites, room requirements)
   - Template 8: Student Profiles + Transcript History (duplicate/prereq validation)
   - Template 9: Room Profiles (capacity, type, equipment)
-  - Template 10: Contracts (cascade rules for teacher loads)
-  - Template 11: Priority Scoring Reference (read-only)
 
-Enhancements over v2 (schedule_engine_final.py):
+Features:
   1. Pre-flight validation: duplicate detection + prerequisite + grade eligibility
-     - Transcript-based duplicate detection (students re-requesting passed courses)
-     - Prerequisite chain validation with has_transcript flag
-     - Grade-level eligibility check (student grade vs. course approved grades)
-     - Auto-generates Preflight_Validation_Report.xlsx for review
   2. Contract cascade: load limits from contract types
   3. Teacher profile constraints: period availability, preferences
   4. Room profile awareness: type matching, capacity enforcement
-  5. Improved Phase D: 16 restart seeds, deeper search (40 iterations)
+  5. Multi-restart Phase D: 16 seeds, deeper search (40 iterations)
   6. Constraint chain analysis: detect unavoidable conflicts early
-  7. Priority-weighted bump decisions with P4 protection
+  7. Priority-protected bump decisions (grad req, Gr12 PAE, singleton)
 
 Outputs:
   - schedule_solution_v3.json: full solution with assignments, clashes, stats
@@ -174,27 +174,51 @@ REPORT_FORMATS = {
 }
 
 # ============================================================
-# LOAD PRIORITY SCALE AND 8-INPUT SCORING
+# PRIORITY SYSTEM — DATA_STRUCTURE.md Implementation
 # ============================================================
+# All characteristics stack. See DATA_STRUCTURE.md for full spec.
+#
+# Two levels:
+#   Level 1 — Course Section Priority Value: determines section placement order
+#   Level 2 — Student Priority Value: determines which students fill each section
+#
+# Student Raw = Grade Level + Cohort + SSP (fixed for year)
+# Student Total = Raw + sum of course request priorities (changes each run)
+# Teacher Raw = locks × 10 (fixed for year)
+# Teacher Total = Raw + Top Student Total + Prescribed Room Total
+# Room Raw = unavailable × 10 + demand × 5 (fixed for year)
+# Room Total = Raw + Top Teacher Total + Top Student Total
+# Course Section Raw = sum of course characteristics (fixed for year)
+# Course Section Total = Raw + Top Student Total + Teacher Total + Room Total
+
+# ── Student Raw components ──
+GRADE_POINTS = {9: 10, 10: 20, 11: 30, 12: 40}
+COHORT_POINTS = 50
+SSP_POINTS = 25
+
+# ── Course characteristic points (all stack) ──
+PTS_AP = 30
+PTS_SINGLETON = 25
+PTS_GRAD_REQ = 20
+PTS_GR12_PAE = 20
+PTS_SEMESTER_ONLY = 15
+PTS_COHORT_COURSE = 15
+PTS_COSCHEDULE = 15
+PTS_PRESCRIBED_TERM = 10
+
+# ── Teacher/Room lock points ──
+PTS_LOCK = 10
+PTS_ROOM_DEMAND = 5
+
+# ── Load reference data from course_priorities.json ──
 with open(os.path.join(os.path.dirname(__file__) or '.', 'course_priorities.json')) as _pf:
     _prio_data = json.load(_pf)
-COURSE_PRIORITY = {}
-for _plevel, _pinfo in _prio_data['scale'].items():
-    for _pc in _pinfo.get('courses', []):
-        COURSE_PRIORITY[str(_pc)] = int(_plevel)
 SINGLETON_COURSES = set(str(c) for c in _prio_data.get('singleton_courses', []))
 
-# ── Pathway Course Mapping ──
 _pathway_cfg = _prio_data.get('pathway_courses', {})
 _pathway_cfg.pop('_notes', None)
 PATHWAY_COURSE_SETS = {name: set(str(c) for c in codes) for name, codes in _pathway_cfg.items()}
 
-# ── Graduation-Requirement Subject Mapping ──
-# Required departments by grade level (from DON_BOSCO_PREP_REQUIRED_SUBJECTS_AND_CREDITS.xlsx)
-# Priority is DYNAMIC per student: a course's effective priority depends on whether
-# it fulfills a REQUIRED SUBJECT for that student's grade level.
-# Courses in required departments get a graduation-requirement bonus.
-# All other courses are electives regardless of AP/Honors status.
 _grad_req = _prio_data.get('graduation_requirements', {})
 _pe_extra = set(_grad_req.get('grades_9_10_extra', {}).get('additional_required_departments', []))
 GRAD_REQ_DEPTS = {
@@ -204,51 +228,6 @@ GRAD_REQ_DEPTS = {
     12: set(_grad_req.get('grade_12', {}).get('required_departments', []))
          | set(_grad_req.get('grade_12', {}).get('required_either', [])),
 }
-# ── Pyramid Level System ──
-# The schedule is built top-down like a pyramid. Placements at the top have
-# the most restrictions and the biggest ripple effect on everyone else.
-# Placements at the bottom are flexible and absorb whatever remains.
-#
-# Level 1 (top):    Graduation requirements — student MUST take this course
-# Level 2:         No-alternative electives — only 1-2 sections exist, no substitute
-# Level 3:         Limited-choice electives — few sections (<=3), hard to reschedule
-# Level 4 (base):  Flexible electives — many sections, easy to move around
-#
-# Score separation ensures no level can be confused with another:
-#   Lowest Level 1 (100) > Highest Level 2 (55) > Highest Level 3 (30) > Highest Level 4 (5)
-LEVEL_GRAD_REQ = 100
-LEVEL_NO_ALTERNATIVE = 50
-LEVEL_LIMITED_CHOICE = 25
-LEVEL_FLEXIBLE = 0
-
-def prio(c):
-    """Static course priority (grade-agnostic). Use student_prio() for bump decisions."""
-    return COURSE_PRIORITY.get(str(c), 1)
-
-def is_singleton(c):
-    return str(c) in SINGLETON_COURSES
-
-# _course_dept_map populated after course_info is loaded (Template 1)
-_course_dept_map = {}
-
-def _pyramid_label(score):
-    if score >= LEVEL_GRAD_REQ:
-        return 'graduation_required'
-    if score >= LEVEL_NO_ALTERNATIVE:
-        return 'no_alternative'
-    if score >= LEVEL_LIMITED_CHOICE:
-        return 'limited_choice'
-    return 'flexible'
-
-def _is_grad_req_dept(cid, student_grade, pid=None):
-    """Check if a course belongs to a department required for the student's grade level,
-    or if the student-course pair has a priority override."""
-    if pid and (str(pid), str(cid)) in _STUDENT_PRIO_OVERRIDES:
-        return True
-    dept = _course_dept_map.get(str(cid), '')
-    return dept in GRAD_REQ_DEPTS.get(student_grade, set())
-
-_COURSE_SECTION_COUNTS = {}
 
 # ── Student-specific priority overrides ──
 _STUDENT_PRIO_OVERRIDES = set()
@@ -260,149 +239,165 @@ if os.path.exists(_spo_path):
         _STUDENT_PRIO_OVERRIDES.add((str(_ov['student_id']).strip(), str(_ov['course_code']).strip()))
     print(f"  Student priority overrides loaded: {len(_STUDENT_PRIO_OVERRIDES)} pairs")
 
-def student_prio(pid, cid):
-    """Pyramid level for a student-course placement.
-    Level 1 (100+): graduation requirement for this student's grade.
-    Level 2 (50+):  no-alternative elective — singleton, P5, or pathway course for enrolled student.
-    Level 3 (25+):  limited-choice elective — P3+ with 3 or fewer sections.
-    Level 4 (0-5):  flexible elective — many sections, easy to reschedule."""
-    base = prio(cid)
-    if (str(pid), str(cid)) in _STUDENT_PRIO_OVERRIDES:
-        return LEVEL_GRAD_REQ + base
-    g = grade.get(str(pid), 0)
-    if g and _is_grad_req_dept(cid, g):
-        return LEVEL_GRAD_REQ + base
-    if base >= 5 or str(cid) in SINGLETON_COURSES:
-        return LEVEL_NO_ALTERNATIVE + base
-    sp = student_profiles.get(str(pid), {})
-    pw = sp.get('pathway_name', 'N')
-    if pw != 'N':
-        pw_codes = PATHWAY_COURSE_SETS.get(pw, set())
-        if str(cid) in pw_codes:
-            return LEVEL_NO_ALTERNATIVE + base
-    if base >= 3 and _COURSE_SECTION_COUNTS.get(str(cid), 0) <= 3:
-        return LEVEL_LIMITED_CHOICE + base
-    return LEVEL_FLEXIBLE + base
+_course_dept_map = {}
 
-with open(os.path.join(os.path.dirname(__file__) or '.', 'priority_assignments.json')) as _paf:
-    PRIO_ASSIGN = json.load(_paf)
+def is_singleton(c):
+    ci = course_info.get(str(c), {})
+    return ci.get('is_singleton', False) or str(c) in SINGLETON_COURSES
 
-_COURSE_SECTION_COUNTS.update({str(k): v.get('sections', 0) for k, v in PRIO_ASSIGN.get('course_priorities', {}).items()})
-_PA_WEIGHTS = PRIO_ASSIGN['metadata']['weights']
-_W = (_PA_WEIGHTS['CFP'], _PA_WEIGHTS['CYRP'], _PA_WEIGHTS['SSP'], _PA_WEIGHTS['MTP'],
-      _PA_WEIGHTS['CTAP'], _PA_WEIGHTS['TL'], _PA_WEIGHTS['PL'], _PA_WEIGHTS['RL'],
-      _PA_WEIGHTS.get('SC', 1.5), _PA_WEIGHTS.get('CR', 1.5), _PA_WEIGHTS.get('TSSP', 1.5))
+def _is_grad_req_for_student(cid, student_grade, pid=None):
+    if pid and (str(pid), str(cid)) in _STUDENT_PRIO_OVERRIDES:
+        return True
+    dept = _course_dept_map.get(str(cid), '')
+    return dept in GRAD_REQ_DEPTS.get(student_grade, set())
 
-_COURSE_PRIO = PRIO_ASSIGN.get('course_priorities', {})
-_STUDENT_PRIO = PRIO_ASSIGN.get('student_priorities', {})
-_TEACHER_PRIO = PRIO_ASSIGN.get('teacher_priorities', {})
-_placement_cache = {}
+def _is_gr12_pae(cid):
+    ci = course_info.get(str(cid), {})
+    dept = _course_dept_map.get(str(cid), '')
+    if dept in ('Science', 'World Language'):
+        return True
+    if ci.get('is_ap', False):
+        return True
+    cohort = ci.get('cohort_flag', '')
+    if cohort and cohort not in ('', 'N', None):
+        return True
+    return False
 
-# Item 5: Scarcity + ConflictRisk (computed after data load, updated dynamically)
-_scarcity_scores = {}
-_conflict_risk_scores = {}
+# ── Priority caches (cleared after each placement run) ──
+_crp_cache = {}
+_student_total_cache = {}
+_section_raw_cache = {}
 
-def _compute_scarcity():
-    """Scarcity: fewer sections = higher score. 1 section=5, 2=4, 3=3, 4-5=2, 6+=1, 0=0."""
-    _scarcity_scores.clear()
-    for cid, sids in sec_by_code.items():
-        n = len(sids)
-        if n == 0:
-            _scarcity_scores[cid] = 0
-        elif n == 1:
-            _scarcity_scores[cid] = 5
-        elif n == 2:
-            _scarcity_scores[cid] = 4
-        elif n == 3:
-            _scarcity_scores[cid] = 3
-        elif n <= 5:
-            _scarcity_scores[cid] = 2
-        else:
-            _scarcity_scores[cid] = 1
+def _clear_priority_caches():
+    _crp_cache.clear()
+    _student_total_cache.clear()
+    _section_raw_cache.clear()
 
-def placement_score(pid, cid):
+def course_request_priority(pid, cid):
     key = (str(pid), str(cid))
-    if key in _placement_cache:
-        return _placement_cache[key]
-    cp = _COURSE_PRIO.get(key[1], {})
-    sp = _STUDENT_PRIO.get(key[0], {})
-    cfp = cp.get('CFP', 0)
-    cyrp = cp.get('CYRP', 0)
-    ssp = sp.get('SSP', 1)
-    teachers = cp.get('teachers', [])
-    mtp = max(((_TEACHER_PRIO.get(t, {}).get('MTP', 1)) for t in teachers), default=1) if teachers else 1
-    tssp = max(((_TEACHER_PRIO.get(t, {}).get('TSSP', 1)) for t in teachers), default=1) if teachers else 1
-    ctap = cp.get('CTAP', 0)
-    tl = cp.get('TL', 0)
-    pl = cp.get('PL', 0)
-    rl = cp.get('RL', 0)
-    sc = _scarcity_scores.get(key[1], 1)
-    cr = _conflict_risk_scores.get(key, 0)
-    vals = (cfp, cyrp, ssp, mtp, ctap, tl, pl, rl, sc, cr, tssp)
-    ws = sum(v * w for v, w in zip(vals, _W))
-    cc = sum(1 for v in vals if v >= 4)
-    result = (ws, cc)
-    _placement_cache[key] = result
-    return result
+    if key in _crp_cache:
+        return _crp_cache[key]
+    cid_s, pid_s = key
+    score = 0
+    ci = course_info.get(cid_s, {})
+    g = grade.get(pid_s, 0)
+    if ci.get('is_ap', False):
+        score += PTS_AP
+    if ci.get('is_singleton', False) or cid_s in SINGLETON_COURSES:
+        score += PTS_SINGLETON
+    if _is_grad_req_for_student(cid_s, g, pid_s):
+        score += PTS_GRAD_REQ
+    elif g == 12 and _is_gr12_pae(cid_s):
+        score += PTS_GR12_PAE
+    prescribed = ci.get('prescribed_term', 'FY')
+    if prescribed in ('S1', 'S2') or not ci.get('is_fy', True):
+        score += PTS_SEMESTER_ONLY
+    cohort = ci.get('cohort_flag', '')
+    if cohort and cohort not in ('', 'N', None):
+        score += PTS_COHORT_COURSE
+    if cid_s in getattr(course_request_priority, '_cogroup_set', set()):
+        score += PTS_COSCHEDULE
+    if prescribed in ('S1', 'S2'):
+        score += PTS_PRESCRIBED_TERM
+    _crp_cache[key] = score
+    return score
 
-def placement_sort_key(pid, cid):
-    ws, cc = placement_score(pid, cid)
-    return (-cc, -ws)
+def student_raw_priority(pid):
+    pid_s = str(pid)
+    g = grade.get(pid_s, 0)
+    raw = GRADE_POINTS.get(g, 0)
+    sp = student_profiles.get(pid_s, {})
+    if sp.get('is_leo', False):
+        raw += COHORT_POINTS
+    pw = sp.get('pathway_name', 'N')
+    acad = sp.get('is_acad_support', False)
+    if pw != 'N' or acad:
+        raw += SSP_POINTS
+    return raw
 
-_course_composite_cache = {}
+def student_total_priority(pid):
+    pid_s = str(pid)
+    if pid_s in _student_total_cache:
+        return _student_total_cache[pid_s]
+    total = student_raw_priority(pid)
+    for cid in sreq.get(pid_s, []):
+        total += course_request_priority(pid, cid)
+    _student_total_cache[pid_s] = total
+    return total
 
-def course_composite(cid):
+def course_section_raw(cid):
     cid_s = str(cid)
-    if cid_s in _course_composite_cache:
-        return _course_composite_cache[cid_s]
-    cp = _COURSE_PRIO.get(cid_s, {})
-    cfp = cp.get('CFP', 0)
-    cyrp = cp.get('CYRP', 0)
-    ctap = cp.get('CTAP', 0)
-    tl = cp.get('TL', 0)
-    pl = cp.get('PL', 0)
-    rl = cp.get('RL', 0)
-    teachers = cp.get('teachers', [])
-    mtp = max(((_TEACHER_PRIO.get(t, {}).get('MTP', 1)) for t in teachers), default=1) if teachers else 1
-    tssp = max(((_TEACHER_PRIO.get(t, {}).get('TSSP', 1)) for t in teachers), default=1) if teachers else 1
-    sc = _scarcity_scores.get(cid_s, 1)
-    total = cfp * _W[0] + cyrp * _W[1] + mtp * _W[3] + ctap * _W[4] + tl * _W[5] + pl * _W[6] + rl * _W[7] + sc * _W[8] + tssp * _W[10]
-    cc = sum(1 for v in (cfp, cyrp, mtp, ctap, tl, pl, rl, sc, tssp) if v >= 4)
-    result = (-cc, -total)
-    _course_composite_cache[cid_s] = result
-    return result
+    if cid_s in _section_raw_cache:
+        return _section_raw_cache[cid_s]
+    score = 0
+    ci = course_info.get(cid_s, {})
+    if ci.get('is_ap', False):
+        score += PTS_AP
+    if ci.get('is_singleton', False) or cid_s in SINGLETON_COURSES:
+        score += PTS_SINGLETON
+    if ci.get('grad_req_dept', ''):
+        score += PTS_GRAD_REQ
+    prescribed = ci.get('prescribed_term', 'FY')
+    if prescribed in ('S1', 'S2') or not ci.get('is_fy', True):
+        score += PTS_SEMESTER_ONLY
+    cohort = ci.get('cohort_flag', '')
+    if cohort and cohort not in ('', 'N', None):
+        score += PTS_COHORT_COURSE
+    if cid_s in getattr(course_request_priority, '_cogroup_set', set()):
+        score += PTS_COSCHEDULE
+    if prescribed in ('S1', 'S2'):
+        score += PTS_PRESCRIBED_TERM
+    _section_raw_cache[cid_s] = score
+    return score
 
-_student_rank_cache = {}
+def teacher_raw_priority(tname):
+    locks = 0
+    for sid in teacher_sections.get(tname, []):
+        s = sections[sid]
+        if s.get('room', 'TBD') != 'TBD':
+            locks += 1
+        if s.get('period') is not None:
+            locks += 1
+        sem = s.get('sem_raw', 'FY')
+        if sem in ('S1', 'S2'):
+            locks += 1
+        ci = course_info.get(s.get('code', ''), {})
+        cohort = ci.get('cohort_flag', '')
+        if cohort and cohort not in ('', 'N', None):
+            locks += 1
+    tp = teacher_profiles.get(tname, {})
+    avail = tp.get('availability', {})
+    for _p, available in avail.items():
+        if not available:
+            locks += 1
+    return locks * PTS_LOCK
 
-def _compute_student_ranks():
-    scores = []
-    for pid in _STUDENT_PRIO:
-        sp = _STUDENT_PRIO[pid]
-        courses = sp.get('courses', [])
-        max_cc = 0
-        total_ws = 0.0
-        for cid in courses:
-            ws, cc = placement_score(pid, cid)
-            total_ws += ws
-            if cc > max_cc:
-                max_cc = cc
-        # Item 7: flexibility credit — fewer feasible sections = less flexible = higher priority
-        min_sections = 99
-        for cid in sreq.get(pid, []):
-            n_secs = len(sec_by_code.get(cid, []))
-            if n_secs < min_sections:
-                min_sections = n_secs
-        flex_penalty = min_sections if min_sections < 99 else 0
-        scores.append((pid, max_cc, total_ws, flex_penalty))
-    # Sort: most critical count first, then highest weighted sum, then least flexible
-    scores.sort(key=lambda x: (-x[1], -x[2], x[3]))
-    for rank, (pid, mc, tw, _fp) in enumerate(scores, 1):
-        _student_rank_cache[pid] = (rank, mc, tw)
+def room_raw_priority(rid):
+    demand = sum(1 for s in sections if s.get('room') == str(rid))
+    return demand * PTS_ROOM_DEMAND
 
-def student_rank_key(pid):
-    if pid in _student_rank_cache:
-        return _student_rank_cache[pid][0]
-    return 99999
+def is_protected(pid, cid):
+    g = grade.get(str(pid), 0)
+    if _is_grad_req_for_student(cid, g, pid):
+        return True
+    if g == 12 and _is_gr12_pae(cid):
+        return True
+    if is_singleton(cid):
+        return True
+    return False
+
+def priority_label(pid, cid):
+    g = grade.get(str(pid), 0)
+    if _is_grad_req_for_student(cid, g, pid):
+        return 'graduation_required'
+    if g == 12 and _is_gr12_pae(cid):
+        return 'gr12_academic_elective'
+    if is_singleton(cid):
+        return 'singleton'
+    crp = course_request_priority(pid, cid)
+    if crp >= PTS_AP:
+        return 'high_priority'
+    return 'elective'
 
 
 print("=" * 60)
@@ -457,9 +452,19 @@ for r in range(3, _t7ws_ci.max_row + 1):
     is_fy = term_raw.upper() in ('FY', 'FULL-YEAR', 'FULL YEAR', '')
     ctype = 'Full-Year' if is_fy else 'Semester'
 
+    _singleton_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Singleton', 9)).value
+    _ap_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('AP', 10)).value
+    _grad_req_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Graduation Requirement', 11)).value
+    _cohort_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Cohort', 12)).value
+
     course_info[cid] = {
         'code': cid, 'title': title, 'dept': str(dept),
-        'credits': credits or 0, 'type': ctype, 'is_fy': is_fy
+        'credits': credits or 0, 'type': ctype, 'is_fy': is_fy,
+        'prescribed_term': term_raw.upper() if term_raw else 'FY',
+        'is_singleton': str(_singleton_raw).strip().upper() in ('Y', 'YES', 'TRUE', '1'),
+        'is_ap': str(_ap_raw).strip().upper() in ('Y', 'YES', 'TRUE', '1'),
+        'grad_req_dept': str(_grad_req_raw).strip() if _grad_req_raw and str(_grad_req_raw).strip().upper() not in ('', 'NONE', 'N', 'NO') else '',
+        'cohort_flag': str(_cohort_raw).strip() if _cohort_raw and str(_cohort_raw).strip().upper() not in ('', 'NONE', 'N', 'NO') else '',
     }
     _me = _t7ws_ci.cell(r, _t7_hdr_ci.get('Max Enrollment per Section', 8)).value
     _course_max_enrollment[cid] = int(_me) if _me else 25
@@ -1391,45 +1396,7 @@ for _tname, _tp in teacher_profiles.items():
             if _lc:
                 COURSE_TEACHER_LOCKS[_lc] = _tname
 
-# Pre-compute scarcity scores (Item 5) and conflict risk (Item 5)
-_compute_scarcity()
-
-# Item 5: Compute conflict risk per student-course pair
-# ConflictRisk = for each of the student's OTHER course requests, if ALL sections of that
-# course overlap in period with ALL sections of this course, that's a guaranteed conflict.
-# Score 0-5 based on count of such unavoidable overlaps.
-def _compute_conflict_risk():
-    _conflict_risk_scores.clear()
-    for pid in students:
-        reqs = sreq[pid]
-        if len(reqs) <= 1:
-            continue
-        for cid in reqs:
-            sids_c = sec_by_code.get(cid, [])
-            if not sids_c:
-                continue
-            c_periods = set()
-            for sid in sids_c:
-                s = sections[sid]
-                if s['period']:
-                    c_periods.add(s['period'])
-            risk = 0
-            for other_cid in reqs:
-                if other_cid == cid:
-                    continue
-                o_sids = sec_by_code.get(other_cid, [])
-                if not o_sids:
-                    continue
-                o_periods = set()
-                for osid in o_sids:
-                    os = sections[osid]
-                    if os['period']:
-                        o_periods.add(os['period'])
-                if o_periods and c_periods and o_periods & c_periods:
-                    risk += 1
-            _conflict_risk_scores[(str(pid), str(cid))] = min(risk, 5)
-
-_compute_conflict_risk()
+# co-schedule group set will be populated after cogroups are loaded (below)
 
 # Item 6: Affected student count per section (used in period assignment ordering)
 _section_demand = Counter()
@@ -1442,54 +1409,16 @@ for _pid in students:
     for _cid in sreq[_pid]:
         _course_demand[_cid] += 1
 
-# ── Merge Template 8 SSP into priority system ──
-# Template 8 student profiles SSP overrides the JSON-based SSP when available
-_ssp_overrides = 0
-for _sid, _sprof in student_profiles.items():
-    if _sid in _STUDENT_PRIO:
-        _STUDENT_PRIO[_sid]['SSP'] = _sprof['ssp']
-        _ssp_overrides += 1
-    else:
-        _STUDENT_PRIO[_sid] = {'SSP': _sprof['ssp'], 'populations': [], 'courses': list(sreq.get(_sid, []))}
-if _ssp_overrides:
-    print(f"  SSP scores merged from Template 8: {_ssp_overrides} students updated")
-
-# ── Merge Template 6 TSSP into teacher priority system ──
-# Priority: computed_tssp column > separate population columns > ssp_teacher flag > default 1
-_tssp_overrides = 0
-for _tname, _tp in teacher_profiles.items():
-    tssp_val = _tp.get('computed_tssp')
-    if tssp_val is not None:
-        _tssp = tssp_val
-    elif _tp.get('teaches_leo'):
-        _tssp = 5
-    elif _tp.get('teaches_pathway'):
-        _tssp = 4
-    elif _tp.get('teaches_acad_support'):
-        _tssp = 3
-    elif _tp.get('ssp_teacher'):
-        _tssp = 5
-    else:
-        _tssp = 1
-    if _tname in _TEACHER_PRIO:
-        _TEACHER_PRIO[_tname]['TSSP'] = _tssp
-    else:
-        _TEACHER_PRIO[_tname] = {'MTP': _tp.get('computed_mtp') or 1, 'TSSP': _tssp}
-    _tssp_overrides += 1
-if _tssp_overrides:
-    print(f"  TSSP scores merged from Template 6: {_tssp_overrides} teachers updated")
-
-# Clear placement cache since SSP/TSSP values may have changed
-_placement_cache.clear()
-_course_composite_cache.clear()
-
-# Pre-compute student rank scores
-_compute_student_ranks()
-_ranked_count = len(_student_rank_cache)
-_top5 = sorted(_student_rank_cache.items(), key=lambda x: x[1][0])[:5]
-print(f"  Student ranks computed: {_ranked_count}")
-for _pid, (_rk, _mc, _tw) in _top5:
-    print(f"    Rank {_rk}: {_pid} (maxCC={_mc}, totalWS={_tw:.1f})")
+# ── Initialize new priority system ──
+# Student raw and total priorities are computed on demand via student_raw_priority()
+# and student_total_priority(). No merge into old dict structures needed.
+# Teacher and room priorities are likewise computed on demand.
+_clear_priority_caches()
+_top5_students = sorted(students.keys(), key=lambda p: -student_total_priority(p))[:5]
+print(f"  Student priorities computed: {len(students)}")
+for _pid in _top5_students:
+    print(f"    {students[_pid]} (Gr{grade[_pid]}): Raw={student_raw_priority(_pid)}, Total={student_total_priority(_pid)}")
+_clear_priority_caches()
 
 
 # Item 9: Three-level constraint classification
@@ -1561,6 +1490,8 @@ for gi, cg in enumerate(cogroups):
     for code in cg['codes']:
         if code in sec_by_code:
             code_to_cogroup[code] = gi
+
+course_request_priority._cogroup_set = set(code_to_cogroup.keys())
 
 for cg in cogroups:
     if cg['period']:
@@ -1721,30 +1652,27 @@ def _build_co_enrollment():
     return co
 
 def _section_priority_key(s):
-    """Sort key for section placement order using all four priority dimensions.
-    Highest-priority sections are placed first (most negative sort values).
-    Analyzes: student priorities, course priorities, teacher priorities, room constraints."""
+    """Sort key for section placement order using the DATA_STRUCTURE.md priority system.
+    Course Section Total = Course Section Raw + Top Student Total + Teacher Total + Room Total.
+    Highest-priority sections are placed first (most negative sort values)."""
     code = s['code']
     teacher = s['teacher']
-    cc_score, cc_total = course_composite(code)
-    max_student_prio = 0
+    room = s.get('room', 'TBD')
+    cs_raw = course_section_raw(code)
+    max_student_total = 0
     for pid in students:
         if code in sreq[pid]:
-            sp = student_prio(pid, code)
-            if sp > max_student_prio:
-                max_student_prio = sp
-    tp = _TEACHER_PRIO.get(teacher, {})
-    mtp = tp.get('MTP', 1)
-    tssp = tp.get('TSSP', 1)
-    teacher_score = mtp * _W[3] + tssp * _W[10]
-    rl = _COURSE_PRIO.get(str(code), {}).get('RL', 0)
-    room_score = rl * _W[7]
+            st = student_total_priority(pid)
+            if st > max_student_total:
+                max_student_total = st
+    t_raw = teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0
+    t_total = t_raw + max_student_total
+    r_raw = room_raw_priority(room) if room and room != 'TBD' else 0
+    r_total = r_raw + t_total + max_student_total
+    cs_total = cs_raw + max_student_total + t_total + r_total
     return (
-        -max_student_prio,
-        cc_score,
-        cc_total,
-        -teacher_score,
-        -room_score,
+        -cs_total,
+        -cs_raw,
         -_course_demand.get(code, 0),
         len(sec_by_code[code]),
         code,
@@ -1766,9 +1694,9 @@ def _predict_clash_score(code, period, halves, co_enroll):
             if not (set(halves) & set(os['halves'])):
                 continue
             for pid in shared_students:
-                prio_this = student_prio(pid, code)
-                prio_other = student_prio(pid, other_cid)
-                clash_score += max(prio_this, prio_other)
+                crp_this = course_request_priority(pid, code)
+                crp_other = course_request_priority(pid, other_cid)
+                clash_score += max(crp_this, crp_other)
             break
     return clash_score
 
@@ -1954,69 +1882,31 @@ for sid in leo2_sids:
     elif sections[sid]['period'] == 'E':
         leo2E = sid
 
-sorted_students = sorted(students.keys(), key=student_rank_key)
-print("  Greedy warm-start (most-constrained-first)...")
+sorted_students = sorted(students.keys(), key=lambda p: -student_total_priority(p))
+print("  Greedy warm-start (highest-priority-first)...")
 
-# ── Ripple score ──
-# Measures how many OTHER placements are affected when this one is made.
-# Bigger ripple = higher on the pyramid = placed earlier.
-# Components:
-#   1. How many other students also need this same course (course demand pressure)
-#   2. How many sections are available (fewer = bigger ripple per placement)
-#   3. How many other courses this student takes (more = more period conflicts possible)
-#   4. How many other students share courses with this student (connection density)
-_ripple_cache = {}
-
-def _compute_ripple():
-    """Compute ripple score for every student-course pair."""
-    _ripple_cache.clear()
-    # Pre-compute per student: how many other students share any course with them
-    _student_connections = {}
-    for pid in students:
-        connected = set()
-        for cid in sreq[pid]:
-            connected.update(code_requesters.get(cid, set()))
-        connected.discard(pid)
-        _student_connections[pid] = len(connected)
-
-    for pid in students:
-        student_load = len(sreq[pid])
-        connections = _student_connections[pid]
-        for cid in sreq[pid]:
-            course_demand = len(code_requesters.get(cid, set()))
-            n_sec = len(sec_by_code.get(cid, []))
-            scarcity_mult = max(1, 6 - n_sec)
-            ripple = (course_demand * scarcity_mult) + connections + student_load
-            _ripple_cache[(str(pid), str(cid))] = ripple
-
-def ripple_score(pid, cid):
-    return _ripple_cache.get((str(pid), str(cid)), 0)
-
-# ── Placement sort key ──
-# Determines the order placements enter the schedule.
-# 1. Pyramid level (graduation reqs first, then no-alternative, then limited, then flexible)
-# 2. Ripple size within each level (biggest ripple first — most impact on the pond)
-# 3. Composite score within each level (most constrained first)
-# 4. Fewer available sections first (harder to place)
-# 5. Student rank as tiebreaker (most constrained student first)
+# ── Placement sort key (DATA_STRUCTURE.md) ──
+# Level 1: Course Section Raw determines section placement order (already done in Phase A)
+# Level 2: Student Total Priority determines which students fill each section first
+# Sort ordering for student-course pairs:
+#   1. Course request priority (highest first)
+#   2. Student total priority (highest first)
+#   3. Course section raw (highest first — tiebreaker per DATA_STRUCTURE.md)
+#   4. Fewer available sections first (harder to place)
 def _full_sort_key(pc):
     pid, cid = pc
     return (
-        -student_prio(pid, cid),
-        -ripple_score(pid, cid),
-        placement_sort_key(pid, cid),
-        len(sec_by_code.get(cid, [])),
-        student_rank_key(pid)
+        -course_request_priority(pid, cid),
+        -student_total_priority(pid),
+        -course_section_raw(cid),
+        len(sec_by_code.get(cid, []))
     )
 
-# Build code_requesters for ripple computation
+# Build code_requesters
 code_requesters = defaultdict(set)
 for _pid in students:
     for _cid in sreq[_pid]:
         code_requesters[_cid].add(_pid)
-
-# Compute initial ripple scores
-_compute_ripple()
 
 # Build the full request list
 _all_requests = []
@@ -2024,15 +1914,12 @@ for pid in sorted_students:
     for cid in sreq[pid]:
         _all_requests.append((pid, cid))
 
-# Sort by pyramid level + ripple + composite
+# Sort by course request priority + student total priority
 _all_requests.sort(key=_full_sort_key)
 
 # ── Place in batches, recalculate between batches ──
-# After each batch of placements, the pond has changed:
-#   - sections are filling up (scarcity changes)
-#   - periods are getting used (conflict risk changes)
-#   - ripple effects have shifted
-# So we recalculate scores and re-sort the remaining placements.
+# After each batch, clear priority caches and re-sort so totals
+# reflect students already placed (removed from remaining pool).
 _BATCH_SIZE = 1500
 _placed_set = set()
 _placed_count_b = 0
@@ -2081,13 +1968,9 @@ while _placed_count_b < len(_all_requests):
     if batch_placed == 0:
         break
 
-    # Recalculate: the pond has changed, update scores and re-sort remaining
+    # Recalculate: the pond has changed, update priorities and re-sort remaining
     if _placed_count_b < len(_all_requests):
-        _placement_cache.clear()
-        _course_composite_cache.clear()
-        _compute_scarcity()
-        _compute_conflict_risk()
-        _compute_ripple()
+        _clear_priority_caches()
         # Re-sort only remaining unplaced requests
         _all_requests = [pc for pc in _all_requests if pc not in _placed_set]
         _all_requests.sort(key=_full_sort_key)
@@ -2101,23 +1984,18 @@ for pid in students:
                 break
 print(f"  Initial: {sum(len(v) for v in assign.values())} placements, {conf_count} students with conflicts")
 
-# Protection threshold: placements at Level 1 (grad req) and Level 2 (no alternative)
-# are pinned — they cannot be bumped to make room for a lower-level placement.
-PROT_THRESHOLD = LEVEL_NO_ALTERNATIVE  # 50
-
 def resolve_student(pid):
     pins = {}
     for pc in assign[pid]:
-        if student_prio(pid, pc) >= PROT_THRESHOLD:
+        if is_protected(pid, pc):
             pins[pc] = assign[pid][pc]
-    # If pinned courses conflict with each other, demote lower-priority pins
     pin_cells = {}
     for c, sid in list(pins.items()):
         for x in occ_cells(sid):
             pin_cells.setdefault(x, []).append(c)
     for x, cs in pin_cells.items():
         if len(cs) > 1:
-            cs_sorted = sorted(cs, key=lambda c: (-student_prio(pid, c), -int(is_singleton(c))))
+            cs_sorted = sorted(cs, key=lambda c: (-course_request_priority(pid, c), -int(is_singleton(c))))
             for c in cs_sorted[1:]:
                 if c in pins:
                     del pins[c]
@@ -2126,8 +2004,7 @@ def resolve_student(pid):
     for c, sid in pins.items():
         for x in occ_cells(sid):
             used.add(x)
-    # Sort by student-specific priority: graduation requirements placed before electives
-    others.sort(key=lambda c: (-student_prio(pid, c), -int(is_singleton(c)), placement_sort_key(pid, c), len(sec_by_code.get(c, []))))
+    others.sort(key=lambda c: (-course_request_priority(pid, c), -int(is_singleton(c)), -course_section_raw(c), len(sec_by_code.get(c, []))))
     res = {}
 
     def rec(i):
@@ -2198,15 +2075,13 @@ def _analyze_root_cause(pid, bumped_cid, keeping_cid, bumped_period):
     blocking = []
     sections_tried = []
 
-    # What course is blocking this period?
     if keeping_cid:
-        keep_prio = student_prio(pid, keeping_cid)
-        bump_prio = student_prio(pid, bumped_cid)
+        keep_crp = course_request_priority(pid, keeping_cid)
         blocking.append({
             'code': keeping_cid,
             'title': course_info.get(keeping_cid, {}).get('title', keeping_cid),
-            'effective_priority': keep_prio,
-            'priority_band': _pyramid_label(keep_prio),
+            'effective_priority': keep_crp,
+            'priority_band': priority_label(pid, keeping_cid),
         })
 
     # Check if bumped course is a singleton
@@ -2271,7 +2146,7 @@ for pid in students:
     for x, cs in cells.items():
         cs = [c for c in cs if c not in bump]
         if len(cs) > 1:
-            _score_fn = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+            _score_fn = lambda c: (-course_request_priority(pid, c), -int(is_singleton(c)), -course_section_raw(c))
             keep = min(cs, key=_score_fn)
             for c in cs:
                 if c != keep:
@@ -2279,25 +2154,22 @@ for pid in students:
                     bump_reason[c] = keep
     for c in bump:
         s = sections[assign[pid][c]]
-        _ws, _cc = placement_score(pid, c)
-        _eff_prio = student_prio(pid, c)
+        _crp = course_request_priority(pid, c)
         _rca = _analyze_root_cause(pid, c, bump_reason.get(c), s['period'])
+        _g = grade.get(str(pid), 0)
         clash.append({
             'student': pid, 'name': students[pid], 'grade': grade[pid],
             'code': c, 'course': course_info.get(c, {}).get('title', c),
-            'priority': prio(c),
-            'effective_priority': _eff_prio,
-            'priority_band': _pyramid_label(_eff_prio),
-            'is_grad_req': _eff_prio >= LEVEL_GRAD_REQ,
-            'composite_ws': round(_ws, 1),
-            'composite_cc': _cc,
+            'course_request_priority': _crp,
+            'priority_band': priority_label(pid, c),
+            'is_grad_req': _is_grad_req_for_student(c, _g, pid),
+            'course_section_raw': course_section_raw(c),
             'lost_period': s['period'],
             'lost_sem': 'Full-Year' if len(s['halves']) == 2 else ('Fall' if s['halves'][0] == 'S1' else 'Spring'),
             'root_cause_codes': _rca['root_cause_codes'],
             'blocking_courses': _rca['blocking_courses'],
             'sections_tried': _rca['sections_tried'],
         })
-        # Item 3: log the placement decision
         placement_log.append({
             'phase': 'C', 'student': pid, 'code': c, 'action': 'bumped',
             'reason': _rca['root_cause_codes'][0],
@@ -2374,23 +2246,19 @@ def _restore_for_restart(fixed_state):
 
 fixed_state = _save_fixed_state()
 
-_reseat_pid_order = sorted(students.keys(), key=student_rank_key)
+_reseat_pid_order = sorted(students.keys(), key=lambda p: -student_total_priority(p))
 _reseat_course_order = {}
 for _pid in _reseat_pid_order:
     _reseat_course_order[_pid] = sorted(
         sreq[_pid],
-        key=lambda c, _p=_pid: (-student_prio(_p, c), -ripple_score(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
+        key=lambda c, _p=_pid: (-course_request_priority(_p, c), -course_section_raw(c), len(sec_by_code.get(c, [])))
     )
 
 BATCH_SIZE = 1500
 
 def _recalc_batch_scores():
-    """Recalculate scarcity, conflict risk, ripple, and clear caches between batches."""
-    _compute_scarcity()
-    _compute_conflict_risk()
-    _compute_ripple()
-    _placement_cache.clear()
-    _course_composite_cache.clear()
+    """Clear priority caches between batches so totals reflect placed students."""
+    _clear_priority_caches()
 
 def full_reseat():
     _invalidate_occ_cache()
@@ -2398,9 +2266,9 @@ def full_reseat():
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
-    # Global placement ordering per COMMERCIAL_PRODUCT_SPEC.md section 3.7:
-    # All student-course pairs sorted globally by 5-key ordering, placed in
-    # batches of 1500 with score recalculation between batches.
+    # Global placement ordering per DATA_STRUCTURE.md:
+    # All student-course pairs sorted globally by priority, placed in
+    # batches of 1500 with cache clearing between batches.
     all_placements = []
     for pid in students:
         for cid in sreq[pid]:
@@ -2435,8 +2303,7 @@ def full_reseat():
                 added_conflicts(pid, sid),
                 max(0, secfill[sid] + 1 - sections[sid]['cap']),
                 secfill[sid]))
-            _sp = student_prio(pid, cid)
-            if added_conflicts(pid, best) == 0 or _sp >= PROT_THRESHOLD:
+            if added_conflicts(pid, best) == 0 or is_protected(pid, cid):
                 add_place(pid, cid, best)
                 placed_count += 1
             else:
@@ -2444,7 +2311,6 @@ def full_reseat():
         if all_placements:
             _recalc_batch_scores()
             all_placements.sort(key=_full_sort_key)
-    # Deferred pass: retry with updated landscape, sorted by priority
     deferred.sort(key=_full_sort_key)
     still_deferred = []
     for pid, cid in deferred:
@@ -2505,7 +2371,7 @@ def full_reseat():
         for x, cs in cm.items():
             cs = [c for c in cs if c not in bmp]
             if len(cs) > 1:
-                _sf = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+                _sf = lambda c: (-course_request_priority(pid, c), -int(is_singleton(c)), -course_section_raw(c))
                 kp = min(cs, key=_sf)
                 for c in cs:
                     if c != kp:
@@ -2513,18 +2379,16 @@ def full_reseat():
                         bmp_reason[c] = kp
         for c in bmp:
             bs = sections[assign[pid][c]]
-            _ws_b, _cc_b = placement_score(pid, c)
-            _eff_prio = student_prio(pid, c)
+            _crp = course_request_priority(pid, c)
+            _g = grade.get(str(pid), 0)
             _rca = _analyze_root_cause(pid, c, bmp_reason.get(c), bs['period'])
             nc.append({
                 'student': pid, 'name': students[pid], 'grade': grade[pid],
                 'code': c, 'course': course_info.get(c, {}).get('title', c),
-                'priority': prio(c),
-                'effective_priority': _eff_prio,
-                'priority_band': _pyramid_label(_eff_prio),
-                'is_grad_req': _eff_prio >= LEVEL_GRAD_REQ,
-                'composite_ws': round(_ws_b, 1),
-                'composite_cc': _cc_b,
+                'course_request_priority': _crp,
+                'priority_band': priority_label(pid, c),
+                'is_grad_req': _is_grad_req_for_student(c, _g, pid),
+                'course_section_raw': course_section_raw(c),
                 'lost_period': bs['period'],
                 'lost_sem': 'Full-Year' if len(bs['halves']) == 2 else (
                     'Fall' if bs['halves'][0] == 'S1' else 'Spring'),
@@ -2585,14 +2449,14 @@ def full_reseat():
 
 def full_reseat_fast():
     """Fast version for optimizer: same global ordering + batch recalculation
-    as full_reseat(), but returns only a quality tuple (top, mid, total)
+    as full_reseat(), but returns only a quality tuple (protected, high, total)
     instead of building full diagnostic dicts for every bump."""
     _invalidate_occ_cache()
     for pid in students:
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
-    # Global placement ordering per COMMERCIAL_PRODUCT_SPEC.md section 3.7
+    # Global placement ordering per DATA_STRUCTURE.md
     all_placements = []
     for pid in students:
         for cid in sreq[pid]:
@@ -2625,8 +2489,7 @@ def full_reseat_fast():
                 added_conflicts(pid, sid),
                 max(0, secfill[sid] + 1 - sections[sid]['cap']),
                 secfill[sid]))
-            _sp = student_prio(pid, cid)
-            if added_conflicts(pid, best) == 0 or _sp >= PROT_THRESHOLD:
+            if added_conflicts(pid, best) == 0 or is_protected(pid, cid):
                 add_place(pid, cid, best)
             else:
                 deferred.append((pid, cid))
@@ -2681,8 +2544,8 @@ def full_reseat_fast():
                     rslvd += 1
         if rslvd == 0:
             break
-    top = 0
-    mid = 0
+    protected_clashes = 0
+    high_clashes = 0
     total = 0
     for pid in students:
         cm = defaultdict(list)
@@ -2693,20 +2556,18 @@ def full_reseat_fast():
         for x, cs in cm.items():
             cs = [c for c in cs if c not in bmp]
             if len(cs) > 1:
-                _sf = lambda c: (-student_prio(pid, c), -int(is_singleton(c)), -placement_score(pid, c)[1], -placement_score(pid, c)[0])
+                _sf = lambda c: (-course_request_priority(pid, c), -int(is_singleton(c)), -course_section_raw(c))
                 kp = min(cs, key=_sf)
                 for c in cs:
                     if c != kp:
                         bmp.add(c)
         for c in bmp:
             rm_place(pid, c)
-            sp = student_prio(pid, c)
-            if sp >= LEVEL_NO_ALTERNATIVE:
-                top += 1
-            elif sp >= LEVEL_LIMITED_CHOICE:
-                mid += 1
+            if is_protected(pid, c):
+                protected_clashes += 1
+            elif course_request_priority(pid, c) >= PTS_AP:
+                high_clashes += 1
             total += 1
-    # Greedy re-add for bumped courses
     for pid in students:
         for cid in sreq[pid]:
             if cid in assign.get(pid, {}):
@@ -2729,11 +2590,10 @@ def full_reseat_fast():
             if best is not None:
                 add_place(pid, cid, best)
                 total -= 1
-                sp = student_prio(pid, cid)
-                if sp >= LEVEL_NO_ALTERNATIVE:
-                    top -= 1
-                elif sp >= LEVEL_LIMITED_CHOICE:
-                    mid -= 1
+                if is_protected(pid, cid):
+                    protected_clashes -= 1
+                elif course_request_priority(pid, cid) >= PTS_AP:
+                    high_clashes -= 1
     # CSP recovery for students with bumped courses
     bumped_pids = set()
     for pid in students:
@@ -2766,19 +2626,18 @@ def full_reseat_fast():
             if best is not None:
                 add_place(pid, cid, best)
                 total -= 1
-                sp = student_prio(pid, cid)
-                if sp >= LEVEL_NO_ALTERNATIVE:
-                    top -= 1
-                elif sp >= LEVEL_LIMITED_CHOICE:
-                    mid -= 1
-    return (max(0, top), max(0, mid), max(0, total))
+                if is_protected(pid, cid):
+                    protected_clashes -= 1
+                elif course_request_priority(pid, cid) >= PTS_AP:
+                    high_clashes -= 1
+    return (max(0, protected_clashes), max(0, high_clashes), max(0, total))
 
 
 def _clash_quality(cl):
-    """Priority-aware clash quality score: (band1+2, band3, total).
-    Lower is better. Protects higher pyramid levels from being traded for lower ones."""
-    top_clashes = sum(1 for c in cl if student_prio(c['student'], c['code']) >= LEVEL_NO_ALTERNATIVE)
-    mid_clashes = sum(1 for c in cl if LEVEL_LIMITED_CHOICE <= student_prio(c['student'], c['code']) < LEVEL_NO_ALTERNATIVE)
+    """Priority-aware clash quality score: (protected, high_priority, total).
+    Lower is better. Protected courses (grad req, Gr12 PAE, singleton) never traded for lower."""
+    top_clashes = sum(1 for c in cl if is_protected(c['student'], c['code']))
+    mid_clashes = sum(1 for c in cl if not is_protected(c['student'], c['code']) and course_request_priority(c['student'], c['code']) >= PTS_AP)
     return (top_clashes, mid_clashes, len(cl))
 
 def _can_move_section(sid, new_period):
@@ -2823,15 +2682,15 @@ def run_optimization_pass(cl=None):
                 if sections[sid_cl]['period'] == c['lost_period']:
                     sec_sc[sid_cl] += 1
         for c in cl:
-            p = c.get('priority', 1)
-            if p >= 4:
+            _crp = c.get('course_request_priority', 0)
+            if is_protected(c['student'], c['code']):
+                for sid in sec_by_code.get(c['code'], []):
+                    if sections[sid]['period'] == c['lost_period']:
+                        sec_sc[sid] += 3
+            elif _crp >= PTS_AP:
                 for sid in sec_by_code.get(c['code'], []):
                     if sections[sid]['period'] == c['lost_period']:
                         sec_sc[sid] += 2
-            elif p >= 3:
-                for sid in sec_by_code.get(c['code'], []):
-                    if sections[sid]['period'] == c['lost_period']:
-                        sec_sc[sid] += 1
         cands = []
         for sid, score in sec_sc.most_common(120):
             if sid in PINNED_SIDS or sid in COGROUP_SIDS or score < 1:
@@ -2848,12 +2707,11 @@ def run_optimization_pass(cl=None):
                         rsids = sec_by_code.get(rc, [])
                         if rsids and all(sections[rs]['period'] == p for rs in rsids):
                             if any(set(sections[rs]['halves']) & set(s['halves']) for rs in rsids):
-                                sp = student_prio(rpid, rc)
-                                if sp >= LEVEL_GRAD_REQ:
+                                if is_protected(rpid, rc):
                                     new_conf += 4
-                                elif sp >= LEVEL_NO_ALTERNATIVE:
+                                elif course_request_priority(rpid, rc) >= PTS_AP:
                                     new_conf += 3
-                                elif sp >= LEVEL_LIMITED_CHOICE:
+                                elif course_request_priority(rpid, rc) >= PTS_SEMESTER_ONLY:
                                     new_conf += 2
                                 else:
                                     new_conf += 1
@@ -2943,14 +2801,10 @@ best_halves = None
 best_seed = None
 
 def _recompute_seating_order():
-    """Recompute scarcity, conflict risk, ripple scores and clear caches
-    after period assignments change. full_reseat() and full_reseat_fast()
-    build their own global ordering using _full_sort_key each time."""
-    _compute_scarcity()
-    _compute_conflict_risk()
-    _compute_ripple()
-    _placement_cache.clear()
-    _course_composite_cache.clear()
+    """Clear priority caches after period assignments change.
+    full_reseat() and full_reseat_fast() build their own global ordering
+    using _full_sort_key each time."""
+    _clear_priority_caches()
 
 import time as _time
 import gc as _gc
@@ -3037,18 +2891,18 @@ print(f"  Students affected: {len(set(c['student'] for c in clash))}")
 print(f"  Placed: {total_placed}/{total_requested} ({placement_rate:.1f}%)")
 
 # Item 4: Disaggregated fulfillment preview
-_preview_grad_req = sum(1 for p in students for c in sreq[p] if _is_grad_req_dept(c, grade.get(str(p), 0), pid=p))
-_preview_grad_placed = sum(1 for p in students for c in sreq[p] if _is_grad_req_dept(c, grade.get(str(p), 0), pid=p) and c in assign.get(p, {}))
-_preview_ap = sum(1 for p in students for c in sreq[p] if prio(c) >= 4)
-_preview_ap_placed = sum(1 for p in students for c in sreq[p] if prio(c) >= 4 and c in assign.get(p, {}))
+_preview_grad_req = sum(1 for p in students for c in sreq[p] if _is_grad_req_for_student(c, grade.get(str(p), 0), pid=p))
+_preview_grad_placed = sum(1 for p in students for c in sreq[p] if _is_grad_req_for_student(c, grade.get(str(p), 0), pid=p) and c in assign.get(p, {}))
+_preview_ap = sum(1 for p in students for c in sreq[p] if course_info.get(c, {}).get('is_ap', False))
+_preview_ap_placed = sum(1 for p in students for c in sreq[p] if course_info.get(c, {}).get('is_ap', False) and c in assign.get(p, {}))
 print(f"  Graduation requirement fulfillment: {_preview_grad_placed}/{_preview_grad_req} ({100*_preview_grad_placed/_preview_grad_req:.1f}%)" if _preview_grad_req else "  Graduation requirement fulfillment: N/A")
 print(f"  AP/Honors fulfillment: {_preview_ap_placed}/{_preview_ap} ({100*_preview_ap_placed/_preview_ap:.1f}%)" if _preview_ap else "  AP/Honors fulfillment: N/A")
 
-# P4 clash analysis
-p4_clashes = [c for c in clash if c['priority'] >= 4]
-print(f"  P4+ (Required Core) clashes: {len(p4_clashes)}")
-if p4_clashes:
-    for c in p4_clashes[:10]:
+# Protected clash analysis (grad req, Gr12 PAE, singleton)
+protected_clashes = [c for c in clash if is_protected(c['student'], c['code'])]
+print(f"  Protected clashes (grad req / Gr12 PAE / singleton): {len(protected_clashes)}")
+if protected_clashes:
+    for c in protected_clashes[:10]:
         print(f"    {c['name']} (Gr{c['grade']}): {c['course']} [{c['code']}] — Period {c['lost_period']}")
 
 sec_sizes = [secfill[sid] for sid in range(len(sections)) if secfill[sid] > 0]
@@ -3056,19 +2910,17 @@ if sec_sizes:
     print(f"  Section sizes: min={min(sec_sizes)}, max={max(sec_sizes)}, avg={statistics.mean(sec_sizes):.1f}")
 
 dept_clashes = Counter()
-prio_clashes = Counter()
+band_clashes = Counter()
 grade_clashes = Counter()
 for c in clash:
     ci = course_info.get(c['code'], {})
     dept_clashes[ci.get('dept', 'Unknown')] += 1
-    prio_clashes[prio(c['code'])] += 1
+    band_clashes[c.get('priority_band', 'elective')] += 1
     grade_clashes[c['grade']] += 1
 
-print(f"\n  Clashes by priority level:")
-PRIO_LABELS = {0: 'Elective-Flexible', 1: 'Elective-Standard', 2: 'Departmental Core',
-               3: 'Sequence/Honors', 4: 'Required Core', 5: 'AP/Singleton'}
-for pl in sorted(prio_clashes.keys()):
-    print(f"    P{pl} ({PRIO_LABELS.get(pl, '?')}): {prio_clashes[pl]}")
+print(f"\n  Clashes by priority band:")
+for band in sorted(band_clashes.keys()):
+    print(f"    {band}: {band_clashes[band]}")
 print(f"\n  Clashes by department:")
 for dept, cnt in dept_clashes.most_common():
     print(f"    {dept}: {cnt}")
@@ -3216,12 +3068,11 @@ _ap_honors_placed = 0
 for _pid in students:
     for _cid in sreq[_pid]:
         _g = grade.get(str(_pid), 0)
-        if _g and _is_grad_req_dept(_cid, _g, pid=_pid):
+        if _g and _is_grad_req_for_student(_cid, _g, pid=_pid):
             _grad_req_requested += 1
             if _cid in assign.get(_pid, {}):
                 _grad_req_placed += 1
-        _cp = prio(_cid)
-        if _cp >= 4:
+        if course_info.get(_cid, {}).get('is_ap', False):
             _ap_honors_requested += 1
             if _cid in assign.get(_pid, {}):
                 _ap_honors_placed += 1
@@ -3258,7 +3109,7 @@ output = {
         'requests': total_requested,
         'placed': total_placed,
         'clashes': len(clash),
-        'p4_clashes': len(p4_clashes),
+        'protected_clashes': len(protected_clashes),
         'sections_used': len([s for s in range(len(sections)) if secfill[s] > 0]),
         'placement_rate': round(placement_rate, 1),
         'graduation_fulfillment_rate': _grad_fulfillment,
@@ -3293,24 +3144,20 @@ for s in sections:
         'dept': s['dept'], 'period': s['period'], 'halves': list(s['halves']),
         'teacher': s['teacher'], 'room': s['room'], 'cap': s['cap'],
         'enrolled': secfill[s['sid']], 'section': s['section'],
-        'priority': prio(s['code']),
-        'course_composite': course_composite(s['code']),
+        'course_section_raw': course_section_raw(s['code']),
         'prior_year_match': prior_match_flag
     })
 
 for pid in students:
-    _rk_info = _student_rank_cache.get(pid, (999, 0, 0.0))
     output['assignments'][pid] = {
         'name': students[pid],
         'grade': grade[pid],
-        'rank': _rk_info[0],
-        'max_constraint_count': _rk_info[1],
-        'total_weighted_sum': round(_rk_info[2], 1),
+        'student_raw': student_raw_priority(pid),
+        'student_total': student_total_priority(pid),
         'courses': {}
     }
     for cid, sid in assign[pid].items():
         s = sections[sid]
-        _pws, _pcc = placement_score(pid, cid)
         output['assignments'][pid]['courses'][cid] = {
             'title': s['title'],
             'period': s['period'],
@@ -3318,8 +3165,7 @@ for pid in students:
             'teacher': s['teacher'],
             'room': s['room'],
             'section': s['section'],
-            'placement_ws': round(_pws, 1),
-            'placement_cc': _pcc
+            'course_request_priority': course_request_priority(pid, cid)
         }
 
 SOLUTION_FILE = os.path.join(SCRATCHPAD, "schedule_solution_v3.json")
@@ -3388,7 +3234,7 @@ try:
                 'excess': _v['excess'],
                 'count': _v['course_count'],
                 'courses': [{'code': c['code'], 'title': c['title'],
-                             'credits': c['credits'], 'priority': prio(c['code'])}
+                             'credits': c['credits'], 'course_section_raw': course_section_raw(c['code'])}
                             for c in _v['courses']]
             })
         _cvr_js = f"const DATA = {json.dumps(_cvr_data)};"
@@ -3588,9 +3434,7 @@ try:
                 'teachers': _teachers,
                 'teacher_free': _teacher_free,
                 'blocking': dict(_info['blocking'].most_common(10)),
-                'priority': prio(_ccode),
-                'avg_composite_ws': round(-course_composite(_ccode)[1], 1),
-                'max_composite_cc': -course_composite(_ccode)[0],
+                'course_section_raw': course_section_raw(_ccode),
                 'fix_type': _fix_type,
                 'fix_desc': _fix_desc
             })
@@ -3628,24 +3472,24 @@ try:
                 completed.add(str(req_cid))
             return all(str(p) in completed for p in prereqs)
 
-        def _alt_rank(alt_sec, bumped_dept, bumped_code, bumped_prio, pid_rank):
+        def _alt_rank(alt_sec, bumped_dept, bumped_code, bumped_raw, pid_rank):
             """Rank alternatives: same-subject > same-requirement > same-rigor > other.
             Lower rank number = better match."""
             alt_dept = alt_sec['dept']
-            alt_prio = prio(alt_sec['code'])
+            alt_raw = course_section_raw(alt_sec['code'])
             alt_g = grade.get(str(pid_rank), 0)
-            is_grad_req = _is_grad_req_dept(alt_sec['code'], alt_g, pid=pid_rank) if alt_g else False
-            bumped_is_grad = _is_grad_req_dept(bumped_code, alt_g, pid=pid_rank) if alt_g else False
+            is_grad_req_alt = _is_grad_req_for_student(alt_sec['code'], alt_g, pid=pid_rank) if alt_g else False
+            bumped_is_grad = _is_grad_req_for_student(bumped_code, alt_g, pid=pid_rank) if alt_g else False
 
-            if alt_dept == bumped_dept and alt_prio == bumped_prio:
-                return 0  # Same subject, same rigor
+            if alt_dept == bumped_dept and alt_raw == bumped_raw:
+                return 0
             if alt_dept == bumped_dept:
-                return 1  # Same subject, different rigor
-            if is_grad_req and bumped_is_grad:
-                return 2  # Both fulfill graduation requirements
-            if abs(alt_prio - bumped_prio) <= 1:
-                return 3  # Similar rigor level
-            return 4  # Other eligible course
+                return 1
+            if is_grad_req_alt and bumped_is_grad:
+                return 2
+            if abs(alt_raw - bumped_raw) <= 10:
+                return 3
+            return 4
 
         _srr_data = []
         for _c in clash:
@@ -3653,7 +3497,7 @@ try:
             _bumped_code = _c['code']
             _bumped_period = _c['lost_period']
             _bumped_dept = course_info.get(_bumped_code, {}).get('dept', '')
-            _bumped_prio = prio(_bumped_code)
+            _bumped_prio = course_section_raw(_bumped_code)
             _assigned_periods = set()
             for _ac, _asid in assign.get(_pid, {}).items():
                 _assigned_periods.add(sections[_asid]['period'])
@@ -3824,7 +3668,7 @@ h1{{color:var(--maroon);font-size:28px;margin-bottom:8px}}
 <div class="stat"><div class="val">{placement_rate:.1f}%</div><div class="lbl">Placement</div></div>
 <div class="stat"><div class="val">{len(students)}</div><div class="lbl">Students</div></div>
 <div class="stat"><div class="val">{len(sections)}</div><div class="lbl">Sections</div></div>
-<div class="stat"><div class="val">{len(p4_clashes)}</div><div class="lbl">P4 Clashes</div></div>
+<div class="stat"><div class="val">{len(protected_clashes)}</div><div class="lbl">Protected Clashes</div></div>
 </div>
 <div class="grid">
 <a class="card" href="student_clash_report.html"><h3>Student Clash Report</h3>
