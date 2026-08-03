@@ -284,7 +284,7 @@ def course_request_priority(pid, cid):
     key = (str(pid), str(cid))
     if key in _crp_cache:
         return _crp_cache[key]
-    cid_s, pid_s = key
+    pid_s, cid_s = key
     score = 0
     ci = course_info.get(cid_s, {})
     g = grade.get(pid_s, 0)
