@@ -56,8 +56,8 @@
 - Engine's `course_request_priority()` and `_is_grad_req_for_student()` check these overrides
 
 ### Pinned Periods (2026-27)
-- **745 LEO I**: Period C (S1), Period E (S1)
-- **734 LEO II**: Period C (S2), Period D (S2)
+- **745 LEO II**: Period C (S1), Period E (S1)
+- **734 LEO I**: Period C (S2), Period D (S2)
 
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization)
