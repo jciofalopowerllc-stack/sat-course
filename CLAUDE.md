@@ -12,10 +12,22 @@
 7. Read and follow COMMERCIAL_PRODUCT_SPEC.md before writing any engine code — the spec is the design, implement it exactly
 8. Identify and fix your own mistakes proactively — do not wait for JC to find them
 
-### Engine
+### Engine Architecture (from JC Iofalo — non-negotiable)
 - Use **schedule_engine_v3.py** (v3 engine) — NOT v4
 - Do NOT change template FORMAT — only add/update data within existing columns
 - Do NOT make decisions without user (JC Iofalo) approval
+
+**The engine has TWO distinct jobs that run in order:**
+
+1. **Job 1 — Course Section Placement (runs FIRST):**
+   - Place course sections (with their assigned teachers and rooms) into the master bell schedule by Term (FY, S1, S2) and Period (A-G)
+   - BEFORE placing, the engine MUST analyze priority values for students, teachers, rooms, AND courses
+   - Use that analysis to DECIDE the most optimal position (period + term) for each course section with its teacher and room
+   - Goal: position sections to AVOID student clashes before students are ever placed
+
+2. **Job 2 — Student Placement (runs SECOND, only after Job 1 is complete):**
+   - Place students into the already-positioned course sections
+   - Do NOT run student placements until Job 1 is verified correct
 
 ### Semester Locks (2026-27)
 - **758 Bloomberg Market Concepts**: S2 ONLY — cannot be placed in S1
