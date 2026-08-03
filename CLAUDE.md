@@ -2,6 +2,13 @@
 
 ## Project Rules
 
+### Absolute Rules (from JC Iofalo — non-negotiable)
+1. Follow JC's instructions exactly — no assumptions, no improvisation
+2. Ask before making ANY design decision — do not change the design on your own
+3. Stop immediately when told to stop — no extra tool calls, no "one more thing"
+4. Do not claim to understand something when you do not — ask instead
+5. Be 100% honest and accurate — facts and solutions only, no false reassurance
+
 ### Engine
 - Use **schedule_engine_v3.py** (v3 engine) — NOT v4
 - Do NOT change template FORMAT — only add/update data within existing columns
