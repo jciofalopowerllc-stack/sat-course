@@ -20,6 +20,11 @@
 - **Laracy, John (106760)**: 851 Spirituality of Vocation × 8 semester sections
 - **Umbrino, Philip (105768)**: 130 British Literature × 2 full-year sections (added to existing pool)
 - **Lopez, Enrique (102255)**: 201 Introduction to Guitar × 2 semester sections (co-scheduled with 203 Guitar Ensemble, same period/room); 203 Guitar Ensemble is full-year (5 credits, 2 sections)
+- **Tranate, John (105746)**: 557 AP Physics 1 × 2 sections (typo corrected from 556→557 in Template 6)
+- **Dennehy (105810)**: 248 Adv Drawing × 1 semester section, Room J-322
+- **Granieri, William (122120)**: 849 Catholic Social Teaching × 8 semester sections + 830 Theology 11 × 1 section (reassigned from 810/820/830 to TBD Theology teacher)
+- **TBD Theology, New (999999)**: Placeholder for new hire — 810 Theology 9 × 3 + 820 Theology 10 × 2 + 830 Theology 11 × 1 (transferred from Granieri)
+- **Saggio, Jack (117711)**: 723 Introduction to Political Science × 1 semester section
 - Sections defined in Template 6 Sheet 2 ("Teacher-Course Assignments"), one row per section
 
 ### Grade 12 Science Requirement Exceptions (2026-27)
