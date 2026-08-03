@@ -87,7 +87,14 @@
 ### Engine Improvements Applied
 - **Double-booking fix**: Removed `PROT_THRESHOLD` guard from bump logic (Phase C, `full_reseat()`, `full_reseat_fast()`) — previously courses with priority >= 50 were never bumped even when double-booked
 - **Pin-conflict demotion in CSP**: `resolve_student()` now demotes lower-priority pins when two protected courses conflict with each other
-- **Two-pass greedy placement**: Pass 1 places zero-conflict and high-priority sections; defers low-priority conflicts. Pass 2 retries deferred items after landscape changes. Pass 3 force-places remaining.
+- **Global placement ordering (spec §3.7)**: Both `full_reseat()` and `full_reseat_fast()` now sort ALL student-course pairs globally using the 5-key ordering (pyramid level → ripple → composite → section count → student rank) instead of per-student iteration
+- **Batch recalculation**: Scarcity, conflict risk, and ripple scores recalculated every 1,500 placements; remaining placements re-sorted with updated scores between batches
+- **TSSP integrated**: Teacher Special Student Population priority (computed from Template 6) now included in `placement_score()` and `course_composite()` as an 11th weighted input (×1.5)
+- **Teacher load enforcement**: `teacher_would_exceed_cap()` now uses per-teacher profile caps from `get_max_load()` (5 default, 6 with per-semester approval) instead of hard cap of 6 for all teachers
 - **Two-section swap optimization**: After single-section moves stall, tries swapping periods between pairs of high-clash sections (time-limited to 60s per restart)
 - **Enhanced CSP**: Increased from 3 to 6 rounds in `full_reseat()` and `full_reseat_fast()`
-- **CSP recovery in fast path**: Added post-bump CSP recovery and greedy re-add to `full_reseat_fast()` (previously only in `full_reseat()`)
+- **CSP recovery in fast path**: Added post-bump CSP recovery and greedy re-add to `full_reseat_fast()`
+
+### Spec Audit (2026-08-03)
+- 24/30 checks PASS, 3 FAIL fixed (full_reseat_fast global ordering), 3 PARTIAL (1 fixed: teacher load; 2 minor: student rank aggregation method, Phase D fast path now matches)
+- Engine has NOT been re-run since these fixes — results above are pre-fix baseline
