@@ -1633,19 +1633,19 @@ def room_busy(room, period, halves, exclude_sid=-1):
                 return True
     return False
 
-HARD_PERIOD_CAP = 6
-
 def teacher_would_exceed_cap(teacher, period, halves):
     if not teacher or teacher == 'TBD':
         return False
+    max_s1, max_s2 = get_max_load(teacher)
     for sem in halves:
+        cap = max_s1 if sem == 'S1' else max_s2
         existing_periods = set()
         for sid in teacher_sections.get(teacher, []):
             s = sections[sid]
             if s['period'] and sem in s['halves']:
                 existing_periods.add(s['period'])
         existing_periods.add(period)
-        if len(existing_periods) > HARD_PERIOD_CAP:
+        if len(existing_periods) > cap:
             return True
     return False
 
@@ -2520,19 +2520,28 @@ def full_reseat():
 
 
 def full_reseat_fast():
-    """Fast version for optimizer: same greedy+CSP+bump logic, but returns only
-    a quality tuple instead of building full diagnostic dicts for every bump.
-    This avoids ~15,000 rounds of root cause analysis that would never be used."""
+    """Fast version for optimizer: same global ordering + batch recalculation
+    as full_reseat(), but returns only a quality tuple (top, mid, total)
+    instead of building full diagnostic dicts for every bump."""
     _invalidate_occ_cache()
     for pid in students:
         assign[pid] = {}
     secfill.clear()
     cell_usage.clear()
-    # Two-pass greedy with student-by-student ordering
-    deferred = []
-    for pid in _reseat_pid_order:
-        for cid in _reseat_course_order[pid]:
+    # Global placement ordering per COMMERCIAL_PRODUCT_SPEC.md section 3.7
+    all_placements = []
+    for pid in students:
+        for cid in sreq[pid]:
             if cid not in sec_by_code:
+                continue
+            all_placements.append((pid, cid))
+    all_placements.sort(key=_full_sort_key)
+    deferred = []
+    while all_placements:
+        batch = all_placements[:BATCH_SIZE]
+        all_placements = all_placements[BATCH_SIZE:]
+        for pid, cid in batch:
+            if cid in assign.get(pid, {}):
                 continue
             if cid == '745':
                 if pid in cohA and leo2C is not None:
@@ -2557,8 +2566,14 @@ def full_reseat_fast():
                 add_place(pid, cid, best)
             else:
                 deferred.append((pid, cid))
+        if all_placements:
+            _recalc_batch_scores()
+            all_placements.sort(key=_full_sort_key)
+    deferred.sort(key=_full_sort_key)
     still_deferred = []
     for pid, cid in deferred:
+        if cid in assign.get(pid, {}):
+            continue
         if cid not in sec_by_code:
             continue
         _fr2_opts = sec_by_code[cid]
@@ -2575,6 +2590,8 @@ def full_reseat_fast():
         else:
             still_deferred.append((pid, cid))
     for pid, cid in still_deferred:
+        if cid in assign.get(pid, {}):
+            continue
         if cid not in sec_by_code:
             continue
         _fr2_opts = sec_by_code[cid]
@@ -2862,17 +2879,14 @@ best_halves = None
 best_seed = None
 
 def _recompute_seating_order():
-    """Recompute scores and per-student course ordering after period assignments change."""
+    """Recompute scarcity, conflict risk, ripple scores and clear caches
+    after period assignments change. full_reseat() and full_reseat_fast()
+    build their own global ordering using _full_sort_key each time."""
     _compute_scarcity()
     _compute_conflict_risk()
     _compute_ripple()
     _placement_cache.clear()
     _course_composite_cache.clear()
-    for _pid in _reseat_pid_order:
-        _reseat_course_order[_pid] = sorted(
-            sreq[_pid],
-            key=lambda c, _p=_pid: (-student_prio(_p, c), -ripple_score(_p, c), placement_sort_key(_p, c), len(sec_by_code.get(c, [])))
-        )
 
 import time as _time
 import gc as _gc
