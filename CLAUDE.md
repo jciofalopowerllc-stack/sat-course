@@ -55,9 +55,10 @@
 - Defined in `student_priority_overrides.json`, loaded by engine at startup
 - Engine's `course_request_priority()` and `_is_grad_req_for_student()` check these overrides
 
-### Pinned Periods (2026-27)
-- **745 LEO II**: Period C (S1), Period E (S1)
-- **734 LEO I**: Period C (S2), Period D (S2)
+### Semester Locks (LEO Programs)
+- **745 LEO II**: S1 only (period determined by engine priority placement)
+- **734 LEO I**: S2 only (period determined by engine priority placement)
+- No course sections are required to be placed in a specific period of the day
 
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization)

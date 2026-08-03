@@ -1458,25 +1458,15 @@ print("\n" + "=" * 60)
 print("[1] PHASE A: ASSIGN PERIODS")
 print("=" * 60)
 
-PINNED = {
-    '745': [('C', ('S1',)), ('E', ('S1',))],
-    '734': [('C', ('S2',)), ('D', ('S2',))],
-}
-
 SEMESTER_LOCKS = {
+    '745': ('S1',),
+    '734': ('S2',),
     '766': ('S1',),
     '765': ('S2',),
     '758': ('S2',),
 }
 
 FULL_FREEDOM = {'849', '851'}
-
-for cid, pins in PINNED.items():
-    sids = sec_by_code.get(cid, [])
-    for i, sid in enumerate(sids):
-        if i < len(pins):
-            sections[sid]['period'] = pins[i][0]
-            sections[sid]['halves'] = pins[i][1]
 
 for cid, halves in SEMESTER_LOCKS.items():
     for sid in sec_by_code.get(cid, []):
@@ -2186,10 +2176,6 @@ print("\n" + "=" * 60)
 print("[D] PHASE D: MULTI-RESTART CLASH RESOLUTION (ENHANCED)")
 print("=" * 60)
 
-PINNED_SIDS = set()
-for _pc in PINNED:
-    for _ps in sec_by_code.get(_pc, []):
-        PINNED_SIDS.add(_ps)
 COGROUP_SIDS = set()
 for _cg in cogroups:
     for _cc in _cg['codes']:
@@ -2208,17 +2194,17 @@ for _pid in students:
 _orig_periods = {}
 _orig_halves = {}
 for s in sections:
-    if s['sid'] in PINNED_SIDS or s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups:
+    if s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups:
         _orig_periods[s['sid']] = s['period']
         _orig_halves[s['sid']] = s['halves']
     else:
-        _orig_periods[s['sid']] = s['period'] if s['sid'] in PINNED_SIDS else None
+        _orig_periods[s['sid']] = None
         _orig_halves[s['sid']] = s['halves']
 
 def _save_fixed_state():
     fixed = {}
     for s in sections:
-        if s['sid'] in PINNED_SIDS or s['sid'] in assigned_cogroups:
+        if s['sid'] in assigned_cogroups:
             fixed[s['sid']] = (s['period'], s['halves'])
     return fixed
 
@@ -2642,7 +2628,7 @@ def _clash_quality(cl):
 
 def _can_move_section(sid, new_period):
     """Check if section can move to new_period without teacher conflicts."""
-    if sid in PINNED_SIDS or sid in COGROUP_SIDS:
+    if sid in COGROUP_SIDS:
         return False
     s = sections[sid]
     if new_period == s['period']:
@@ -2693,7 +2679,7 @@ def run_optimization_pass(cl=None):
                         sec_sc[sid] += 2
         cands = []
         for sid, score in sec_sc.most_common(120):
-            if sid in PINNED_SIDS or sid in COGROUP_SIDS or score < 1:
+            if sid in COGROUP_SIDS or score < 1:
                 continue
             s = sections[sid]
             for p in PERIODS:
@@ -2753,7 +2739,7 @@ def run_optimization_pass(cl=None):
             for sid in sec_by_code.get(c['code'], []):
                 sec_sc2[sid] += 1
         top_sids = [sid for sid, _ in sec_sc2.most_common(30)
-                    if sid not in PINNED_SIDS and sid not in COGROUP_SIDS]
+                    if sid not in COGROUP_SIDS]
         improved2 = False
         for i in range(len(top_sids)):
             if improved2:
