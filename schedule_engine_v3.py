@@ -359,21 +359,42 @@ def course_section_raw(cid):
     _section_raw_cache[cid_s] = score
     return score
 
+def _count_section_locks(s):
+    locks = 0
+    if s.get('room', 'TBD') != 'TBD':
+        locks += 1
+    if s.get('period') is not None:
+        locks += 1
+    sem = s.get('sem_raw', 'FY')
+    if sem in ('S1', 'S2'):
+        locks += 1
+    ci = course_info.get(s.get('code', ''), {})
+    cohort = ci.get('cohort_flag', '')
+    if cohort and cohort not in ('', 'N', None):
+        locks += 1
+    return locks
+
 def teacher_raw_priority(tname):
     locks = 0
+    _ctc = globals().get('code_to_cogroup', {})
+    cogroup_rep = {}
+    standalone = []
     for sid in teacher_sections.get(tname, []):
         s = sections[sid]
-        if s.get('room', 'TBD') != 'TBD':
-            locks += 1
-        if s.get('period') is not None:
-            locks += 1
-        sem = s.get('sem_raw', 'FY')
-        if sem in ('S1', 'S2'):
-            locks += 1
-        ci = course_info.get(s.get('code', ''), {})
-        cohort = ci.get('cohort_flag', '')
-        if cohort and cohort not in ('', 'N', None):
-            locks += 1
+        gi = _ctc.get(s.get('code', ''))
+        if gi is not None:
+            if gi not in cogroup_rep:
+                cogroup_rep[gi] = s
+        else:
+            standalone.append(s)
+    for gi, rep in cogroup_rep.items():
+        codes_in_group = [sections[sid]['code'] for sid in teacher_sections.get(tname, [])
+                          if _ctc.get(sections[sid].get('code', '')) == gi]
+        effective = max(Counter(codes_in_group).values())
+        section_locks = _count_section_locks(rep)
+        locks += section_locks * effective
+    for s in standalone:
+        locks += _count_section_locks(s)
     tp = teacher_profiles.get(tname, {})
     avail = tp.get('availability', {})
     for _p, available in avail.items():

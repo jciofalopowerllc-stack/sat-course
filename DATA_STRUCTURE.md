@@ -1132,9 +1132,11 @@ How locked down the teacher is based on their own prescriptions and availability
 | Prescribed Cohort | 10 |
 | Unavailable Period | 10 |
 
+**Co-schedule rule:** Co-scheduled sections count as ONE section for lock counting. If a teacher has a co-schedule group of 4 courses (e.g., AP Art Block: 253, 254, 255, 764), those 4 sections contribute locks only once, not 4 times. If the group has multiple instances (e.g., Studio Art Block with 2 sections each of 242 and 243), each instance counts once (2 lock sets, not 4).
+
 Example: Teacher with 3 prescribed rooms, 1 prescribed period, 2 unavailable periods = 6 locks × 10 = **60**
 
-**Formula:** Teacher Raw = total number of locks × 10
+**Formula:** Teacher Raw = total number of effective locks × 10 (co-scheduled sections count as one)
 
 #### Teacher Total Priority Value (changes every run)
 

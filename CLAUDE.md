@@ -114,6 +114,7 @@
 - **Global placement ordering**: Both `full_reseat()` and `full_reseat_fast()` sort ALL student-course pairs globally using `course_request_priority` → `student_total_priority` → `course_section_raw` → section count
 - **Batch recalculation**: Priority caches cleared and re-ranked every 1,500 placements
 - **Teacher load enforcement**: `teacher_would_exceed_cap()` uses per-teacher profile caps from `get_max_load()` (5 default, 6 with per-semester approval)
+- **Co-schedule section counting**: Co-scheduled sections count as ONE section for teacher load and priority calculations — `teacher_raw_priority()` groups co-scheduled sections and counts locks once per group instance, not per raw section
 - **Two-section swap optimization**: After single-section moves stall, tries swapping periods between pairs of high-clash sections (time-limited to 60s per restart)
 - **Enhanced CSP**: 6 rounds in `full_reseat()` and `full_reseat_fast()`
 - **CSP recovery in fast path**: Post-bump CSP recovery and greedy re-add in `full_reseat_fast()`
