@@ -36,11 +36,11 @@
 - These are enforced in `SEMESTER_LOCKS` dict in `schedule_engine_v3.py` (line ~1389) AND in Template 7 `Prescribed Term` column
 
 ### Teacher Section Prescriptions (2026-27)
-- **Chiaravalloti, Michael (105747)**: 631 CPR-AED Training/PE × 4 semester sections + 642 Nutrition & Fitness/PE × 6 semester sections = 10 total (5 per semester)
+- **Chiaravalloti, Michael (105747)**: 631 CPR-AED Training/PE × 4 semester sections + 642 Nutrition & Fitness/PE × 6 semester sections = 10 total (5 per semester); Daniels (105763) also teaches 631 × 2 semester sections (6 total 631 sections)
 - **Fisk, Mary Pat (105819)**: 131 British Literature H × 3 full-year sections
 - **Kozak, Bernadette (105628)**: 595 Engineering Design × 2 semester sections (1 S1 + 1 S2)
 - **Laracy, John (106760)**: 851 Spirituality of Vocation × 8 semester sections
-- **Umbrino, Philip (105768)**: 130 British Literature × 2 full-year sections (added to existing pool)
+- **Umbrino, Philip (105768)**: 130 British Literature × 3 full-year sections (added to existing pool)
 - **Lopez, Enrique (102255)**: 201 Introduction to Guitar × 2 semester sections (co-scheduled with 203 Guitar Ensemble, same period/room); 203 Guitar Ensemble is full-year (5 credits, 2 sections)
 - **Tranate, John (105746)**: 557 AP Physics 1 × 2 sections (typo corrected from 556→557 in Template 6)
 - **Dennehy (105810)**: 248 Adv Drawing × 1 semester section, Room J-322
