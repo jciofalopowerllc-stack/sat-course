@@ -2817,9 +2817,15 @@ def greedy_assign_periods(seed=42, audit=False):
         code = s['code']
 
         used_periods = set()
+        period_section_count = Counter()
         for other_sid in sec_by_code[code]:
             if sections[other_sid]['period']:
                 used_periods.add(sections[other_sid]['period'])
+                period_section_count[sections[other_sid]['period']] += 1
+
+        total_course_sections = len(sec_by_code[code])
+        ci = course_info.get(code, {})
+        is_coverage_course = bool(ci.get('grad_req_dept', '')) and total_course_sections >= 6
 
         best_period = None
         best_score = float('inf')
@@ -2840,6 +2846,12 @@ def greedy_assign_periods(seed=42, audit=False):
             score += clash_penalty * 0.5
             if p in used_periods:
                 score += 10
+            if is_coverage_course:
+                uncovered = [pp for pp in PERIODS if period_section_count.get(pp, 0) == 0]
+                if uncovered and p not in used_periods:
+                    score -= 100
+                elif period_section_count.get(p, 0) > 0:
+                    score += 50 * period_section_count[p]
             period_load = sum(1 for sec in sections if sec['period'] == p)
             score += period_load * 0.1
             if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
