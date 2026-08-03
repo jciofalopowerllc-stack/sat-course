@@ -17,17 +17,30 @@
 - Do NOT change template FORMAT — only add/update data within existing columns
 - Do NOT make decisions without user (JC Iofalo) approval
 
-**The engine has TWO distinct jobs that run in order:**
+**The engine has TWO distinct jobs that run in order, with a mandatory review gate between them:**
 
 1. **Job 1 — Course Section Placement (runs FIRST):**
    - Place course sections (with their assigned teachers and rooms) into the master bell schedule by Term (FY, S1, S2) and Period (A-G)
    - BEFORE placing, the engine MUST analyze priority values for students, teachers, rooms, AND courses
    - Use that analysis to DECIDE the most optimal position (period + term) for each course section with its teacher and room
    - Goal: position sections to AVOID student clashes before students are ever placed
+   - Per-placement cycle: PLACE → SAVE priority values → REMOVE consumed values → RECALCULATE all remaining → RE-RANK → next placement
+   - **After Job 1 completes, the engine STOPS and exports `Job1_Section_Placements_2026_27.xlsx` for JC to review**
+   - **Engine does NOT proceed to Job 2 until JC gives one of three commands:**
+     - **Re-run Job 1** (run again with same or different parameters)
+     - **Revise Job 1** (make manual adjustments to section placements)
+     - **Start Job 2** (proceed to student enrollment)
 
-2. **Job 2 — Student Placement (runs SECOND, only after Job 1 is complete):**
+2. **Job 2 — Student Placement (runs SECOND, only after Job 1 is reviewed and approved):**
    - Place students into the already-positioned course sections
    - Do NOT run student placements until Job 1 is verified correct
+   - Per-placement cycle: PLACE → SAVE priority values → REMOVE consumed values → RECALCULATE all remaining → RE-RANK → next placement
+   - **After Job 2 completes, the engine exports `Job2_Student_Placements_2026_27.xlsx` for JC to review**
+
+### Engine Run Modes
+- `python schedule_engine_v3.py` or `python schedule_engine_v3.py job1` — Run Job 1 only, export Excel, **STOP** for review
+- `python schedule_engine_v3.py full` — Run Job 1 + Job 2 (student placement), export both Excel reports
+- Default mode is `job1` — the engine will never proceed to Job 2 without explicit approval
 
 ### Semester Locks (2026-27)
 - **758 Bloomberg Market Concepts**: S2 ONLY — cannot be placed in S1
@@ -73,7 +86,21 @@
 - `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
 - `student_priority_overrides.json` — Student-specific priority overrides (Grade 12 science exceptions)
 - `schedule_solution_v3.json` — Engine output
+- `priority_audit_log.json` — Per-placement priority audit trail (Phase A + Phase B)
 - `Reports.md` — Report format reference (column layouts, sort orders, features)
+
+### Job Review Exports
+- **`Job1_Section_Placements_2026_27.xlsx`** — Job 1 output for review before Job 2 starts
+  - Sheet 1 "Section Placements": One row per section in placement order — Step, Course Code, Title, Section #, Dept, Teacher, Teacher ID, Room, Period, Term, CS Raw, Top Student Total, Teacher Raw/Total, Room Raw/Total, CS Total, Cap, Co-Schedule Group, Prescribed Cohort
+  - Sheet 2 "Period Distribution": Sections per period broken down by S1/S2/FY
+  - Sheet 3 "Teacher Loads": Per-teacher S1/S2 period counts vs max load, overload flag
+  - Sheet 4 "Teacher Conflicts": Any teacher double-booked in same period+semester (co-scheduled pairs marked)
+  - Sheet 5 "Summary": Totals, assigned/unassigned counts, period distribution
+- **`Job2_Student_Placements_2026_27.xlsx`** — Job 2 output for review after student enrollment
+  - Sheet 1 "Student Placements": One row per student-course placement — Student ID/Name/Grade, Course Code/Title/Section, Period, Term, Teacher, Room, CRP, Student Raw/Total, CS Raw, Fill/Cap/%
+  - Sheet 2 "Unscheduled Requests": Student-course pairs not placed, with CRP and root cause
+  - Sheet 3 "Section Fill": Per-section enrollment vs capacity with fill percentage
+  - Sheet 4 "Summary": Placement rate, clashes by grade, totals
 
 ### Reports (formats defined in `REPORT_FORMATS` dict in engine)
 1. **Master Section Report** (`Master_Section_Report_2026_27.xlsx`) — One row per section: Teacher ID, Teacher Name, Period, Term (S1/S2/FY), Course Code, Section #, Course Title, Section Enrollment

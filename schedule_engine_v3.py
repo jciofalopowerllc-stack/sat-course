@@ -43,6 +43,15 @@ SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549a
 OUTPUT_DIR = os.path.dirname(__file__) or '.'
 PERIODS = list('ABCDEFG')
 
+# ── Engine Run Mode ──
+# 'job1'  → Run Job 1 (section placement) only, export Excel, stop
+# 'full'  → Run Job 1 + Job 2 (student placement), export both Excel reports
+ENGINE_MODE = sys.argv[1] if len(sys.argv) > 1 else 'job1'
+if ENGINE_MODE not in ('job1', 'full'):
+    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1' or 'full'.")
+    sys.exit(1)
+print(f"  Engine mode: {ENGINE_MODE}")
+
 # ============================================================
 # REPORT DEFINITIONS — names, formats, and column layouts
 # ============================================================
@@ -2016,6 +2025,227 @@ for teacher in teacher_sections:
         print(f"  LOAD: {teacher} S1={s1}/{max_s1} S2={s2}/{max_s2}")
 print(f"  Load violations: {len(load_violations)}")
 
+# ── Job 1 Excel Export ──
+def export_job1_report():
+    """Export Job 1 (Section Placement) results to Excel for review."""
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    wb = openpyxl.Workbook()
+
+    # ── Sheet 1: Section Placements (one row per section, sorted by placement step) ──
+    ws = wb.active
+    ws.title = "Section Placements"
+    headers = [
+        'Step', 'Course Code', 'Course Title', 'Section #', 'Department',
+        'Teacher Name', 'Teacher ID', 'Room', 'Period', 'Term',
+        'CS Raw', 'Top Student Total', 'Teacher Raw', 'Teacher Total',
+        'Room Raw', 'Room Total', 'CS Total',
+        'Enrollment Cap', 'Co-Schedule Group', 'Prescribed Cohort',
+    ]
+    hdr_font = Font(name='Arial', bold=True, color='FFFFFF', size=10)
+    hdr_fill = PatternFill(start_color='2F5496', end_color='2F5496', fill_type='solid')
+    thin_border = Border(
+        left=Side(style='thin'), right=Side(style='thin'),
+        top=Side(style='thin'), bottom=Side(style='thin'),
+    )
+    for c, h in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=c, value=h)
+        cell.font = hdr_font
+        cell.fill = hdr_fill
+        cell.alignment = Alignment(horizontal='center', wrap_text=True)
+        cell.border = thin_border
+
+    name_to_id = {}
+    for tid, tname in teacher_id_to_name.items():
+        name_to_id[tname] = tid
+
+    audit_placements = _priority_audit.get('phase_a', {}).get('placements', [])
+    audit_by_sid = {p['sid']: p for p in audit_placements}
+
+    co_groups_by_sid = {}
+    for gname, gsids in co_sched.items() if hasattr(co_sched, 'items') else []:
+        for gsid in gsids:
+            co_groups_by_sid[gsid] = gname
+
+    row = 2
+    for s in sorted(sections, key=lambda s: audit_by_sid.get(s['sid'], {}).get('step', 9999)):
+        ap = audit_by_sid.get(s['sid'], {})
+        term_str = '/'.join(s['halves']) if s.get('halves') else ''
+        if set(s.get('halves', ())) == {'S1', 'S2'}:
+            term_str = 'FY'
+        teacher = s['teacher']
+        tid = name_to_id.get(teacher, '')
+        room = s.get('room', 'TBD')
+
+        co_group = ''
+        for gname, gsids in (co_sched.items() if isinstance(co_sched, dict) else []):
+            if s['sid'] in gsids:
+                co_group = gname
+                break
+
+        vals = [
+            ap.get('step', ''), s['code'], s['title'], s['section'], s['dept'],
+            teacher, tid, room, s['period'] or 'UNASSIGNED', term_str,
+            ap.get('cs_raw', course_section_raw(s['code'])),
+            ap.get('top_student_total', _top_student_cache.get(s['code'], 0)),
+            ap.get('teacher_raw', teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0),
+            ap.get('teacher_total', teacher_total_priority(teacher) if teacher and teacher != 'TBD' else 0),
+            ap.get('room_raw', room_raw_priority(room) if room and room != 'TBD' else 0),
+            ap.get('room_total', room_total_priority(room) if room and room != 'TBD' else 0),
+            ap.get('cs_total', ''),
+            s['cap'],
+            co_group,
+            s.get('prescribed_cohort', ''),
+        ]
+        for c, v in enumerate(vals, 1):
+            cell = ws.cell(row=row, column=c, value=v)
+            cell.font = Font(name='Arial', size=10)
+            cell.border = thin_border
+            if c >= 11:
+                cell.alignment = Alignment(horizontal='center')
+        row += 1
+
+    for c in range(1, len(headers) + 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 16
+    ws.column_dimensions['C'].width = 30
+    ws.column_dimensions['F'].width = 22
+    ws.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(headers))}{row - 1}"
+    ws.freeze_panes = 'A2'
+
+    # ── Sheet 2: Period Distribution ──
+    ws2 = wb.create_sheet("Period Distribution")
+    ws2.cell(1, 1, "Period").font = Font(name='Arial', bold=True, size=10)
+    ws2.cell(1, 2, "S1 Sections").font = Font(name='Arial', bold=True, size=10)
+    ws2.cell(1, 3, "S2 Sections").font = Font(name='Arial', bold=True, size=10)
+    ws2.cell(1, 4, "FY Sections").font = Font(name='Arial', bold=True, size=10)
+    ws2.cell(1, 5, "Total Sections").font = Font(name='Arial', bold=True, size=10)
+    for c in range(1, 6):
+        ws2.cell(1, c).fill = hdr_fill
+        ws2.cell(1, c).font = hdr_font
+        ws2.cell(1, c).border = thin_border
+    for i, p in enumerate(PERIODS, 2):
+        s1_ct = sum(1 for s in sections if s['period'] == p and 'S1' in s['halves'] and 'S2' not in s['halves'])
+        s2_ct = sum(1 for s in sections if s['period'] == p and 'S2' in s['halves'] and 'S1' not in s['halves'])
+        fy_ct = sum(1 for s in sections if s['period'] == p and 'S1' in s['halves'] and 'S2' in s['halves'])
+        total = sum(1 for s in sections if s['period'] == p)
+        for c, v in enumerate([p, s1_ct, s2_ct, fy_ct, total], 1):
+            cell = ws2.cell(i, c, v)
+            cell.font = Font(name='Arial', size=10)
+            cell.border = thin_border
+            cell.alignment = Alignment(horizontal='center')
+    for c in range(1, 6):
+        ws2.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 16
+
+    # ── Sheet 3: Teacher Load Summary ──
+    ws3 = wb.create_sheet("Teacher Loads")
+    t_headers = ['Teacher Name', 'Teacher ID', 'S1 Periods', 'S2 Periods', 'Max S1', 'Max S2', 'Overloaded?']
+    for c, h in enumerate(t_headers, 1):
+        cell = ws3.cell(1, c, h)
+        cell.font = hdr_font
+        cell.fill = hdr_fill
+        cell.border = thin_border
+    t_row = 2
+    for tname in sorted(teacher_sections.keys()):
+        tid = name_to_id.get(tname, '')
+        s1_load = teacher_load(tname, 'S1')
+        s2_load = teacher_load(tname, 'S2')
+        max_s1, max_s2 = get_max_load(tname)
+        overloaded = 'YES' if s1_load > max_s1 or s2_load > max_s2 else ''
+        for c, v in enumerate([tname, tid, s1_load, s2_load, max_s1, max_s2, overloaded], 1):
+            cell = ws3.cell(t_row, c, v)
+            cell.font = Font(name='Arial', size=10)
+            cell.border = thin_border
+            if overloaded == 'YES' and c == 7:
+                cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
+        t_row += 1
+    for c in range(1, len(t_headers) + 1):
+        ws3.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 16
+    ws3.column_dimensions['A'].width = 24
+    ws3.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(t_headers))}{t_row - 1}"
+    ws3.freeze_panes = 'A2'
+
+    # ── Sheet 4: Teacher Conflicts ──
+    ws4 = wb.create_sheet("Teacher Conflicts")
+    tc_headers = ['Teacher', 'Period', 'Semester', 'Section 1 (Code-Sec)', 'Section 2 (Code-Sec)', 'Co-Scheduled?']
+    for c, h in enumerate(tc_headers, 1):
+        cell = ws4.cell(1, c, h)
+        cell.font = hdr_font
+        cell.fill = hdr_fill
+        cell.border = thin_border
+    tc_row = 2
+    for teacher, sids in teacher_sections.items():
+        slots = defaultdict(list)
+        for sid in sids:
+            s = sections[sid]
+            if s['period']:
+                for h in s['halves']:
+                    slots[(s['period'], h)].append(sid)
+        for (period, sem), sid_list in sorted(slots.items()):
+            if len(sid_list) > 1:
+                for i in range(len(sid_list)):
+                    for j in range(i + 1, len(sid_list)):
+                        is_co = in_same_cogroup(sid_list[i], sid_list[j])
+                        s1 = sections[sid_list[i]]
+                        s2 = sections[sid_list[j]]
+                        for c, v in enumerate([
+                            teacher, period, sem,
+                            f"{s1['code']}-{s1['section']}", f"{s2['code']}-{s2['section']}",
+                            'YES' if is_co else 'NO — CONFLICT'
+                        ], 1):
+                            cell = ws4.cell(tc_row, c, v)
+                            cell.font = Font(name='Arial', size=10)
+                            cell.border = thin_border
+                            if not is_co and c == 6:
+                                cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
+                        tc_row += 1
+    for c in range(1, len(tc_headers) + 1):
+        ws4.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 20
+    ws4.freeze_panes = 'A2'
+
+    # ── Sheet 5: Summary ──
+    ws5 = wb.create_sheet("Summary")
+    summary_data = [
+        ('Total Sections', len(sections)),
+        ('Sections Assigned', sum(1 for s in sections if s['period'])),
+        ('Sections Unassigned', sum(1 for s in sections if not s['period'])),
+        ('Total Courses', len(sec_by_code)),
+        ('Total Teachers', len(teacher_sections)),
+        ('Teacher Period Conflicts (non-co-sched)', t_conflicts),
+        ('Load Violations', len(load_violations)),
+        ('Prior-Year Alignment', f"{prior_match}/{prior_total}"),
+        ('', ''),
+        ('Period Distribution', ''),
+    ]
+    for p in PERIODS:
+        summary_data.append((f'  Period {p}', sum(1 for s in sections if s['period'] == p)))
+    for r, (label, val) in enumerate(summary_data, 1):
+        ws5.cell(r, 1, label).font = Font(name='Arial', bold=True, size=10)
+        ws5.cell(r, 2, val).font = Font(name='Arial', size=10)
+    ws5.column_dimensions['A'].width = 40
+    ws5.column_dimensions['B'].width = 20
+
+    out_path = os.path.join(OUTPUT_DIR, 'Job1_Section_Placements_2026_27.xlsx')
+    wb.save(out_path)
+    print(f"\n  ** Job 1 Excel export saved: {out_path}")
+    return out_path
+
+_job1_path = export_job1_report()
+
+# ── Save Phase A audit to JSON ──
+_audit_a_path = os.path.join(OUTPUT_DIR, 'priority_audit_log.json')
+with open(_audit_a_path, 'w') as _af:
+    json.dump(_priority_audit, _af, indent=2, default=str)
+print(f"  Priority audit log saved to {_audit_a_path}")
+
+# ── Job 1 Stop Gate ──
+if ENGINE_MODE == 'job1':
+    print("\n" + "=" * 60)
+    print("JOB 1 COMPLETE — ENGINE STOPPED")
+    print("=" * 60)
+    print(f"  Review the export: {_job1_path}")
+    print("  To proceed, re-run with:  python schedule_engine_v3.py full")
+    print("  To re-run Job 1 only:     python schedule_engine_v3.py job1")
+    sys.exit(0)
+
 
 # ============================================================
 # 2. SEAT STUDENTS
@@ -2168,12 +2398,10 @@ while _all_requests:
 _priority_audit['phase_b']['final_snapshot'] = _capture_snapshot()
 print(f"  Phase B complete: {_placed_count_b} placements in {_step_b} steps")
 
-# ── Save priority audit log ──
-import json as _json_audit
-_audit_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'priority_audit_log.json')
-with open(_audit_path, 'w') as _af:
-    _json_audit.dump(_priority_audit, _af, indent=2, default=str)
-print(f"  Priority audit log saved to {_audit_path}")
+# ── Save priority audit log (Phase A + Phase B) ──
+with open(os.path.join(OUTPUT_DIR, 'priority_audit_log.json'), 'w') as _af:
+    json.dump(_priority_audit, _af, indent=2, default=str)
+print(f"  Priority audit log updated (Phase A + Phase B)")
 
 conf_count = 0
 for pid in students:
@@ -3375,6 +3603,177 @@ with open(SOLUTION_FILE_ROOT, 'w') as f:
 
 print(f"\n  Solution saved to {SOLUTION_FILE}")
 print(f"  Solution also saved to {SOLUTION_FILE_ROOT}")
+
+# ── Job 2 Excel Export ──
+def export_job2_report():
+    """Export Job 2 (Student Placement) results to Excel for review."""
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    wb = openpyxl.Workbook()
+
+    # ── Sheet 1: Student Placements ──
+    ws = wb.active
+    ws.title = "Student Placements"
+    headers = [
+        'Student ID', 'Student Name', 'Grade',
+        'Course Code', 'Course Title', 'Section #',
+        'Period', 'Term', 'Teacher', 'Room',
+        'CRP', 'Student Raw', 'Student Total', 'CS Raw',
+        'Section Fill', 'Section Cap', 'Fill %',
+    ]
+    hdr_font = Font(name='Arial', bold=True, color='FFFFFF', size=10)
+    hdr_fill = PatternFill(start_color='2F5496', end_color='2F5496', fill_type='solid')
+    thin_border = Border(
+        left=Side(style='thin'), right=Side(style='thin'),
+        top=Side(style='thin'), bottom=Side(style='thin'),
+    )
+    for c, h in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=c, value=h)
+        cell.font = hdr_font
+        cell.fill = hdr_fill
+        cell.alignment = Alignment(horizontal='center', wrap_text=True)
+        cell.border = thin_border
+
+    row = 2
+    for pid in sorted(students.keys(), key=lambda p: (-grade.get(p, 0), students.get(p, ''))):
+        for cid, sid in sorted(assign[pid].items(), key=lambda x: (sections[x[1]]['period'] or 'Z')):
+            s = sections[sid]
+            term_str = '/'.join(s['halves'])
+            if set(s['halves']) == {'S1', 'S2'}:
+                term_str = 'FY'
+            fill_count = secfill[sid]
+            fill_pct = round(fill_count / s['cap'] * 100, 1) if s['cap'] > 0 else 0
+            vals = [
+                pid, students[pid], grade.get(pid, ''),
+                cid, s['title'], s['section'],
+                s['period'] or 'UNASSIGNED', term_str, s['teacher'], s['room'],
+                course_request_priority(pid, cid),
+                student_raw_priority(pid), student_total_priority(pid),
+                course_section_raw(cid),
+                fill_count, s['cap'], fill_pct,
+            ]
+            for c, v in enumerate(vals, 1):
+                cell = ws.cell(row=row, column=c, value=v)
+                cell.font = Font(name='Arial', size=10)
+                cell.border = thin_border
+                if c >= 11:
+                    cell.alignment = Alignment(horizontal='center')
+            row += 1
+
+    for c in range(1, len(headers) + 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 14
+    ws.column_dimensions['B'].width = 22
+    ws.column_dimensions['E'].width = 28
+    ws.column_dimensions['I'].width = 22
+    ws.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(headers))}{row - 1}"
+    ws.freeze_panes = 'A2'
+
+    # ── Sheet 2: Unscheduled Requests ──
+    ws2 = wb.create_sheet("Unscheduled Requests")
+    u_headers = ['Student ID', 'Student Name', 'Grade', 'Course Code', 'Course Title',
+                 'CRP', 'Student Raw', 'Student Total', 'Root Cause']
+    for c, h in enumerate(u_headers, 1):
+        cell = ws2.cell(1, c, h)
+        cell.font = hdr_font
+        cell.fill = hdr_fill
+        cell.border = thin_border
+    u_row = 2
+    for pid in sorted(students.keys(), key=lambda p: (-grade.get(p, 0), students.get(p, ''))):
+        for cid in sreq.get(pid, []):
+            if cid not in assign[pid]:
+                root = ''
+                if cid not in sec_by_code or not sec_by_code[cid]:
+                    root = 'no_sections'
+                else:
+                    root = 'all_periods_blocked'
+                title = course_info.get(cid, {}).get('title', cid) if 'course_info' in dir() else cid
+                for c, v in enumerate([
+                    pid, students[pid], grade.get(pid, ''),
+                    cid, title,
+                    course_request_priority(pid, cid),
+                    student_raw_priority(pid), student_total_priority(pid),
+                    root,
+                ], 1):
+                    cell = ws2.cell(u_row, c, v)
+                    cell.font = Font(name='Arial', size=10)
+                    cell.border = thin_border
+                u_row += 1
+    for c in range(1, len(u_headers) + 1):
+        ws2.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 16
+    ws2.column_dimensions['B'].width = 22
+    ws2.column_dimensions['E'].width = 28
+    ws2.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(u_headers))}{u_row - 1}"
+    ws2.freeze_panes = 'A2'
+
+    # ── Sheet 3: Section Fill Summary ──
+    ws3 = wb.create_sheet("Section Fill")
+    sf_headers = ['Course Code', 'Course Title', 'Section #', 'Period', 'Term',
+                  'Teacher', 'Room', 'Enrolled', 'Cap', 'Fill %', 'Remaining']
+    for c, h in enumerate(sf_headers, 1):
+        cell = ws3.cell(1, c, h)
+        cell.font = hdr_font
+        cell.fill = hdr_fill
+        cell.border = thin_border
+    sf_row = 2
+    for s in sorted(sections, key=lambda s: (s['code'], s['section'])):
+        fill_count = secfill[s['sid']]
+        fill_pct = round(fill_count / s['cap'] * 100, 1) if s['cap'] > 0 else 0
+        term_str = '/'.join(s['halves'])
+        if set(s['halves']) == {'S1', 'S2'}:
+            term_str = 'FY'
+        for c, v in enumerate([
+            s['code'], s['title'], s['section'], s['period'] or '', term_str,
+            s['teacher'], s['room'], fill_count, s['cap'], fill_pct, s['cap'] - fill_count,
+        ], 1):
+            cell = ws3.cell(sf_row, c, v)
+            cell.font = Font(name='Arial', size=10)
+            cell.border = thin_border
+            if c >= 8:
+                cell.alignment = Alignment(horizontal='center')
+            if fill_pct >= 100 and c == 10:
+                cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
+        sf_row += 1
+    for c in range(1, len(sf_headers) + 1):
+        ws3.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 14
+    ws3.column_dimensions['B'].width = 28
+    ws3.column_dimensions['F'].width = 22
+    ws3.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(sf_headers))}{sf_row - 1}"
+    ws3.freeze_panes = 'A2'
+
+    # ── Sheet 4: Summary ──
+    ws4 = wb.create_sheet("Summary")
+    total_placed = sum(len(v) for v in assign.values())
+    total_requested = sum(len(sreq[pid]) for pid in students)
+    total_unscheduled = total_requested - total_placed
+    summary_data = [
+        ('Total Students', len(students)),
+        ('Total Course Requests', total_requested),
+        ('Total Placements', total_placed),
+        ('Total Unscheduled', total_unscheduled),
+        ('Placement Rate', f"{round(total_placed / total_requested * 100, 1)}%" if total_requested else '0%'),
+        ('', ''),
+        ('Students with Conflicts', conf_count),
+        ('Total Clashes', len(clash)),
+        ('', ''),
+        ('By Grade:', ''),
+    ]
+    for g in [9, 10, 11, 12]:
+        g_students = [p for p in students if grade.get(p) == g]
+        g_placed = sum(len(assign[p]) for p in g_students)
+        g_requested = sum(len(sreq[p]) for p in g_students)
+        g_clashes = sum(1 for c in clash if grade.get(c['student']) == g)
+        summary_data.append((f'  Grade {g}', f'{g_placed}/{g_requested} placed, {g_clashes} clashes'))
+    for r, (label, val) in enumerate(summary_data, 1):
+        ws4.cell(r, 1, label).font = Font(name='Arial', bold=True, size=10)
+        ws4.cell(r, 2, val).font = Font(name='Arial', size=10)
+    ws4.column_dimensions['A'].width = 30
+    ws4.column_dimensions['B'].width = 40
+
+    out_path = os.path.join(OUTPUT_DIR, 'Job2_Student_Placements_2026_27.xlsx')
+    wb.save(out_path)
+    print(f"\n  ** Job 2 Excel export saved: {out_path}")
+    return out_path
+
+_job2_path = export_job2_report()
 
 # ============================================================
 # 5. POST-RUN: GENERATE INTERACTIVE HTML BOARDS
