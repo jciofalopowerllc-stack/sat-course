@@ -179,7 +179,7 @@ The engine processes each student's data in this order:
 | 16 | Confirm | Student > Pathway (name or N) | Cross-File Validation confirms pathway membership using Historical Grades + Course Requests. Pathway name identifies which program (Business, Engineering, CS, etc.) — used to elevate pathway courses to Level 2 for that student |
 | 17 | Assign Point Value | Student > Special Student Population Priority Value | Points assigned based on Special Student Population programs — stacks with Cohort unless LEO I → LEO II (same program, no stacking) |
 | 18 | **Calculate** | **Student > Raw Priority Value** | **Grade Level + Cohort (if any) + Special Student Population (if any) — who the student IS. FIXED for the school year. No course, teacher, or room data. Saved to student's profile by school year.** |
-| 19 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — includes the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only |
+| 19 | Assign Point Value | Student > Course Request > Course Code + Course Priority Value | Per-course priority (repeats for each course request) — includes the course's own characteristics (AP, Singleton, Grad Req, Gr12 PAE, Semester Only, Cohort, Co-Schedule, Prescribed Term). All applicable characteristics stack — the student receives the sum of every characteristic that applies to the course. |
 | 20 | **Calculate** | **Student > Total Priority Value** | **Raw Priority Value (step 18) + Course Priority Values (step 19). Changes every run as courses are placed and removed from the student's request list. Saved to student's profile with run number and school year.** |
 
 **Cohort vs. Special Student Population — these are NOT the same thing:**
@@ -200,30 +200,23 @@ This is who the student IS — no course, teacher, or room data. Calculated once
 
 Course Priority Values include the course's own restrictions (AP, Singleton, etc.) PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. After each run, placed courses are removed and the Total recalculates. Saved to the student's profile with run number and school year.
 
-**Course-level priority categories** (e.g., AP, Singleton) add point values to the student's total. But when a single course qualifies for more than one category, the student receives only the HIGHER point value from that course — not both. This prevents double-counting from the same course.
+**Course-level priority characteristics** (AP, Singleton, Graduation Requirement, Grade 12 Priority Academic Elective, Semester Only, Cohort Course, Co-Schedule Group, Prescribed Term) add point values to the student's course request total. When a single course qualifies for more than one characteristic, **all applicable values stack** — the student receives the sum of every characteristic that applies.
 
-**Example — Grade 12 student in LEO II, Academic Support, AP Art, and a Singleton elective:**
+**Grade 12 Priority Academic Elective (Gr12 PAE)** — 20 points. Courses that are academically important for seniors but not technically graduation-required. This includes: Science courses for Grade 12 (not a Gr12 graduation requirement but academically significant), AP electives that are not in a graduation-required department for that student's grade, LEO program courses, and World Language courses for Grade 12. A course receives either Graduation Requirement (20) OR Grade 12 Priority Academic Elective (20), never both — they are mutually exclusive categories at the same point value.
 
-| Source | Category | Points |
-|--------|----------|--------|
-| Grade Level | 12 | (grade value) |
-| LEO II | Cohort | (cohort value) |
-| Academic Support | Special Student Population | (Special Student Population value) |
-| AP Art | AP course | (AP value) |
-| Singleton elective | Singleton | (singleton value) |
-| **Total** | | **all five added together** |
-
-**But if AP Art is also a Singleton:**
+**Example — Grade 12 student in LEO II, Academic Support, requesting AP Calc BC (AP + Singleton + Grad Req):**
 
 | Source | Category | Points |
 |--------|----------|--------|
-| Grade Level | 12 | (grade value) |
-| LEO II | Cohort | (cohort value) |
-| Academic Support | Special Student Population | (Special Student Population value) |
-| AP Art | AP + Singleton → use HIGHER value only | (higher of AP or singleton value) |
-| **Total** | | **no double-count from AP Art** |
+| Grade Level | 12 | 40 |
+| LEO II | Cohort | 50 |
+| Academic Support | Special Student Population | 25 |
+| AP Calc BC | AP (30) + Singleton (25) + Grad Req (20) + Prescribed Term (10) | 85 |
+| **Total** | | **200** |
 
-**Rule: Different sources stack. Same course, multiple categories → highest value only.**
+All three course characteristics for AP Calc BC stack: 30 + 25 + 20 + 10 = 85 points from that one course.
+
+**Rule: All applicable characteristics stack — both across different sources (Grade + Cohort + SSP) and within a single course request (AP + Singleton + Grad Req + Prescribed Term).**
 
 **LEO I vs. LEO II — these are NOT the same thing:**
 
@@ -984,11 +977,11 @@ Each cohort section (e.g., LEO II Cohort A vs. LEO II Cohort B) is scored indepe
 
 All tests use the new formula: Course Section Total = Course Section Raw + Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value.
 
-Point values: AP = 30, Singleton = 25, Grad Req = 20, Semester Only = 15, Cohort = 15, Co-Schedule = 15, Prescribed Term = 10. Each teacher/room lock = 10. Room demand = 5 per section. Student grade levels: 9 = 10, 10 = 20, 11 = 30, 12 = 40. Cohort = 50, Special Student Population = 25.
+Point values: AP = 30, Singleton = 25, Grad Req = 20, Gr12 PAE = 20 (mutually exclusive with Grad Req), Semester Only = 15, Cohort = 15, Co-Schedule = 15, Prescribed Term = 10. All characteristics stack. Each teacher/room lock = 10. Room demand = 5 per section. Student grade levels: 9 = 10, 10 = 20, 11 = 30, 12 = 40. Cohort = 50, Special Student Population = 25.
 
 | Test | Section A | Section B | Result |
 |------|-----------|-----------|--------|
-| AP Singleton S2 vs. regular FY elective | Raw 70 (30+25+15) + top student 40 + teacher 30 + room 20 = **160** | Raw 0 + top student 40 + teacher 0 + room 10 = **50** | A first — course characteristics dominate |
+| AP Singleton S2 vs. regular FY elective | Raw 100 (30+25+20+15+10) + top student 40 + teacher 30 + room 20 = **190** | Raw 0 + top student 40 + teacher 0 + room 10 = **50** | A first — course characteristics dominate |
 | Same course characteristics, different top students | Raw 20 + top student 115 (Gr12+Cohort+Special Student Population) + teacher 30 + room 20 = **185** | Raw 20 + top student 10 (Gr9) + teacher 30 + room 20 = **80** | A first — higher-priority student breaks tie |
 | High course raw + low students vs. low raw + high students | Raw 70 + top student 10 + teacher 20 + room 10 = **110** | Raw 0 + top student 115 + teacher 20 + room 10 = **145** | B first — but B has higher Total because student and teacher scores are high enough to overcome. Course Raw alone is a floor, not an override of all other factors combined |
 | Heavy teacher locks vs. no locks | Raw 20 + top student 40 + teacher 80 (8 locks) + room 20 = **160** | Raw 20 + top student 40 + teacher 0 + room 20 = **80** | A first — teacher locks dominate |
@@ -1092,7 +1085,7 @@ Minimum Student Raw = 10 + 0 + 0 = **10**
 
 **Formula:** Student Total = Student Raw + Course Request Priority Values
 
-Course Request Priority Values come from step 19 of the Student processing order. They include the course's own restrictions PLUS the prescribed teacher's restrictions PLUS the prescribed room's restrictions. Same course, multiple categories = highest value only.
+Course Request Priority Values come from step 19 of the Student processing order. Each course request is scored by summing all applicable course characteristics (AP, Singleton, Graduation Requirement, Grade 12 Priority Academic Elective, Semester Only, Cohort Course, Co-Schedule Group, Prescribed Term). All applicable characteristics stack.
 
 ---
 
@@ -1100,22 +1093,24 @@ Course Request Priority Values come from step 19 of the Student processing order
 
 How restricted the section is based on its own characteristics. These values stack — each characteristic independently restricts the section's placement options.
 
-| Component | Points |
-|-----------|--------|
-| AP | 30 |
-| Singleton | 25 |
-| Graduation Requirement | 20 |
-| Semester Only (S1 or S2) | 15 |
-| Cohort Course | 15 |
-| Co-Schedule Group | 15 |
-| Prescribed Term | 10 |
+| Component | Points | Notes |
+|-----------|--------|-------|
+| AP | 30 | Course is an AP course |
+| Singleton | 25 | Only 1 section exists for this course |
+| Graduation Requirement | 20 | Course is in a graduation-required department for the student's grade level |
+| Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — used for courses academically important to seniors but not technically graduation-required (Science for Gr12, AP electives not in a grad-req dept, LEO, World Language for Gr12) |
+| Semester Only (S1 or S2) | 15 | Course runs one semester only, not full year |
+| Cohort Course | 15 | Course has a cohort constraint (students must stay together) |
+| Co-Schedule Group | 15 | Course is part of a co-schedule group |
+| Prescribed Term | 10 | Course has a prescribed term (S1 or S2) — not awarded for FY courses |
 
 Examples:
-- AP Singleton, S2-only, Grad Req = 30 + 25 + 15 + 20 = **90**
+- AP Singleton, S2-only, Grad Req = 30 + 25 + 20 + 15 + 10 = **100**
 - Cohort Course, Prescribed Term = 15 + 10 = **25**
 - Regular FY elective with 8 sections = **0**
+- AP Physics C (Gr12 Science, Singleton) = 30 + 25 + 20 (Gr12 PAE) = **75**
 
-**Formula:** Course Section Raw = sum of all applicable course characteristics
+**Formula:** Course Section Raw = sum of all applicable course characteristics. All characteristics stack.
 
 #### Course Section Total Priority Value (changes every run)
 
