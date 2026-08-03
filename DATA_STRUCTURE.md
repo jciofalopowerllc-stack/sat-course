@@ -1098,7 +1098,7 @@ How restricted the section is based on its own characteristics. These values sta
 | AP | 30 | Course is an AP course |
 | Singleton | 25 | Only 1 section exists for this course |
 | Graduation Requirement | 20 | Course is in a graduation-required department for the student's grade level |
-| Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — used for courses academically important to seniors but not technically graduation-required (Science for Gr12, AP electives not in a grad-req dept, LEO, World Language for Gr12) |
+| Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — full-year courses from English, Mathematics, Science, Social Studies, or World Language departments that are NOT a Grade Level Requirement, NOT a Cohort course, and NOT an SSP course |
 | Semester Only (S1 or S2) | 15 | Course runs one semester only, not full year |
 | Cohort Course | 15 | Course has a cohort constraint (students must stay together) |
 | Co-Schedule Group | 15 | Course is part of a co-schedule group |
@@ -1108,7 +1108,7 @@ Examples:
 - AP Singleton, S2-only, Grad Req = 30 + 25 + 20 + 15 + 10 = **100**
 - Cohort Course, Prescribed Term = 15 + 10 = **25**
 - Regular FY elective with 8 sections = **0**
-- AP Physics C (Gr12 Science, Singleton) = 30 + 25 + 20 (Gr12 PAE) = **75**
+- AP Physics 1 (AP, FY Science not grad req for Gr12, not cohort/SSP) = 30 + 20 (Gr12 PAE) = **50**
 
 **Formula:** Course Section Raw = sum of all applicable course characteristics. All characteristics stack.
 

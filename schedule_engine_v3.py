@@ -251,17 +251,24 @@ def _is_grad_req_for_student(cid, student_grade, pid=None):
     dept = _course_dept_map.get(str(cid), '')
     return dept in GRAD_REQ_DEPTS.get(student_grade, set())
 
+_GR12_PAE_DEPTS = {'English', 'Mathematics', 'Science', 'Social Studies', 'World Language'}
+_ALL_SSP_COURSES = set()
+for _pw_codes in PATHWAY_COURSE_SETS.values():
+    _ALL_SSP_COURSES |= _pw_codes
+
 def _is_gr12_pae(cid):
-    ci = course_info.get(str(cid), {})
-    dept = _course_dept_map.get(str(cid), '')
-    if dept in ('Science', 'World Language'):
-        return True
-    if ci.get('is_ap', False):
-        return True
+    cid_s = str(cid)
+    ci = course_info.get(cid_s, {})
+    if not ci.get('is_fy', True) or ci.get('prescribed_term', 'FY') in ('S1', 'S2'):
+        return False
+    if _course_dept_map.get(cid_s, '') not in _GR12_PAE_DEPTS:
+        return False
     cohort = ci.get('cohort_flag', '')
     if cohort and cohort not in ('', 'N', None):
-        return True
-    return False
+        return False
+    if cid_s in _ALL_SSP_COURSES:
+        return False
+    return True
 
 # ── Priority caches (cleared after each placement run) ──
 _crp_cache = {}
@@ -337,6 +344,8 @@ def course_section_raw(cid):
         score += PTS_SINGLETON
     if ci.get('grad_req_dept', ''):
         score += PTS_GRAD_REQ
+    elif _is_gr12_pae(cid_s):
+        score += PTS_GR12_PAE
     prescribed = ci.get('prescribed_term', 'FY')
     if prescribed in ('S1', 'S2') or not ci.get('is_fy', True):
         score += PTS_SEMESTER_ONLY
