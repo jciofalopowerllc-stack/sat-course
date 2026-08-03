@@ -2061,11 +2061,6 @@ def export_job1_report():
     audit_placements = _priority_audit.get('phase_a', {}).get('placements', [])
     audit_by_sid = {p['sid']: p for p in audit_placements}
 
-    co_groups_by_sid = {}
-    for gname, gsids in co_sched.items() if hasattr(co_sched, 'items') else []:
-        for gsid in gsids:
-            co_groups_by_sid[gsid] = gname
-
     row = 2
     for s in sorted(sections, key=lambda s: audit_by_sid.get(s['sid'], {}).get('step', 9999)):
         ap = audit_by_sid.get(s['sid'], {})
@@ -2077,10 +2072,9 @@ def export_job1_report():
         room = s.get('room', 'TBD')
 
         co_group = ''
-        for gname, gsids in (co_sched.items() if isinstance(co_sched, dict) else []):
-            if s['sid'] in gsids:
-                co_group = gname
-                break
+        gi = code_to_cogroup.get(s['code'])
+        if gi is not None:
+            co_group = cogroups[gi]['name']
 
         vals = [
             ap.get('step', ''), s['code'], s['title'], s['section'], s['dept'],
