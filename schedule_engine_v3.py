@@ -2849,9 +2849,9 @@ def greedy_assign_periods(seed=42, audit=False):
             if is_coverage_course:
                 uncovered = [pp for pp in PERIODS if period_section_count.get(pp, 0) == 0]
                 if uncovered and p not in used_periods:
-                    score -= 100
+                    score -= 20
                 elif period_section_count.get(p, 0) > 0:
-                    score += 50 * period_section_count[p]
+                    score += 10 * period_section_count[p]
             period_load = sum(1 for sec in sections if sec['period'] == p)
             score += period_load * 0.1
             if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
