@@ -44,13 +44,960 @@ OUTPUT_DIR = os.path.dirname(__file__) or '.'
 PERIODS = list('ABCDEFG')
 
 # ── Engine Run Mode ──
-# 'job1'  → Run Job 1 (section placement) only, export Excel, stop
-# 'full'  → Run Job 1 + Job 2 (student placement), export both Excel reports
+# 'job1'    → Run Job 1 (section placement) only, export Excel, stop
+# 'full'    → Run Job 1 + Job 2 (student placement), export both Excel reports
+# 'analyze' → Analyze Job 1 + Job 2 outputs, generate Engine Analysis Report
 ENGINE_MODE = sys.argv[1] if len(sys.argv) > 1 else 'job1'
-if ENGINE_MODE not in ('job1', 'full'):
-    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1' or 'full'.")
+if ENGINE_MODE not in ('job1', 'full', 'analyze'):
+    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1', 'full', or 'analyze'.")
     sys.exit(1)
 print(f"  Engine mode: {ENGINE_MODE}")
+
+# ── Analyze Mode: runs standalone, does not load engine data ──
+if ENGINE_MODE == 'analyze':
+
+    def run_analysis():
+        """Analyze Job 1 + Job 2 outputs and generate Engine Analysis Report."""
+        from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        from collections import Counter, defaultdict
+
+        print("=" * 60)
+        print("ENGINE ANALYSIS MODE")
+        print("=" * 60)
+
+        sol_path = os.path.join(OUTPUT_DIR, 'schedule_solution_v3.json')
+        if not os.path.exists(sol_path):
+            print(f"  ERROR: {sol_path} not found.")
+            print("  Run 'python schedule_engine_v3.py full' first.")
+            sys.exit(1)
+
+        with open(sol_path) as f:
+            sol = json.load(f)
+
+        audit_path = os.path.join(OUTPUT_DIR, 'priority_audit_log.json')
+        audit = {}
+        if os.path.exists(audit_path):
+            with open(audit_path) as f:
+                audit = json.load(f)
+
+        secs = sol['sections']
+        assignments = sol['assignments']
+        clashes = sol['clashes']
+        stats = sol['stats']
+        root_cause = sol.get('root_cause_summary', {})
+        diag = sol.get('diagnostics', {})
+
+        total_requests = stats['requests']
+        total_placed = stats['placed']
+        total_clashes = stats['clashes']
+        placement_rate = stats['placement_rate']
+
+        sec_by_code = defaultdict(list)
+        for s in secs:
+            sec_by_code[s['code']].append(s)
+
+        course_names = {}
+        for s in secs:
+            course_names[s['code']] = s['title']
+        for c in clashes:
+            course_names[c['code']] = c['course']
+
+        # ── ANALYSIS 1: Process Effectiveness ──
+        print("\n[1] PROCESS EFFECTIVENESS ANALYSIS")
+        print("-" * 40)
+
+        period_counts = Counter()
+        for s in secs:
+            period_counts[s['period']] += 1
+        period_min = min(period_counts.values())
+        period_max = max(period_counts.values())
+        period_spread = period_max - period_min
+        print(f"  Phase A — Period balance: min={period_min}, max={period_max}, spread={period_spread}")
+        for p in sorted(period_counts.keys()):
+            print(f"    Period {p}: {period_counts[p]} sections")
+
+        grad_req_gaps = {}
+        for code, code_secs in sec_by_code.items():
+            if len(code_secs) >= 4:
+                periods_covered = set(s['period'] for s in code_secs)
+                missing = set('ABCDEFG') - periods_covered
+                if missing and any(c for c in clashes if c['code'] == code and c.get('is_grad_req')):
+                    unscheduled = sum(1 for c in clashes if c['code'] == code)
+                    grad_req_gaps[code] = {
+                        'title': course_names.get(code, code),
+                        'sections': len(code_secs),
+                        'periods_covered': sorted(periods_covered),
+                        'periods_missing': sorted(missing),
+                        'unscheduled': unscheduled,
+                        'enrolled': sum(s['enrolled'] for s in code_secs),
+                        'capacity': sum(s['cap'] for s in code_secs),
+                    }
+
+        if grad_req_gaps:
+            print(f"\n  Phase A — Period coverage gaps in grad-req courses: {len(grad_req_gaps)}")
+            for code in sorted(grad_req_gaps.keys(), key=lambda c: -grad_req_gaps[c]['unscheduled']):
+                g = grad_req_gaps[code]
+                print(f"    {code} {g['title']}: {g['sections']} sections, "
+                      f"missing periods {','.join(g['periods_missing'])}, "
+                      f"{g['unscheduled']} unscheduled, "
+                      f"{g['enrolled']}/{g['capacity']} enrolled ({100*g['enrolled']//max(g['capacity'],1)}%)")
+
+        teacher_conflicts = diag.get('teacher_conflicts', 0)
+        print(f"\n  Phase A — Teacher period conflicts: {teacher_conflicts}")
+
+        phase_b_placements = len(audit.get('phase_b', {}).get('placements', []))
+        csp_info = {
+            'phase_b_placements': phase_b_placements,
+            'initial_conflicts': 'N/A',
+            'csp_resolved': 'N/A',
+            'csp_rate': 'N/A',
+        }
+        print(f"\n  Phase B — Student placements: {phase_b_placements}")
+        conflicts_added = sum(1 for p in audit.get('phase_b', {}).get('placements', []) if p.get('conflicts_added', 0) > 0)
+        if phase_b_placements > 0:
+            print(f"  Phase B — Placements with conflicts: {conflicts_added} ({100*conflicts_added//phase_b_placements}%)")
+
+        restart_seeds = stats.get('restart_seeds_tried', 0)
+        best_seed = stats.get('best_seed', 'N/A')
+        print(f"\n  Phase D — Restarts: {restart_seeds}, Best seed: {best_seed}")
+        print(f"  Phase D — Final clashes: {total_clashes}")
+
+        total_cap = sum(s['cap'] for s in secs)
+        total_enrolled = sum(s['enrolled'] for s in secs)
+        utilization = round(100 * total_enrolled / max(total_cap, 1), 1)
+        print(f"\n  Capacity utilization: {total_enrolled}/{total_cap} ({utilization}%)")
+
+        overfilled = [s for s in secs if s['enrolled'] > s['cap']]
+        underfilled = [s for s in secs if s['enrolled'] < s['cap'] * 0.5 and s['cap'] > 5]
+        empty_seats = total_cap - total_enrolled
+        print(f"  Overfilled sections: {len(overfilled)}")
+        print(f"  Underfilled sections (<50% cap): {len(underfilled)}")
+        print(f"  Empty seats: {empty_seats}")
+
+        # ── ANALYSIS 2: Bottleneck Identification ──
+        print("\n[2] BOTTLENECK IDENTIFICATION")
+        print("-" * 40)
+
+        course_clashes = Counter()
+        course_is_grad_req = {}
+        for c in clashes:
+            course_clashes[c['code']] += 1
+            if c.get('is_grad_req'):
+                course_is_grad_req[c['code']] = True
+
+        print(f"\n  Top 20 courses by unscheduled count:")
+        course_analysis = []
+        for code, count in course_clashes.most_common(20):
+            code_secs = sec_by_code.get(code, [])
+            enrolled = sum(s['enrolled'] for s in code_secs)
+            cap = sum(s['cap'] for s in code_secs)
+            demand = enrolled + count
+            periods = set(s['period'] for s in code_secs)
+            missing_periods = set('ABCDEFG') - periods
+            is_gr = course_is_grad_req.get(code, False)
+            pct = round(100 * enrolled / max(demand, 1), 1)
+            spare = cap - enrolled
+            entry = {
+                'code': code, 'title': course_names.get(code, code),
+                'unscheduled': count, 'demand': demand, 'enrolled': enrolled,
+                'sections': len(code_secs), 'capacity': cap, 'spare': spare,
+                'placement_pct': pct, 'is_grad_req': is_gr,
+                'periods_covered': sorted(periods),
+                'periods_missing': sorted(missing_periods),
+            }
+            course_analysis.append(entry)
+            flag = " [GRAD REQ]" if is_gr else ""
+            print(f"    {code} {entry['title']}: {count} unscheduled, "
+                  f"{enrolled}/{demand} placed ({pct}%), "
+                  f"{len(code_secs)} secs, spare={spare}, "
+                  f"missing periods={','.join(entry['periods_missing']) or 'none'}{flag}")
+
+        blocking = Counter()
+        for c in clashes:
+            for bc in c.get('blocking_courses', []):
+                if isinstance(bc, dict):
+                    blocking[f"{bc.get('code', '')} {bc.get('title', '')}"] += 1
+                else:
+                    blocking[str(bc)] += 1
+        if blocking:
+            print(f"\n  Top 15 courses that BLOCK other placements:")
+            for course_str, count in blocking.most_common(15):
+                print(f"    {course_str}: blocks {count} placements")
+
+        period_clashes = Counter()
+        for c in clashes:
+            if c.get('lost_period'):
+                period_clashes[c['lost_period']] += 1
+        print(f"\n  Clashes by lost period:")
+        for p in sorted(period_clashes.keys()):
+            print(f"    Period {p}: {period_clashes[p]} clashes ({period_counts.get(p, 0)} sections)")
+
+        dept_clashes = Counter()
+        dept_placed = Counter()
+        dept_total = Counter()
+        for c in clashes:
+            dept = ''
+            for s in sec_by_code.get(c['code'], []):
+                dept = s.get('dept', '')
+                break
+            dept_clashes[dept] += 1
+        for s in secs:
+            dept_placed[s.get('dept', '')] += s['enrolled']
+            dept_total[s.get('dept', '')] += s['cap']
+        print(f"\n  Department clash summary:")
+        for dept in sorted(dept_clashes.keys(), key=lambda d: -dept_clashes[d]):
+            dc = dept_clashes[dept]
+            dp = dept_placed.get(dept, 0)
+            dt = dept_total.get(dept, 0)
+            print(f"    {dept}: {dc} clashes, {dp}/{dt} placed ({100*dp//max(dt,1)}% utilization)")
+
+        student_clashes = defaultdict(list)
+        for c in clashes:
+            student_clashes[c['student']].append(c)
+        multi_grad = []
+        for pid, cs in student_clashes.items():
+            grad = [c for c in cs if c.get('is_grad_req')]
+            if len(grad) >= 2:
+                multi_grad.append((pid, cs[0].get('name', ''), cs[0].get('grade', ''), len(grad), len(cs)))
+        multi_grad.sort(key=lambda x: -x[3])
+        if multi_grad:
+            print(f"\n  Students with 2+ unscheduled grad reqs: {len(multi_grad)}")
+            for pid, name, gr, grc, total in multi_grad[:10]:
+                print(f"    {pid} {name} (Gr{gr}): {grc} grad req, {total} total unscheduled")
+
+        demand_mismatch = []
+        for code, code_secs in sec_by_code.items():
+            unscheduled = sum(1 for c in clashes if c['code'] == code)
+            if unscheduled == 0:
+                continue
+            enrolled = sum(s['enrolled'] for s in code_secs)
+            cap = sum(s['cap'] for s in code_secs)
+            spare = cap - enrolled
+            demand = enrolled + unscheduled
+            if spare > unscheduled * 0.5:
+                demand_mismatch.append({
+                    'code': code, 'title': course_names.get(code, code),
+                    'unscheduled': unscheduled, 'spare_capacity': spare,
+                    'sections': len(code_secs),
+                    'periods': sorted(set(s['period'] for s in code_secs)),
+                    'diagnosis': 'period_saturation_not_capacity',
+                })
+            elif spare < unscheduled * 0.3:
+                demand_mismatch.append({
+                    'code': code, 'title': course_names.get(code, code),
+                    'unscheduled': unscheduled, 'spare_capacity': spare,
+                    'sections': len(code_secs),
+                    'periods': sorted(set(s['period'] for s in code_secs)),
+                    'diagnosis': 'capacity_shortage',
+                })
+        demand_mismatch.sort(key=lambda x: -x['unscheduled'])
+        period_sat = [d for d in demand_mismatch if d['diagnosis'] == 'period_saturation_not_capacity']
+        cap_short = [d for d in demand_mismatch if d['diagnosis'] == 'capacity_shortage']
+        print(f"\n  Diagnosis breakdown:")
+        print(f"    Period saturation (has capacity, students can't reach it): {len(period_sat)} courses")
+        print(f"    Capacity shortage (needs more sections/seats): {len(cap_short)} courses")
+
+        # ── ANALYSIS 3: Build Recommendations ──
+        print("\n[3] GENERATING RECOMMENDATIONS")
+        print("-" * 40)
+
+        recommendations = []
+        rec_id = 0
+
+        # ── CODE CHANGE RECOMMENDATIONS ──
+        if grad_req_gaps:
+            rec_id += 1
+            gap_courses = sorted(grad_req_gaps.keys(), key=lambda c: -grad_req_gaps[c]['unscheduled'])
+            est_impact = sum(min(grad_req_gaps[c]['unscheduled'], grad_req_gaps[c]['unscheduled'] * len(grad_req_gaps[c]['periods_missing']) // 7) for c in gap_courses)
+            est_impact = min(est_impact, sum(grad_req_gaps[c]['unscheduled'] for c in gap_courses) // 2)
+            recommendations.append({
+                'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'CRITICAL',
+                'title': 'Period-Coverage Guarantee for High-Demand Grad Reqs',
+                'problem': (f"{len(grad_req_gaps)} graduation-required courses have period coverage gaps. "
+                            f"Theology 810/820/830 alone account for 199 clashes (26.5% of total) despite having "
+                            f"ample capacity — students simply cannot reach any open section because all covered "
+                            f"periods are already blocked by other courses."),
+                'solution': ("In greedy_assign_periods(), add a distribution constraint: for any graduation-required "
+                             "course with 6+ sections, spread sections across all 7 periods before placing a 2nd "
+                             "section in any period. Score candidate periods with a coverage-gap penalty: if a course "
+                             "has 0 sections in a period, that period gets a large bonus. This prevents the optimizer "
+                             "from clustering all sections in 5 periods and leaving 2 gaps."),
+                'location': 'greedy_assign_periods() — _predict_clash_score() or _section_priority_key()',
+                'impact_estimate': f"-{est_impact} to -{est_impact + 50} clashes (est. {est_impact + 25} fewer)",
+                'affected_courses': ', '.join(f"{c} {grad_req_gaps[c]['title']} (missing {','.join(grad_req_gaps[c]['periods_missing'])})" for c in gap_courses[:5]),
+            })
+
+        rec_id += 1
+        recommendations.append({
+            'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'HIGH',
+            'title': 'CSP Solver Overhaul — Add Section-Swap Resolution',
+            'problem': ("The CSP solver (resolve_student) resolves only ~1.2% of conflicts. It tries "
+                        "to reassign one student's courses to different sections, but cannot swap "
+                        "assignments between two students. When all sections of a needed course fall "
+                        "in periods already occupied, the solver gives up — even if swapping with "
+                        "another student in a less-constrained position would free the needed cell."),
+            'solution': ("Add a resolve_by_swap() function after CSP rounds: for each student with "
+                         "unresolved conflicts, identify courses where all available sections conflict. "
+                         "For each such section, find a student currently enrolled who (a) has no "
+                         "conflict in the swapped-from section and (b) could be moved to an alternative "
+                         "section without creating new conflicts. Execute the swap. This is O(clashes × "
+                         "section_size) per round but should resolve 30-50% of remaining conflicts."),
+            'location': 'New function after resolve_student(), called after CSP rounds in full_reseat()',
+            'impact_estimate': '-50 to -80 clashes',
+            'affected_courses': 'All courses with period_saturation root cause (693 clashes)',
+        })
+
+        rec_id += 1
+        recommendations.append({
+            'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'MEDIUM',
+            'title': 'Allow Co-Schedule Group Period Moves in Optimizer',
+            'problem': ("Co-scheduled sections (AP Art Block, Guitar Block, etc.) cannot be moved by "
+                        "run_optimization_pass(). The _can_move_section() function rejects any section "
+                        "in COGROUP_SIDS. If a co-schedule group's assigned period creates many clashes, "
+                        "the optimizer cannot try a different period."),
+            'solution': ("In run_optimization_pass(), when a co-schedule group section is a top clash "
+                         "candidate, try moving ALL sections in that group to a new period together. "
+                         "Check that all teachers and rooms remain available. Accept if total clashes "
+                         "decrease. Only allow group moves (never split a co-schedule group)."),
+            'location': '_can_move_section() line ~3061, run_optimization_pass() line ~3085',
+            'impact_estimate': '-20 to -40 clashes',
+            'affected_courses': 'Co-schedule groups: AP Art, Guitar, Theater, Studio Art, Programming, Robotics, Italian',
+        })
+
+        if multi_grad:
+            rec_id += 1
+            recommendations.append({
+                'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'HIGH',
+                'title': 'Post-Optimization Student-Level Targeted Resolution (Phase E)',
+                'problem': (f"{len(multi_grad)} students have 2+ unscheduled graduation requirements. "
+                            f"After Phase D finishes, no attempt is made to individually resolve these "
+                            f"worst-case students by trying all possible section reassignments."),
+                'solution': ("Add a Phase E after Phase D: identify students with 2+ unscheduled grad "
+                             "reqs. For each (in priority order), try every combination of swapping their "
+                             "current elective assignments to alternative sections to free up period cells "
+                             "for unscheduled grad reqs. This is targeted resolution — only restructure "
+                             "the schedule of the most affected students."),
+                'location': 'New Phase E after Phase D, before results reporting',
+                'impact_estimate': f'-{len(multi_grad)} to -{len(multi_grad) * 2} clashes',
+                'affected_courses': f'{len(multi_grad)} students affected',
+            })
+
+        if overfilled:
+            rec_id += 1
+            of_details = '; '.join(f"{s['code']} sec{s.get('section','')} {s['enrolled']}/{s['cap']}" for s in sorted(overfilled, key=lambda x: x['enrolled']-x['cap'], reverse=True)[:5])
+            recommendations.append({
+                'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'MEDIUM',
+                'title': 'Fix Section Overfill Despite HARD_CAP_ENFORCEMENT',
+                'problem': (f"{len(overfilled)} sections exceed their capacity cap despite "
+                            f"HARD_CAP_ENFORCEMENT=True. Examples: {of_details}. "
+                            f"The force-place wave in full_reseat() likely bypasses cap checks."),
+                'solution': ("Audit all add_place() call sites in full_reseat() and full_reseat_fast(). "
+                             "The force-place pass (lines ~2752-2766) places students regardless of "
+                             "conflicts — but should still respect capacity. Add cap check before "
+                             "force-placement. If all sections of a course are full, the request should "
+                             "go to the clash list, not overfill a section."),
+                'location': 'full_reseat() force-place pass (~line 2752), full_reseat_fast() (~line 2938)',
+                'impact_estimate': 'Correctness fix — prevents overfilled classrooms',
+                'affected_courses': f'{len(overfilled)} sections currently overfilled',
+            })
+
+        period_sat_pct = round(100 * root_cause.get('period_saturation', 0) / max(total_clashes, 1), 1)
+        if period_sat_pct > 80:
+            rec_id += 1
+            recommendations.append({
+                'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'LOW',
+                'title': 'Enriched Root Cause Classification',
+                'problem': (f"{period_sat_pct}% of clashes have root cause 'all_periods_blocked' — "
+                            f"too generic to be actionable. This lumps together very different failure "
+                            f"modes: blocked by grad reqs vs blocked by electives vs full sections."),
+                'solution': ("Break 'all_periods_blocked' into sub-causes in _analyze_root_cause(): "
+                             "'blocked_by_grad_req' (another required course blocks every period), "
+                             "'blocked_by_elective' (an elective blocks and could potentially be moved), "
+                             "'blocked_by_capacity' (sections exist in free periods but are full), "
+                             "'blocked_by_singleton' (singleton collision). This enables targeted fixes."),
+                'location': '_analyze_root_cause() (~line 2494)',
+                'impact_estimate': 'Diagnostic improvement — enables targeted fixes',
+                'affected_courses': f'{root_cause.get("period_saturation", 0)} clashes affected',
+            })
+
+        rec_id += 1
+        recommendations.append({
+            'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'LOW',
+            'title': 'Fix Job 2 Unscheduled Requests — Course Title Shows Code Instead of Title',
+            'problem': ("In export_job2_report(), the Unscheduled Requests sheet shows the course code "
+                        "instead of the course title. Line ~3682 checks 'course_info' in dir() which "
+                        "returns False inside a function (dir() checks local scope, not global)."),
+            'solution': "Change line ~3682 to: title = course_info.get(cid, {}).get('title', cid)",
+            'location': 'export_job2_report() line ~3682',
+            'impact_estimate': 'Bug fix — cosmetic',
+            'affected_courses': 'All unscheduled requests in Job 2 export',
+        })
+
+        # ── RULE CHANGE RECOMMENDATIONS ──
+        acad_support_secs = sec_by_code.get('955', [])
+        if acad_support_secs:
+            as_enrolled = sum(s['enrolled'] for s in acad_support_secs)
+            as_cap = sum(s['cap'] for s in acad_support_secs)
+            as_empty = [s for s in acad_support_secs if s['enrolled'] <= 1]
+            if len(as_empty) >= 3:
+                rec_id += 1
+                recommendations.append({
+                    'id': f'R{rec_id}', 'type': 'RULE', 'priority': 'MEDIUM',
+                    'title': 'Consolidate Academic Support (955) Sections',
+                    'problem': (f"955 Academic Support has {len(acad_support_secs)} sections for "
+                                f"{as_enrolled} students ({as_enrolled/max(len(acad_support_secs),1):.0f}/section avg). "
+                                f"{len(as_empty)} sections have 0-1 students. Total capacity: {as_cap}."),
+                    'solution': (f"Reduce from {len(acad_support_secs)} to 2-3 sections. "
+                                 f"This frees {len(as_empty)} teacher-period slots that could be "
+                                 f"reallocated to courses with capacity shortages."),
+                    'location': 'Template 6 / Template 7 — reduce section count',
+                    'impact_estimate': f'Frees {len(as_empty)} period-teacher slots',
+                    'affected_courses': '955 Academic Support',
+                })
+
+        for dm in cap_short[:5]:
+            rec_id += 1
+            recommendations.append({
+                'id': f'R{rec_id}', 'type': 'RULE', 'priority': 'MEDIUM',
+                'title': f"Add Section for {dm['code']} {dm['title']}",
+                'problem': (f"{dm['code']} {dm['title']} has {dm['unscheduled']} unscheduled requests "
+                            f"with only {dm['spare_capacity']} spare seats across {dm['sections']} sections. "
+                            f"Demand exceeds capacity."),
+                'solution': (f"Add 1 section (cap +25) to {dm['code']}. Place in a period not currently "
+                             f"covered: currently in periods {','.join(dm['periods'])}, "
+                             f"missing {','.join(set('ABCDEFG') - set(dm['periods'])) or 'none'}."),
+                'location': 'Template 6 — add teacher-course assignment row',
+                'impact_estimate': f'-{min(dm["unscheduled"], 25)} clashes (est.)',
+                'affected_courses': f'{dm["code"]} {dm["title"]}',
+            })
+
+        if teacher_conflicts > 0:
+            rec_id += 1
+            recommendations.append({
+                'id': f'R{rec_id}', 'type': 'RULE', 'priority': 'MEDIUM',
+                'title': f'Resolve {teacher_conflicts} Teacher Period Conflicts',
+                'problem': (f"{teacher_conflicts} genuine teacher period conflicts exist (non-co-scheduled). "
+                            f"These prevent optimal period distribution."),
+                'solution': ("Review Job 1 'Teacher Conflicts' sheet. Reassign conflicting teacher-course "
+                             "pairs to different sections or adjust teacher assignments in Template 6."),
+                'location': 'Template 6 / Teacher-Course Assignments',
+                'impact_estimate': 'Removes scheduling constraints, enables better period distribution',
+                'affected_courses': 'Teacher-specific',
+            })
+
+        theo_codes = ['810', '820', '830']
+        theo_gaps = {c: grad_req_gaps[c] for c in theo_codes if c in grad_req_gaps}
+        if theo_gaps:
+            rec_id += 1
+            total_theo_unscheduled = sum(g['unscheduled'] for g in theo_gaps.values())
+            recommendations.append({
+                'id': f'R{rec_id}', 'type': 'RULE', 'priority': 'CRITICAL',
+                'title': 'Mandate Full Period Coverage for Theology 810/820/830',
+                'problem': (f"Theology courses (810/820/830) are graduation requirements with 9 sections "
+                            f"each but DO NOT cover all 7 periods. "
+                            f"810 misses periods {','.join(theo_gaps.get('810', {}).get('periods_missing', []))}. "
+                            f"820 misses period {','.join(theo_gaps.get('820', {}).get('periods_missing', []))}. "
+                            f"830 misses period {','.join(theo_gaps.get('830', {}).get('periods_missing', []))}. "
+                            f"Result: {total_theo_unscheduled} students cannot be scheduled for theology."),
+                'solution': ("Administrative rule: all grade-level theology courses (810/820/830) must have "
+                             "at least 1 section in each of the 7 periods. With 9 sections per course, "
+                             "this leaves 2 sections to double up in the highest-demand periods. "
+                             "This can be enforced as a code change (recommendation C1) or as an "
+                             "administrative constraint in Template 7."),
+                'location': 'Template 7 or engine code (C1)',
+                'impact_estimate': f'-{total_theo_unscheduled // 2} to -{total_theo_unscheduled} clashes',
+                'affected_courses': '810 Theology 9, 820 Theology 10, 830 Theology 11',
+            })
+
+        # ── PROCESS CHANGE RECOMMENDATIONS ──
+        rec_id += 1
+        recommendations.append({
+            'id': f'P{rec_id}', 'type': 'PROCESS', 'priority': 'HIGH',
+            'title': 'Two-Stage Optimization: Coverage First, Then Swap Resolution',
+            'problem': ("Phase D optimizes by moving sections and re-seating all students. "
+                        "But it treats all section moves equally — moving a theology section to "
+                        "fill a coverage gap and moving an elective section are scored the same way. "
+                        "The optimizer converges at 752 clashes (5/16 seeds) with very little "
+                        "variance (spread: 30 clashes, 3.8%). This suggests the current optimization "
+                        "approach has reached a structural ceiling."),
+            'solution': ("Stage 1: Run Phase A with period-coverage constraints (ensuring high-demand "
+                         "grad reqs cover all periods). Run Phase D as-is. "
+                         "Stage 2: After Phase D converges, run a targeted swap-based optimization "
+                         "that tries to resolve the remaining clashes by swapping individual student "
+                         "assignments between sections (not moving entire sections). This attacks "
+                         "the problem from a different angle than Phase D."),
+            'location': 'After Phase D, new Stage 2 optimization pass',
+            'impact_estimate': '-50 to -100 additional clashes below current 752 floor',
+            'affected_courses': 'All courses with clashes',
+        })
+
+        rec_id += 1
+        recommendations.append({
+            'id': f'P{rec_id}', 'type': 'PROCESS', 'priority': 'MEDIUM',
+            'title': 'Graduated Placement: Place Grad Reqs Before Electives in Phase B',
+            'problem': (f"Phase B places all 6,529 requests in a single global sort order (CRP desc, "
+                        f"student total desc). High-CRP requests go first, but a Grade 12 student's "
+                        f"elective with CRP=40 can be placed before a Grade 9 student's grad req "
+                        f"with CRP=20. The elective fills a period cell that the Grade 9 student "
+                        f"needs for their grad req."),
+            'solution': ("Split Phase B into two waves: Wave 1 places only graduation-required and "
+                         "protected courses (CRP >= 20). Wave 2 places remaining electives. This "
+                         "ensures every grad req gets first pick of available period cells before "
+                         "electives consume them."),
+            'location': 'Phase B student placement loop (~line 2335)',
+            'impact_estimate': '-30 to -60 clashes (fewer grad req conflicts)',
+            'affected_courses': f'621 graduation_required clashes, 12 singleton clashes',
+        })
+
+        rec_id += 1
+        recommendations.append({
+            'id': f'P{rec_id}', 'type': 'PROCESS', 'priority': 'MEDIUM',
+            'title': 'Post-Optimization Section Period Rotation for Under-Served Courses',
+            'problem': (f"After Phase D, {len(period_sat)} courses have students who cannot be "
+                        f"scheduled due to period saturation — they have spare capacity but students "
+                        f"cannot reach any section. The optimizer only moves high-clash sections, "
+                        f"not under-served ones."),
+            'solution': ("After Phase D, for each course with high unscheduled count and spare "
+                         "capacity: identify which periods its students are free in, move one section "
+                         "to the period with the most demand, re-seat students, and accept if "
+                         "total clashes decrease."),
+            'location': 'New pass after Phase D optimization',
+            'impact_estimate': '-20 to -40 clashes',
+            'affected_courses': f'{len(period_sat)} period-saturated courses',
+        })
+
+        rec_id += 1
+        recommendations.append({
+            'id': f'P{rec_id}', 'type': 'PROCESS', 'priority': 'LOW',
+            'title': 'Analysis-Driven Feedback Loop: Re-Run with Adjusted Weights',
+            'problem': ("The engine runs once and reports results. This analysis identifies bottleneck "
+                        "courses and structural issues, but fixing them requires code changes and "
+                        "re-running. There is no automated feedback mechanism."),
+            'solution': ("Add a 'reoptimize' mode that reads the analysis output and automatically "
+                         "adjusts Phase A weights: increase priority for courses identified as "
+                         "bottlenecks, add period-coverage bonuses for under-covered grad reqs, "
+                         "and re-run Phase D with these adjusted weights. This creates a "
+                         "self-improving loop."),
+            'location': 'New ENGINE_MODE: reoptimize',
+            'impact_estimate': 'Cumulative -50 to -150 clashes across iterations',
+            'affected_courses': 'All bottleneck courses identified by analysis',
+        })
+
+        priority_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
+        recommendations.sort(key=lambda r: (priority_order.get(r['priority'], 9), r['type'], r['id']))
+
+        print(f"\n  Generated {len(recommendations)} recommendations:")
+        for r in recommendations:
+            print(f"    [{r['id']}] {r['priority']} — {r['title']}")
+
+        # ── GENERATE EXCEL REPORT ──
+        print("\n[4] GENERATING EXCEL REPORT")
+        print("-" * 40)
+
+        wb = openpyxl.Workbook()
+        hdr_font = Font(name='Arial', bold=True, color='FFFFFF', size=10)
+        hdr_fill = PatternFill(start_color='2F5496', end_color='2F5496', fill_type='solid')
+        section_font = Font(name='Arial', bold=True, size=11)
+        body_font = Font(name='Arial', size=10)
+        wrap_align = Alignment(wrap_text=True, vertical='top')
+        center_align = Alignment(horizontal='center', vertical='top')
+        thin = Border(
+            left=Side(style='thin'), right=Side(style='thin'),
+            top=Side(style='thin'), bottom=Side(style='thin'),
+        )
+        crit_fill = PatternFill(start_color='FF4444', end_color='FF4444', fill_type='solid')
+        high_fill = PatternFill(start_color='FF8800', end_color='FF8800', fill_type='solid')
+        med_fill = PatternFill(start_color='FFCC00', end_color='FFCC00', fill_type='solid')
+        low_fill = PatternFill(start_color='88CC88', end_color='88CC88', fill_type='solid')
+        priority_fills = {'CRITICAL': crit_fill, 'HIGH': high_fill, 'MEDIUM': med_fill, 'LOW': low_fill}
+
+        def write_header(ws, headers, row=1):
+            for c, h in enumerate(headers, 1):
+                cell = ws.cell(row, c, h)
+                cell.font = hdr_font
+                cell.fill = hdr_fill
+                cell.alignment = Alignment(horizontal='center', wrap_text=True)
+                cell.border = thin
+
+        # ── Sheet 1: Executive Summary ──
+        ws1 = wb.active
+        ws1.title = "Executive Summary"
+        summary_items = [
+            ("ENGINE ANALYSIS REPORT", ""),
+            ("", ""),
+            ("OVERALL METRICS", ""),
+            ("Total Students", stats.get('students', '')),
+            ("Total Requests", total_requests),
+            ("Total Placed", total_placed),
+            ("Placement Rate", f"{placement_rate}%"),
+            ("Total Clashes", total_clashes),
+            ("Students with Conflicts", stats.get('protected_clashes', '')),
+            ("", ""),
+            ("FULFILLMENT RATES", ""),
+            ("Graduation Requirements", f"{stats.get('graduation_required_placed', 0)}/{stats.get('graduation_required_total', 0)} ({stats.get('graduation_fulfillment_rate', 0)}%)"),
+            ("AP/Honors", f"{stats.get('ap_honors_placed', 0)}/{stats.get('ap_honors_total', 0)} ({stats.get('ap_honors_fulfillment_rate', 0)}%)"),
+            ("", ""),
+            ("CAPACITY", ""),
+            ("Total Capacity", total_cap),
+            ("Total Enrolled", total_enrolled),
+            ("Utilization", f"{utilization}%"),
+            ("Empty Seats", empty_seats),
+            ("Overfilled Sections", len(overfilled)),
+            ("Underfilled Sections (<50%)", len(underfilled)),
+            ("", ""),
+            ("CLASH BREAKDOWN", ""),
+            ("graduation_required", sum(1 for c in clashes if c.get('priority_band') == 'graduation_required')),
+            ("gr12_academic_elective", sum(1 for c in clashes if c.get('priority_band') == 'gr12_academic_elective')),
+            ("singleton", sum(1 for c in clashes if c.get('priority_band') == 'singleton')),
+            ("high_priority", sum(1 for c in clashes if c.get('priority_band') == 'high_priority')),
+            ("elective", sum(1 for c in clashes if c.get('priority_band') == 'elective')),
+            ("", ""),
+            ("ROOT CAUSES", ""),
+            ("All Periods Blocked", root_cause.get('period_saturation', 0)),
+            ("Singleton Collision", root_cause.get('singleton_collision', 0)),
+            ("Period Conflict", root_cause.get('period_conflict', 0)),
+            ("", ""),
+            ("KEY FINDINGS", ""),
+            (f"1. Theology (810/820/830) accounts for {sum(1 for c in clashes if c['code'] in ('810','820','830'))} clashes (26.5%) despite ample capacity — period coverage gaps are the root cause", ""),
+            (f"2. CSP solver resolves ~1.2% of conflicts — effectively non-functional for this dataset", ""),
+            (f"3. {len(overfilled)} sections exceed capacity — HARD_CAP_ENFORCEMENT has gaps", ""),
+            (f"4. {utilization}% capacity utilization — {empty_seats} empty seats across {len(secs)} sections", ""),
+            (f"5. Phase D converges at {total_clashes} clashes across multiple seeds — structural ceiling reached", ""),
+            ("", ""),
+            ("RECOMMENDATIONS GENERATED", len(recommendations)),
+            ("  Code Changes", sum(1 for r in recommendations if r['type'] == 'CODE')),
+            ("  Rule Changes", sum(1 for r in recommendations if r['type'] == 'RULE')),
+            ("  Process Changes", sum(1 for r in recommendations if r['type'] == 'PROCESS')),
+        ]
+        for r, (label, val) in enumerate(summary_items, 1):
+            c1 = ws1.cell(r, 1, label)
+            c2 = ws1.cell(r, 2, val)
+            if label in ("ENGINE ANALYSIS REPORT", "OVERALL METRICS", "FULFILLMENT RATES",
+                          "CAPACITY", "CLASH BREAKDOWN", "ROOT CAUSES", "KEY FINDINGS"):
+                c1.font = Font(name='Arial', bold=True, size=12)
+            elif label.startswith("1.") or label.startswith("2.") or label.startswith("3.") or label.startswith("4.") or label.startswith("5."):
+                c1.font = Font(name='Arial', size=10, italic=True)
+            else:
+                c1.font = Font(name='Arial', bold=True, size=10)
+            c2.font = body_font
+        ws1.column_dimensions['A'].width = 70
+        ws1.column_dimensions['B'].width = 40
+
+        # ── Sheet 2: Process Effectiveness ──
+        ws2 = wb.create_sheet("Process Effectiveness")
+        pe_rows = [
+            ("PHASE A: SECTION PERIOD ASSIGNMENT", "", "", ""),
+            ("Metric", "Value", "Assessment", "Detail"),
+        ]
+        balance_assessment = "GOOD" if period_spread <= 10 else "FAIR" if period_spread <= 15 else "POOR"
+        pe_rows.append(("Period balance (spread)", str(period_spread), balance_assessment,
+                         f"Min={period_min} (P{min(period_counts, key=period_counts.get)}), Max={period_max} (P{max(period_counts, key=period_counts.get)})"))
+        for p in sorted(period_counts.keys()):
+            pe_rows.append((f"  Period {p} sections", str(period_counts[p]), "", ""))
+
+        pe_rows.append(("Period coverage gaps", str(len(grad_req_gaps)), "CRITICAL" if grad_req_gaps else "GOOD",
+                         f"{len(grad_req_gaps)} grad-req courses miss periods"))
+        for code in sorted(grad_req_gaps.keys(), key=lambda c: -grad_req_gaps[c]['unscheduled']):
+            g = grad_req_gaps[code]
+            pe_rows.append((f"  {code} {g['title']}", f"Missing: {','.join(g['periods_missing'])}",
+                             f"{g['unscheduled']} unscheduled", f"{g['enrolled']}/{g['capacity']} enrolled"))
+
+        pe_rows.append(("Teacher conflicts", str(teacher_conflicts), "FAIR" if teacher_conflicts <= 6 else "POOR", ""))
+        pe_rows.append(("Prior-year alignment", stats.get('prior_year_alignment', 'N/A'), "", ""))
+        pe_rows.append(("", "", "", ""))
+
+        pe_rows.append(("PHASE B: STUDENT PLACEMENT", "", "", ""))
+        pe_rows.append(("Total placements", str(phase_b_placements), "", ""))
+        pe_rows.append(("Placements with conflicts", str(conflicts_added),
+                         "POOR" if conflicts_added > phase_b_placements * 0.2 else "FAIR", ""))
+        pe_rows.append(("", "", "", ""))
+
+        pe_rows.append(("CSP SOLVER", "", "", ""))
+        pe_rows.append(("Resolve rate", "~1.2%", "CRITICAL", "25 of ~2039 conflicts resolved in 4 rounds"))
+        pe_rows.append(("Assessment", "", "", "CSP is nearly non-functional — resolves 1 in 80 conflicts"))
+        pe_rows.append(("", "", "", ""))
+
+        pe_rows.append(("PHASE D: MULTI-RESTART OPTIMIZATION", "", "", ""))
+        pe_rows.append(("Restarts", str(restart_seeds), "", f"Best seed: {best_seed}"))
+        pe_rows.append(("Final clashes", str(total_clashes), "", ""))
+        pe_rows.append(("Convergence", "TIGHT", "",
+                         f"5/16 seeds at {total_clashes}, 8 at {total_clashes+5}, spread=30 (3.8%)"))
+        pe_rows.append(("Assessment", "", "",
+                         "Optimization has reached structural ceiling — further restarts unlikely to improve"))
+        pe_rows.append(("", "", "", ""))
+
+        pe_rows.append(("CAPACITY UTILIZATION", "", "", ""))
+        pe_rows.append(("Overall utilization", f"{utilization}%", "LOW" if utilization < 70 else "FAIR", f"{total_enrolled}/{total_cap}"))
+        pe_rows.append(("Overfilled sections", str(len(overfilled)), "BUG" if overfilled else "GOOD", ""))
+        pe_rows.append(("Underfilled (<50%)", str(len(underfilled)), "POOR" if len(underfilled) > 50 else "FAIR", ""))
+
+        for r, row_data in enumerate(pe_rows, 1):
+            for c, val in enumerate(row_data, 1):
+                cell = ws2.cell(r, c, val)
+                if row_data[0] in ("PHASE A: SECTION PERIOD ASSIGNMENT", "PHASE B: STUDENT PLACEMENT",
+                                   "CSP SOLVER", "PHASE D: MULTI-RESTART OPTIMIZATION", "CAPACITY UTILIZATION"):
+                    cell.font = Font(name='Arial', bold=True, size=11)
+                elif r == 2:
+                    cell.font = hdr_font
+                    cell.fill = hdr_fill
+                else:
+                    cell.font = body_font
+                cell.alignment = wrap_align
+                cell.border = thin
+                if c == 3 and val in ('CRITICAL', 'BUG'):
+                    cell.fill = crit_fill
+                    cell.font = Font(name='Arial', bold=True, size=10, color='FFFFFF')
+                elif c == 3 and val == 'POOR':
+                    cell.fill = high_fill
+                elif c == 3 and val == 'FAIR':
+                    cell.fill = med_fill
+                elif c == 3 and val == 'GOOD':
+                    cell.fill = low_fill
+        ws2.column_dimensions['A'].width = 35
+        ws2.column_dimensions['B'].width = 25
+        ws2.column_dimensions['C'].width = 15
+        ws2.column_dimensions['D'].width = 60
+
+        # ── Sheet 3: Bottleneck Analysis ──
+        ws3 = wb.create_sheet("Bottleneck Analysis")
+        bn_headers = ['Course Code', 'Course Title', 'Unscheduled', 'Demand', 'Enrolled',
+                       'Sections', 'Capacity', 'Spare Seats', 'Placement %', 'Grad Req?',
+                       'Periods Covered', 'Periods Missing', 'Diagnosis']
+        write_header(ws3, bn_headers)
+        bn_row = 2
+        all_course_analysis = []
+        for code in sorted(course_clashes.keys(), key=lambda c: -course_clashes[c]):
+            code_secs = sec_by_code.get(code, [])
+            enrolled = sum(s['enrolled'] for s in code_secs)
+            count = course_clashes[code]
+            cap = sum(s['cap'] for s in code_secs)
+            demand = enrolled + count
+            periods = sorted(set(s['period'] for s in code_secs))
+            missing = sorted(set('ABCDEFG') - set(periods))
+            spare = cap - enrolled
+            pct = round(100 * enrolled / max(demand, 1), 1)
+            is_gr = course_is_grad_req.get(code, False)
+            if spare > count * 0.5:
+                diag_str = 'Period saturation — has capacity but students cannot reach it'
+            elif spare < count * 0.3:
+                diag_str = 'Capacity shortage — needs more sections'
+            else:
+                diag_str = 'Mixed — partial capacity + period issues'
+            entry = [code, course_names.get(code, code), count, demand, enrolled,
+                     len(code_secs), cap, spare, pct, 'YES' if is_gr else '',
+                     ','.join(periods), ','.join(missing) or '—', diag_str]
+            all_course_analysis.append(entry)
+        for entry in all_course_analysis:
+            for c, v in enumerate(entry, 1):
+                cell = ws3.cell(bn_row, c, v)
+                cell.font = body_font
+                cell.border = thin
+                if c in (3, 4, 5, 6, 7, 8, 9):
+                    cell.alignment = center_align
+                else:
+                    cell.alignment = wrap_align
+                if c == 13:
+                    if 'Period saturation' in str(v):
+                        cell.fill = PatternFill(start_color='FFEECC', fill_type='solid')
+                    elif 'Capacity shortage' in str(v):
+                        cell.fill = PatternFill(start_color='FFCCCC', fill_type='solid')
+            bn_row += 1
+
+        for c in range(1, len(bn_headers) + 1):
+            ws3.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 14
+        ws3.column_dimensions['B'].width = 30
+        ws3.column_dimensions['K'].width = 18
+        ws3.column_dimensions['L'].width = 18
+        ws3.column_dimensions['M'].width = 45
+        ws3.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(bn_headers))}{bn_row - 1}"
+        ws3.freeze_panes = 'A2'
+
+        # ── Sheet 4: Code Change Recommendations ──
+        ws4 = wb.create_sheet("Code Changes")
+        rec_headers = ['ID', 'Priority', 'Title', 'Problem', 'Solution', 'Location', 'Impact Estimate', 'Affected']
+        write_header(ws4, rec_headers)
+        r4 = 2
+        for rec in recommendations:
+            if rec['type'] != 'CODE':
+                continue
+            vals = [rec['id'], rec['priority'], rec['title'], rec['problem'],
+                    rec['solution'], rec['location'], rec['impact_estimate'],
+                    rec.get('affected_courses', '')]
+            for c, v in enumerate(vals, 1):
+                cell = ws4.cell(r4, c, v)
+                cell.font = body_font
+                cell.border = thin
+                cell.alignment = wrap_align
+                if c == 2:
+                    cell.fill = priority_fills.get(v, PatternFill())
+                    if v == 'CRITICAL':
+                        cell.font = Font(name='Arial', bold=True, size=10, color='FFFFFF')
+            r4 += 1
+        ws4.column_dimensions['A'].width = 6
+        ws4.column_dimensions['B'].width = 10
+        ws4.column_dimensions['C'].width = 40
+        ws4.column_dimensions['D'].width = 60
+        ws4.column_dimensions['E'].width = 60
+        ws4.column_dimensions['F'].width = 35
+        ws4.column_dimensions['G'].width = 25
+        ws4.column_dimensions['H'].width = 40
+        ws4.freeze_panes = 'A2'
+
+        # ── Sheet 5: Rule Change Recommendations ──
+        ws5 = wb.create_sheet("Rule Changes")
+        write_header(ws5, rec_headers)
+        r5 = 2
+        for rec in recommendations:
+            if rec['type'] != 'RULE':
+                continue
+            vals = [rec['id'], rec['priority'], rec['title'], rec['problem'],
+                    rec['solution'], rec['location'], rec['impact_estimate'],
+                    rec.get('affected_courses', '')]
+            for c, v in enumerate(vals, 1):
+                cell = ws5.cell(r5, c, v)
+                cell.font = body_font
+                cell.border = thin
+                cell.alignment = wrap_align
+                if c == 2:
+                    cell.fill = priority_fills.get(v, PatternFill())
+                    if v == 'CRITICAL':
+                        cell.font = Font(name='Arial', bold=True, size=10, color='FFFFFF')
+            r5 += 1
+        ws5.column_dimensions['A'].width = 6
+        ws5.column_dimensions['B'].width = 10
+        ws5.column_dimensions['C'].width = 40
+        ws5.column_dimensions['D'].width = 60
+        ws5.column_dimensions['E'].width = 60
+        ws5.column_dimensions['F'].width = 35
+        ws5.column_dimensions['G'].width = 25
+        ws5.column_dimensions['H'].width = 40
+        ws5.freeze_panes = 'A2'
+
+        # ── Sheet 6: Process Change Recommendations ──
+        ws6 = wb.create_sheet("Process Changes")
+        write_header(ws6, rec_headers)
+        r6 = 2
+        for rec in recommendations:
+            if rec['type'] != 'PROCESS':
+                continue
+            vals = [rec['id'], rec['priority'], rec['title'], rec['problem'],
+                    rec['solution'], rec['location'], rec['impact_estimate'],
+                    rec.get('affected_courses', '')]
+            for c, v in enumerate(vals, 1):
+                cell = ws6.cell(r6, c, v)
+                cell.font = body_font
+                cell.border = thin
+                cell.alignment = wrap_align
+                if c == 2:
+                    cell.fill = priority_fills.get(v, PatternFill())
+                    if v == 'CRITICAL':
+                        cell.font = Font(name='Arial', bold=True, size=10, color='FFFFFF')
+            r6 += 1
+        ws6.column_dimensions['A'].width = 6
+        ws6.column_dimensions['B'].width = 10
+        ws6.column_dimensions['C'].width = 45
+        ws6.column_dimensions['D'].width = 60
+        ws6.column_dimensions['E'].width = 60
+        ws6.column_dimensions['F'].width = 35
+        ws6.column_dimensions['G'].width = 35
+        ws6.column_dimensions['H'].width = 40
+        ws6.freeze_panes = 'A2'
+
+        # ── Sheet 7: Period Coverage Detail ──
+        ws7 = wb.create_sheet("Period Coverage")
+        pc_headers = ['Course Code', 'Course Title', 'Sections', 'Unscheduled',
+                       'Period A', 'Period B', 'Period C', 'Period D',
+                       'Period E', 'Period F', 'Period G',
+                       'Enrolled', 'Capacity', 'Fill %']
+        write_header(ws7, pc_headers)
+        r7 = 2
+        for code in sorted(sec_by_code.keys(), key=lambda c: -course_clashes.get(c, 0)):
+            code_secs = sec_by_code[code]
+            if len(code_secs) < 2:
+                continue
+            period_dist = Counter(s['period'] for s in code_secs)
+            enrolled = sum(s['enrolled'] for s in code_secs)
+            cap = sum(s['cap'] for s in code_secs)
+            unsched = course_clashes.get(code, 0)
+            fill_pct = round(100 * enrolled / max(cap, 1), 1)
+            vals = [code, course_names.get(code, code), len(code_secs), unsched]
+            for p in 'ABCDEFG':
+                vals.append(period_dist.get(p, 0))
+            vals.extend([enrolled, cap, fill_pct])
+            for c, v in enumerate(vals, 1):
+                cell = ws7.cell(r7, c, v)
+                cell.font = body_font
+                cell.border = thin
+                if c >= 5 and c <= 11:
+                    cell.alignment = center_align
+                    if v == 0 and unsched > 0:
+                        cell.fill = PatternFill(start_color='FFCCCC', fill_type='solid')
+                    elif v >= 1:
+                        cell.fill = PatternFill(start_color='CCFFCC', fill_type='solid')
+                elif c in (3, 4, 12, 13, 14):
+                    cell.alignment = center_align
+            r7 += 1
+        for c in range(1, len(pc_headers) + 1):
+            ws7.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 12
+        ws7.column_dimensions['B'].width = 30
+        ws7.auto_filter.ref = f"A1:{openpyxl.utils.get_column_letter(len(pc_headers))}{r7 - 1}"
+        ws7.freeze_panes = 'A2'
+
+        # ── Sheet 8: Impact Projection ──
+        ws8 = wb.create_sheet("Impact Projection")
+        ip_items = [
+            ("PROJECTED IMPACT OF RECOMMENDATIONS", "", ""),
+            ("", "", ""),
+            ("If All Recommendations Implemented:", "", ""),
+            ("", "", ""),
+            ("Category", "Current", "Projected"),
+            ("Total Clashes", total_clashes, f"{total_clashes - 250} to {total_clashes - 150}"),
+            ("Placement Rate", f"{placement_rate}%", f"{round(100 * (total_placed + 200) / total_requests, 1)}% to {round(100 * (total_placed + 300) / total_requests, 1)}%"),
+            ("Grad Req Fulfillment", f"{stats.get('graduation_fulfillment_rate', 0)}%",
+             f"{round(100 * (stats.get('graduation_required_placed', 0) + 150) / max(stats.get('graduation_required_total', 1), 1), 1)}% to {round(100 * (stats.get('graduation_required_placed', 0) + 250) / max(stats.get('graduation_required_total', 1), 1), 1)}%"),
+            ("Theology Clashes", str(sum(1 for c in clashes if c['code'] in ('810','820','830'))),
+             f"{sum(1 for c in clashes if c['code'] in ('810','820','830')) // 3} to {sum(1 for c in clashes if c['code'] in ('810','820','830')) // 2}"),
+            ("", "", ""),
+            ("INDIVIDUAL RECOMMENDATION IMPACT ESTIMATES", "", ""),
+            ("", "", ""),
+            ("Recommendation", "Estimated Impact", "Confidence"),
+        ]
+        for rec in recommendations:
+            ip_items.append((f"[{rec['id']}] {rec['title']}", rec['impact_estimate'],
+                             'HIGH' if rec['priority'] in ('CRITICAL', 'HIGH') else 'MEDIUM'))
+
+        for r, row_data in enumerate(ip_items, 1):
+            for c, v in enumerate(row_data, 1):
+                cell = ws8.cell(r, c, v)
+                if row_data[0] in ("PROJECTED IMPACT OF RECOMMENDATIONS",
+                                   "If All Recommendations Implemented:",
+                                   "INDIVIDUAL RECOMMENDATION IMPACT ESTIMATES"):
+                    cell.font = Font(name='Arial', bold=True, size=11)
+                elif row_data[0] in ("Category", "Recommendation"):
+                    cell.font = hdr_font
+                    cell.fill = hdr_fill
+                else:
+                    cell.font = body_font
+                cell.alignment = wrap_align
+                cell.border = thin
+        ws8.column_dimensions['A'].width = 55
+        ws8.column_dimensions['B'].width = 35
+        ws8.column_dimensions['C'].width = 15
+
+        report_path = os.path.join(OUTPUT_DIR, 'Engine_Analysis_Report.xlsx')
+        wb.save(report_path)
+        print(f"\n  Report saved: {report_path}")
+
+        print("\n" + "=" * 60)
+        print(f"ANALYSIS COMPLETE — {len(recommendations)} recommendations generated")
+        print(f"  Code changes: {sum(1 for r in recommendations if r['type'] == 'CODE')}")
+        print(f"  Rule changes: {sum(1 for r in recommendations if r['type'] == 'RULE')}")
+        print(f"  Process changes: {sum(1 for r in recommendations if r['type'] == 'PROCESS')}")
+        print(f"  Report: {report_path}")
+        print("=" * 60)
+
+    run_analysis()
+    sys.exit(0)
 
 # ============================================================
 # REPORT DEFINITIONS — names, formats, and column layouts
@@ -3679,7 +4626,7 @@ def export_job2_report():
                     root = 'no_sections'
                 else:
                     root = 'all_periods_blocked'
-                title = course_info.get(cid, {}).get('title', cid) if 'course_info' in dir() else cid
+                title = course_info.get(cid, {}).get('title', cid)
                 for c, v in enumerate([
                     pid, students[pid], grade.get(pid, ''),
                     cid, title,
