@@ -22,7 +22,7 @@ Features:
   7. Priority-protected bump decisions (grad req, Gr12 PAE, singleton)
 
 Outputs:
-  - schedule_solution_v3.json: full solution with assignments, clashes, stats
+  - schedule_solution_v3.json: full solution with assignments, conflicts, stats
   - Preflight_Validation_Report.xlsx: review spreadsheet (Summary, Duplicates,
     Prereq-With Transcript, Prereq-No Transcript tabs with ACTION column)
   - preflight_report.json: machine-readable pre-flight warnings (in scratchpad)
@@ -83,14 +83,14 @@ if ENGINE_MODE == 'analyze':
 
         secs = sol['sections']
         assignments = sol['assignments']
-        clashes = sol['clashes']
+        conflicts = sol['conflicts']
         stats = sol['stats']
         root_cause = sol.get('root_cause_summary', {})
         diag = sol.get('diagnostics', {})
 
         total_requests = stats['requests']
         total_placed = stats['placed']
-        total_clashes = stats['clashes']
+        total_conflicts = stats['conflicts']
         placement_rate = stats['placement_rate']
 
         sec_by_code = defaultdict(list)
@@ -100,7 +100,7 @@ if ENGINE_MODE == 'analyze':
         course_names = {}
         for s in secs:
             course_names[s['code']] = s['title']
-        for c in clashes:
+        for c in conflicts:
             course_names[c['code']] = c['course']
 
         # ── ANALYSIS 1: Process Effectiveness ──
@@ -122,8 +122,8 @@ if ENGINE_MODE == 'analyze':
             if len(code_secs) >= 4:
                 periods_covered = set(s['period'] for s in code_secs)
                 missing = set('ABCDEFG') - periods_covered
-                if missing and any(c for c in clashes if c['code'] == code and c.get('is_grad_req')):
-                    unscheduled = sum(1 for c in clashes if c['code'] == code)
+                if missing and any(c for c in conflicts if c['code'] == code and c.get('is_grad_req')):
+                    unscheduled = sum(1 for c in conflicts if c['code'] == code)
                     grad_req_gaps[code] = {
                         'title': course_names.get(code, code),
                         'sections': len(code_secs),
@@ -161,7 +161,7 @@ if ENGINE_MODE == 'analyze':
         restart_seeds = stats.get('restart_seeds_tried', 0)
         best_seed = stats.get('best_seed', 'N/A')
         print(f"\n  Phase D — Restarts: {restart_seeds}, Best seed: {best_seed}")
-        print(f"  Phase D — Final clashes: {total_clashes}")
+        print(f"  Phase D — Final conflicts: {total_conflicts}")
 
         total_cap = sum(s['cap'] for s in secs)
         total_enrolled = sum(s['enrolled'] for s in secs)
@@ -179,16 +179,16 @@ if ENGINE_MODE == 'analyze':
         print("\n[2] BOTTLENECK IDENTIFICATION")
         print("-" * 40)
 
-        course_clashes = Counter()
+        course_conflicts = Counter()
         course_is_grad_req = {}
-        for c in clashes:
-            course_clashes[c['code']] += 1
+        for c in conflicts:
+            course_conflicts[c['code']] += 1
             if c.get('is_grad_req'):
                 course_is_grad_req[c['code']] = True
 
         print(f"\n  Top 20 courses by unscheduled count:")
         course_analysis = []
-        for code, count in course_clashes.most_common(20):
+        for code, count in course_conflicts.most_common(20):
             code_secs = sec_by_code.get(code, [])
             enrolled = sum(s['enrolled'] for s in code_secs)
             cap = sum(s['cap'] for s in code_secs)
@@ -214,7 +214,7 @@ if ENGINE_MODE == 'analyze':
                   f"missing periods={','.join(entry['periods_missing']) or 'none'}{flag}")
 
         blocking = Counter()
-        for c in clashes:
+        for c in conflicts:
             for bc in c.get('blocking_courses', []):
                 if isinstance(bc, dict):
                     blocking[f"{bc.get('code', '')} {bc.get('title', '')}"] += 1
@@ -225,38 +225,38 @@ if ENGINE_MODE == 'analyze':
             for course_str, count in blocking.most_common(15):
                 print(f"    {course_str}: blocks {count} placements")
 
-        period_clashes = Counter()
-        for c in clashes:
+        period_conflicts = Counter()
+        for c in conflicts:
             if c.get('lost_period'):
-                period_clashes[c['lost_period']] += 1
-        print(f"\n  Clashes by lost period:")
-        for p in sorted(period_clashes.keys()):
-            print(f"    Period {p}: {period_clashes[p]} clashes ({period_counts.get(p, 0)} sections)")
+                period_conflicts[c['lost_period']] += 1
+        print(f"\n  Conflicts by lost period:")
+        for p in sorted(period_conflicts.keys()):
+            print(f"    Period {p}: {period_conflicts[p]} conflicts ({period_counts.get(p, 0)} sections)")
 
-        dept_clashes = Counter()
+        dept_conflicts = Counter()
         dept_placed = Counter()
         dept_total = Counter()
-        for c in clashes:
+        for c in conflicts:
             dept = ''
             for s in sec_by_code.get(c['code'], []):
                 dept = s.get('dept', '')
                 break
-            dept_clashes[dept] += 1
+            dept_conflicts[dept] += 1
         for s in secs:
             dept_placed[s.get('dept', '')] += s['enrolled']
             dept_total[s.get('dept', '')] += s['cap']
-        print(f"\n  Department clash summary:")
-        for dept in sorted(dept_clashes.keys(), key=lambda d: -dept_clashes[d]):
-            dc = dept_clashes[dept]
+        print(f"\n  Department conflict summary:")
+        for dept in sorted(dept_conflicts.keys(), key=lambda d: -dept_conflicts[d]):
+            dc = dept_conflicts[dept]
             dp = dept_placed.get(dept, 0)
             dt = dept_total.get(dept, 0)
-            print(f"    {dept}: {dc} clashes, {dp}/{dt} placed ({100*dp//max(dt,1)}% utilization)")
+            print(f"    {dept}: {dc} conflicts, {dp}/{dt} placed ({100*dp//max(dt,1)}% utilization)")
 
-        student_clashes = defaultdict(list)
-        for c in clashes:
-            student_clashes[c['student']].append(c)
+        student_conflicts = defaultdict(list)
+        for c in conflicts:
+            student_conflicts[c['student']].append(c)
         multi_grad = []
-        for pid, cs in student_clashes.items():
+        for pid, cs in student_conflicts.items():
             grad = [c for c in cs if c.get('is_grad_req')]
             if len(grad) >= 2:
                 multi_grad.append((pid, cs[0].get('name', ''), cs[0].get('grade', ''), len(grad), len(cs)))
@@ -268,7 +268,7 @@ if ENGINE_MODE == 'analyze':
 
         demand_mismatch = []
         for code, code_secs in sec_by_code.items():
-            unscheduled = sum(1 for c in clashes if c['code'] == code)
+            unscheduled = sum(1 for c in conflicts if c['code'] == code)
             if unscheduled == 0:
                 continue
             enrolled = sum(s['enrolled'] for s in code_secs)
@@ -315,7 +315,7 @@ if ENGINE_MODE == 'analyze':
                 'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'CRITICAL',
                 'title': 'Period-Coverage Guarantee for High-Demand Grad Reqs',
                 'problem': (f"{len(grad_req_gaps)} graduation-required courses have period coverage gaps. "
-                            f"Theology 810/820/830 alone account for 199 clashes (26.5% of total) despite having "
+                            f"Theology 810/820/830 alone account for 199 conflicts (26.5% of total) despite having "
                             f"ample capacity — students simply cannot reach any open section because all covered "
                             f"periods are already blocked by other courses."),
                 'solution': ("In greedy_assign_periods(), add a distribution constraint: for any graduation-required "
@@ -323,8 +323,8 @@ if ENGINE_MODE == 'analyze':
                              "section in any period. Score candidate periods with a coverage-gap penalty: if a course "
                              "has 0 sections in a period, that period gets a large bonus. This prevents the optimizer "
                              "from clustering all sections in 5 periods and leaving 2 gaps."),
-                'location': 'greedy_assign_periods() — _predict_clash_score() or _section_priority_key()',
-                'impact_estimate': f"-{est_impact} to -{est_impact + 50} clashes (est. {est_impact + 25} fewer)",
+                'location': 'greedy_assign_periods() — _predict_conflict_score() or _section_priority_key()',
+                'impact_estimate': f"-{est_impact} to -{est_impact + 50} conflicts (est. {est_impact + 25} fewer)",
                 'affected_courses': ', '.join(f"{c} {grad_req_gaps[c]['title']} (missing {','.join(grad_req_gaps[c]['periods_missing'])})" for c in gap_courses[:5]),
             })
 
@@ -341,11 +341,11 @@ if ENGINE_MODE == 'analyze':
                          "unresolved conflicts, identify courses where all available sections conflict. "
                          "For each such section, find a student currently enrolled who (a) has no "
                          "conflict in the swapped-from section and (b) could be moved to an alternative "
-                         "section without creating new conflicts. Execute the swap. This is O(clashes × "
+                         "section without creating new conflicts. Execute the swap. This is O(conflicts × "
                          "section_size) per round but should resolve 30-50% of remaining conflicts."),
             'location': 'New function after resolve_student(), called after CSP rounds in full_reseat()',
-            'impact_estimate': '-50 to -80 clashes',
-            'affected_courses': 'All courses with period_saturation root cause (693 clashes)',
+            'impact_estimate': '-50 to -80 conflicts',
+            'affected_courses': 'All courses with period_saturation root cause (693 conflicts)',
         })
 
         rec_id += 1
@@ -354,14 +354,14 @@ if ENGINE_MODE == 'analyze':
             'title': 'Allow Co-Schedule Group Period Moves in Optimizer',
             'problem': ("Co-scheduled sections (AP Art Block, Guitar Block, etc.) cannot be moved by "
                         "run_optimization_pass(). The _can_move_section() function rejects any section "
-                        "in COGROUP_SIDS. If a co-schedule group's assigned period creates many clashes, "
+                        "in COGROUP_SIDS. If a co-schedule group's assigned period creates many conflicts, "
                         "the optimizer cannot try a different period."),
-            'solution': ("In run_optimization_pass(), when a co-schedule group section is a top clash "
+            'solution': ("In run_optimization_pass(), when a co-schedule group section is a top conflict "
                          "candidate, try moving ALL sections in that group to a new period together. "
-                         "Check that all teachers and rooms remain available. Accept if total clashes "
+                         "Check that all teachers and rooms remain available. Accept if total conflicts "
                          "decrease. Only allow group moves (never split a co-schedule group)."),
             'location': '_can_move_section() line ~3061, run_optimization_pass() line ~3085',
-            'impact_estimate': '-20 to -40 clashes',
+            'impact_estimate': '-20 to -40 conflicts',
             'affected_courses': 'Co-schedule groups: AP Art, Guitar, Theater, Studio Art, Programming, Robotics, Italian',
         })
 
@@ -379,7 +379,7 @@ if ENGINE_MODE == 'analyze':
                              "for unscheduled grad reqs. This is targeted resolution — only restructure "
                              "the schedule of the most affected students."),
                 'location': 'New Phase E after Phase D, before results reporting',
-                'impact_estimate': f'-{len(multi_grad)} to -{len(multi_grad) * 2} clashes',
+                'impact_estimate': f'-{len(multi_grad)} to -{len(multi_grad) * 2} conflicts',
                 'affected_courses': f'{len(multi_grad)} students affected',
             })
 
@@ -396,19 +396,19 @@ if ENGINE_MODE == 'analyze':
                              "The force-place pass (lines ~2752-2766) places students regardless of "
                              "conflicts — but should still respect capacity. Add cap check before "
                              "force-placement. If all sections of a course are full, the request should "
-                             "go to the clash list, not overfill a section."),
+                             "go to the conflict list, not overfill a section."),
                 'location': 'full_reseat() force-place pass (~line 2752), full_reseat_fast() (~line 2938)',
                 'impact_estimate': 'Correctness fix — prevents overfilled classrooms',
                 'affected_courses': f'{len(overfilled)} sections currently overfilled',
             })
 
-        period_sat_pct = round(100 * root_cause.get('period_saturation', 0) / max(total_clashes, 1), 1)
+        period_sat_pct = round(100 * root_cause.get('period_saturation', 0) / max(total_conflicts, 1), 1)
         if period_sat_pct > 80:
             rec_id += 1
             recommendations.append({
                 'id': f'C{rec_id}', 'type': 'CODE', 'priority': 'LOW',
                 'title': 'Enriched Root Cause Classification',
-                'problem': (f"{period_sat_pct}% of clashes have root cause 'all_periods_blocked' — "
+                'problem': (f"{period_sat_pct}% of conflicts have root cause 'all_periods_blocked' — "
                             f"too generic to be actionable. This lumps together very different failure "
                             f"modes: blocked by grad reqs vs blocked by electives vs full sections."),
                 'solution': ("Break 'all_periods_blocked' into sub-causes in _analyze_root_cause(): "
@@ -418,7 +418,7 @@ if ENGINE_MODE == 'analyze':
                              "'blocked_by_singleton' (singleton collision). This enables targeted fixes."),
                 'location': '_analyze_root_cause() (~line 2494)',
                 'impact_estimate': 'Diagnostic improvement — enables targeted fixes',
-                'affected_courses': f'{root_cause.get("period_saturation", 0)} clashes affected',
+                'affected_courses': f'{root_cause.get("period_saturation", 0)} conflicts affected',
             })
 
         rec_id += 1
@@ -468,7 +468,7 @@ if ENGINE_MODE == 'analyze':
                              f"covered: currently in periods {','.join(dm['periods'])}, "
                              f"missing {','.join(set('ABCDEFG') - set(dm['periods'])) or 'none'}."),
                 'location': 'Template 6 — add teacher-course assignment row',
-                'impact_estimate': f'-{min(dm["unscheduled"], 25)} clashes (est.)',
+                'impact_estimate': f'-{min(dm["unscheduled"], 25)} conflicts (est.)',
                 'affected_courses': f'{dm["code"]} {dm["title"]}',
             })
 
@@ -506,7 +506,7 @@ if ENGINE_MODE == 'analyze':
                              "This can be enforced as a code change (recommendation C1) or as an "
                              "administrative constraint in Template 7."),
                 'location': 'Template 7 or engine code (C1)',
-                'impact_estimate': f'-{total_theo_unscheduled // 2} to -{total_theo_unscheduled} clashes',
+                'impact_estimate': f'-{total_theo_unscheduled // 2} to -{total_theo_unscheduled} conflicts',
                 'affected_courses': '810 Theology 9, 820 Theology 10, 830 Theology 11',
             })
 
@@ -518,18 +518,18 @@ if ENGINE_MODE == 'analyze':
             'problem': ("Phase D optimizes by moving sections and re-seating all students. "
                         "But it treats all section moves equally — moving a theology section to "
                         "fill a coverage gap and moving an elective section are scored the same way. "
-                        "The optimizer converges at 752 clashes (5/16 seeds) with very little "
-                        "variance (spread: 30 clashes, 3.8%). This suggests the current optimization "
+                        "The optimizer converges at 752 conflicts (5/16 seeds) with very little "
+                        "variance (spread: 30 conflicts, 3.8%). This suggests the current optimization "
                         "approach has reached a structural ceiling."),
             'solution': ("Stage 1: Run Phase A with period-coverage constraints (ensuring high-demand "
                          "grad reqs cover all periods). Run Phase D as-is. "
                          "Stage 2: After Phase D converges, run a targeted swap-based optimization "
-                         "that tries to resolve the remaining clashes by swapping individual student "
+                         "that tries to resolve the remaining conflicts by swapping individual student "
                          "assignments between sections (not moving entire sections). This attacks "
                          "the problem from a different angle than Phase D."),
             'location': 'After Phase D, new Stage 2 optimization pass',
-            'impact_estimate': '-50 to -100 additional clashes below current 752 floor',
-            'affected_courses': 'All courses with clashes',
+            'impact_estimate': '-50 to -100 additional conflicts below current 752 floor',
+            'affected_courses': 'All courses with conflicts',
         })
 
         rec_id += 1
@@ -546,8 +546,8 @@ if ENGINE_MODE == 'analyze':
                          "ensures every grad req gets first pick of available period cells before "
                          "electives consume them."),
             'location': 'Phase B student placement loop (~line 2335)',
-            'impact_estimate': '-30 to -60 clashes (fewer grad req conflicts)',
-            'affected_courses': f'621 graduation_required clashes, 12 singleton clashes',
+            'impact_estimate': '-30 to -60 conflicts (fewer grad req conflicts)',
+            'affected_courses': f'621 graduation_required conflicts, 12 singleton conflicts',
         })
 
         rec_id += 1
@@ -556,14 +556,14 @@ if ENGINE_MODE == 'analyze':
             'title': 'Post-Optimization Section Period Rotation for Under-Served Courses',
             'problem': (f"After Phase D, {len(period_sat)} courses have students who cannot be "
                         f"scheduled due to period saturation — they have spare capacity but students "
-                        f"cannot reach any section. The optimizer only moves high-clash sections, "
+                        f"cannot reach any section. The optimizer only moves high-conflict sections, "
                         f"not under-served ones."),
             'solution': ("After Phase D, for each course with high unscheduled count and spare "
                          "capacity: identify which periods its students are free in, move one section "
                          "to the period with the most demand, re-seat students, and accept if "
-                         "total clashes decrease."),
+                         "total conflicts decrease."),
             'location': 'New pass after Phase D optimization',
-            'impact_estimate': '-20 to -40 clashes',
+            'impact_estimate': '-20 to -40 conflicts',
             'affected_courses': f'{len(period_sat)} period-saturated courses',
         })
 
@@ -580,7 +580,7 @@ if ENGINE_MODE == 'analyze':
                          "and re-run Phase D with these adjusted weights. This creates a "
                          "self-improving loop."),
             'location': 'New ENGINE_MODE: reoptimize',
-            'impact_estimate': 'Cumulative -50 to -150 clashes across iterations',
+            'impact_estimate': 'Cumulative -50 to -150 conflicts across iterations',
             'affected_courses': 'All bottleneck courses identified by analysis',
         })
 
@@ -631,8 +631,8 @@ if ENGINE_MODE == 'analyze':
             ("Total Requests", total_requests),
             ("Total Placed", total_placed),
             ("Placement Rate", f"{placement_rate}%"),
-            ("Total Clashes", total_clashes),
-            ("Students with Conflicts", stats.get('protected_clashes', '')),
+            ("Total Conflicts", total_conflicts),
+            ("Students with Conflicts", stats.get('protected_conflicts', '')),
             ("", ""),
             ("FULFILLMENT RATES", ""),
             ("Graduation Requirements", f"{stats.get('graduation_required_placed', 0)}/{stats.get('graduation_required_total', 0)} ({stats.get('graduation_fulfillment_rate', 0)}%)"),
@@ -646,12 +646,12 @@ if ENGINE_MODE == 'analyze':
             ("Overfilled Sections", len(overfilled)),
             ("Underfilled Sections (<50%)", len(underfilled)),
             ("", ""),
-            ("CLASH BREAKDOWN", ""),
-            ("graduation_required", sum(1 for c in clashes if c.get('priority_band') == 'graduation_required')),
-            ("gr12_academic_elective", sum(1 for c in clashes if c.get('priority_band') == 'gr12_academic_elective')),
-            ("singleton", sum(1 for c in clashes if c.get('priority_band') == 'singleton')),
-            ("high_priority", sum(1 for c in clashes if c.get('priority_band') == 'high_priority')),
-            ("elective", sum(1 for c in clashes if c.get('priority_band') == 'elective')),
+            ("CONFLICT BREAKDOWN", ""),
+            ("graduation_required", sum(1 for c in conflicts if c.get('priority_band') == 'graduation_required')),
+            ("gr12_academic_elective", sum(1 for c in conflicts if c.get('priority_band') == 'gr12_academic_elective')),
+            ("singleton", sum(1 for c in conflicts if c.get('priority_band') == 'singleton')),
+            ("high_priority", sum(1 for c in conflicts if c.get('priority_band') == 'high_priority')),
+            ("elective", sum(1 for c in conflicts if c.get('priority_band') == 'elective')),
             ("", ""),
             ("ROOT CAUSES", ""),
             ("All Periods Blocked", root_cause.get('period_saturation', 0)),
@@ -659,11 +659,11 @@ if ENGINE_MODE == 'analyze':
             ("Period Conflict", root_cause.get('period_conflict', 0)),
             ("", ""),
             ("KEY FINDINGS", ""),
-            (f"1. Theology (810/820/830) accounts for {sum(1 for c in clashes if c['code'] in ('810','820','830'))} clashes (26.5%) despite ample capacity — period coverage gaps are the root cause", ""),
+            (f"1. Theology (810/820/830) accounts for {sum(1 for c in conflicts if c['code'] in ('810','820','830'))} conflicts (26.5%) despite ample capacity — period coverage gaps are the root cause", ""),
             (f"2. CSP solver resolves ~1.2% of conflicts — effectively non-functional for this dataset", ""),
             (f"3. {len(overfilled)} sections exceed capacity — HARD_CAP_ENFORCEMENT has gaps", ""),
             (f"4. {utilization}% capacity utilization — {empty_seats} empty seats across {len(secs)} sections", ""),
-            (f"5. Phase D converges at {total_clashes} clashes across multiple seeds — structural ceiling reached", ""),
+            (f"5. Phase D converges at {total_conflicts} conflicts across multiple seeds — structural ceiling reached", ""),
             ("", ""),
             ("RECOMMENDATIONS GENERATED", len(recommendations)),
             ("  Code Changes", sum(1 for r in recommendations if r['type'] == 'CODE')),
@@ -674,7 +674,7 @@ if ENGINE_MODE == 'analyze':
             c1 = ws1.cell(r, 1, label)
             c2 = ws1.cell(r, 2, val)
             if label in ("ENGINE ANALYSIS REPORT", "OVERALL METRICS", "FULFILLMENT RATES",
-                          "CAPACITY", "CLASH BREAKDOWN", "ROOT CAUSES", "KEY FINDINGS"):
+                          "CAPACITY", "CONFLICT BREAKDOWN", "ROOT CAUSES", "KEY FINDINGS"):
                 c1.font = Font(name='Arial', bold=True, size=12)
             elif label.startswith("1.") or label.startswith("2.") or label.startswith("3.") or label.startswith("4.") or label.startswith("5."):
                 c1.font = Font(name='Arial', size=10, italic=True)
@@ -720,9 +720,9 @@ if ENGINE_MODE == 'analyze':
 
         pe_rows.append(("PHASE D: MULTI-RESTART OPTIMIZATION", "", "", ""))
         pe_rows.append(("Restarts", str(restart_seeds), "", f"Best seed: {best_seed}"))
-        pe_rows.append(("Final clashes", str(total_clashes), "", ""))
+        pe_rows.append(("Final conflicts", str(total_conflicts), "", ""))
         pe_rows.append(("Convergence", "TIGHT", "",
-                         f"5/16 seeds at {total_clashes}, 8 at {total_clashes+5}, spread=30 (3.8%)"))
+                         f"5/16 seeds at {total_conflicts}, 8 at {total_conflicts+5}, spread=30 (3.8%)"))
         pe_rows.append(("Assessment", "", "",
                          "Optimization has reached structural ceiling — further restarts unlikely to improve"))
         pe_rows.append(("", "", "", ""))
@@ -767,10 +767,10 @@ if ENGINE_MODE == 'analyze':
         write_header(ws3, bn_headers)
         bn_row = 2
         all_course_analysis = []
-        for code in sorted(course_clashes.keys(), key=lambda c: -course_clashes[c]):
+        for code in sorted(course_conflicts.keys(), key=lambda c: -course_conflicts[c]):
             code_secs = sec_by_code.get(code, [])
             enrolled = sum(s['enrolled'] for s in code_secs)
-            count = course_clashes[code]
+            count = course_conflicts[code]
             cap = sum(s['cap'] for s in code_secs)
             demand = enrolled + count
             periods = sorted(set(s['period'] for s in code_secs))
@@ -912,14 +912,14 @@ if ENGINE_MODE == 'analyze':
                        'Enrolled', 'Capacity', 'Fill %']
         write_header(ws7, pc_headers)
         r7 = 2
-        for code in sorted(sec_by_code.keys(), key=lambda c: -course_clashes.get(c, 0)):
+        for code in sorted(sec_by_code.keys(), key=lambda c: -course_conflicts.get(c, 0)):
             code_secs = sec_by_code[code]
             if len(code_secs) < 2:
                 continue
             period_dist = Counter(s['period'] for s in code_secs)
             enrolled = sum(s['enrolled'] for s in code_secs)
             cap = sum(s['cap'] for s in code_secs)
-            unsched = course_clashes.get(code, 0)
+            unsched = course_conflicts.get(code, 0)
             fill_pct = round(100 * enrolled / max(cap, 1), 1)
             vals = [code, course_names.get(code, code), len(code_secs), unsched]
             for p in 'ABCDEFG':
@@ -952,12 +952,12 @@ if ENGINE_MODE == 'analyze':
             ("If All Recommendations Implemented:", "", ""),
             ("", "", ""),
             ("Category", "Current", "Projected"),
-            ("Total Clashes", total_clashes, f"{total_clashes - 250} to {total_clashes - 150}"),
+            ("Total Conflicts", total_conflicts, f"{total_conflicts - 250} to {total_conflicts - 150}"),
             ("Placement Rate", f"{placement_rate}%", f"{round(100 * (total_placed + 200) / total_requests, 1)}% to {round(100 * (total_placed + 300) / total_requests, 1)}%"),
             ("Grad Req Fulfillment", f"{stats.get('graduation_fulfillment_rate', 0)}%",
              f"{round(100 * (stats.get('graduation_required_placed', 0) + 150) / max(stats.get('graduation_required_total', 1), 1), 1)}% to {round(100 * (stats.get('graduation_required_placed', 0) + 250) / max(stats.get('graduation_required_total', 1), 1), 1)}%"),
-            ("Theology Clashes", str(sum(1 for c in clashes if c['code'] in ('810','820','830'))),
-             f"{sum(1 for c in clashes if c['code'] in ('810','820','830')) // 3} to {sum(1 for c in clashes if c['code'] in ('810','820','830')) // 2}"),
+            ("Theology Conflicts", str(sum(1 for c in conflicts if c['code'] in ('810','820','830'))),
+             f"{sum(1 for c in conflicts if c['code'] in ('810','820','830')) // 3} to {sum(1 for c in conflicts if c['code'] in ('810','820','830')) // 2}"),
             ("", "", ""),
             ("INDIVIDUAL RECOMMENDATION IMPACT ESTIMATES", "", ""),
             ("", "", ""),
@@ -1041,11 +1041,11 @@ REPORT_FORMATS = {
         'tally_rules': 'Red font when consecutive periods >= 4',
         'features': ['UNASSIGNED in bold for empty slots', 'teacher ID row'],
     },
-    'remaining_clashes': {
-        'filename': 'Remaining_Clashes_v2.5.xlsx',
-        'title': 'Remaining Clashes',
+    'remaining_conflicts': {
+        'filename': 'Remaining_Conflicts_v2.5.xlsx',
+        'title': 'Remaining Conflicts',
         'description': 'All unplaced student-course pairs with root cause analysis.',
-        'source': 'schedule_solution_v3.json clashes array',
+        'source': 'schedule_solution_v3.json conflicts array',
         'columns': [
             {'header': 'Student ID', 'width': 12, 'align': 'center'},
             {'header': 'Student Name', 'width': 22, 'align': 'left'},
@@ -1061,13 +1061,13 @@ REPORT_FORMATS = {
             {'header': 'Blocking Courses', 'width': 45, 'align': 'left'},
         ],
         'sort_order': 'Effective Priority (desc) → Grade',
-        'tabs': ['Remaining Clashes (detail)', 'Summary (by grade, band, grad req count)'],
+        'tabs': ['Remaining Conflicts (detail)', 'Summary (by grade, band, grad req count)'],
         'features': ['auto-filter', 'freeze row 1', 'alternating row shading', 'dark-red header'],
     },
     'student_schedule_report': {
         'filename': 'Student_Schedule_Report_2026_27.xlsx',
         'title': 'Student Schedule Report',
-        'description': 'Complete student schedules with S1/S2 split per period, credits, and clashes.',
+        'description': 'Complete student schedules with S1/S2 split per period, credits, and conflicts.',
         'source': 'schedule_solution_v3.json assignments + Template 7 (credits)',
         'layout': {
             'row_1': 'Merged period headers (Period A through Period G)',
@@ -1078,7 +1078,7 @@ REPORT_FORMATS = {
             'cols_D_Q': 'Period A(S1) / Period A(S2) through Period G(S1) / Period G(S2) — 14 columns',
             'col_R': 'Total Sections',
             'col_S': 'Total Credits',
-            'col_T': 'Clashes (unplaced courses listed)',
+            'col_T': 'Conflicts (unplaced courses listed)',
         },
         'cell_format': 'CourseCode: CourseTitle (Credits cr)',
         'empty_cell': 'UNASSIGNED (bold red)',
@@ -1101,7 +1101,7 @@ REPORT_FORMATS = {
             'col_R': 'Total Sections',
             'col_S': 'Total Credits',
             'col_T': 'Unassigned Slots (count, bold red)',
-            'col_U': 'Clashes (unplaced courses listed)',
+            'col_U': 'Conflicts (unplaced courses listed)',
         },
         'cell_format': 'CourseCode: CourseTitle (Credits cr)',
         'empty_cell': 'UNASSIGNED (bold red)',
@@ -2769,11 +2769,11 @@ def _section_priority_key(s):
         s['section']
     )
 
-def _predict_clash_score(code, period, halves, co_enroll):
-    """Predict how many weighted student clashes placing this course in this period would cause.
+def _predict_conflict_score(code, period, halves, co_enroll):
+    """Predict how many weighted student conflicts placing this course in this period would cause.
     Checks every co-enrolled course: if that course has a section already in this period
-    with overlapping semesters, each shared student is a potential clash weighted by priority."""
-    clash_score = 0
+    with overlapping semesters, each shared student is a potential conflict weighted by priority."""
+    conflict_score = 0
     co_courses = co_enroll.get(code, {})
     for other_cid, shared_students in co_courses.items():
         other_sids = sec_by_code.get(other_cid, [])
@@ -2786,9 +2786,9 @@ def _predict_clash_score(code, period, halves, co_enroll):
             for pid in shared_students:
                 crp_this = course_request_priority(pid, code)
                 crp_other = course_request_priority(pid, other_cid)
-                clash_score += max(crp_this, crp_other)
+                conflict_score += max(crp_this, crp_other)
             break
-    return clash_score
+    return conflict_score
 
 def greedy_assign_periods(seed=42, audit=False):
     """Assign each section to a period using per-placement save/remove/recalculate/re-rank.
@@ -2852,8 +2852,8 @@ def greedy_assign_periods(seed=42, audit=False):
                 period_scores[p] = 'unavailable'
                 continue
             score = 0
-            clash_penalty = _predict_clash_score(code, p, halves, co_enroll)
-            score += clash_penalty * 0.5
+            conflict_penalty = _predict_conflict_score(code, p, halves, co_enroll)
+            score += conflict_penalty * 0.5
             if p in used_periods:
                 score += 10
             if is_coverage_course:
@@ -3456,7 +3456,7 @@ for round_num in range(4):
 
 print("\n  Phase C: bumping remaining conflicts...")
 
-# Item 1: Root cause analysis for each clash
+# Item 1: Root cause analysis for each conflict
 # Item 3: Placement log — record sections considered and why rejected
 placement_log = []
 
@@ -3526,7 +3526,7 @@ def _analyze_root_cause(pid, bumped_cid, keeping_cid, bumped_period):
         'sections_tried': sections_tried,
     }
 
-clash = []
+conflict = []
 for pid in students:
     cells = defaultdict(list)
     for cid, sid in list(assign[pid].items()):
@@ -3548,7 +3548,7 @@ for pid in students:
         _crp = course_request_priority(pid, c)
         _rca = _analyze_root_cause(pid, c, bump_reason.get(c), s['period'])
         _g = grade.get(str(pid), 0)
-        clash.append({
+        conflict.append({
             'student': pid, 'name': students[pid], 'grade': grade[pid],
             'code': c, 'course': course_info.get(c, {}).get('title', c),
             'course_request_priority': _crp,
@@ -3571,10 +3571,10 @@ for pid in students:
 
 
 # ============================================================
-# PHASE D: MULTI-RESTART ITERATIVE CLASH RESOLUTION (ENHANCED)
+# PHASE D: MULTI-RESTART ITERATIVE CONFLICT RESOLUTION (ENHANCED)
 # ============================================================
 print("\n" + "=" * 60)
-print("[D] PHASE D: MULTI-RESTART CLASH RESOLUTION (ENHANCED)")
+print("[D] PHASE D: MULTI-RESTART CONFLICT RESOLUTION (ENHANCED)")
 print("=" * 60)
 
 COGROUP_SIDS = set()
@@ -3931,8 +3931,8 @@ def full_reseat_fast():
                     rslvd += 1
         if rslvd == 0:
             break
-    protected_clashes = 0
-    high_clashes = 0
+    protected_conflicts = 0
+    high_conflicts = 0
     total = 0
     for pid in students:
         cm = defaultdict(list)
@@ -3951,9 +3951,9 @@ def full_reseat_fast():
         for c in bmp:
             rm_place(pid, c)
             if is_protected(pid, c):
-                protected_clashes += 1
+                protected_conflicts += 1
             elif course_request_priority(pid, c) >= PTS_AP:
-                high_clashes += 1
+                high_conflicts += 1
             total += 1
     for pid in students:
         for cid in sreq[pid]:
@@ -3978,9 +3978,9 @@ def full_reseat_fast():
                 add_place(pid, cid, best)
                 total -= 1
                 if is_protected(pid, cid):
-                    protected_clashes -= 1
+                    protected_conflicts -= 1
                 elif course_request_priority(pid, cid) >= PTS_AP:
-                    high_clashes -= 1
+                    high_conflicts -= 1
     # CSP recovery for students with bumped courses
     bumped_pids = set()
     for pid in students:
@@ -4014,18 +4014,18 @@ def full_reseat_fast():
                 add_place(pid, cid, best)
                 total -= 1
                 if is_protected(pid, cid):
-                    protected_clashes -= 1
+                    protected_conflicts -= 1
                 elif course_request_priority(pid, cid) >= PTS_AP:
-                    high_clashes -= 1
-    return (max(0, protected_clashes), max(0, high_clashes), max(0, total))
+                    high_conflicts -= 1
+    return (max(0, protected_conflicts), max(0, high_conflicts), max(0, total))
 
 
-def _clash_quality(cl):
-    """Priority-aware clash quality score: (protected, high_priority, total).
+def _conflict_quality(cl):
+    """Priority-aware conflict quality score: (protected, high_priority, total).
     Lower is better. Protected courses (grad req, Gr12 PAE, singleton) never traded for lower."""
-    top_clashes = sum(1 for c in cl if is_protected(c['student'], c['code']))
-    mid_clashes = sum(1 for c in cl if not is_protected(c['student'], c['code']) and course_request_priority(c['student'], c['code']) >= PTS_AP)
-    return (top_clashes, mid_clashes, len(cl))
+    top_conflicts = sum(1 for c in cl if is_protected(c['student'], c['code']))
+    mid_conflicts = sum(1 for c in cl if not is_protected(c['student'], c['code']) and course_request_priority(c['student'], c['code']) >= PTS_AP)
+    return (top_conflicts, mid_conflicts, len(cl))
 
 def _can_move_section(sid, new_period):
     """Check if section can move to new_period without teacher conflicts."""
@@ -4054,7 +4054,7 @@ def _can_move_section(sid, new_period):
 def run_optimization_pass(cl=None):
     if cl is None:
         cl = full_reseat()
-    best_q = _clash_quality(cl)
+    best_q = _conflict_quality(cl)
     stalled = 0
     for d_iter in range(60):
         if stalled >= 8:
@@ -4126,7 +4126,7 @@ def run_optimization_pass(cl=None):
             _invalidate_occ_cache()
         if not improved:
             stalled += 1
-    # Phase 2: two-section swap — try swapping periods between pairs of high-clash sections
+    # Phase 2: two-section swap — try swapping periods between pairs of high-conflict sections
     import time as _swap_time
     _swap_start = _swap_time.time()
     stalled2 = 0
@@ -4182,7 +4182,7 @@ def run_optimization_pass(cl=None):
 # v3: 16 restart seeds (doubled from 8)
 SEEDS = [4269, 256, 7777, 2024, 5050, 7, 1337, 3141,
          42, 100, 999, 2025, 8888, 31415, 54321, 11111]
-best_clash = None
+best_conflict = None
 best_periods = None
 best_halves = None
 best_seed = None
@@ -4210,16 +4210,16 @@ for restart, seed in enumerate(SEEDS):
 
     print(f"  Restart {restart+1}/{len(SEEDS)} (seed={seed}): baseline={baseline} -> optimized={result}  [{_elapsed:.1f}s]")
 
-    result_q = _clash_quality(cl)
-    if best_clash is None or result_q < _clash_quality(best_clash):
-        best_clash = cl
+    result_q = _conflict_quality(cl)
+    if best_conflict is None or result_q < _conflict_quality(best_conflict):
+        best_conflict = cl
         best_seed = seed
         best_periods = {s['sid']: s['period'] for s in sections}
         best_halves = {s['sid']: s['halves'] for s in sections}
 
     # Early exit if we hit a great result
     if result <= 50:
-        print(f"  Early exit: {result} clashes is below target threshold")
+        print(f"  Early exit: {result} conflicts is below target threshold")
         break
 
 # Restore best solution
@@ -4227,8 +4227,8 @@ for s in sections:
     s['period'] = best_periods[s['sid']]
     s['halves'] = best_halves[s['sid']]
 _recompute_seating_order()
-clash = full_reseat()
-print(f"\n  BEST: seed={best_seed}, {len(clash)} clashes")
+conflict = full_reseat()
+print(f"\n  BEST: seed={best_seed}, {len(conflict)} conflicts")
 
 # Recompute stats
 prior_match = sum(1 for s in sections
@@ -4259,7 +4259,7 @@ for teacher in teacher_sections:
         load_violations.append({'teacher': teacher, 's1': s1_load, 's2': s2_load,
                                'max_s1': ms1, 'max_s2': ms2})
 
-print(f"\n  PHASE D COMPLETE: {len(clash)} clashes")
+print(f"\n  PHASE D COMPLETE: {len(conflict)} conflicts")
 
 
 # ============================================================
@@ -4273,8 +4273,8 @@ total_placed = sum(len(v) for v in assign.values())
 total_requested = sum(len(v) for v in sreq.values())
 placement_rate = 100 * total_placed / total_requested if total_requested else 0
 
-print(f"  Clashes: {len(clash)}")
-print(f"  Students affected: {len(set(c['student'] for c in clash))}")
+print(f"  Conflicts: {len(conflict)}")
+print(f"  Students affected: {len(set(c['student'] for c in conflict))}")
 print(f"  Placed: {total_placed}/{total_requested} ({placement_rate:.1f}%)")
 
 # Item 4: Disaggregated fulfillment preview
@@ -4285,39 +4285,39 @@ _preview_ap_placed = sum(1 for p in students for c in sreq[p] if course_info.get
 print(f"  Graduation requirement fulfillment: {_preview_grad_placed}/{_preview_grad_req} ({100*_preview_grad_placed/_preview_grad_req:.1f}%)" if _preview_grad_req else "  Graduation requirement fulfillment: N/A")
 print(f"  AP/Honors fulfillment: {_preview_ap_placed}/{_preview_ap} ({100*_preview_ap_placed/_preview_ap:.1f}%)" if _preview_ap else "  AP/Honors fulfillment: N/A")
 
-# Protected clash analysis (grad req, Gr12 PAE, singleton)
-protected_clashes = [c for c in clash if is_protected(c['student'], c['code'])]
-print(f"  Protected clashes (grad req / Gr12 PAE / singleton): {len(protected_clashes)}")
-if protected_clashes:
-    for c in protected_clashes[:10]:
+# Protected conflict analysis (grad req, Gr12 PAE, singleton)
+protected_conflicts = [c for c in conflict if is_protected(c['student'], c['code'])]
+print(f"  Protected conflicts (grad req / Gr12 PAE / singleton): {len(protected_conflicts)}")
+if protected_conflicts:
+    for c in protected_conflicts[:10]:
         print(f"    {c['name']} (Gr{c['grade']}): {c['course']} [{c['code']}] — Period {c['lost_period']}")
 
 sec_sizes = [secfill[sid] for sid in range(len(sections)) if secfill[sid] > 0]
 if sec_sizes:
     print(f"  Section sizes: min={min(sec_sizes)}, max={max(sec_sizes)}, avg={statistics.mean(sec_sizes):.1f}")
 
-dept_clashes = Counter()
-band_clashes = Counter()
-grade_clashes = Counter()
-for c in clash:
+dept_conflicts = Counter()
+band_conflicts = Counter()
+grade_conflicts = Counter()
+for c in conflict:
     ci = course_info.get(c['code'], {})
-    dept_clashes[ci.get('dept', 'Unknown')] += 1
-    band_clashes[c.get('priority_band', 'elective')] += 1
-    grade_clashes[c['grade']] += 1
+    dept_conflicts[ci.get('dept', 'Unknown')] += 1
+    band_conflicts[c.get('priority_band', 'elective')] += 1
+    grade_conflicts[c['grade']] += 1
 
-print(f"\n  Clashes by priority band:")
-for band in sorted(band_clashes.keys()):
-    print(f"    {band}: {band_clashes[band]}")
-print(f"\n  Clashes by department:")
-for dept, cnt in dept_clashes.most_common():
+print(f"\n  Conflicts by priority band:")
+for band in sorted(band_conflicts.keys()):
+    print(f"    {band}: {band_conflicts[band]}")
+print(f"\n  Conflicts by department:")
+for dept, cnt in dept_conflicts.most_common():
     print(f"    {dept}: {cnt}")
-print(f"\n  Clashes by grade:")
-for g in sorted(grade_clashes.keys()):
-    print(f"    Grade {g}: {grade_clashes[g]}")
+print(f"\n  Conflicts by grade:")
+for g in sorted(grade_conflicts.keys()):
+    print(f"    Grade {g}: {grade_conflicts[g]}")
 
 # Item 4: Root-cause aggregation
 _rc_counts = Counter()
-for _cl in clash:
+for _cl in conflict:
     for _rc in _cl.get('root_cause_codes', ['unclassified']):
         _rc_counts[_rc] += 1
 if _rc_counts:
@@ -4472,7 +4472,7 @@ _ap_honors_rate = round(100.0 * _ap_honors_placed / _ap_honors_requested, 1) if 
 
 # Item 4: Root-cause aggregation
 _root_cause_counts = Counter()
-for _cl in clash:
+for _cl in conflict:
     for _rc in _cl.get('root_cause_codes', ['unclassified']):
         _root_cause_counts[_rc] += 1
 
@@ -4480,7 +4480,7 @@ output = {
     'engine_version': 'v3-enhanced',
     'sections': [],
     'assignments': {},
-    'clashes': clash,
+    'conflicts': conflict,
     'placement_log': placement_log,
     'preflight': {
         'duplicates': len(_dup_warnings),
@@ -4495,8 +4495,8 @@ output = {
         'students': len(students),
         'requests': total_requested,
         'placed': total_placed,
-        'clashes': len(clash),
-        'protected_clashes': len(protected_clashes),
+        'conflicts': len(conflict),
+        'protected_conflicts': len(protected_conflicts),
         'sections_used': len([s for s in range(len(sections)) if secfill[s] > 0]),
         'placement_rate': round(placement_rate, 1),
         'graduation_fulfillment_rate': _grad_fulfillment,
@@ -4715,7 +4715,7 @@ def export_job2_report():
         ('Placement Rate', f"{round(total_placed / total_requested * 100, 1)}%" if total_requested else '0%'),
         ('', ''),
         ('Students with Conflicts', conf_count),
-        ('Total Clashes', len(clash)),
+        ('Total Conflicts', len(conflict)),
         ('', ''),
         ('By Grade:', ''),
     ]
@@ -4723,8 +4723,8 @@ def export_job2_report():
         g_students = [p for p in students if grade.get(p) == g]
         g_placed = sum(len(assign[p]) for p in g_students)
         g_requested = sum(len(sreq[p]) for p in g_students)
-        g_clashes = sum(1 for c in clash if grade.get(c['student']) == g)
-        summary_data.append((f'  Grade {g}', f'{g_placed}/{g_requested} placed, {g_clashes} clashes'))
+        g_conflicts = sum(1 for c in conflict if grade.get(c['student']) == g)
+        summary_data.append((f'  Grade {g}', f'{g_placed}/{g_requested} placed, {g_conflicts} conflicts'))
     for r, (label, val) in enumerate(summary_data, 1):
         ws4.cell(r, 1, label).font = Font(name='Arial', bold=True, size=10)
         ws4.cell(r, 2, val).font = Font(name='Arial', size=10)
@@ -4914,7 +4914,7 @@ if ENGINE_MODE == 'unlimited':
         ('Total Course Requests', total_requested),
         ('Total Students Placed', total_placed),
         ('Placement Rate', f'{placement_rate:.1f}%'),
-        ('Remaining Clashes', len(clash)),
+        ('Remaining Conflicts', len(conflict)),
         ('', ''),
         ('CAPACITY ANALYSIS', ''),
         ('Total Sections', len(sections)),
@@ -5001,7 +5001,7 @@ if ENGINE_MODE == 'unlimited':
             move_sec = min(move_secs, key=lambda s: secfill[s['sid']])
 
             driving = []
-            for c in clash:
+            for c in conflict:
                 if str(c.get('code', '')) == code:
                     for bc in c.get('blocking_courses', []):
                         bc_code = str(bc.get('code', ''))
@@ -5186,9 +5186,9 @@ try:
 except Exception as _e:
     print(f"  WARNING: credit_validation_report failed: {_e}")
 
-# ── Board 2: Student Clash Report ──
+# ── Board 2: Student Conflict Report ──
 try:
-    _scr_path = os.path.join(OUTPUT_DIR, 'student_clash_report.html')
+    _scr_path = os.path.join(OUTPUT_DIR, 'student_conflict_report.html')
     if os.path.exists(_scr_path):
         with open(_scr_path) as _f:
             _scr_html = _f.read()
@@ -5200,32 +5200,32 @@ try:
                 _h, _s['teacher'], _s['room'], _s['cap'],
                 secfill[_s['sid']], _s['section']
             ])
-        _clash_by_student = defaultdict(lambda: {'cl': [], 'sc': {}})
-        for _c in clash:
+        _conflict_by_student = defaultdict(lambda: {'cl': [], 'sc': {}})
+        for _c in conflict:
             _pid = _c['student']
-            _clash_by_student[_pid]['cl'].append([
+            _conflict_by_student[_pid]['cl'].append([
                 _c['code'], _c['course'], _c['lost_period'], 1
             ])
         for _pid in students:
-            if _pid in _clash_by_student or _pid in [_c['student'] for _c in clash]:
+            if _pid in _conflict_by_student or _pid in [_c['student'] for _c in conflict]:
                 for _cid, _sid in assign.get(_pid, {}).items():
                     _s = sections[_sid]
                     _h = 3 if len(_s['halves']) == 2 else (1 if _s['halves'][0] == 'S1' else 2)
-                    _clash_by_student[_pid]['sc'][_cid] = [
+                    _conflict_by_student[_pid]['sc'][_cid] = [
                         _s['title'], _s['period'], _h,
                         _s['teacher'], _s['room'], _s['section']
                     ]
-        _scr_clashes = []
-        for _pid, _data in _clash_by_student.items():
+        _scr_conflicts = []
+        for _pid, _data in _conflict_by_student.items():
             if _data['cl']:
-                _scr_clashes.append({
+                _scr_conflicts.append({
                     'id': _pid,
                     'n': students.get(_pid, _pid),
                     'g': grade.get(_pid, 9),
                     'cl': _data['cl'],
                     'sc': _data['sc']
                 })
-        _scr_clashes.sort(key=lambda x: (-len(x['cl']), x['g'], x['n']))
+        _scr_conflicts.sort(key=lambda x: (-len(x['cl']), x['g'], x['n']))
         _scr_names = {}
         for _pid, _name in students.items():
             _scr_names[_pid] = [_name, grade.get(_pid, 9)]
@@ -5248,15 +5248,15 @@ try:
         _scr_stats = {
             'placed': _total_placed,
             'total_requests': _total_requests,
-            'total_clashes': len(clash),
-            'affected_students': len(_scr_clashes)
+            'total_conflicts': len(conflict),
+            'affected_students': len(_scr_conflicts)
         }
         _scr_cs = defaultdict(list)
         for _s in sections:
             _h = 3 if len(_s['halves']) == 2 else (1 if _s['halves'][0] == 'S1' else 2)
             _scr_cs[_s['code']].append([_s['section'], _s['period'], _h, _s['teacher'], secfill[_s['sid']], _s['cap']])
         _scr_d = json.dumps({
-            'S': _scr_sections, 'C': _scr_clashes,
+            'S': _scr_sections, 'C': _scr_conflicts,
             'N': _scr_names, 'SS': dict(_scr_ss),
             'O': _scr_occ, 'CS': dict(_scr_cs),
             'stats': _scr_stats
@@ -5264,13 +5264,13 @@ try:
         _scr_js = f"const D = {_scr_d};"
         _scr_out = _inject_data(_scr_html, r'const D\s*=\s*\{', _scr_js)
         if _scr_out:
-            _scr_dest = os.path.join(BOARDS_DIR, 'student_clash_report.html')
+            _scr_dest = os.path.join(BOARDS_DIR, 'student_conflict_report.html')
             with open(_scr_dest, 'w') as _f:
                 _f.write(_scr_out)
-            print(f"  student_clash_report.html — {len(_scr_clashes)} students with clashes")
+            print(f"  student_conflict_report.html — {len(_scr_conflicts)} students with conflicts")
             _boards_generated += 1
 except Exception as _e:
-    print(f"  WARNING: student_clash_report failed: {_e}")
+    print(f"  WARNING: student_conflict_report failed: {_e}")
 
 # ── Board 3: Singleton Board ──
 try:
@@ -5321,17 +5321,17 @@ try:
     if os.path.exists(_crc_path):
         with open(_crc_path) as _f:
             _crc_html = _f.read()
-        _clash_by_course = defaultdict(lambda: {'count': 0, 'blocking': Counter()})
-        for _c in clash:
+        _conflict_by_course = defaultdict(lambda: {'count': 0, 'blocking': Counter()})
+        for _c in conflict:
             _ccode = _c['code']
-            _clash_by_course[_ccode]['count'] += 1
+            _conflict_by_course[_ccode]['count'] += 1
             _pid = _c['student']
             for _oc, _osid in assign.get(_pid, {}).items():
                 if sections[_osid]['period'] == _c['lost_period']:
                     _okey = f"{_oc} {course_info.get(_oc, {}).get('title', _oc)}"
-                    _clash_by_course[_ccode]['blocking'][_okey] += 1
+                    _conflict_by_course[_ccode]['blocking'][_okey] += 1
         _crc_data = []
-        for _ccode, _info in sorted(_clash_by_course.items(), key=lambda x: -x[1]['count']):
+        for _ccode, _info in sorted(_conflict_by_course.items(), key=lambda x: -x[1]['count']):
             _ci = course_info.get(_ccode, {})
             _code_secs = [_s for _s in sections if _s['code'] == _ccode]
             _periods_used = sorted(set(_s['period'] for _s in _code_secs))
@@ -5353,7 +5353,7 @@ try:
                     'load_s1': len(_t_periods_s1),
                     'load_s2': len(_t_periods_s2)
                 }
-            _n_clashes = _info['count']
+            _n_conflicts = _info['count']
             _fix_type = 'add_section' if _gaps else ('redistribute' if len(_code_secs) > 1 else 'structural')
             if _fix_type == 'add_section':
                 _fix_desc = f"Add section in Period {'/'.join(_gaps)}."
@@ -5365,7 +5365,7 @@ try:
                 'code': _ccode,
                 'title': _ci.get('title', _ccode),
                 'dept': _ci.get('dept', ''),
-                'clashes': _n_clashes,
+                'conflicts': _n_conflicts,
                 'sections': len(_code_secs),
                 'periods': _periods_used,
                 'gaps': _gaps,
@@ -5382,7 +5382,7 @@ try:
             _crc_dest = os.path.join(BOARDS_DIR, 'conflict_resolution_console.html')
             with open(_crc_dest, 'w') as _f:
                 _f.write(_crc_out)
-            print(f"  conflict_resolution_console.html — {len(_crc_data)} courses with clashes")
+            print(f"  conflict_resolution_console.html — {len(_crc_data)} courses with conflicts")
             _boards_generated += 1
 except Exception as _e:
     print(f"  WARNING: conflict_resolution_console failed: {_e}")
@@ -5430,7 +5430,7 @@ try:
             return 4
 
         _srr_data = []
-        for _c in clash:
+        for _c in conflict:
             _pid = _c['student']
             _bumped_code = _c['code']
             _bumped_period = _c['lost_period']
@@ -5448,7 +5448,7 @@ try:
                     _blocking_title = course_info.get(_ac, {}).get('title', _ac)
                     break
 
-            _bumped_codes = set(_cx['code'] for _cx in clash if _cx['student'] == _pid)
+            _bumped_codes = set(_cx['code'] for _cx in conflict if _cx['student'] == _pid)
             _all_candidates = []
             for _fp in _free_periods:
                 _available = [_s for _s in sections if _s['period'] == _fp
@@ -5602,17 +5602,17 @@ h1{{color:var(--maroon);font-size:28px;margin-bottom:8px}}
 <h1>Don Bosco Prep 2026-27</h1>
 <p class="subtitle">Schedule Engine v3 — Interactive Dashboard Suite</p>
 <div class="stats">
-<div class="stat"><div class="val">{len(clash)}</div><div class="lbl">Clashes</div></div>
+<div class="stat"><div class="val">{len(conflict)}</div><div class="lbl">Conflicts</div></div>
 <div class="stat"><div class="val">{placement_rate:.1f}%</div><div class="lbl">Placement</div></div>
 <div class="stat"><div class="val">{len(students)}</div><div class="lbl">Students</div></div>
 <div class="stat"><div class="val">{len(sections)}</div><div class="lbl">Sections</div></div>
-<div class="stat"><div class="val">{len(protected_clashes)}</div><div class="lbl">Protected Clashes</div></div>
+<div class="stat"><div class="val">{len(protected_conflicts)}</div><div class="lbl">Protected Conflicts</div></div>
 </div>
 <div class="grid">
-<a class="card" href="student_clash_report.html"><h3>Student Clash Report</h3>
-<p>Drag-and-drop schedule grid for {len(_scr_clashes)} students with conflicts. Visual period/semester layout.</p></a>
+<a class="card" href="student_conflict_report.html"><h3>Student Conflict Report</h3>
+<p>Drag-and-drop schedule grid for {len(_scr_conflicts)} students with conflicts. Visual period/semester layout.</p></a>
 <a class="card" href="conflict_resolution_console.html"><h3>Conflict Resolution Console</h3>
-<p>Course-level clash analysis with fix recommendations for {len(_crc_data)} affected courses.</p></a>
+<p>Course-level conflict analysis with fix recommendations for {len(_crc_data)} affected courses.</p></a>
 <a class="card" href="credit_validation_report.html"><h3>Credit Validation Report</h3>
 <p>{len(_cvr_data)} students exceeding the 35-credit cap. Priority-ranked drop candidates.</p></a>
 <a class="card" href="student_request_recommendations.html"><h3>Request Recommendations</h3>
@@ -5638,5 +5638,5 @@ print(f"\n  {_boards_generated} boards generated in {BOARDS_DIR}/")
 
 print("=" * 60)
 _mode_label = ' [UNLIMITED SEAT MODE]' if ENGINE_MODE == 'unlimited' else ''
-print(f"DONE — v3 Enhanced Engine{_mode_label}: {len(clash)} clashes, {placement_rate:.1f}% placement")
+print(f"DONE — v3 Enhanced Engine{_mode_label}: {len(conflict)} conflicts, {placement_rate:.1f}% placement")
 print("=" * 60)

@@ -54,7 +54,7 @@ td{border:1px solid var(--border);padding:6px 10px}
 <li><a href="#master-schedule-board">Master Schedule Board</a> <span class="badge badge-primary">Primary Tool</span></li>
 <li><a href="#singleton-board">Singleton Board</a> <span class="badge badge-tool">Scheduling Tool</span></li>
 <li><a href="#conflict-resolution">Conflict Resolution Console</a> <span class="badge badge-tool">Scheduling Tool</span></li>
-<li><a href="#student-clash">Student Clash Report</a> <span class="badge badge-tool">Scheduling Tool</span></li>
+<li><a href="#student-conflict">Student Conflict Report</a> <span class="badge badge-tool">Scheduling Tool</span></li>
 <li><a href="#request-recommendations">Request Recommendations</a> <span class="badge badge-tool">Scheduling Tool</span></li>
 <li><a href="#credit-validation">Credit Validation Report</a> <span class="badge badge-report">Report</span></li>
 <li><a href="#constraint-builder">Constraint Builder</a> <span class="badge badge-tool">Scheduling Tool</span></li>
@@ -80,7 +80,7 @@ td{border:1px solid var(--border);padding:6px 10px}
 
 <h3>Understanding the Layout</h3>
 <ul>
-<li><strong>Scoreboard (top):</strong> Shows four KPIs &mdash; Clashes, Placed students, Moves made, and Locks active. An arc gauge shows overall placement rate. Below it, a grade-level breakdown shows clashes per grade (9/10/11/12).</li>
+<li><strong>Scoreboard (top):</strong> Shows four KPIs &mdash; Conflicts, Placed students, Moves made, and Locks active. An arc gauge shows overall placement rate. Below it, a grade-level breakdown shows conflicts per grade (9/10/11/12).</li>
 <li><strong>Toolbar:</strong> Contains 8 filter controls (Term, Dept, Teacher, Room, Grade, Course, Fill, Search), plus buttons for Undo, Save Session, Load Session, and Export. A move counter shows how many changes you've made.</li>
 <li><strong>Board (center):</strong> Seven columns, one per period (A through G). Each column contains section cards.</li>
 <li><strong>Detail Panel (right):</strong> Shows information about the selected section or student.</li>
@@ -106,16 +106,16 @@ td{border:1px solid var(--border);padding:6px 10px}
   <ul>
     <li>How many enrolled students are affected</li>
     <li>How many students can be automatically relocated to other sections (<span style="color:var(--green)">&#10003;</span>)</li>
-    <li>How many students would gain a new clash (<span style="color:var(--red)">&#10007;</span>)</li>
-    <li>How many previously-clashed students could now be placed (<span style="color:var(--blue)">&uarr;</span>)</li>
-    <li>Net impact: the total change in clash count</li>
+    <li>How many students would gain a new conflict (<span style="color:var(--red)">&#10007;</span>)</li>
+    <li>How many previously-conflicted students could now be placed (<span style="color:var(--blue)">&uarr;</span>)</li>
+    <li>Net impact: the total change in conflict count</li>
     <li>Teacher and room conflict warnings</li>
   </ul>
 </li>
-<li><strong>Drop</strong> the card into the target column to apply the move. The board updates immediately &mdash; students are relocated, clash counts recalculate, and the scoreboard refreshes.</li>
+<li><strong>Drop</strong> the card into the target column to apply the move. The board updates immediately &mdash; students are relocated, conflict counts recalculate, and the scoreboard refreshes.</li>
 </ol>
 
-<div class="tip"><strong>Tip:</strong> Look for moves with a <strong>negative net impact</strong> &mdash; those reduce clashes. The preview shows this before you commit.</div>
+<div class="tip"><strong>Tip:</strong> Look for moves with a <strong>negative net impact</strong> &mdash; those reduce conflicts. The preview shows this before you commit.</div>
 
 <h3>Clicking a Section</h3>
 <p>Click a card (without dragging) to see its details in the right panel:</p>
@@ -135,7 +135,7 @@ td{border:1px solid var(--border);padding:6px 10px}
     <li>A breadcrumb trail (Section &rarr; Student) &mdash; click to go back</li>
     <li>The student's full 7&times;2 schedule grid (periods A-G &times; S1/S2)</li>
     <li>A list of their enrolled courses, each showing alternative sections available</li>
-    <li>Clashes highlighted in red</li>
+    <li>Conflicts highlighted in red</li>
   </ul>
 </li>
 <li>For each course, alternatives are listed with their period, section number, and enrollment. If an alternative has no scheduling conflict, a green <strong>Move</strong> button appears.</li>
@@ -241,23 +241,23 @@ td{border:1px solid var(--border);padding:6px 10px}
 <div class="board-section" id="conflict-resolution">
 <h2>3. Conflict Resolution Console <span class="badge badge-tool">Scheduling Tool</span></h2>
 <p><strong>File:</strong> <code>boards/conflict_resolution_console.html</code></p>
-<p><strong>Purpose:</strong> A course-level view of all scheduling clashes with AI-generated fix recommendations for each course. Use this to decide which courses need more sections, different period placements, or other adjustments before re-running the engine.</p>
+<p><strong>Purpose:</strong> A course-level view of all scheduling conflicts with AI-generated fix recommendations for each course. Use this to decide which courses need more sections, different period placements, or other adjustments before re-running the engine.</p>
 
 <h3>Understanding the Layout</h3>
 <ul>
 <li><strong>Stats bar (top):</strong> Shows total unresolved conflicts, placement rate, placed/total students, and students affected.</li>
-<li><strong>Tabs:</strong> Filter courses by clash severity:
+<li><strong>Tabs:</strong> Filter courses by conflict severity:
   <ul>
-    <li><strong>High Impact</strong> &mdash; 5 or more clashes (fix these first)</li>
-    <li><strong>Medium</strong> &mdash; 3-4 clashes</li>
-    <li><strong>Low</strong> &mdash; 1-2 clashes</li>
+    <li><strong>High Impact</strong> &mdash; 5 or more conflicts (fix these first)</li>
+    <li><strong>Medium</strong> &mdash; 3-4 conflicts</li>
+    <li><strong>Low</strong> &mdash; 1-2 conflicts</li>
     <li><strong>By Period</strong> &mdash; view by period distribution</li>
     <li><strong>Approved</strong> &mdash; fixes you've already approved</li>
     <li><strong>All Courses</strong> &mdash; everything</li>
   </ul>
 </li>
 <li><strong>Course cards:</strong> Expandable accordion cards for each affected course.</li>
-<li><strong>Floating dock (bottom):</strong> Shows approved count and estimated clashes resolved.</li>
+<li><strong>Floating dock (bottom):</strong> Shows approved count and estimated conflicts resolved.</li>
 </ul>
 
 <h3>Using a Course Card</h3>
@@ -285,16 +285,16 @@ td{border:1px solid var(--border);padding:6px 10px}
 </div>
 
 <!-- ══════════════════════════════════════════════════════ -->
-<div class="board-section" id="student-clash">
-<h2>4. Student Clash Report <span class="badge badge-tool">Scheduling Tool</span></h2>
-<p><strong>File:</strong> <code>boards/student_clash_report.html</code></p>
-<p><strong>Purpose:</strong> A student-level view of every scheduling conflict. Each student with a clash gets a personal schedule grid where you can drag courses between period/semester slots to resolve their conflicts manually.</p>
+<div class="board-section" id="student-conflict">
+<h2>4. Student Conflict Report <span class="badge badge-tool">Scheduling Tool</span></h2>
+<p><strong>File:</strong> <code>boards/student_conflict_report.html</code></p>
+<p><strong>Purpose:</strong> A student-level view of every scheduling conflict. Each student with a conflict gets a personal schedule grid where you can drag courses between period/semester slots to resolve their conflicts manually.</p>
 
 <h3>Understanding the Layout</h3>
 <ul>
-<li><strong>Toolbar:</strong> Stats (students, clashes, resolved, moves), Export buttons (CSV, JSON, Changes JSON).</li>
+<li><strong>Toolbar:</strong> Stats (students, conflicts, resolved, moves), Export buttons (CSV, JSON, Changes JSON).</li>
 <li><strong>Filter bar:</strong> Grade filter, department filter, name/ID search, expand/collapse all, zoom controls.</li>
-<li><strong>Summary cards:</strong> Total clashes, students affected, breakdown by grade, resolution rate.</li>
+<li><strong>Summary cards:</strong> Total conflicts, students affected, breakdown by grade, resolution rate.</li>
 <li><strong>Student cards:</strong> One expandable card per student with conflicts.</li>
 </ul>
 
@@ -304,14 +304,14 @@ td{border:1px solid var(--border);padding:6px 10px}
 <li>Inside you'll see a <strong>schedule grid</strong> (7 periods &times; 2 semesters) with course tiles:
   <ul>
     <li><span style="color:var(--green)">Green tiles</span> = successfully placed courses</li>
-    <li><span style="color:var(--red)">Red tiles</span> = clashed courses (not placed)</li>
+    <li><span style="color:var(--red)">Red tiles</span> = conflicted courses (not placed)</li>
     <li><span style="color:var(--blue)">Blue tiles</span> = courses you've moved this session</li>
   </ul>
 </li>
 <li>Below the grid, an <strong>Unscheduled</strong> section lists bumped courses with available alternative sections shown as clickable pills.</li>
 </ol>
 
-<h3>Resolving a Clash</h3>
+<h3>Resolving a Conflict</h3>
 <ol>
 <li><strong>Drag</strong> a course tile from one period/semester cell to another in the student's grid.</li>
 <li>An <strong>Impact Analysis</strong> modal appears showing enrollment changes and affected students.</li>
@@ -327,7 +327,7 @@ td{border:1px solid var(--border);padding:6px 10px}
 <li><strong>Export:</strong> Three formats &mdash; CSV (all data), JSON (all data), or Changes JSON (only your moves).</li>
 </ul>
 
-<div class="tip"><strong>Tip:</strong> Start with Grade 12 students &mdash; their graduation requirements make their clashes the most critical to resolve.</div>
+<div class="tip"><strong>Tip:</strong> Start with Grade 12 students &mdash; their graduation requirements make their conflicts the most critical to resolve.</div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════ -->
@@ -517,7 +517,7 @@ td{border:1px solid var(--border);padding:6px 10px}
 <div class="board-section" id="dashboard-index">
 <h2>10. Dashboard Index <span class="badge badge-ref">Reference</span></h2>
 <p><strong>File:</strong> <code>boards/index.html</code></p>
-<p><strong>Purpose:</strong> The home page for all boards. Shows top-line engine metrics (clashes, placement rate, students, sections) and provides navigation cards linking to every board tool.</p>
+<p><strong>Purpose:</strong> The home page for all boards. Shows top-line engine metrics (conflicts, placement rate, students, sections) and provides navigation cards linking to every board tool.</p>
 
 <h3>How to Use</h3>
 <p>Open <code>boards/index.html</code> in your browser. Click any card to navigate to that board. The stats shown are from the most recent engine run.</p>
@@ -534,12 +534,12 @@ td{border:1px solid var(--border);padding:6px 10px}
 <p><span class="step-num">3</span> <strong>Course Request Workbook</strong> &mdash; Import and validate all student course requests. Resolve prerequisite failures and flags. Export clean data.</p>
 <p><span class="step-num">4</span> <strong>Constraint Builder</strong> &mdash; Define semester locks, period locks, and co-schedule rules before running the engine.</p>
 <p><span class="step-num">5</span> <strong>Run the engine</strong> (<code>python schedule_engine_v3.py</code>) &mdash; generates <code>schedule_solution_v3.json</code>.</p>
-<p><span class="step-num">6</span> <strong>Conflict Resolution Console</strong> &mdash; Review course-level clashes and approve fix recommendations.</p>
+<p><span class="step-num">6</span> <strong>Conflict Resolution Console</strong> &mdash; Review course-level conflicts and approve fix recommendations.</p>
 <p><span class="step-num">7</span> <strong>Singleton Board</strong> &mdash; Focus on singleton courses. Move them to periods that reduce student conflicts.</p>
 <p><span class="step-num">8</span> <strong>Master Schedule Board</strong> &mdash; Load the solution. Drag sections between periods, use cascade preview to find improvements. Save your session.</p>
-<p><span class="step-num">9</span> <strong>Student Clash Report</strong> &mdash; Drill into individual students with remaining clashes. Reassign them to alternative sections.</p>
+<p><span class="step-num">9</span> <strong>Student Conflict Report</strong> &mdash; Drill into individual students with remaining conflicts. Reassign them to alternative sections.</p>
 <p><span class="step-num">10</span> <strong>Request Recommendations</strong> &mdash; Review and approve alternative course suggestions for any remaining bumped requests.</p>
-<p><span class="step-num">11</span> <strong>Apply changes to templates, re-run engine, repeat</strong> until clashes are at an acceptable level.</p>
+<p><span class="step-num">11</span> <strong>Apply changes to templates, re-run engine, repeat</strong> until conflicts are at an acceptable level.</p>
 </div>
 
 <div class="tip"><strong>Tip:</strong> You don't have to use every board every time. For quick adjustments, the Master Schedule Board (step 8) is often enough on its own. Use the other boards when you need to dig deeper into specific issues.</div>
