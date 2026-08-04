@@ -44,12 +44,13 @@ OUTPUT_DIR = os.path.dirname(__file__) or '.'
 PERIODS = list('ABCDEFG')
 
 # ── Engine Run Mode ──
-# 'job1'    → Run Job 1 (section placement) only, export Excel, stop
-# 'full'    → Run Job 1 + Job 2 (student placement), export both Excel reports
-# 'analyze' → Analyze Job 1 + Job 2 outputs, generate Engine Analysis Report
+# 'job1'      → Run Job 1 (section placement) only, export Excel, stop
+# 'full'      → Run Job 1 + Job 2 (student placement), export both Excel reports
+# 'analyze'   → Analyze Job 1 + Job 2 outputs, generate Engine Analysis Report
+# 'unlimited' → Run Job 1 + Job 2 with unlimited section caps (diagnostic mode)
 ENGINE_MODE = sys.argv[1] if len(sys.argv) > 1 else 'job1'
-if ENGINE_MODE not in ('job1', 'full', 'analyze'):
-    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1', 'full', or 'analyze'.")
+if ENGINE_MODE not in ('job1', 'full', 'analyze', 'unlimited'):
+    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1', 'full', 'analyze', or 'unlimited'.")
     sys.exit(1)
 print(f"  Engine mode: {ENGINE_MODE}")
 
@@ -1532,6 +1533,15 @@ for r in range(3, _t7ws_ci.max_row + 1):
 _t7wb_ci.close()
 print(f"  Courses loaded from Template 7: {len(course_info)}")
 HARD_CAP_ENFORCEMENT = True
+
+_original_caps = dict(_course_max_enrollment)
+
+if ENGINE_MODE == 'unlimited':
+    HARD_CAP_ENFORCEMENT = False
+    _UNLIMITED_CAP = 9999
+    for _uc_cid in _course_max_enrollment:
+        _course_max_enrollment[_uc_cid] = _UNLIMITED_CAP
+    print(f"  UNLIMITED MODE: All section caps set to {_UNLIMITED_CAP}, HARD_CAP_ENFORCEMENT=False")
 
 # ── Semester designations ──
 _semester_designations = {}
@@ -4729,6 +4739,210 @@ def export_job2_report():
 _job2_path = export_job2_report()
 
 # ============================================================
+# 4b. UNLIMITED MODE REPORT
+# ============================================================
+if ENGINE_MODE == 'unlimited':
+    print("\n" + "=" * 60)
+    print("[4b] UNLIMITED SEAT MODE — DEMAND ANALYSIS REPORT")
+    print("=" * 60)
+
+    _ul_wb = openpyxl.Workbook()
+
+    # ── Sheet 1: Section Demand ──
+    _ul_ws1 = _ul_wb.active
+    _ul_ws1.title = 'Section Demand'
+    _ul_hdr1 = ['Course Code', 'Course Title', 'Department', 'Section #',
+                'Period', 'Term', 'Teacher', 'Room', 'Original Cap',
+                'Actual Enrollment', 'Over Cap', 'Overfill %',
+                'Action Needed']
+    _ul_ws1.append(_ul_hdr1)
+    for c in _ul_ws1[1]:
+        c.font = openpyxl.styles.Font(bold=True, name='Arial')
+
+    _ul_section_rows = []
+    for s in sections:
+        sid = s['sid']
+        code = s['code']
+        ci = course_info.get(code, {})
+        enrolled = secfill[sid]
+        orig_cap = _original_caps.get(code, 25)
+        over = max(0, enrolled - orig_cap)
+        overfill_pct = round(100 * enrolled / orig_cap, 1) if orig_cap > 0 else 0
+        if over > 0:
+            action = 'SPLIT — add section (same period, different teacher/room)'
+        elif enrolled == 0:
+            action = 'MOVE — no demand in this period'
+        elif enrolled < orig_cap * 0.5:
+            action = 'CONSIDER MOVE — low demand'
+        else:
+            action = 'OK'
+        term_label = 'FY' if len(s.get('halves', [])) > 1 else ('S1' if 'S1' in s.get('halves', []) else 'S2')
+        _ul_section_rows.append({
+            'code': code, 'title': ci.get('title', code), 'dept': ci.get('dept', ''),
+            'section': s.get('section', ''), 'period': s.get('period', ''),
+            'term': term_label, 'teacher': s.get('teacher_name', s.get('teacher', '')),
+            'room': s.get('room', ''), 'orig_cap': orig_cap,
+            'enrolled': enrolled, 'over': over, 'overfill_pct': overfill_pct,
+            'action': action
+        })
+
+    _ul_section_rows.sort(key=lambda r: (-r['over'], r['code'], r['period']))
+    for r in _ul_section_rows:
+        _ul_ws1.append([r['code'], r['title'], r['dept'], r['section'],
+                        r['period'], r['term'], r['teacher'], r['room'],
+                        r['orig_cap'], r['enrolled'], r['over'], r['overfill_pct'],
+                        r['action']])
+
+    for col_letter, w in [('A', 12), ('B', 40), ('C', 18), ('D', 10),
+                          ('E', 8), ('F', 6), ('G', 25), ('H', 10),
+                          ('I', 12), ('J', 16), ('K', 10), ('L', 10), ('M', 45)]:
+        _ul_ws1.column_dimensions[col_letter].width = w
+
+    _split_count = sum(1 for r in _ul_section_rows if r['action'].startswith('SPLIT'))
+    _move_count = sum(1 for r in _ul_section_rows if 'MOVE' in r['action'])
+    _ok_count = sum(1 for r in _ul_section_rows if r['action'] == 'OK')
+    print(f"  Sections needing SPLIT (over cap): {_split_count}")
+    print(f"  Sections to MOVE (low/no demand): {_move_count}")
+    print(f"  Sections OK: {_ok_count}")
+
+    # ── Sheet 2: Course Demand Summary ──
+    _ul_ws2 = _ul_wb.create_sheet('Course Demand Summary')
+    _ul_hdr2 = ['Course Code', 'Course Title', 'Department', 'Sections',
+                'Original Cap/Section', 'Total Original Capacity',
+                'Total Enrolled', 'Over Total Cap', 'Max Section Enrollment',
+                'Periods Covered', 'Periods With Overfill',
+                'Extra Sections Needed', 'Recommendation']
+    _ul_ws2.append(_ul_hdr2)
+    for c in _ul_ws2[1]:
+        c.font = openpyxl.styles.Font(bold=True, name='Arial')
+
+    _ul_course_data = {}
+    for r in _ul_section_rows:
+        code = r['code']
+        if code not in _ul_course_data:
+            _ul_course_data[code] = {
+                'title': r['title'], 'dept': r['dept'], 'orig_cap': r['orig_cap'],
+                'sections': 0, 'total_enrolled': 0, 'max_enrolled': 0,
+                'periods': set(), 'overfill_periods': set()
+            }
+        d = _ul_course_data[code]
+        d['sections'] += 1
+        d['total_enrolled'] += r['enrolled']
+        d['max_enrolled'] = max(d['max_enrolled'], r['enrolled'])
+        if r['period']:
+            d['periods'].add(r['period'])
+        if r['over'] > 0:
+            d['overfill_periods'].add(r['period'])
+
+    _ul_course_rows = []
+    for code, d in _ul_course_data.items():
+        total_cap = d['orig_cap'] * d['sections']
+        over_total = max(0, d['total_enrolled'] - total_cap)
+        import math
+        extra_sections = math.ceil(over_total / d['orig_cap']) if over_total > 0 else 0
+        if extra_sections > 0 and d['overfill_periods']:
+            rec = f"Add {extra_sections} section(s); overfill in periods {', '.join(sorted(d['overfill_periods']))}"
+        elif d['total_enrolled'] == 0:
+            rec = 'No enrollment — verify course is requested'
+        elif d['total_enrolled'] < total_cap * 0.3:
+            rec = 'Very low demand — consider reducing sections'
+        else:
+            rec = 'Adequate capacity'
+        _ul_course_rows.append({
+            'code': code, 'title': d['title'], 'dept': d['dept'],
+            'sections': d['sections'], 'orig_cap': d['orig_cap'],
+            'total_cap': total_cap, 'total_enrolled': d['total_enrolled'],
+            'over_total': over_total, 'max_enrolled': d['max_enrolled'],
+            'periods_covered': len(d['periods']),
+            'overfill_periods': len(d['overfill_periods']),
+            'extra_sections': extra_sections, 'rec': rec
+        })
+    _ul_course_rows.sort(key=lambda r: (-r['over_total'], r['code']))
+
+    for r in _ul_course_rows:
+        _ul_ws2.append([r['code'], r['title'], r['dept'], r['sections'],
+                        r['orig_cap'], r['total_cap'], r['total_enrolled'],
+                        r['over_total'], r['max_enrolled'], r['periods_covered'],
+                        r['overfill_periods'], r['extra_sections'], r['rec']])
+
+    for col_letter, w in [('A', 12), ('B', 40), ('C', 18), ('D', 10),
+                          ('E', 18), ('F', 20), ('G', 16), ('H', 16),
+                          ('I', 20), ('J', 16), ('K', 20), ('L', 20), ('M', 55)]:
+        _ul_ws2.column_dimensions[col_letter].width = w
+
+    # ── Sheet 3: Period Demand Heatmap ──
+    _ul_ws3 = _ul_wb.create_sheet('Period Demand Heatmap')
+    _ul_hdr3 = ['Course Code', 'Course Title', 'Department', 'Original Cap'] + \
+               [f'Period {p} Enrolled' for p in PERIODS] + \
+               [f'Period {p} Over Cap' for p in PERIODS]
+    _ul_ws3.append(_ul_hdr3)
+    for c in _ul_ws3[1]:
+        c.font = openpyxl.styles.Font(bold=True, name='Arial')
+
+    for code in sorted(_ul_course_data.keys()):
+        d = _ul_course_data[code]
+        row_data = [code, d['title'], d['dept'], d['orig_cap']]
+        for p in PERIODS:
+            p_enrolled = sum(r['enrolled'] for r in _ul_section_rows
+                           if r['code'] == code and r['period'] == p)
+            row_data.append(p_enrolled)
+        for p in PERIODS:
+            p_enrolled = sum(r['enrolled'] for r in _ul_section_rows
+                           if r['code'] == code and r['period'] == p)
+            p_over = max(0, p_enrolled - d['orig_cap'])
+            row_data.append(p_over)
+        _ul_ws3.append(row_data)
+
+    _ul_ws3.column_dimensions['A'].width = 12
+    _ul_ws3.column_dimensions['B'].width = 40
+    _ul_ws3.column_dimensions['C'].width = 18
+    _ul_ws3.column_dimensions['D'].width = 14
+
+    # ── Sheet 4: Summary ──
+    _ul_ws4 = _ul_wb.create_sheet('Summary')
+    _ul_ws4.column_dimensions['A'].width = 40
+    _ul_ws4.column_dimensions['B'].width = 20
+
+    _total_enrolled_all = sum(r['enrolled'] for r in _ul_section_rows)
+    _total_orig_cap = sum(r['orig_cap'] for r in _ul_section_rows)
+    _courses_over = sum(1 for r in _ul_course_rows if r['over_total'] > 0)
+    _total_extra = sum(r['extra_sections'] for r in _ul_course_rows)
+    _total_requests = len(requests)
+    _total_placed_ul = sum(1 for pid in assign for cid in assign[pid])
+
+    _summary_rows = [
+        ('UNLIMITED SEAT MODE — DIAGNOSTIC SUMMARY', ''),
+        ('', ''),
+        ('Total Course Requests', _total_requests),
+        ('Total Students Placed', _total_placed_ul),
+        ('Placement Rate', f'{100 * _total_placed_ul / max(_total_requests, 1):.1f}%'),
+        ('Remaining Clashes', len(clash)),
+        ('', ''),
+        ('CAPACITY ANALYSIS', ''),
+        ('Total Sections', len(sections)),
+        ('Total Original Capacity (with caps)', _total_orig_cap),
+        ('Total Actual Enrollment (unlimited)', _total_enrolled_all),
+        ('Excess Demand Over Cap', max(0, _total_enrolled_all - _total_orig_cap)),
+        ('', ''),
+        ('SECTION ACTIONS', ''),
+        ('Sections Needing SPLIT (over cap)', _split_count),
+        ('Sections to MOVE (low/no demand)', _move_count),
+        ('Sections OK', _ok_count),
+        ('', ''),
+        ('COURSE ACTIONS', ''),
+        ('Courses Over Total Capacity', _courses_over),
+        ('Total Extra Sections Needed', _total_extra),
+    ]
+    for label, val in _summary_rows:
+        _ul_ws4.append([label, val])
+        if label and label == label.upper() and not val:
+            _ul_ws4.cell(_ul_ws4.max_row, 1).font = openpyxl.styles.Font(bold=True, name='Arial', size=12)
+
+    _ul_path = os.path.join(OUTPUT_DIR, 'Unlimited_Seat_Analysis_2026_27.xlsx')
+    _ul_wb.save(_ul_path)
+    print(f"\n  ** Unlimited Seat Analysis saved: {_ul_path}")
+
+# ============================================================
 # 5. POST-RUN: GENERATE INTERACTIVE HTML BOARDS
 # ============================================================
 print("\n" + "=" * 60)
@@ -5247,5 +5461,6 @@ except Exception as _e:
 print(f"\n  {_boards_generated} boards generated in {BOARDS_DIR}/")
 
 print("=" * 60)
-print(f"DONE — v3 Enhanced Engine: {len(clash)} clashes, {placement_rate:.1f}% placement")
+_mode_label = ' [UNLIMITED SEAT MODE]' if ENGINE_MODE == 'unlimited' else ''
+print(f"DONE — v3 Enhanced Engine{_mode_label}: {len(clash)} clashes, {placement_rate:.1f}% placement")
 print("=" * 60)
