@@ -141,16 +141,15 @@
 - **TBD Theology (999999)**: 830 section removed — 830 should have 9 total sections, not 10
 
 ### Current Results (v3 — latest full run)
-- 752 conflicts (Gr9: 167, Gr10: 165, Gr11: 145, Gr12: 275), 88.5% placement (5777/6529)
+- 748 conflicts (Gr9: 169, Gr10: 164, Gr11: 145, Gr12: 270), 88.5% placement (5781/6529)
 - 0 double-bookings, 0 teacher load violations
 - Graduation requirement fulfillment: 4799/5420 (88.5%)
 - AP/Honors fulfillment: 648/682 (95.0%)
 - Protected course conflicts: 666
-- Root cause: 693 all_periods_blocked, 112 singleton_collision, 3 period_conflict
+- Root cause: 680 all_periods_blocked, 126 singleton_collision, 5 period_conflict
 - 371 sections across 143 courses, 63 teachers
-- Top unscheduled courses: 820 Theology 10 (97), 810 Theology 9 (69), 757 Intl Business (45), 710 World History (38), 440 Precalculus (37)
-- Phase D: 16 restarts, best seed=4269, convergence spread=30 (3.8%)
-- Capacity utilization: 63.7% (3,294 empty seats across 371 sections)
+- Phase D: 16 restarts, best seed=4269
+- Phase A-0: Conflict matrix (3,018 pairs) with lazy caching across restarts
 - Engine Analysis Report generated: 17 recommendations (7 code, 6 rule, 4 process)
 
 ### Priority System (DATA_STRUCTURE.md — current engine implementation)
@@ -173,3 +172,4 @@
 - **Two-section swap optimization**: After single-section moves stall, tries swapping periods between pairs of high-conflict sections (time-limited to 60s per restart)
 - **Enhanced CSP**: 6 rounds in `full_reseat()` and `full_reseat_fast()`
 - **CSP recovery in fast path**: Post-bump CSP recovery and greedy re-add in `full_reseat_fast()`
+- **Phase A-0 conflict matrix**: Pre-computes priority-weighted conflict matrix (3,018 course pairs) and conflict degree per course. Lazy caching via `_ensure_conflict_matrix()` computes once and reuses across Phase D's 16 restarts, keeping conflict scoring consistent
