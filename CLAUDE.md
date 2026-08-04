@@ -147,6 +147,7 @@
 - **Template 6 REV 08.04.26**: Sheet 2 Column E changed from optional to REQUIRED. All 371 rows populated: FY=245, EC=97, S1=15, S2=14. 203 Guitar Ensemble rows 51-52 corrected from EC→FY.
 - **semester_designations.json**: Eliminated — T6 Column E is sole authority for section semester placement
 - **Template 2 REV 08.04.26**: 488 requests removed, 55 added (net -433). Bulk removal of 849/851 requests from Gr12, ~80 Theology 11 (830) removals, ~20 Academic Support (955) removals, course swaps, 3 new students (116597, 120834, 121012). New total: 6,100 requests, 804 students, 141 courses.
+- **Template 8 REV 08.04.26**: 2 students added — 116597 Giordano, Joseph (Gr9), 120834 McNeal, Harlem (Gr10). New total: 803 students. NOTE: Student 121012 has 8 requests in T2 but is not yet in T8.
 
 ### Current Results (v3 — latest full run, STALE — pre-T2 revision)
 - 748 conflicts (Gr9: 169, Gr10: 164, Gr11: 145, Gr12: 270), 88.5% placement (5781/6529)
