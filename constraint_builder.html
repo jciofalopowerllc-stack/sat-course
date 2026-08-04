@@ -448,8 +448,7 @@ body { font-family: var(--font); background: var(--surface); color: var(--text);
           <label class="form-label">Constraint Type</label>
           <select class="form-select" id="form-type" onchange="onTypeChange()">
             <option value="">Select a type...</option>
-            <option value="semester-lock">Semester Lock &mdash; lock courses to S1 or S2, period free</option>
-            <option value="full-freedom">Full Freedom &mdash; AI controls semester, period, and student assignment</option>
+            <option value="prescribed-term">Prescribed Term &mdash; set per-section semester placement (FY/S1/S2/EC)</option>
             <option value="prescribed-split">Prescribed Split &mdash; assign specific sections to S1 or S2</option>
             <option value="period-lock">Period Lock &mdash; pin courses to specific periods</option>
             <option value="exclusion">Exclusion &mdash; courses must NOT share a period</option>
@@ -463,9 +462,9 @@ body { font-family: var(--font); background: var(--surface); color: var(--text);
           <div class="course-picker" id="course-picker"></div>
         </div>
 
-        <!-- Step 4: Semester Assignment (for semester-lock) -->
+        <!-- Step 4: Prescribed Term Assignment (for prescribed-term) -->
         <div class="form-group" id="sem-assign-group" style="display:none;">
-          <label class="form-label">Semester Assignment</label>
+          <label class="form-label">Prescribed Term (T6 Column E)</label>
           <table class="sem-assign-table" id="sem-assign-table">
             <thead>
               <tr><th>Code</th><th>Course</th><th>Semester</th></tr>
@@ -547,16 +546,8 @@ let selectedCourses = new Set();
 
 // Toggle definitions per type
 const TOGGLE_DEFS = {
-  'semester-lock': [
-    { id: 'period-free', label: 'Period is free', sub: 'AI assigns period A–G to minimize conflicts', default: true },
-    { id: 'no-same-period', label: 'Do not require same period', sub: 'Courses may be placed in different instructional periods', default: true },
-  ],
-  'full-freedom': [
-    { id: 'sem-free', label: 'Semester is free', sub: 'AI assigns each section to S1 or S2', default: true },
-    { id: 'period-free', label: 'Period is free', sub: 'AI assigns each section to any period A–G', default: true },
-    { id: 'student-opt', label: 'AI assigns students to sections', sub: 'Optimize student-to-section assignment to minimize conflicts', default: true },
-    { id: 'no-same-period', label: 'Do not require same period', sub: 'Paired courses may be in different periods', default: true },
-    { id: 'order-free', label: 'Numerical order not required', sub: 'Higher-numbered course may precede lower-numbered', default: true },
+  'prescribed-term': [
+    { id: 'period-free', label: 'Period is free', sub: 'Engine assigns period A–G to minimize conflicts', default: true },
   ],
   'prescribed-split': [
     { id: 'period-free', label: 'Period is free', sub: 'AI assigns period A–G to minimize conflicts', default: true },
@@ -575,18 +566,18 @@ function seedConstraints() {
     {
       id: nextId++,
       name: 'AP Economics Pair',
-      type: 'semester-lock',
+      type: 'prescribed-term',
       courses: ['766', '765'],
       semAssign: { '766': 'S1', '765': 'S2' },
-      toggles: { 'period-free': true, 'no-same-period': true },
+      toggles: { 'period-free': true },
     },
     {
       id: nextId++,
-      name: 'Theology Paired Courses',
-      type: 'full-freedom',
+      name: 'Theology Semester Courses',
+      type: 'prescribed-term',
       courses: ['849', '851'],
-      semAssign: {},
-      toggles: { 'sem-free': true, 'period-free': true, 'student-opt': true, 'no-same-period': true, 'order-free': true },
+      semAssign: { '849': 'EC', '851': 'EC' },
+      toggles: { 'period-free': true },
     }
   ];
 }
@@ -595,8 +586,7 @@ function seedConstraints() {
 function renderConstraints() {
   const list = document.getElementById('constraints-list');
   const typeBadgeMap = {
-    'semester-lock': ['Semester Lock', 'badge-semester'],
-    'full-freedom': ['Full Freedom', 'badge-freedom'],
+    'prescribed-term': ['Prescribed Term', 'badge-semester'],
     'prescribed-split': ['Prescribed Split', 'badge-split'],
     'period-lock': ['Period Lock', 'badge-period'],
     'exclusion': ['Exclusion', 'badge-exclusion'],
@@ -631,11 +621,11 @@ function renderConstraints() {
         html += `<li class="rule-lock">${esc(td.label)}: OFF</li>`;
       }
     });
-    if (c.type === 'semester-lock') {
+    if (c.type === 'prescribed-term') {
       c.courses.forEach(code => {
         if (c.semAssign[code]) {
           const crs = courseMap[code];
-          html += `<li class="rule-lock">${code} ${crs ? esc(crs.title) : ''} locked to ${c.semAssign[code]}</li>`;
+          html += `<li class="rule-lock">${code} ${crs ? esc(crs.title) : ''} → Prescribed Term: ${c.semAssign[code]}</li>`;
         }
       });
     }
@@ -682,43 +672,26 @@ function generateEngineCode(c) {
   const str = s => `<span class="str">'${s}'</span>`;
   const val = s => `<span class="val">${s}</span>`;
 
-  if (c.type === 'semester-lock') {
-    lines.push(cmt(`# Semester Lock, Period Free`));
+  if (c.type === 'prescribed-term') {
+    lines.push(cmt(`# Prescribed Term (T6 Column E)`));
     lines.push(cmt(`# Constraint: "${esc(c.name)}"`));
+    lines.push(cmt(`# Per-section semester placement — single authoritative source`));
     lines.push('');
-    lines.push(kw('SEMESTER_LOCKS') + ` = {`);
+    lines.push(cmt('# Valid values per section in Template 6, Sheet 2, Column E:'));
+    lines.push(cmt('#   FY  = Full-year (S1+S2) — engine MUST place as full-year'));
+    lines.push(cmt('#   S1  = Semester 1 only — engine MUST place in S1'));
+    lines.push(cmt('#   S2  = Semester 2 only — engine MUST place in S2'));
+    lines.push(cmt('#   EC  = Engine Choice — engine decides optimal semester (S1 or S2)'));
+    lines.push('');
     c.courses.forEach(code => {
       const crs = courseMap[code];
-      const sem = c.semAssign[code] || 'AI_CHOICE';
-      lines.push(`    ${str(code)}: ${str(sem)},  ${cmt('# ' + (crs ? esc(crs.title) : code))}`);
+      const pt = c.semAssign[code] || 'EC';
+      lines.push(cmt(`# ${code} ${crs ? esc(crs.title) : code}: Prescribed Term = ${pt}`));
     });
-    lines.push(`}`);
     if (c.toggles['period-free']) {
       lines.push('');
-      lines.push(kw('PERIOD_FREE') + ` = [${c.courses.map(code => str(code)).join(', ')}]`);
       lines.push(cmt('# Engine assigns period A-G to minimize conflicts'));
     }
-    if (c.toggles['no-same-period']) {
-      lines.push(cmt('# No requirement that courses share a period'));
-    }
-  } else if (c.type === 'full-freedom') {
-    lines.push(cmt('# Full Freedom Paired'));
-    lines.push(cmt(`# Constraint: "${esc(c.name)}"`));
-    lines.push('');
-    lines.push(kw('FULL_FREEDOM') + ` = {`);
-    lines.push(`    ${str('courses')}: [${c.courses.map(code => str(code)).join(', ')}],`);
-    lines.push(`    ${str('semester')}: ${c.toggles['sem-free'] ? str('AI_CHOICE') : str('LOCKED')},`);
-    lines.push(`    ${str('period')}: ${c.toggles['period-free'] ? str('AI_CHOICE') : str('LOCKED')},`);
-    lines.push(`    ${str('student_assignment')}: ${c.toggles['student-opt'] ? str('OPTIMIZE_CONFLICTS') : str('MANUAL')},`);
-    lines.push(`    ${str('require_same_period')}: ${val(c.toggles['no-same-period'] ? 'False' : 'True')},`);
-    lines.push(`    ${str('require_order')}: ${val(c.toggles['order-free'] ? 'False' : 'True')},`);
-    lines.push(`}`);
-    lines.push('');
-    lines.push(cmt('# AI agent has total freedom:'));
-    if (c.toggles['sem-free']) lines.push(cmt('#   - Assign any section to S1 or S2'));
-    if (c.toggles['period-free']) lines.push(cmt('#   - Place sections in any period A-G'));
-    if (c.toggles['student-opt']) lines.push(cmt('#   - Assign students to minimize conflicts'));
-    if (c.toggles['order-free']) lines.push(cmt('#   - Numerical course order not required'));
   } else if (c.type === 'prescribed-split') {
     lines.push(cmt('# Prescribed Split'));
     lines.push(cmt(`# Constraint: "${esc(c.name)}"`));
@@ -784,7 +757,7 @@ function updateDynamicFields() {
   const togglesGroup = document.getElementById('toggles-group');
 
   // Semester assignment table
-  if (type === 'semester-lock' && selectedCourses.size > 0) {
+  if (type === 'prescribed-term' && selectedCourses.size > 0) {
     semGroup.style.display = 'block';
     const tbody = document.getElementById('sem-assign-body');
     let html = '';
@@ -795,9 +768,10 @@ function updateDynamicFields() {
       html += `<td class="code-cell">${code}</td>`;
       html += `<td>${esc(crs.title)}</td>`;
       html += `<td><select id="sem-${code}" class="form-select" style="width:auto;">`;
-      html += `<option value="S1">S1 (Fall)</option>`;
-      html += `<option value="S2">S2 (Spring)</option>`;
-      html += `<option value="AI">AI Choice</option>`;
+      html += `<option value="FY">FY (Full-Year)</option>`;
+      html += `<option value="S1">S1 (Semester 1)</option>`;
+      html += `<option value="S2">S2 (Semester 2)</option>`;
+      html += `<option value="EC">EC (Engine Choice)</option>`;
       html += `</select></td>`;
       html += `</tr>`;
     });
@@ -841,7 +815,7 @@ function createConstraint() {
 
   // Gather semester assignments
   const semAssign = {};
-  if (type === 'semester-lock') {
+  if (type === 'prescribed-term') {
     selectedCourses.forEach(code => {
       const sel = document.getElementById('sem-' + code);
       if (sel) semAssign[code] = sel.value;
@@ -894,7 +868,7 @@ function editExisting(id) {
   updateDynamicFields();
 
   // Restore semester assignments
-  if (c.type === 'semester-lock') {
+  if (c.type === 'prescribed-term') {
     setTimeout(() => {
       c.courses.forEach(code => {
         const sel = document.getElementById('sem-' + code);
