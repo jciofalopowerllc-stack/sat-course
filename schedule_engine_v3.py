@@ -2749,6 +2749,8 @@ def _section_priority_key(s):
     """Sort key for section placement order using the DATA_STRUCTURE.md priority system.
     Course Section Total = Course Section Raw + Top Student Total + Teacher Total + Room Total.
     Highest-priority sections are placed first (most negative sort values).
+    Phase A-0 conflict degree breaks ties: courses sharing many high-priority students
+    with other courses are placed earlier to get first pick of periods.
     Uses _top_student_cache (call _refresh_top_students() after each _clear_priority_caches())."""
     code = s['code']
     teacher = s['teacher']
@@ -2760,9 +2762,11 @@ def _section_priority_key(s):
     r_raw = room_raw_priority(room) if room and room != 'TBD' else 0
     r_total = r_raw + t_total + max_student_total
     cs_total = cs_raw + max_student_total + t_total + r_total
+    cdeg = _conflict_degree_cache.get(code, 0) if _conflict_degree_cache else 0
     return (
         -cs_total,
         -cs_raw,
+        -cdeg,
         -_course_demand.get(code, 0),
         len(sec_by_code[code]),
         code,
@@ -2790,12 +2794,62 @@ def _predict_conflict_score(code, period, halves, co_enroll):
             break
     return conflict_score
 
+# ── Phase A-0: Conflict Matrix Pre-Analysis ──
+
+def _build_conflict_matrix(co_enroll):
+    """Phase A-0: Pre-compute priority-weighted conflict score for every co-enrolled course pair.
+    Weight = sum of max(crp_a, crp_b) for each shared student."""
+    cm = {}
+    seen = set()
+    for code_a, others in co_enroll.items():
+        for code_b, shared_pids in others.items():
+            pair = tuple(sorted((code_a, code_b)))
+            if pair in seen:
+                continue
+            seen.add(pair)
+            weight = 0
+            for pid in shared_pids:
+                crp_a = course_request_priority(pid, code_a)
+                crp_b = course_request_priority(pid, code_b)
+                weight += max(crp_a, crp_b)
+            cm[(code_a, code_b)] = weight
+            cm[(code_b, code_a)] = weight
+    return cm
+
+def _build_conflict_degree(conflict_matrix):
+    """Phase A-0: Total conflict weight per course — sum of weights to all co-enrolled courses.
+    Courses with high conflict degree are most constrained and should be placed first."""
+    deg = {}
+    seen = set()
+    for (a, b), w in conflict_matrix.items():
+        pair = tuple(sorted((a, b)))
+        if pair in seen:
+            continue
+        seen.add(pair)
+        deg[a] = deg.get(a, 0) + w
+        deg[b] = deg.get(b, 0) + w
+    return deg
+_co_enroll_cache = None
+_conflict_matrix_cache = None
+_conflict_degree_cache = None
+
+def _ensure_conflict_matrix():
+    """Lazily compute co-enrollment, conflict matrix, and conflict degree once."""
+    global _co_enroll_cache, _conflict_matrix_cache, _conflict_degree_cache
+    if _co_enroll_cache is None:
+        _co_enroll_cache = _build_co_enrollment()
+        _conflict_matrix_cache = _build_conflict_matrix(_co_enroll_cache)
+        _conflict_degree_cache = _build_conflict_degree(_conflict_matrix_cache)
+        _cm_pairs = len(_conflict_matrix_cache) // 2
+        print(f"  Phase A-0: Conflict matrix built — {_cm_pairs} course pairs with weighted conflicts")
+    return _co_enroll_cache, _conflict_matrix_cache, _conflict_degree_cache
+
 def greedy_assign_periods(seed=42, audit=False):
     """Assign each section to a period using per-placement save/remove/recalculate/re-rank.
     After every section placement, priority caches are cleared, all remaining sections'
     priority values are recalculated, and the ranking is rebuilt before the next placement."""
     rng = random.Random(seed)
-    co_enroll = _build_co_enrollment()
+    co_enroll, _, _ = _ensure_conflict_matrix()
 
     if audit:
         _clear_priority_caches()
