@@ -155,6 +155,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .cascade-summary{margin-top:6px;padding-top:6px;border-top:1px solid #334155;font-size:12px}
 .cascade-summary .cs-row{display:flex;justify-content:space-between;margin-bottom:2px}
 
+/* Section Lock */
+.card.locked{opacity:.65;cursor:default;border-left-style:dashed}
+.card.locked:hover{transform:none;box-shadow:none}
+.lock-toggle{background:none;border:none;color:#475569;cursor:pointer;font-size:11px;padding:0 2px}
+.lock-toggle:hover{color:#f59e0b}
+.card.locked .lock-toggle{color:#f59e0b}
+
+/* Student View */
+.stu-breadcrumb{font-size:12px;color:#64748b;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.stu-breadcrumb a{color:#3b82f6;cursor:pointer;text-decoration:none}
+.stu-breadcrumb a:hover{text-decoration:underline}
+.st-row.clickable{cursor:pointer;transition:background .15s;padding:3px 4px;margin:0 -4px;border-radius:3px}
+.st-row.clickable:hover{background:rgba(59,130,246,.1)}
+.alt-list{margin-top:4px;margin-bottom:8px}
+.alt-item{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-radius:4px;font-size:11px;margin-bottom:3px;background:#1e293b;transition:background .15s}
+.alt-item:hover{background:#243147}
+.alt-item .alt-info{color:#e2e8f0}
+.alt-item .alt-sub{color:#64748b;font-size:10px;margin-left:8px}
+.alt-item button{background:#2563eb;color:white;border:none;border-radius:4px;padding:3px 10px;font-size:10px;cursor:pointer;font-weight:600}
+.alt-item button:hover{background:#1d4ed8}
+.alt-item button:disabled{opacity:.4;cursor:default;background:#334155}
+.alt-item.blocked{opacity:.6}
+.alt-item.blocked .alt-info{color:#94a3b8}
+.stu-course-hdr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:#e2e8f0;border-bottom:1px solid #1e293b;cursor:pointer}
+.stu-course-hdr:hover{color:#60a5fa}
+.stu-course-hdr .sch-period{color:#64748b;font-size:11px}
+.stu-clash-item{padding:4px 0;border-bottom:1px solid #1e293b;font-size:11px}
+.stu-clash-item .scr-title{color:#f87171;font-weight:600}
+.stu-clash-item .scr-reason{color:#64748b;font-size:10px;margin-top:1px}
+
+/* History item */
+.history-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #1e293b;font-size:11px}
+.history-item .hi-num{color:#64748b;min-width:18px;text-align:right}
+.history-item .hi-desc{color:#e2e8f0;flex:1}
+.history-item .hi-type{font-size:9px;padding:1px 4px;border-radius:3px;font-weight:600;white-space:nowrap}
+.hi-type.section{background:rgba(59,130,246,.2);color:#60a5fa}
+.hi-type.student{background:rgba(168,85,247,.2);color:#c084fc}
+.history-item .hi-time{color:#475569;font-size:10px;white-space:nowrap}
+
 /* Export Modal */
 #export-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:center;justify-content:center}
 #export-modal.open{display:flex}
@@ -175,7 +214,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 <div id="load-screen">
   <h1>Master Schedule Board</h1>
   <p>Don Bosco Prep 2026-27</p>
-  <p class="subtitle">Phase 2 — Cascade Solver & Ripple Analysis</p>
+  <p class="subtitle">Phase 3 — Student Moves, Locking & Session Management</p>
   <div class="file-drop" id="file-drop">
     <span class="icon">&#128203;</span>
     <div class="label">Drop <strong>schedule_solution_v3.json</strong> here<br>or click to browse</div>
@@ -205,7 +244,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
     <input type="text" class="search-box" id="search-box" placeholder="Search course or teacher...">
     <div class="spacer"></div>
     <button id="undo-btn" disabled onclick="undoLastMove()">Undo</button>
-    <button class="primary" onclick="showExport()">Export Changes</button>
+    <button onclick="saveSession()">Save Session</button>
+    <button onclick="document.getElementById('session-input').click()">Load Session</button>
+    <input type="file" id="session-input" accept=".json" style="display:none">
+    <button class="primary" onclick="showExport()">Export</button>
     <span class="move-count" id="move-count">0 moves</span>
   </div>
   <main id="board"></main>
@@ -241,7 +283,8 @@ const state = {
   selectedSid:null, moveHistory:[], originalClashCount:0,
   currentClashCount:0, currentPlaced:0, totalRequests:0,
   filters:{term:'all',dept:'all',search:''},
-  unlimitedMode:false, dragSid:null
+  unlimitedMode:false, dragSid:null,
+  selectedStudent:null, lockedSections:new Set()
 };
 
 // ── Data Loading ──
@@ -479,7 +522,19 @@ function findSectionSid(code, sectionNum) {
   return sec ? sec.sid : null;
 }
 
+function recalcClashCount() {
+  let added = 0, resolved = 0;
+  for (const m of state.moveHistory) {
+    if (m.cascade) {
+      added += m.cascade.stats.newClashCount;
+      resolved += m.cascade.stats.resolvedCount;
+    }
+  }
+  state.currentClashCount = state.originalClashCount + added - resolved;
+}
+
 function applyMove(sectionSid, newPeriod) {
+  if (state.lockedSections.has(sectionSid)) return null;
   const cascade = computeCascade(sectionSid, newPeriod);
   if (!cascade) return null;
 
@@ -540,22 +595,57 @@ function applyMove(sectionSid, newPeriod) {
   section.period = newPeriod;
 
   state.moveHistory.push({
+    type: 'section_move',
     sectionSid, oldPeriod, newPeriod,
     sectionCode: section.code, sectionTitle: section.title,
     sectionNum: section.section, teacher: section.teacher,
     cascade, timestamp: new Date().toLocaleTimeString()
   });
 
-  state.currentClashCount = state.originalClashCount
-    + state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.newClashCount, 0)
-    - state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.resolvedCount, 0);
-
+  recalcClashCount();
   return cascade;
 }
 
 function undoLastMove() {
   if (state.moveHistory.length === 0) return;
   const last = state.moveHistory.pop();
+
+  if (last.type === 'student_move') {
+    const stu = state.assignments[last.studentId];
+    if (stu) {
+      const courseData = stu.courses[last.courseCode];
+      const sched = state.studentSchedule[last.studentId];
+      if (courseData && sched) {
+        const toSec = state.sections.find(s => s.sid === last.toSid);
+        if (toSec) {
+          for (const sem of toSec.halves) {
+            const key = `${last.toPeriod}-${sem}`;
+            if (sched[key]) {
+              sched[key] = sched[key].filter(c => String(c) !== String(last.courseCode));
+              if (sched[key].length === 0) delete sched[key];
+            }
+          }
+        }
+        for (const sem of courseData.halves) {
+          const key = `${last.fromPeriod}-${sem}`;
+          if (!sched[key]) sched[key] = [];
+          sched[key].push(String(last.courseCode));
+        }
+        state.sectionStudents[last.toSid] = (state.sectionStudents[last.toSid] || []).filter(s => s !== last.studentId);
+        if (last.fromSid !== null) {
+          if (!state.sectionStudents[last.fromSid]) state.sectionStudents[last.fromSid] = [];
+          state.sectionStudents[last.fromSid].push(last.studentId);
+        }
+        courseData.period = last.fromPeriod;
+        courseData.section = last.fromSection;
+      }
+    }
+    recalcClashCount();
+    renderAll();
+    if (state.selectedStudent) renderStudentDetail(state.selectedStudent);
+    return;
+  }
+
   const section = state.sections.find(s => s.sid === last.sectionSid);
   if (!section) return;
 
@@ -616,10 +706,296 @@ function undoLastMove() {
   }
 
   section.period = last.oldPeriod;
-  state.currentClashCount = state.originalClashCount
-    + state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.newClashCount, 0)
-    - state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.resolvedCount, 0);
+  recalcClashCount();
   renderAll();
+}
+
+// ── Section Locking ──
+function toggleLock(sid, e) {
+  if (e) e.stopPropagation();
+  if (state.lockedSections.has(sid)) state.lockedSections.delete(sid);
+  else state.lockedSections.add(sid);
+  renderBoard();
+}
+
+// ── Student View ──
+function selectStudent(studentId) {
+  state.selectedStudent = studentId;
+  renderStudentDetail(studentId);
+  renderStudentContext(studentId);
+}
+
+function renderStudentContext(studentId) {
+  const stu = state.assignments[studentId];
+  if (!stu) return;
+  const panel = document.getElementById('context-panel');
+  panel.className = '';
+  const courseCount = Object.keys(stu.courses).length;
+  const clashes = state.clashByStudent[studentId] || [];
+
+  panel.innerHTML = `
+    <h3>${stu.name} (Grade ${stu.grade})</h3>
+    <div class="ctx-row"><span class="ctx-label">Student ID</span><span class="ctx-val">${studentId}</span></div>
+    <div class="ctx-row"><span class="ctx-label">Courses</span><span class="ctx-val">${courseCount} enrolled</span></div>
+    <div class="ctx-row"><span class="ctx-label">Clashes</span><span class="ctx-val ${clashes.length>0?'ctx-warn':''}">${clashes.length} unscheduled</span></div>
+    <div class="ctx-row"><span class="ctx-label">Priority</span><span class="ctx-val">Raw ${stu.student_raw} | Total ${stu.student_total}</span></div>
+  `;
+}
+
+function renderStudentDetail(studentId) {
+  const stu = state.assignments[studentId];
+  if (!stu) return;
+  const panel = document.getElementById('detail-panel');
+  const content = document.getElementById('detail-content');
+  const clashes = state.clashByStudent[studentId] || [];
+
+  let html = '<div class="stu-breadcrumb">';
+  if (state.selectedSid) {
+    const sec = state.sections.find(s => s.sid === state.selectedSid);
+    html += `<a onclick="renderDetailPanel('${state.selectedSid}');state.selectedStudent=null">&larr; ${sec?sec.code+' §'+sec.section:'Section'}</a><span>|</span>`;
+  }
+  html += `<span style="color:#e2e8f0">${stu.name} (Gr${stu.grade})</span></div>`;
+
+  html += `<h2>${stu.name}</h2>`;
+  html += `<div class="detail-grid">
+    <span class="dl">Grade</span><span class="dv">${stu.grade}</span>
+    <span class="dl">Student ID</span><span class="dv">${studentId}</span>
+    <span class="dl">Raw Priority</span><span class="dv">${stu.student_raw}</span>
+    <span class="dl">Total Priority</span><span class="dv">${stu.student_total}</span>
+    <span class="dl">Courses</span><span class="dv">${Object.keys(stu.courses).length} enrolled, ${clashes.length} clashes</span>
+  </div>`;
+
+  html += '<h4>Schedule</h4>';
+  html += '<table class="sched-grid"><thead><tr><th></th>';
+  for (const p of PERIODS) html += `<th>${p}</th>`;
+  html += '</tr></thead><tbody>';
+  const sched = state.studentSchedule[studentId] || {};
+  for (const sem of ['S1','S2']) {
+    html += `<tr><th>${sem}</th>`;
+    for (const p of PERIODS) {
+      const key = `${p}-${sem}`;
+      const courses = sched[key] || [];
+      if (courses.length === 0) {
+        html += '<td class="empty-slot">-</td>';
+      } else if (courses.length === 1) {
+        const c = stu.courses[courses[0]];
+        html += `<td class="occupied" title="${c?c.title:courses[0]}">${courses[0]}</td>`;
+      } else {
+        html += `<td class="conflict" title="${courses.join(', ')}">${courses.join('/')}</td>`;
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+
+  html += `<h4>Enrolled Courses (${Object.keys(stu.courses).length})</h4>`;
+  const sortedCourses = Object.entries(stu.courses).sort((a,b) => a[1].period.localeCompare(b[1].period));
+  for (const [code, cd] of sortedCourses) {
+    const currentSid = findSectionSid(code, cd.section);
+    const liveEnroll = currentSid ? (state.sectionStudents[currentSid]||[]).length : '?';
+    const sec = currentSid ? state.sections.find(s => s.sid === currentSid) : null;
+    const cap = sec ? sec.cap : '?';
+    html += `<div class="stu-course-hdr">
+      <span><strong>${code}</strong> ${cd.title} §${cd.section}</span>
+      <span class="sch-period">Per ${cd.period} | ${cd.teacher} | ${liveEnroll}/${cap}</span>
+    </div>`;
+
+    const alts = findStudentAlternatives(studentId, code);
+    if (alts.length > 0) {
+      html += '<div class="alt-list">';
+      for (const alt of alts) {
+        const altEnroll = (state.sectionStudents[alt.sid]||[]).length;
+        const blocked = alt.conflict !== null;
+        const full = !state.unlimitedMode && altEnroll >= alt.cap;
+        html += `<div class="alt-item${blocked?' blocked':''}">
+          <span class="alt-info">§${alt.section} Per ${alt.period}<span class="alt-sub">${alt.teacher} | ${alt.room} | ${altEnroll}/${alt.cap}</span></span>
+          ${blocked ? `<span style="color:#f59e0b;font-size:10px">Conflict: ${alt.conflict}</span>` :
+            full ? `<span style="color:#ef4444;font-size:10px">Full</span>` :
+            `<button onclick="doStudentMove('${studentId}','${code}','${alt.sid}')">Move</button>`}
+        </div>`;
+      }
+      html += '</div>';
+    }
+  }
+
+  if (clashes.length > 0) {
+    html += `<h4>Unscheduled Courses (${clashes.length})</h4>`;
+    for (const cl of clashes) {
+      html += `<div class="stu-clash-item">
+        <div class="scr-title">${cl.code} ${cl.course} (${cl.priority_band})</div>
+        <div class="scr-reason">${cl.root_cause_codes ? cl.root_cause_codes.join(', ') : 'Unknown'}</div>
+      </div>`;
+    }
+  }
+
+  content.innerHTML = html;
+  panel.classList.add('open');
+}
+
+function findStudentAlternatives(studentId, courseCode) {
+  const stu = state.assignments[studentId];
+  if (!stu) return [];
+  const courseData = stu.courses[courseCode];
+  if (!courseData) return [];
+
+  const currentSid = findSectionSid(courseCode, courseData.section);
+  return state.sections.filter(s =>
+    String(s.code) === String(courseCode) &&
+    s.sid !== currentSid &&
+    JSON.stringify(s.halves) === JSON.stringify(courseData.halves)
+  ).map(alt => {
+    let conflict = null;
+    const sched = state.studentSchedule[studentId] || {};
+    for (const sem of alt.halves) {
+      const key = `${alt.period}-${sem}`;
+      if (sched[key]) {
+        const others = sched[key].filter(c => String(c) !== String(courseCode));
+        if (others.length > 0) {
+          const conflictCourse = stu.courses[others[0]];
+          conflict = others[0] + (conflictCourse ? ' ' + conflictCourse.title : '');
+          break;
+        }
+      }
+    }
+    return { ...alt, conflict };
+  }).sort((a,b) => {
+    if (a.conflict && !b.conflict) return 1;
+    if (!a.conflict && b.conflict) return -1;
+    return (state.sectionStudents[a.sid]||[]).length - (state.sectionStudents[b.sid]||[]).length;
+  });
+}
+
+function doStudentMove(studentId, courseCode, toSid) {
+  const stu = state.assignments[studentId];
+  if (!stu) return;
+  const courseData = stu.courses[courseCode];
+  if (!courseData) return;
+  const toSec = state.sections.find(s => s.sid === toSid);
+  if (!toSec) return;
+
+  if (JSON.stringify(toSec.halves) !== JSON.stringify(courseData.halves)) return;
+  if (!state.unlimitedMode && (state.sectionStudents[toSid]||[]).length >= toSec.cap) return;
+
+  const sched = state.studentSchedule[studentId];
+  if (sched) {
+    for (const sem of toSec.halves) {
+      const key = `${toSec.period}-${sem}`;
+      if (sched[key]) {
+        const others = sched[key].filter(c => String(c) !== String(courseCode));
+        if (others.length > 0) return;
+      }
+    }
+  }
+
+  const fromSid = findSectionSid(courseCode, courseData.section);
+  const oldPeriod = courseData.period;
+  const oldSection = courseData.section;
+
+  if (sched) {
+    for (const sem of courseData.halves) {
+      const key = `${oldPeriod}-${sem}`;
+      if (sched[key]) {
+        sched[key] = sched[key].filter(c => String(c) !== String(courseCode));
+        if (sched[key].length === 0) delete sched[key];
+      }
+    }
+    for (const sem of toSec.halves) {
+      const key = `${toSec.period}-${sem}`;
+      if (!sched[key]) sched[key] = [];
+      sched[key].push(String(courseCode));
+    }
+  }
+
+  if (fromSid) {
+    state.sectionStudents[fromSid] = (state.sectionStudents[fromSid]||[]).filter(s => s !== studentId);
+  }
+  if (!state.sectionStudents[toSid]) state.sectionStudents[toSid] = [];
+  state.sectionStudents[toSid].push(studentId);
+
+  courseData.period = toSec.period;
+  courseData.section = toSec.section;
+
+  state.moveHistory.push({
+    type: 'student_move',
+    studentId, studentName: stu.name, grade: stu.grade,
+    courseCode, courseTitle: courseData.title,
+    fromSid, toSid,
+    fromPeriod: oldPeriod, toPeriod: toSec.period,
+    fromSection: oldSection, toSection: toSec.section,
+    teacher: toSec.teacher,
+    timestamp: new Date().toLocaleTimeString()
+  });
+
+  recalcClashCount();
+  renderAll();
+  renderStudentDetail(studentId);
+  renderStudentContext(studentId);
+}
+
+// ── Session Save/Load ──
+function saveSession() {
+  if (state.moveHistory.length === 0 && state.lockedSections.size === 0) {
+    alert('No moves or locks to save.');
+    return;
+  }
+  const data = {
+    version: 3,
+    timestamp: new Date().toISOString(),
+    moveCount: state.moveHistory.length,
+    lockedCount: state.lockedSections.size,
+    moves: state.moveHistory.map(m => {
+      if (m.type === 'student_move') {
+        return { type: 'student_move', studentId: m.studentId, courseCode: m.courseCode, toSid: m.toSid };
+      }
+      return { type: 'section_move', sectionSid: m.sectionSid, newPeriod: m.newPeriod };
+    }),
+    lockedSections: [...state.lockedSections]
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `board_session_${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function loadSessionFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.moves || !Array.isArray(data.moves)) {
+        alert('Invalid session file.');
+        return;
+      }
+      while (state.moveHistory.length > 0) undoLastMove();
+      let applied = 0, failed = 0;
+      for (const move of data.moves) {
+        if (move.type === 'student_move') {
+          const stu = state.assignments[move.studentId];
+          if (stu && stu.courses[move.courseCode]) {
+            doStudentMove(move.studentId, move.courseCode, move.toSid);
+            applied++;
+          } else { failed++; }
+        } else {
+          const result = applyMove(move.sectionSid, move.newPeriod);
+          if (result) applied++; else failed++;
+        }
+      }
+      state.lockedSections = new Set(data.lockedSections || []);
+      state.selectedStudent = null;
+      state.selectedSid = null;
+      renderAll();
+      closeDetail();
+      alert(`Session loaded: ${applied} moves applied${failed ? ', '+failed+' failed' : ''}.`);
+    } catch(err) {
+      alert('Error loading session: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ── Grade Breakdown ──
@@ -640,11 +1016,18 @@ function renderAll() {
 
 function renderScoreboard() {
   const kpiRow = document.getElementById('kpi-row');
-  const newClashes = state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.newClashCount, 0);
-  const relocated = state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.relocated, 0);
-  const resolved = state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.resolvedCount, 0);
+  let newClashes = 0, relocated = 0, resolved = 0, studentMoves = 0;
+  for (const m of state.moveHistory) {
+    if (m.cascade) {
+      newClashes += m.cascade.stats.newClashCount;
+      relocated += m.cascade.stats.relocated;
+      resolved += m.cascade.stats.resolvedCount;
+    }
+    if (m.type === 'student_move') studentMoves++;
+  }
   const netDelta = newClashes - resolved;
   const adjustedClashes = state.originalClashCount + netDelta;
+  const sectionMoves = state.moveHistory.length - studentMoves;
 
   kpiRow.innerHTML = `
     <div class="kpi accent-red">
@@ -660,14 +1043,14 @@ function renderScoreboard() {
       ${resolved ? `<div class="kpi-delta positive">~${resolved} resolvable</div>` : ''}
     </div>
     <div class="kpi accent-purple">
-      <div class="kpi-label">Sections</div>
-      <div class="kpi-value">${state.sections.length}</div>
-      <div class="kpi-sub">${relocated ? relocated+' students relocated' : state.stats.sections_used+' used'}</div>
+      <div class="kpi-label">Moves</div>
+      <div class="kpi-value">${state.moveHistory.length}</div>
+      <div class="kpi-sub">${sectionMoves} section, ${studentMoves} student</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Students</div>
-      <div class="kpi-value">${state.stats.students}</div>
-      <div class="kpi-sub">63 teachers</div>
+      <div class="kpi-label">Locks</div>
+      <div class="kpi-value">${state.lockedSections.size}</div>
+      <div class="kpi-sub">of ${state.sections.length} sections</div>
     </div>
   `;
 
@@ -779,14 +1162,16 @@ function getTermType(halves) {
 }
 
 function createCard(sec) {
+  const isLocked = state.lockedSections.has(sec.sid);
   const card = document.createElement('div');
-  card.className = 'card' + (sec.sid === state.selectedSid ? ' selected' : '');
-  card.draggable = true;
+  card.className = 'card' + (sec.sid === state.selectedSid ? ' selected' : '') + (isLocked ? ' locked' : '');
+  card.draggable = !isLocked;
   card.dataset.sid = sec.sid;
   card.style.borderLeftColor = DEPT_COLORS[sec.dept] || '#475569';
 
   const term = getTermType(sec.halves);
-  const enrollDisplay = state.unlimitedMode ? sec.enrolled : `${sec.enrolled}/${sec.cap}`;
+  const liveEnroll = (state.sectionStudents[sec.sid] || []).length;
+  const enrollDisplay = state.unlimitedMode ? liveEnroll : `${liveEnroll}/${sec.cap}`;
 
   const studentClashes = (state.sectionStudents[sec.sid] || []).filter(sid => {
     const sched = state.studentSchedule[sid];
@@ -800,7 +1185,7 @@ function createCard(sec) {
 
   card.innerHTML = `
     <div class="card-top">
-      <span class="card-code">${sec.code}</span>
+      <span class="card-code">${sec.code}<button class="lock-toggle" onclick="toggleLock('${sec.sid}',event)" title="${isLocked?'Unlock':'Lock'} section">${isLocked?'&#128274;':'&#128275;'}</button></span>
       <span class="card-sec">&sect;${sec.section}</span>
     </div>
     <div class="card-title">${sec.title}</div>
@@ -815,23 +1200,27 @@ function createCard(sec) {
   `;
 
   card.addEventListener('click', e => {
+    if (e.target.closest('.lock-toggle')) return;
     e.stopPropagation();
+    state.selectedStudent = null;
     selectSection(sec.sid);
   });
 
-  card.addEventListener('dragstart', e => {
-    state.dragSid = sec.sid;
-    card.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', sec.sid);
-  });
+  if (!isLocked) {
+    card.addEventListener('dragstart', e => {
+      state.dragSid = sec.sid;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', sec.sid);
+    });
 
-  card.addEventListener('dragend', () => {
-    card.classList.remove('dragging');
-    state.dragSid = null;
-    hideMovePreview();
-    document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
-  });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      state.dragSid = null;
+      hideMovePreview();
+      document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+    });
+  }
 
   return card;
 }
@@ -846,6 +1235,7 @@ function selectSection(sid) {
 
 function closeDetail() {
   state.selectedSid = null;
+  state.selectedStudent = null;
   document.getElementById('detail-panel').classList.remove('open');
   document.getElementById('context-panel').className = 'empty';
   document.getElementById('context-panel').innerHTML = 'Click a section card to view details';
@@ -901,13 +1291,13 @@ function renderDetailPanel(sid) {
   html += `<h4>Room Schedule: ${sec.room}</h4>`;
   html += renderScheduleGrid(state.roomIndex[sec.room] || [], sid);
 
-  html += `<h4>Enrolled Students (${enrolled.length})</h4>`;
+  html += `<h4>Enrolled Students (${enrolled.length}) <span style="font-size:10px;color:#64748b;font-weight:400;text-transform:none;letter-spacing:0">— click name to view</span></h4>`;
   html += '<div class="student-list">';
   for (const stuId of enrolled.slice(0, 50)) {
     const stu = state.assignments[stuId];
     if (!stu) continue;
     const stuClashes = state.clashByStudent[stuId] || [];
-    html += `<div class="st-row"><span class="st-name">${stu.name}${stuClashes.length>0?' <span style="color:#f59e0b">('+stuClashes.length+' clashes)</span>':''}</span><span class="st-grade">Gr${stu.grade}</span></div>`;
+    html += `<div class="st-row clickable" onclick="selectStudent('${stuId}')"><span class="st-name">${stu.name}${stuClashes.length>0?' <span style="color:#f59e0b">('+stuClashes.length+' clashes)</span>':''}</span><span class="st-grade">Gr${stu.grade}</span></div>`;
   }
   if (enrolled.length > 50) html += `<div class="st-row" style="color:#64748b;font-style:italic">...and ${enrolled.length-50} more</div>`;
   html += '</div>';
@@ -916,7 +1306,7 @@ function renderDetailPanel(sid) {
     html += `<h4>Unscheduled Requests (${courseClashes.length})</h4>`;
     html += '<div class="student-list">';
     for (const cl of courseClashes.slice(0, 30)) {
-      html += `<div class="st-row"><span class="st-name">${cl.name} <span style="color:#64748b">(${cl.priority_band})</span></span><span class="st-grade">Gr${cl.grade}</span></div>`;
+      html += `<div class="st-row clickable" onclick="selectStudent('${cl.student}')"><span class="st-name">${cl.name} <span style="color:#64748b">(${cl.priority_band})</span></span><span class="st-grade">Gr${cl.grade}</span></div>`;
     }
     if (courseClashes.length > 30) html += `<div class="st-row" style="color:#64748b;font-style:italic">...and ${courseClashes.length-30} more</div>`;
     html += '</div>';
@@ -1029,11 +1419,18 @@ function showExport() {
   text += `Moves Applied (${state.moveHistory.length}):\n`;
   text += '─'.repeat(60) + '\n';
 
-  let totalNew = 0, totalResolved = 0, totalRelocated = 0;
+  let totalNew = 0, totalResolved = 0, totalRelocated = 0, studentMoveCount = 0;
   for (let i = 0; i < state.moveHistory.length; i++) {
     const m = state.moveHistory[i];
+    if (m.type === 'student_move') {
+      studentMoveCount++;
+      text += `${i+1}. [STUDENT] ${m.studentName} (Gr${m.grade})\n`;
+      text += `   ${m.courseCode} ${m.courseTitle}: §${m.fromSection} Per ${m.fromPeriod} → §${m.toSection} Per ${m.toPeriod}\n`;
+      text += `   Teacher: ${m.teacher}\n\n`;
+      continue;
+    }
     const cs = m.cascade.stats;
-    text += `${i+1}. ${m.sectionCode} ${m.sectionTitle} §${m.sectionNum}\n`;
+    text += `${i+1}. [SECTION] ${m.sectionCode} ${m.sectionTitle} §${m.sectionNum}\n`;
     text += `   Period ${m.oldPeriod} → ${m.newPeriod} (Teacher: ${m.teacher})\n`;
     text += `   Cascade: ${cs.conflictsFound} conflicts found, ${cs.relocated} relocated, ${cs.newClashCount} new clashes, ~${cs.resolvedCount} resolvable`;
     if (m.cascade.hasTeacherConflict) text += ' [TEACHER CONFLICT]';
@@ -1043,13 +1440,13 @@ function showExport() {
     if (m.cascade.studentMoves.length > 0) {
       text += '   Relocated students:\n';
       for (const mv of m.cascade.studentMoves) {
-        text += `     ✓ ${mv.name} (Gr${mv.grade}) — ${mv.courseCode} §${mv.fromSection}→§${mv.toSection} Per ${mv.fromPeriod}→${mv.toPeriod}\n`;
+        text += `     + ${mv.name} (Gr${mv.grade}) — ${mv.courseCode} §${mv.fromSection}→§${mv.toSection} Per ${mv.fromPeriod}→${mv.toPeriod}\n`;
       }
     }
     if (m.cascade.newClashes.length > 0) {
       text += '   New clashes:\n';
       for (const cl of m.cascade.newClashes) {
-        text += `     ✗ ${cl.name} (Gr${cl.grade}) — ${cl.courseCode} ${cl.courseTitle} (${cl.reason})\n`;
+        text += `     - ${cl.name} (Gr${cl.grade}) — ${cl.courseCode} ${cl.courseTitle} (${cl.reason})\n`;
       }
     }
     text += '\n';
@@ -1061,11 +1458,14 @@ function showExport() {
   const netImpact = totalNew - totalResolved;
   text += '─'.repeat(60) + '\n';
   text += `Original: ${state.originalClashCount} clashes (${state.stats.placement_rate}% placement)\n`;
-  text += `Students auto-relocated: ${totalRelocated}\n`;
+  text += `Section moves: ${state.moveHistory.length - studentMoveCount}\n`;
+  text += `Student moves: ${studentMoveCount}\n`;
+  text += `Students auto-relocated by cascade: ${totalRelocated}\n`;
   text += `New clashes created: +${totalNew}\n`;
   text += `Potentially resolvable: ~${totalResolved}\n`;
   text += `Net impact: ${netImpact > 0 ? '+' : ''}${netImpact}\n`;
   text += `Estimated clashes after engine re-run: ${state.originalClashCount + netImpact}\n`;
+  text += `Locked sections: ${state.lockedSections.size}\n`;
   text += `\nTo apply: Update prescribed periods in Template 6 Sheet 2, then re-run engine.\n`;
 
   content.innerHTML = `
@@ -1135,6 +1535,14 @@ function initFileHandlers() {
   fileInput.addEventListener('change', e => {
     if (e.target.files.length) processFile(e.target.files[0]);
   });
+
+  const sessionInput = document.getElementById('session-input');
+  if (sessionInput) {
+    sessionInput.addEventListener('change', e => {
+      if (e.target.files.length) loadSessionFromFile(e.target.files[0]);
+      sessionInput.value = '';
+    });
+  }
 }
 
 function processFile(file) {
