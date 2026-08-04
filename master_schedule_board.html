@@ -63,7 +63,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .ctx-ok{color:#22c55e;font-weight:600}
 
 /* Toolbar */
-#toolbar{background:#1e293b;padding:8px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #0f172a;flex-shrink:0}
+#toolbar{background:#1e293b;padding:8px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border-bottom:1px solid #0f172a;flex-shrink:0}
 #toolbar select{background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer}
 #toolbar button{background:#334155;color:#e2e8f0;border:none;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;transition:background .15s}
 #toolbar button:hover{background:#475569}
@@ -240,8 +240,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
     <label style="font-size:12px;color:#64748b">Term:</label>
     <select id="filter-term"><option value="all">All Terms</option><option value="FY">Full Year</option><option value="S1">Semester 1</option><option value="S2">Semester 2</option></select>
     <label style="font-size:12px;color:#64748b">Dept:</label>
-    <select id="filter-dept"><option value="all">All Departments</option></select>
-    <input type="text" class="search-box" id="search-box" placeholder="Search course or teacher...">
+    <select id="filter-dept"><option value="all">All Depts</option></select>
+    <label style="font-size:12px;color:#64748b">Teacher:</label>
+    <select id="filter-teacher"><option value="all">All Teachers</option></select>
+    <label style="font-size:12px;color:#64748b">Room:</label>
+    <select id="filter-room"><option value="all">All Rooms</option></select>
+    <label style="font-size:12px;color:#64748b">Grade:</label>
+    <select id="filter-grade"><option value="all">All Grades</option><option value="9">Grade 9</option><option value="10">Grade 10</option><option value="11">Grade 11</option><option value="12">Grade 12</option></select>
+    <label style="font-size:12px;color:#64748b">Course:</label>
+    <select id="filter-course"><option value="all">All Courses</option></select>
+    <label style="font-size:12px;color:#64748b">Fill:</label>
+    <select id="filter-enroll"><option value="all">Any Fill</option><option value="over80">Over 80%</option><option value="under50">Under 50%</option><option value="full">At Capacity</option><option value="empty">Empty</option></select>
+    <input type="text" class="search-box" id="search-box" placeholder="Search...">
+    <button style="font-size:11px;color:#94a3b8;background:none;border:1px solid #334155" onclick="clearAllFilters()">Clear Filters</button>
     <div class="spacer"></div>
     <button id="undo-btn" disabled onclick="undoLastMove()">Undo</button>
     <button onclick="saveSession()">Save Session</button>
@@ -282,7 +293,8 @@ const state = {
   sectionByCode:{}, clashByCourse:{}, clashByStudent:{},
   selectedSid:null, moveHistory:[], originalClashCount:0,
   currentClashCount:0, currentPlaced:0, totalRequests:0,
-  filters:{term:'all',dept:'all',search:''},
+  filters:{term:'all',dept:'all',teacher:'all',room:'all',grade:'all',course:'all',enroll:'all',search:''},
+  sectionGrades:{},
   unlimitedMode:false, dragSid:null,
   selectedStudent:null, lockedSections:new Set()
 };
@@ -331,6 +343,15 @@ function buildIndices() {
       const secKey = `${code}-${c.section}`;
       const sec = state.sectionByCode[secKey];
       if (sec) state.sectionStudents[sec.sid].push(sid);
+    }
+  }
+
+  state.sectionGrades = {};
+  for (const sec of state.sections) {
+    state.sectionGrades[sec.sid] = new Set();
+    for (const stuId of (state.sectionStudents[sec.sid] || [])) {
+      const stu = state.assignments[stuId];
+      if (stu) state.sectionGrades[sec.sid].add(stu.grade);
     }
   }
 
@@ -1141,19 +1162,48 @@ function renderBoard() {
 }
 
 function filterSections(secs) {
-  const {term, dept, search} = state.filters;
+  const {term, dept, teacher, room, grade, course, enroll, search} = state.filters;
   return secs.filter(s => {
     if (term !== 'all') {
       const t = getTermType(s.halves);
       if (t !== term) return false;
     }
     if (dept !== 'all' && s.dept !== dept) return false;
+    if (teacher !== 'all' && s.teacher !== teacher) return false;
+    if (room !== 'all' && s.room !== room) return false;
+    if (grade !== 'all') {
+      const grades = state.sectionGrades[s.sid];
+      if (!grades || !grades.has(Number(grade))) return false;
+    }
+    if (course !== 'all' && String(s.code) !== course) return false;
+    if (enroll !== 'all') {
+      const live = (state.sectionStudents[s.sid] || []).length;
+      const cap = s.cap;
+      const pct = cap > 0 ? live / cap : 0;
+      if (enroll === 'over80' && pct < 0.8) return false;
+      if (enroll === 'under50' && pct >= 0.5) return false;
+      if (enroll === 'full' && live < cap) return false;
+      if (enroll === 'empty' && live > 0) return false;
+    }
     if (search) {
       const q = search.toLowerCase();
-      if (!String(s.code).includes(q) && !s.title.toLowerCase().includes(q) && !s.teacher.toLowerCase().includes(q)) return false;
+      if (!String(s.code).includes(q) && !s.title.toLowerCase().includes(q) && !s.teacher.toLowerCase().includes(q) && !s.room.toLowerCase().includes(q)) return false;
     }
     return true;
   });
+}
+
+function clearAllFilters() {
+  state.filters = {term:'all',dept:'all',teacher:'all',room:'all',grade:'all',course:'all',enroll:'all',search:''};
+  document.getElementById('filter-term').value = 'all';
+  document.getElementById('filter-dept').value = 'all';
+  document.getElementById('filter-teacher').value = 'all';
+  document.getElementById('filter-room').value = 'all';
+  document.getElementById('filter-grade').value = 'all';
+  document.getElementById('filter-course').value = 'all';
+  document.getElementById('filter-enroll').value = 'all';
+  document.getElementById('search-box').value = '';
+  renderBoard();
 }
 
 function getTermType(halves) {
@@ -1494,22 +1544,41 @@ function closeExportModal() {
 
 // ── Filter Handlers ──
 function setupFilters() {
-  const deptSelect = document.getElementById('filter-dept');
-  const depts = [...new Set(state.sections.map(s => s.dept))].sort();
-  for (const d of depts) {
-    const opt = document.createElement('option');
-    opt.value = d; opt.textContent = d;
-    deptSelect.appendChild(opt);
+  function populateSelect(id, values) {
+    const sel = document.getElementById(id);
+    for (const v of values) {
+      const opt = document.createElement('option');
+      opt.value = v; opt.textContent = v;
+      sel.appendChild(opt);
+    }
   }
 
-  document.getElementById('filter-term').addEventListener('change', e => {
-    state.filters.term = e.target.value;
-    renderBoard();
-  });
-  deptSelect.addEventListener('change', e => {
-    state.filters.dept = e.target.value;
-    renderBoard();
-  });
+  populateSelect('filter-dept', [...new Set(state.sections.map(s => s.dept))].sort());
+  populateSelect('filter-teacher', [...new Set(state.sections.map(s => s.teacher))].sort());
+  populateSelect('filter-room', [...new Set(state.sections.map(s => s.room))].sort());
+
+  const courseSelect = document.getElementById('filter-course');
+  courseSelect.innerHTML = '<option value="all">All Courses</option>';
+  const courses = [...new Set(state.sections.map(s => String(s.code)))].sort((a,b) => a.localeCompare(b, undefined, {numeric:true}));
+  for (const code of courses) {
+    const sec = state.sections.find(s => String(s.code) === code);
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = `${code} ${sec ? sec.title : ''}`;
+    courseSelect.appendChild(opt);
+  }
+
+  const filterIds = ['filter-term','filter-dept','filter-teacher','filter-room','filter-grade','filter-course','filter-enroll'];
+  const filterKeys = ['term','dept','teacher','room','grade','course','enroll'];
+  for (let i = 0; i < filterIds.length; i++) {
+    const el = document.getElementById(filterIds[i]);
+    const key = filterKeys[i];
+    el.addEventListener('change', e => {
+      state.filters[key] = e.target.value;
+      renderBoard();
+    });
+  }
+
   document.getElementById('search-box').addEventListener('input', e => {
     state.filters.search = e.target.value;
     renderBoard();
