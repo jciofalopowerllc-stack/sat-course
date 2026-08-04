@@ -65,14 +65,12 @@ The core algorithm runs in four phases:
 | Historical Grades | Template_Historical_Grades | 7 columns: Student ID, School Year, Course Code, Section, Final Grade, Pass/Fail, Final Exam Grade. 10,346 records |
 | Prior Year Master Schedule | Template_Prior_Year_Master_Schedule | 8 columns: School Year, Course Code, Section, Teacher ID, Room, Period, Term, Enrollment. 398 records |
 | Course Priorities | course_priorities.json | 0–5 priority scale for 144 courses with department metadata and graduation requirement rules |
-| Semester Designations | semester_designations.json | 43 semester placement rules: pinned, prescribed S1/S2, split, builder choice |
 
 ### 2.3 Constraint System
 
 | Constraint Type | Description |
 |-----------------|-------------|
-| Semester Lock | Course must run in S1 or S2 only (e.g., 766→S1, 765→S2) |
-| Full Freedom | Course sections split freely across semesters (e.g., 849, 851) |
+| Prescribed Term | Per-section semester placement from T6 Column E: FY (full-year), S1, S2, or EC (Engine Choice — engine decides optimal semester) |
 | Period Pin | Section locked to a specific period (LEO courses, co-schedule groups) |
 | Teacher Load | Max 5 periods per semester per teacher (6 with approval: FY, S1-only, or S2-only) |
 | Room Exclusivity | One section per room per period (except shared rooms with capacity ≥ 100, e.g., Gymnasium) |
@@ -233,7 +231,6 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | File | Format | Purpose |
 |------|--------|---------|
 | `course_priorities.json` | JSON | Priority scale (0–5) for 144 courses, department metadata, graduation requirement rules by grade level |
-| `semester_designations.json` | JSON | 43 semester placement rules: pinned, prescribed S1/S2, split, builder choice |
 | `priority_assignments.json` | JSON | Weighted scoring system: 10 input weights, per-course/student/teacher priority assignments |
 | `schedule_solution_v3.json` | JSON | Complete engine output: sections, student assignments, conflictes, room assignments, stats |
 
