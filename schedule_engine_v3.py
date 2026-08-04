@@ -2774,7 +2774,9 @@ def _section_priority_key(s):
 def _predict_conflict_score(code, period, halves, co_enroll):
     """Predict how many weighted student conflicts placing this course in this period would cause.
     Checks every co-enrolled course: if that course has a section already in this period
-    with overlapping semesters, each shared student is a potential conflict weighted by priority."""
+    with overlapping semesters, each shared student is a potential conflict weighted by
+    student priority + course priority. Teacher/room raw of the conflicting section is added
+    per-pair (sections with more locks = harder to relocate = higher damage)."""
     conflict_score = 0
     co_courses = co_enroll.get(code, {})
     for other_cid, shared_students in co_courses.items():
@@ -2785,10 +2787,20 @@ def _predict_conflict_score(code, period, halves, co_enroll):
                 continue
             if not (set(halves) & set(os['halves'])):
                 continue
+            # Teacher/room raw for the conflicting section
+            _t = os.get('teacher', 'TBD')
+            _r = os.get('room', 'TBD')
+            _tr_raw = 0
+            if _t and _t != 'TBD':
+                _tr_raw += teacher_raw_priority(_t)
+            if _r and _r != 'TBD':
+                _tr_raw += room_raw_priority(_r)
             for pid in shared_students:
+                s_raw = student_raw_priority(pid)
                 crp_this = course_request_priority(pid, code)
                 crp_other = course_request_priority(pid, other_cid)
-                conflict_score += max(crp_this, crp_other)
+                conflict_score += s_raw + max(crp_this, crp_other)
+            conflict_score += _tr_raw
             break
     return conflict_score
 
@@ -2796,9 +2808,25 @@ def _predict_conflict_score(code, period, halves, co_enroll):
 
 def _build_conflict_matrix(co_enroll):
     """Phase A-0: Pre-compute priority-weighted conflict score for every co-enrolled course pair.
-    Weight = sum of max(crp_a, crp_b) for each shared student."""
+    Weight = sum of (student_raw + max(crp_a, crp_b)) for each shared student
+           + max(teacher_room_raw_a, teacher_room_raw_b) per pair.
+    Includes full priority data: student priority (who the student IS),
+    course characteristics (what the course IS), and teacher/room restrictions
+    (how locked the most restricted section IS)."""
     cm = {}
     seen = set()
+    # Pre-compute teacher+room raw for each course's most restricted section
+    _tr_raw_by_code = {}
+    for code in co_enroll:
+        best = 0
+        for sid in sec_by_code.get(code, []):
+            s = sections[sid]
+            t = s.get('teacher', 'TBD')
+            r = s.get('room', 'TBD')
+            t_raw = teacher_raw_priority(t) if t and t != 'TBD' else 0
+            r_raw = room_raw_priority(r) if r and r != 'TBD' else 0
+            best = max(best, t_raw + r_raw)
+        _tr_raw_by_code[code] = best
     for code_a, others in co_enroll.items():
         for code_b, shared_pids in others.items():
             pair = tuple(sorted((code_a, code_b)))
@@ -2807,9 +2835,12 @@ def _build_conflict_matrix(co_enroll):
             seen.add(pair)
             weight = 0
             for pid in shared_pids:
+                s_raw = student_raw_priority(pid)
                 crp_a = course_request_priority(pid, code_a)
                 crp_b = course_request_priority(pid, code_b)
-                weight += max(crp_a, crp_b)
+                weight += s_raw + max(crp_a, crp_b)
+            # Add teacher/room restriction: most restricted section across both courses
+            weight += max(_tr_raw_by_code.get(code_a, 0), _tr_raw_by_code.get(code_b, 0))
             cm[(code_a, code_b)] = weight
             cm[(code_b, code_a)] = weight
     return cm
