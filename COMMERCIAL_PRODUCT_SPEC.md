@@ -60,7 +60,7 @@ The core algorithm runs in four phases:
 | Teacher Profiles | Template 6, Sheet 1 | 17 columns: ID, name, department, load caps, per-semester 6-period approval, period availability (A-G), SSP Teacher flag, co-schedule approval. 62 teachers |
 | Teacher-Course Assignments | Template 6, Sheet 2 | 6 columns: Teacher ID, Course Code, Prescribed Room/Period/Term/Cohort. 340 assignments |
 | Course Profiles | Template 7 | 15 columns: code, title, department, credits, term, grade levels, sections, max enrollment, singleton, AP, graduation requirement, cohort, NCAA, prerequisites, corequisites. 144 courses |
-| Student Profiles | Template 8, Sheet 1 | 11 columns: ID, name, grade, NCAA, LEO II, LEO I, Academic Support, Pathway, Cohort Name, Cohort Locked. 804 students |
+| Student Profiles | Template 8, Sheet 1 | 11 columns: ID, name, grade, NCAA, LEO II, LEO I, Academic Support, Pathway, Cohort Name, Cohort Locked. 803 students |
 | Room Profiles | Template 9 | 5 columns: Room ID, capacity, available periods, available terms, shared room. 48 rooms |
 | Historical Grades | Template_Historical_Grades | 7 columns: Student ID, School Year, Course Code, Section, Final Grade, Pass/Fail, Final Exam Grade. 10,346 records |
 | Prior Year Master Schedule | Template_Prior_Year_Master_Schedule | 8 columns: School Year, Course Code, Section, Teacher ID, Room, Period, Term, Enrollment. 398 records |
@@ -285,7 +285,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | Total Sections | 340 |
 | Total Courses | 144 |
 | Total Teachers | 62 |
-| Total Students | 804 |
+| Total Students | 803 |
 | Total Rooms | 48 |
 | Total Requests | 6,100 |
 | Pyramid Levels | 4 (Graduation Required, No Alternative, Limited Choice, Flexible) |
