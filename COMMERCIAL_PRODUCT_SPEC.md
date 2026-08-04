@@ -24,7 +24,7 @@ Don Bosco Preparatory High School serves as the pilot implementation for the 202
 | Teachers | 62 |
 | Periods | 7 (A–G) |
 | Semesters | 2 (S1, S2) |
-| Course Requests | 5,301 |
+| Course Requests | 6,100 |
 | Rooms | 48 |
 
 ### 1.1 Design Principles
@@ -45,7 +45,7 @@ The core algorithm runs in four phases:
 | Phase | Name | Function |
 |-------|------|----------|
 | A | Assign Periods | Place 340 sections across 7 periods (A–G) using multi-restart greedy optimization |
-| B | Seat Students | Place 5,301 course requests using pyramid-level ordering with batch recalculation and ripple scoring |
+| B | Seat Students | Place 6,100 course requests using pyramid-level ordering with batch recalculation and ripple scoring |
 | C | Bump Conflicts | Resolve remaining conflicts by bumping lower-priority courses, with CSP recovery |
 | D | Multi-Restart Optimization | 16 random seeds × 60-iteration priority-aware optimization, keep best solution |
 
@@ -55,7 +55,7 @@ The core algorithm runs in four phases:
 
 | Source File | Template | Contents |
 |-------------|----------|----------|
-| Student Course Requests | Template 2 | 2-column format: Student ID, Course Code. 5,301 requests (804 students, 102 courses) |
+| Student Course Requests | Template 2 | 2-column format: Student ID, Course Code. 6,100 requests (804 students, 141 courses) |
 | Co-Schedule Groups | Template 4 | 4 columns: Group Name, Course Code, Teacher ID, Prescribed Room. 7 groups, 16 entries |
 | Teacher Profiles | Template 6, Sheet 1 | 17 columns: ID, name, department, load caps, per-semester 6-period approval, period availability (A-G), SSP Teacher flag, co-schedule approval. 62 teachers |
 | Teacher-Course Assignments | Template 6, Sheet 2 | 6 columns: Teacher ID, Course Code, Prescribed Room/Period/Term/Cohort. 340 assignments |
@@ -287,7 +287,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | Total Teachers | 62 |
 | Total Students | 804 |
 | Total Rooms | 48 |
-| Total Requests | 5,301 |
+| Total Requests | 6,100 |
 | Pyramid Levels | 4 (Graduation Required, No Alternative, Limited Choice, Flexible) |
 | Protected Levels | 1 and 2 (cannot be bumped) |
 | Restart Seeds | 16 |
