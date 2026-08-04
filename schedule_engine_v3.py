@@ -1039,7 +1039,7 @@ REPORT_FORMATS = {
         },
         'per_teacher_rows': '7 period rows + TOTAL SECTIONS + TOTAL CONSECUTIVE PERIODS + blank separator',
         'tally_rules': 'Red font when consecutive periods >= 4',
-        'features': ['UNASSIGNED in bold for empty slots', 'teacher ID row'],
+        'features': ['UNSCHEDULED in bold for empty slots', 'teacher ID row'],
     },
     'remaining_conflicts': {
         'filename': 'Remaining_Conflicts_v2.5.xlsx',
@@ -1081,16 +1081,16 @@ REPORT_FORMATS = {
             'col_T': 'Conflicts (unplaced courses listed)',
         },
         'cell_format': 'CourseCode: CourseTitle (Credits cr)',
-        'empty_cell': 'UNASSIGNED (bold red)',
+        'empty_cell': 'UNSCHEDULED (bold red, with term: FY/S1/S2)',
         'sort_order': 'Grade → Student Name',
         'features': ['auto-filter', 'freeze row 2', 'alternating row shading', 'merged period headers'],
     },
     'incomplete_student_schedules': {
         'filename': 'Incomplete_Student_Schedules_2026_27.xlsx',
         'title': 'Incomplete Student Schedules',
-        'description': 'Only students with at least one UNASSIGNED period/semester slot.',
+        'description': 'Only students with at least one UNSCHEDULED period/semester slot.',
         'source': 'schedule_solution_v3.json assignments + Template 7 (credits)',
-        'filter': 'Students where any Period A-G × S1/S2 slot is UNASSIGNED',
+        'filter': 'Students where any Period A-G × S1/S2 slot is UNSCHEDULED',
         'layout': {
             'row_1': 'Merged period headers (Period A through Period G)',
             'row_2': 'S1 / S2 sub-headers under each period',
@@ -1100,12 +1100,12 @@ REPORT_FORMATS = {
             'cols_D_Q': 'Period A(S1) / Period A(S2) through Period G(S1) / Period G(S2) — 14 columns',
             'col_R': 'Total Sections',
             'col_S': 'Total Credits',
-            'col_T': 'Unassigned Slots (count, bold red)',
+            'col_T': 'Unscheduled Slots (count, bold red)',
             'col_U': 'Conflicts (unplaced courses listed)',
         },
         'cell_format': 'CourseCode: CourseTitle (Credits cr)',
-        'empty_cell': 'UNASSIGNED (bold red)',
-        'sort_order': 'Unassigned Slots (desc) → Grade → Student Name',
+        'empty_cell': 'UNSCHEDULED (bold red, with term: FY/S1/S2)',
+        'sort_order': 'Unscheduled Slots (desc) → Grade → Student Name',
         'tabs': ['Incomplete Schedules (detail)', 'Summary (by grade, slot distribution)'],
         'features': ['auto-filter', 'freeze row 2', 'alternating row shading', 'merged period headers', 'dark-red header'],
     },
@@ -3244,7 +3244,7 @@ def export_job1_report():
 
         vals = [
             ap.get('step', ''), s['code'], s['title'], s['section'], s['dept'],
-            teacher, tid, room, s['period'] or 'UNASSIGNED', term_str,
+            teacher, tid, room, s['period'] or 'UNSCHEDULED', term_str,
             ap.get('cs_raw', course_section_raw(s['code'])),
             ap.get('top_student_total', _top_student_cache.get(s['code'], 0)),
             ap.get('teacher_raw', teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0),
@@ -4754,6 +4754,61 @@ for pid in students:
             'course_request_priority': course_request_priority(pid, cid)
         }
 
+# ── UNSCHEDULED Slot Detection ──
+# After all placements are final, scan each student's schedule to find
+# empty (period, semester) cells.  Mark them as UNSCHEDULED with the
+# correct term: FY (both S1 and S2 empty), S1-only, or S2-only.
+print("\n  Detecting UNSCHEDULED slots...")
+_unscheduled_slots = {}          # pid → list of {'period': 'A', 'term': 'FY'|'S1'|'S2'}
+_total_unscheduled_fy = 0
+_total_unscheduled_s1 = 0
+_total_unscheduled_s2 = 0
+_students_with_gaps = 0
+
+for pid in students:
+    # Build the set of occupied (period, semester) cells for this student
+    occupied = set()
+    for cid, sid in assign[pid].items():
+        for cell in occ_cells(sid):
+            occupied.add(cell)       # cell = (period_letter, 'S1'|'S2')
+
+    gaps = []
+    for period in PERIODS:
+        has_s1 = (period, 'S1') in occupied
+        has_s2 = (period, 'S2') in occupied
+        if not has_s1 and not has_s2:
+            # Both semesters empty → UNSCHEDULED FY
+            gaps.append({'period': period, 'term': 'FY'})
+            _total_unscheduled_fy += 1
+        elif not has_s1:
+            # Only S1 empty
+            gaps.append({'period': period, 'term': 'S1'})
+            _total_unscheduled_s1 += 1
+        elif not has_s2:
+            # Only S2 empty
+            gaps.append({'period': period, 'term': 'S2'})
+            _total_unscheduled_s2 += 1
+
+    if gaps:
+        _unscheduled_slots[pid] = gaps
+        _students_with_gaps += 1
+
+    # Store in solution JSON
+    output['assignments'][pid]['unscheduled_slots'] = gaps
+
+_total_unscheduled_cells = _total_unscheduled_fy + _total_unscheduled_s1 + _total_unscheduled_s2
+print(f"  UNSCHEDULED slots: {_total_unscheduled_cells} total "
+      f"(FY={_total_unscheduled_fy}, S1={_total_unscheduled_s1}, S2={_total_unscheduled_s2})")
+print(f"  Students with gaps: {_students_with_gaps} / {len(students)}")
+
+output['stats']['unscheduled_slots'] = {
+    'total': _total_unscheduled_cells,
+    'fy': _total_unscheduled_fy,
+    's1': _total_unscheduled_s1,
+    's2': _total_unscheduled_s2,
+    'students_with_gaps': _students_with_gaps,
+}
+
 SOLUTION_FILE = os.path.join(SCRATCHPAD, "schedule_solution_v3.json")
 with open(SOLUTION_FILE, 'w') as f:
     json.dump(output, f)
@@ -4795,8 +4850,10 @@ def export_job2_report():
         cell.alignment = Alignment(horizontal='center', wrap_text=True)
         cell.border = thin_border
 
+    unsched_font = Font(name='Arial', size=10, color='FF0000', bold=True)
     row = 2
     for pid in sorted(students.keys(), key=lambda p: (-grade.get(p, 0), students.get(p, ''))):
+        # ── Placed courses ──
         for cid, sid in sorted(assign[pid].items(), key=lambda x: (sections[x[1]]['period'] or 'Z')):
             s = sections[sid]
             term_str = '/'.join(s['halves'])
@@ -4807,7 +4864,7 @@ def export_job2_report():
             vals = [
                 pid, students[pid], grade.get(pid, ''),
                 cid, s['title'], s['section'],
-                s['period'] or 'UNASSIGNED', term_str, s['teacher'], s['room'],
+                s['period'] or 'UNSCHEDULED', term_str, s['teacher'], s['room'],
                 course_request_priority(pid, cid),
                 student_raw_priority(pid), student_total_priority(pid),
                 course_section_raw(cid),
@@ -4816,6 +4873,23 @@ def export_job2_report():
             for c, v in enumerate(vals, 1):
                 cell = ws.cell(row=row, column=c, value=v)
                 cell.font = Font(name='Arial', size=10)
+                cell.border = thin_border
+                if c >= 11:
+                    cell.alignment = Alignment(horizontal='center')
+            row += 1
+
+        # ── UNSCHEDULED slots for this student (bold red) ──
+        for gap in _unscheduled_slots.get(pid, []):
+            vals = [
+                pid, students[pid], grade.get(pid, ''),
+                'UNSCHEDULED', f'UNSCHEDULED {gap["term"]}', '',
+                gap['period'], gap['term'], '', '',
+                '', '', '', '',
+                '', '', '',
+            ]
+            for c, v in enumerate(vals, 1):
+                cell = ws.cell(row=row, column=c, value=v)
+                cell.font = unsched_font
                 cell.border = thin_border
                 if c >= 11:
                     cell.alignment = Alignment(horizontal='center')
@@ -4910,11 +4984,18 @@ def export_job2_report():
         ('Total Students', len(students)),
         ('Total Course Requests', total_requested),
         ('Total Placements', total_placed),
-        ('Total Unscheduled', total_unscheduled),
+        ('Total Unscheduled Requests', total_unscheduled),
         ('Placement Rate', f"{round(total_placed / total_requested * 100, 1)}%" if total_requested else '0%'),
         ('', ''),
         ('Students with Conflicts', conf_count),
         ('Total Conflicts', len(conflict)),
+        ('', ''),
+        ('UNSCHEDULED Period Slots:', ''),
+        ('  Total UNSCHEDULED Slots', _total_unscheduled_cells),
+        ('  UNSCHEDULED FY (both S1+S2 empty)', _total_unscheduled_fy),
+        ('  UNSCHEDULED S1 only', _total_unscheduled_s1),
+        ('  UNSCHEDULED S2 only', _total_unscheduled_s2),
+        ('  Students with Gaps', _students_with_gaps),
         ('', ''),
         ('By Grade:', ''),
     ]
@@ -4923,12 +5004,15 @@ def export_job2_report():
         g_placed = sum(len(assign[p]) for p in g_students)
         g_requested = sum(len(sreq[p]) for p in g_students)
         g_conflicts = sum(1 for c in conflict if grade.get(c['student']) == g)
-        summary_data.append((f'  Grade {g}', f'{g_placed}/{g_requested} placed, {g_conflicts} conflicts'))
+        g_gaps = sum(1 for p in g_students if p in _unscheduled_slots)
+        g_unsched = sum(len(_unscheduled_slots.get(p, [])) for p in g_students)
+        summary_data.append((f'  Grade {g}', f'{g_placed}/{g_requested} placed, {g_conflicts} conflicts, '
+                             f'{g_gaps} students with {g_unsched} UNSCHEDULED slots'))
     for r, (label, val) in enumerate(summary_data, 1):
         ws4.cell(r, 1, label).font = Font(name='Arial', bold=True, size=10)
         ws4.cell(r, 2, val).font = Font(name='Arial', size=10)
-    ws4.column_dimensions['A'].width = 30
-    ws4.column_dimensions['B'].width = 40
+    ws4.column_dimensions['A'].width = 40
+    ws4.column_dimensions['B'].width = 60
 
     out_path = os.path.join(OUTPUT_DIR, 'Job2_Student_Placements_2026_27.xlsx')
     wb.save(out_path)
