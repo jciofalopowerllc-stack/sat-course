@@ -53,7 +53,7 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 |---|------|--------------|
 | 4 | **Course** | Course code, title, department, credits, prerequisites, number of sections, prescribed term (FY/S1/S2) |
 
-Term designation is a property of the course code — NOT a separate file. Cohort assignment is a field in the Student file — NOT a separate file.
+Term Type (FY or S) is a property of the course code — NOT a separate file. Per-section placement (FY/S1/S2/EC) is in the Teacher-Course Assignments file (Template 6 Sheet 2 Column E). Cohort assignment is a field in the Student file — NOT a separate file.
 
 ### Constraint File
 
@@ -326,7 +326,7 @@ Each row connects one teacher to one course they teach, with prescriptions speci
 | B | Course Code | REQUIRED | Must match a Course Code in the Course file |
 | C | Prescribed Room | OPTIONAL | Room number (e.g., S-234) — null = engine decides |
 | D | Prescribed Period | OPTIONAL | A, B, C, D, E, F, G — null = engine decides |
-| E | Prescribed Term | OPTIONAL | FY, S1, S2 — null = engine decides |
+| E | Prescribed Term | REQUIRED | `FY`, `S1`, `S2`, `EC` — **prescribed = required** (same enforcement as prescribed room/period). `FY` = must be full-year. `S1` = must be S1 only. `S2` = must be S2 only. `EC` = Engine Choice (engine decides S1 or S2). This is the **single authoritative source** for per-section semester placement. Cross-validated against Template 7 Term Type: T7=FY requires T6=FY; T7=S requires T6=S1/S2/EC. |
 | F | Prescribed Cohort | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not a cohort course |
 
 6 columns total.
@@ -477,14 +477,14 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 | A | Course Code | REQUIRED | Unique code (e.g., 745) |
 | B | Course Title | REQUIRED | Course name (e.g., AP Calculus AB) |
 | C | Department | REQUIRED | Department name (e.g., MATH, ENG, THEO) |
-| D | Credits | REQUIRED | Credit value (e.g., 5, 2.5) |
-| E | Prescribed Term | REQUIRED | FY, S1, S2 |
+| D | Term Type | REQUIRED | `FY` (full-year) or `S` (semester) — course classification only, does NOT control per-section placement. That is determined by Template 6 Column E (Prescribed Term). |
+| E | Term Credits | REQUIRED | `5.0` (FY), `2.5` (S), or `0` (special courses like 955 Academic Support) — validation failsafe. Cross-validated: FY must pair with 5.0, S must pair with 2.5. |
 | F | Grade Levels | REQUIRED | Eligible grades, comma-separated (e.g., 11, 12) |
 | G | Sections Needed | REQUIRED | Number of sections (e.g., 8) |
 | H | Max Enrollment per Section | REQUIRED | Seat cap (e.g., 25) |
 | I | Singleton | REQUIRED | Y/N — only one section exists |
 | J | AP | REQUIRED | Y/N — is this an AP course |
-| K | Graduation Requirement | OPTIONAL | Subject area satisfied (e.g., English, Mathematics, Science, Social Studies, World Language, Theology, Physical Education) — null = elective |
+| K | Graduation Requirement | OPTIONAL | Subject area satisfied (e.g., English, Mathematics, Science, Social Studies, World Language, Theology) — null = elective |
 | L | Cohort | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not a cohort course |
 | M | NCAA | OPTIONAL | Y/N — is this course NCAA approved — null = not applicable |
 | N | Prerequisites | OPTIONAL | Course codes, comma-separated (e.g., 110, 421) — null = none |
@@ -541,8 +541,8 @@ The engine processes each course section's data in this order:
 |---|------|-------|---------------------|
 | 1 | Identify | Course Section > Course Code | Which course this section belongs to |
 | 2 | Identify | Course Section > Section Number | Which section of the course (e.g., Section 1 of 8) |
-| 3 | Load | Course Section > Course Characteristics | Load AP, Singleton, Graduation Requirement, Prescribed Term, Cohort, Co-Schedule from Course file |
-| 4 | Check | Course Section > Semester Only | Is this a semester-only course (S1 or S2)? If yes, add Semester Only points |
+| 3 | Load | Course Section > Course Characteristics | Load AP, Singleton, Graduation Requirement, Cohort, Co-Schedule from Course file; load Term Type from Template 7 |
+| 4 | Check | Course Section > Semester Only | Is this a semester course (T7 Term Type = S)? If yes, add Semester Only points |
 | 5 | **Calculate** | **Course Section > Raw Priority Value** | **Sum of all applicable course characteristics (AP + Singleton + Grad Req + Semester Only + Cohort + Co-Schedule + Prescribed Term). FIXED for the school year. No student, teacher, or room data. Saved by school year.** |
 | 6 | Identify | Course Section > Assigned Teacher | Load the teacher assigned to this section from Teacher-Course Assignments |
 | 7 | Load | Course Section > Teacher Total Priority Value | The assigned teacher's Total Priority Value |
@@ -697,7 +697,7 @@ Any parent can be prescribed to any shared resource or course code. If not presc
 |-------------|--------|------|
 | Teacher > Prescribed Course > Course Code | course code (e.g., 745) | engine selects least restrictive |
 | Teacher > Prescribed Room > Teacher ID | room number (e.g., S-234) | engine selects least restrictive |
-| Teacher > Prescribed Term > Teacher ID | FY, S1, S2 | engine selects least restrictive |
+| Teacher > Prescribed Term > Teacher ID | FY, S1, S2, EC | EC = Engine Choice. S1/S2 = prescribed = required. |
 | Teacher > Prescribed Period > Teacher ID | A, B, C, D, E, F, G | engine selects least restrictive |
 | Teacher > Prescribed Cohort > Teacher ID | cohort name (e.g., LEO Cohort A) | engine selects least restrictive |
 
@@ -713,7 +713,7 @@ Any parent can be prescribed to any shared resource or course code. If not presc
 |-------------|--------|------|
 | Course Code > Prescribed Teacher | teacher ID/name | engine selects least restrictive |
 | Course Code > Prescribed Room | room number | engine selects least restrictive |
-| Course Code > Prescribed Term | FY, S1, S2 | engine selects least restrictive |
+| Course Code > Prescribed Term | FY, S1, S2, EC | EC = Engine Choice (engine selects S1 or S2). S1/S2 = prescribed = required. |
 | Course Code > Prescribed Period | A, B, C, D, E, F, G | engine selects least restrictive |
 
 ---
@@ -793,13 +793,13 @@ Locks come from three files — Course, Teacher, and Room:
 
 | Lock | When it counts |
 |------|---------------|
-| Semester only (S1 or S2) | Course is not FY — restricted to half the schedule |
+| Semester only (Term Type = S) | Course is a semester course (T7 Term Type = S) — restricted to half the schedule |
 | Singleton | Only one section exists — zero flexibility |
 | AP | Student chose AP over non-AP — contingent upon prerequisites being met |
 | Graduation Requirement | Required course — must be placed |
 | Cohort course | Must keep cohort students together |
 | Co-Schedule Group | Must share a period with other courses |
-| Prescribed Term | Course locked to a specific term |
+| Prescribed Term | Section has a prescribed S1 or S2 in T6 Column E (not awarded for FY or EC) |
 
 **From the Teacher file (prescribed teacher's restrictions):**
 
@@ -807,7 +807,7 @@ Locks come from three files — Course, Teacher, and Room:
 |------|---------------|
 | Prescribed Teacher | Course has a specific teacher assigned |
 | Teacher prescribed to a Period | That teacher is locked to a specific period |
-| Teacher prescribed to a Term | That teacher is locked to a specific term |
+| Teacher prescribed to a Term | That teacher's section has a prescribed S1 or S2 term |
 | Teacher prescribed to a Room | That teacher is locked to a specific room |
 
 **From the Room file (prescribed room's restrictions):**
@@ -1098,11 +1098,11 @@ How restricted the section is based on its own characteristics. These values sta
 | AP | 30 | Course is an AP course |
 | Singleton | 25 | Only 1 section exists for this course |
 | Graduation Requirement | 20 | Course is in a graduation-required department for the student's grade level |
-| Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — full-year courses from English, Mathematics, Science, Social Studies, or World Language departments that are NOT a Grade Level Requirement, NOT a Cohort course, and NOT an SSP course |
-| Semester Only (S1 or S2) | 15 | Course runs one semester only, not full year |
+| Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — full-year courses (T7 Term Type = FY) from English, Mathematics, Science, Social Studies, or World Language departments that are NOT a Grade Level Requirement, NOT a Cohort course, and NOT an SSP course |
+| Semester Only (Term Type = S) | 15 | Course is a semester course (T7 Term Type = S), not full year |
 | Cohort Course | 15 | Course has a cohort constraint (students must stay together) |
 | Co-Schedule Group | 15 | Course is part of a co-schedule group |
-| Prescribed Term | 10 | Course has a prescribed term (S1 or S2) — not awarded for FY courses |
+| Prescribed Term | 10 | Section has a prescribed S1 or S2 in T6 Column E — not awarded for FY or EC sections |
 
 Examples:
 - AP Singleton, S2-only, Grad Req = 30 + 25 + 20 + 15 + 10 = **100**
