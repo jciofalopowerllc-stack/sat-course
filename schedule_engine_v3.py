@@ -2171,6 +2171,76 @@ if course_grade_levels:
 else:
     print("  Grade-level eligibility check: SKIPPED (no grade-level data)")
 
+# ── Under-Enrolled Student Detection ──
+# Students with fewer than 7 period slots of course requests have incomplete schedules.
+# Period slot calculation: FY course = 1.0 slot, Semester course = 0.5 slot.
+# Credit-exempt courses (e.g. 955 Academic Support) count as 1.0 slot despite 0 credits.
+PERIOD_SLOTS_TARGET = 7.0
+_under_enrolled_count = 0
+for pid in sreq:
+    _ue_slots = 0.0
+    _ue_credits = 0.0
+    _ue_courses = []
+    _ue_depts = set()
+    for cid in sreq[pid]:
+        ci = course_info.get(cid, {})
+        tt = ci.get('term_type', 'FY')
+        slot_val = 1.0 if tt == 'FY' else 0.5
+        _ue_slots += slot_val
+        dept = ci.get('dept', '')
+        if dept:
+            _ue_depts.add(dept)
+        cr = 0.0
+        if cid not in CREDIT_EXEMPT:
+            cr = float(ci.get('credits', 0) or 0)
+            _ue_credits += cr
+        _ue_courses.append({
+            'code': cid, 'title': ci.get('title', cid),
+            'dept': dept, 'credits': cr, 'term_type': tt,
+            'slots': slot_val, 'exempt': cid in CREDIT_EXEMPT
+        })
+    _ue_slots = round(_ue_slots, 1)
+    _ue_credits = round(_ue_credits, 1)
+    if _ue_slots < PERIOD_SLOTS_TARGET:
+        _ue_slot_deficit = round(PERIOD_SLOTS_TARGET - _ue_slots, 1)
+        _ue_credit_deficit = round(CREDIT_CAP - _ue_credits, 1)
+        # Determine missing departments
+        _ue_grade = grade.get(pid, 9)
+        _ue_grade_req = {
+            9:  ['English', 'Mathematics', 'Science', 'Social Studies', 'World Language', 'Theology', 'Physical Education'],
+            10: ['English', 'Mathematics', 'Science', 'Social Studies', 'World Language', 'Theology', 'Physical Education'],
+            11: ['English', 'Mathematics', 'Science', 'Social Studies', 'World Language', 'Theology'],
+            12: ['English', 'Mathematics', 'Theology'],
+        }
+        _ue_missing = [d for d in _ue_grade_req.get(_ue_grade, []) if d not in _ue_depts]
+        preflight_warnings.append({
+            'type': 'UNDER_ENROLLED',
+            'student': pid,
+            'name': students.get(pid, pid),
+            'grade': _ue_grade,
+            'total_credits': _ue_credits,
+            'credit_deficit': _ue_credit_deficit,
+            'period_slots': _ue_slots,
+            'slot_deficit': _ue_slot_deficit,
+            'course_count': len(sreq[pid]),
+            'missing_depts': _ue_missing,
+            'missing_dept_str': ', '.join(_ue_missing) if _ue_missing else 'All core present — missing elective',
+            'courses': _ue_courses,
+            'message': f"Student {pid} ({students.get(pid, pid)}, Gr{_ue_grade}) has {_ue_slots} period slots "
+                       f"({_ue_credits} credits) — missing {_ue_slot_deficit} slots. "
+                       f"Missing dept: {', '.join(_ue_missing) if _ue_missing else 'elective/PE/arts'}"
+        })
+        _under_enrolled_count += 1
+print(f"  Under-enrolled check: {_under_enrolled_count} students with < {PERIOD_SLOTS_TARGET} period slots")
+if _under_enrolled_count:
+    _shown = 0
+    for w in preflight_warnings:
+        if w['type'] == 'UNDER_ENROLLED' and _shown < 5:
+            print(f"    {w['message']}")
+            _shown += 1
+    if _under_enrolled_count > 5:
+        print(f"    ... and {_under_enrolled_count - 5} more")
+
 # ── Constraint Chain Analysis ──
 constraint_warnings = 0
 for pid in sreq:
@@ -2204,6 +2274,7 @@ _dup_warnings = [w for w in preflight_warnings if w['type'] == 'DUPLICATE_REQUES
 _prereq_warnings = [w for w in preflight_warnings if w['type'] == 'PREREQ_MISSING']
 _chain_warnings = [w for w in preflight_warnings if w['type'] == 'CONSTRAINT_CHAIN']
 _grade_warnings = [w for w in preflight_warnings if w['type'] == 'GRADE_INELIGIBLE']
+_under_warnings = [w for w in preflight_warnings if w['type'] == 'UNDER_ENROLLED']
 _prereq_with_trans = [w for w in _prereq_warnings if w.get('has_transcript')]
 _prereq_no_trans = [w for w in _prereq_warnings if not w.get('has_transcript')]
 
@@ -2214,6 +2285,7 @@ preflight_report = {
     'prereq_with_transcript': len(_prereq_with_trans),
     'prereq_no_transcript': len(_prereq_no_trans),
     'grade_ineligible': len(_grade_warnings),
+    'under_enrolled': len(_under_warnings),
     'constraint_chains': len(_chain_warnings),
     'warnings': preflight_warnings,
 }
@@ -2255,6 +2327,7 @@ try:
     _sum_rows = [
         ('Duplicate Requests', len(_dup_warnings), 'Students requesting courses they already passed'),
         ('Grade-Level Ineligible', len(_grade_warnings), 'Students requesting courses outside their approved grade level'),
+        ('Under-Enrolled', len(_under_warnings), 'Students with < 7 period slots — incomplete schedule, needs additional course requests'),
         ('Prereq Warnings (with transcript)', len(_prereq_with_trans), 'Students with history missing a prerequisite — REVIEW NEEDED'),
         ('Prereq Warnings (no transcript)', len(_prereq_no_trans), 'Freshmen/transfers with no prior history — likely OK'),
         ('Constraint Chain Conflicts', len(_chain_warnings), 'Unavoidable period conflicts from locked sections'),
@@ -2266,16 +2339,17 @@ try:
         _ws_sum.cell(i, 3, desc).font = _dfont
         for c in range(1, 4):
             _ws_sum.cell(i, c).border = _tbord
-    _ws_sum.cell(13, 1, 'HOW TO USE THIS REPORT:').font = _Font(name='Arial', bold=True, size=11, color='2F5496')
+    _ws_sum.cell(14, 1, 'HOW TO USE THIS REPORT:').font = _Font(name='Arial', bold=True, size=11, color='2F5496')
     _instructions = [
         '1. Review each tab — yellow ACTION column is yours to fill in.',
         '2. For DUPLICATES: type KEEP (retaking intentionally) or REMOVE (erroneous).',
         '3. For GRADE INELIGIBLE: type OK (counselor override) or REMOVE (block the request).',
-        '4. For PREREQ WARNINGS: type OK (override/waiver), REMOVE (block), or TRANSFER (took equivalent elsewhere).',
-        '5. The "No Transcript" tab is mostly freshmen — mark OK for legitimate enrollments.',
-        '6. Return this file and the engine will apply your decisions on the next run.',
+        '4. For UNDER-ENROLLED: type ADD (will add course request to T2) or OK (reduced schedule intentional).',
+        '5. For PREREQ WARNINGS: type OK (override/waiver), REMOVE (block), or TRANSFER (took equivalent elsewhere).',
+        '6. The "No Transcript" tab is mostly freshmen — mark OK for legitimate enrollments.',
+        '7. Return this file and the engine will apply your decisions on the next run.',
     ]
-    for i, line in enumerate(_instructions, 13):
+    for i, line in enumerate(_instructions, 14):
         _ws_sum.cell(i, 1, line).font = _dfont
     _ws_sum.column_dimensions['A'].width = 45
     _ws_sum.column_dimensions['B'].width = 12
@@ -2320,6 +2394,46 @@ try:
             _ws_gl.cell(i, c).border = _tbord
     for col, w in [('A',12),('B',22),('C',14),('D',12),('E',32),('F',16),('G',28),('H',30)]:
         _ws_gl.column_dimensions[col].width = w
+
+    # ── Under-Enrolled tab ──
+    _ws_ue = _rwb.create_sheet('Under-Enrolled')
+    _ue_cols = ['Student ID', 'Student Name', 'Grade', 'Total Credits', 'Credits Missing',
+                'Period Slots', 'Slots Missing', 'Course Count', 'Missing Dept/Subject',
+                'Current Courses', 'ACTION (Your Decision)']
+    _style_hdr(_ws_ue, _ue_cols)
+    _sorted_ue = sorted(_under_warnings, key=lambda x: (x.get('grade', 0), x.get('name', ''), x.get('student', '')))
+    for i, u in enumerate(_sorted_ue, 2):
+        _ws_ue.cell(i, 1, int(u['student'])).font = _dfont
+        _ws_ue.cell(i, 2, u.get('name', '')).font = _dfont
+        _ws_ue.cell(i, 3, u.get('grade', '')).font = _dfont
+        _ws_ue.cell(i, 4, u.get('total_credits', 0))
+        _ws_ue.cell(i, 4).font = _dfont
+        _ws_ue.cell(i, 4).number_format = '0.0'
+        _ws_ue.cell(i, 5, u.get('credit_deficit', 0))
+        _ws_ue.cell(i, 5).font = _Font(name='Arial', size=10, bold=True, color='FF0000')
+        _ws_ue.cell(i, 5).number_format = '0.0'
+        _ws_ue.cell(i, 6, u.get('period_slots', 0))
+        _ws_ue.cell(i, 6).font = _dfont
+        _ws_ue.cell(i, 6).number_format = '0.0'
+        _ws_ue.cell(i, 7, u.get('slot_deficit', 0))
+        _ws_ue.cell(i, 7).font = _Font(name='Arial', size=10, bold=True, color='FF0000')
+        _ws_ue.cell(i, 7).number_format = '0.0'
+        _ws_ue.cell(i, 8, u.get('course_count', 0)).font = _dfont
+        _ws_ue.cell(i, 9, u.get('missing_dept_str', '')).font = _dfont
+        _ws_ue.cell(i, 9).fill = _alert
+        _ws_ue.cell(i, 9).alignment = _Align(wrap_text=True)
+        # Build course list string
+        _ue_course_strs = []
+        for _uc in u.get('courses', []):
+            _exempt_tag = ' [0cr, 1 slot]' if _uc.get('exempt') else ''
+            _ue_course_strs.append(f"{_uc['code']} {_uc['title']} ({_uc['dept']}, {_uc['credits']}cr, {_uc['slots']}slot{_exempt_tag})")
+        _ws_ue.cell(i, 10, '; '.join(_ue_course_strs)).font = _dfont
+        _ws_ue.cell(i, 10).alignment = _Align(wrap_text=True)
+        _ws_ue.cell(i, 11, '').font, _ws_ue.cell(i, 11).fill = _afont, _afill
+        for c in range(1, 12):
+            _ws_ue.cell(i, c).border = _tbord
+    for col, w in [('A',12),('B',22),('C',8),('D',14),('E',14),('F',12),('G',12),('H',12),('I',30),('J',60),('K',30)]:
+        _ws_ue.column_dimensions[col].width = w
 
     # ── Prereq with transcript tab ──
     _ws_pt = _rwb.create_sheet('Prereq - With Transcript')
