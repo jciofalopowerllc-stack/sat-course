@@ -2749,8 +2749,6 @@ def _section_priority_key(s):
     """Sort key for section placement order using the DATA_STRUCTURE.md priority system.
     Course Section Total = Course Section Raw + Top Student Total + Teacher Total + Room Total.
     Highest-priority sections are placed first (most negative sort values).
-    Phase A-0 conflict degree breaks ties: courses sharing many high-priority students
-    with other courses are placed earlier to get first pick of periods.
     Uses _top_student_cache (call _refresh_top_students() after each _clear_priority_caches())."""
     code = s['code']
     teacher = s['teacher']
@@ -2762,11 +2760,9 @@ def _section_priority_key(s):
     r_raw = room_raw_priority(room) if room and room != 'TBD' else 0
     r_total = r_raw + t_total + max_student_total
     cs_total = cs_raw + max_student_total + t_total + r_total
-    cdeg = _conflict_degree_cache.get(code, 0) if _conflict_degree_cache else 0
     return (
         -cs_total,
         -cs_raw,
-        -cdeg,
         -_course_demand.get(code, 0),
         len(sec_by_code[code]),
         code,
