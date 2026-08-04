@@ -1,6 +1,6 @@
 """Pre-fill all 11 templates with existing Don Bosco Prep data.
 Transfers data from schedule_solution.json, priority_assignments.json,
-course_priorities.json, and semester_designations.json into the templates.
+and course_priorities.json into the templates.
 Marks N/A for fields not applicable to Don Bosco Prep."""
 
 import json, os, re
