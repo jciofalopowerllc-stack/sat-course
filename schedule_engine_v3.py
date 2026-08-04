@@ -4907,15 +4907,13 @@ if ENGINE_MODE == 'unlimited':
     _total_orig_cap = sum(r['orig_cap'] for r in _ul_section_rows)
     _courses_over = sum(1 for r in _ul_course_rows if r['over_total'] > 0)
     _total_extra = sum(r['extra_sections'] for r in _ul_course_rows)
-    _total_requests = len(requests)
-    _total_placed_ul = sum(1 for pid in assign for cid in assign[pid])
 
     _summary_rows = [
         ('UNLIMITED SEAT MODE — DIAGNOSTIC SUMMARY', ''),
         ('', ''),
-        ('Total Course Requests', _total_requests),
-        ('Total Students Placed', _total_placed_ul),
-        ('Placement Rate', f'{100 * _total_placed_ul / max(_total_requests, 1):.1f}%'),
+        ('Total Course Requests', total_requested),
+        ('Total Students Placed', total_placed),
+        ('Placement Rate', f'{placement_rate:.1f}%'),
         ('Remaining Clashes', len(clash)),
         ('', ''),
         ('CAPACITY ANALYSIS', ''),
