@@ -146,8 +146,8 @@
 - **Template 7 REV 08.04.26**: Column D changed from "Credits" to "Term Type" (FY/S), Column E added as "Term Credits" (5.0/2.5/0). Semester courses changed from S1→S. 631 CPR-AED and 642 Nutrition & Fitness had "Physical Education" removed from Graduation Requirement.
 - **Template 6 REV 08.04.26**: Sheet 2 Column E changed from optional to REQUIRED. All 371 rows populated: FY=245, EC=97, S1=15, S2=14. 203 Guitar Ensemble rows 51-52 corrected from EC→FY.
 - **semester_designations.json**: Eliminated — T6 Column E is sole authority for section semester placement
-- **Template 2 REV 08.04.26.V2**: Replaced V1. 5,301 requests, 804 students, 102 courses (3 duplicate rows: 106243/642, 106291/642, 112896/320). Bulk removal of English (110-149), Arts (201-255), History (310-311) course requests. Restored: 849×164, 851×164, 830×96, 955×28. Student 121012 returns with 6 requests (410,510,570,610,710,810) — NOT in T8.
-- **Template 8 REV 08.04.26**: 2 students added — 116597 Giordano, Joseph (Gr9), 120834 McNeal, Harlem (Gr10). New total: 803 students.
+- **Template 2 REV 08.04.26.V3**: Replaced V2. 6,100 requests, 804 students, 141 courses (4 duplicate rows: 106243/642, 106291/642, 112088/2044, 112896/320). English (110-149), Arts (201-255), History (310-311) requests restored. Theology/Academic Support (849, 851, 830, 955) requests removed. Student 121012 included with 6 requests (410,510,570,610,710,810). Student 105477 (Hinspeter) removed from T8.
+- **Template 8 REV 08.04.26.V2**: 804 students. Added 121012 Garcia, Jace Jaden (Gr9). Removed 105477 Hinspeter, Jack (Gr12). Prior additions retained: 116597 Giordano, Joseph (Gr9), 120834 McNeal, Harlem (Gr10).
 
 ### Current Results (v3 — latest full run, STALE — pre-T2 revision)
 - 748 conflicts (Gr9: 169, Gr10: 164, Gr11: 145, Gr12: 270), 88.5% placement (5781/6529)
