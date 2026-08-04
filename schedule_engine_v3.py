@@ -4936,6 +4936,184 @@ if ENGINE_MODE == 'unlimited':
         if label and label == label.upper() and not val:
             _ul_ws4.cell(_ul_ws4.max_row, 1).font = openpyxl.styles.Font(bold=True, name='Arial', size=12)
 
+    # ── Sheet 5: Section Move Recommendations ──
+    _ul_ws5 = _ul_wb.create_sheet('Section Move Recommendations')
+    _ul_hdr5 = ['Priority', 'Course Code', 'Course Title', 'Department',
+                'Section #', 'Teacher', 'Room',
+                'Current Period', 'Current Period Demand', 'Current Period Sections',
+                'Recommended Period', 'Recommended Period Demand', 'Recommended Period Sections',
+                'Demand Gain', 'Reason', 'Driving Courses']
+    _ul_ws5.append(_ul_hdr5)
+    for c in _ul_ws5[1]:
+        c.font = openpyxl.styles.Font(bold=True, name='Arial')
+
+    _ul_moves = []
+
+    _ul_period_demand = {}
+    _ul_period_sects = {}
+    for r in _ul_section_rows:
+        code = r['code']
+        p = r['period']
+        if not p:
+            continue
+        if code not in _ul_period_demand:
+            _ul_period_demand[code] = {pp: 0 for pp in PERIODS}
+            _ul_period_sects[code] = {pp: 0 for pp in PERIODS}
+        _ul_period_demand[code][p] += r['enrolled']
+        _ul_period_sects[code][p] += 1
+
+    for code in _ul_period_demand:
+        demand = _ul_period_demand[code]
+        sect_count = _ul_period_sects[code]
+        ci = course_info.get(code, {})
+        orig_cap = _original_caps.get(code, 25)
+
+        surplus_periods = []
+        deficit_periods = []
+        for p in PERIODS:
+            d = demand[p]
+            s = sect_count[p]
+            cap_in_period = s * orig_cap
+            if s > 0 and d < orig_cap * 0.5:
+                surplus_periods.append((p, d, s))
+            elif d > cap_in_period and d > orig_cap:
+                deficit_periods.append((p, d, s))
+
+        deficit_periods.sort(key=lambda x: -x[1])
+
+        if not surplus_periods or not deficit_periods:
+            continue
+
+        surplus_periods.sort(key=lambda x: x[1])
+
+        for sp, s_demand, s_sects in surplus_periods:
+            if not deficit_periods:
+                break
+
+            best_deficit = deficit_periods[0]
+            dp, d_demand, d_sects = best_deficit
+
+            demand_gain = d_demand - s_demand
+
+            move_secs = [s for s in sections if s['code'] == code and s['period'] == sp]
+            if not move_secs:
+                continue
+            move_sec = min(move_secs, key=lambda s: secfill[s['sid']])
+
+            driving = []
+            for c in clash:
+                if str(c.get('code', '')) == code:
+                    for bc in c.get('blocking_courses', []):
+                        bc_code = str(bc.get('code', ''))
+                        bc_title = bc.get('title', bc_code)
+                        if bc_code not in [x[0] for x in driving]:
+                            driving.append((bc_code, bc_title))
+            driving_str = '; '.join(f'{dc[0]} {dc[1]}' for dc in driving[:5])
+            if len(driving) > 5:
+                driving_str += f' (+{len(driving)-5} more)'
+
+            if d_demand > orig_cap * 1.5:
+                reason = f'Period {dp} has {d_demand} students (>{orig_cap * 1.5:.0f} = 1.5x cap) but only {d_sects} section(s); Period {sp} has {s_demand} students (<{orig_cap * 0.5:.0f} = 0.5x cap)'
+            else:
+                reason = f'Period {dp} demand ({d_demand}) exceeds capacity ({d_sects * orig_cap}); Period {sp} underutilized ({s_demand} students)'
+
+            priority_score = demand_gain * 10
+            if ci.get('grad_req_dept', ''):
+                priority_score += 500
+                reason += ' [GRAD REQ]'
+            if ci.get('is_singleton', False) or code in SINGLETON_COURSES:
+                priority_score += 200
+
+            _ul_moves.append({
+                'priority': priority_score,
+                'code': code, 'title': ci.get('title', code), 'dept': ci.get('dept', ''),
+                'section': move_sec.get('section', ''),
+                'teacher': move_sec.get('teacher', ''), 'room': move_sec.get('room', ''),
+                'from_period': sp, 'from_demand': s_demand, 'from_sects': s_sects,
+                'to_period': dp, 'to_demand': d_demand, 'to_sects': d_sects,
+                'gain': demand_gain, 'reason': reason,
+                'driving': driving_str
+            })
+
+            deficit_periods[0] = (dp, d_demand, d_sects + 1)
+            if d_demand <= (d_sects + 1) * orig_cap:
+                deficit_periods.pop(0)
+
+    _ul_moves.sort(key=lambda m: -m['priority'])
+
+    for m in _ul_moves:
+        _ul_ws5.append([
+            m['priority'], m['code'], m['title'], m['dept'],
+            m['section'], m['teacher'], m['room'],
+            m['from_period'], m['from_demand'], m['from_sects'],
+            m['to_period'], m['to_demand'], m['to_sects'],
+            m['gain'], m['reason'], m['driving']
+        ])
+
+    for col_letter, w in [('A', 10), ('B', 12), ('C', 35), ('D', 18),
+                          ('E', 10), ('F', 25), ('G', 10),
+                          ('H', 14), ('I', 20), ('J', 22),
+                          ('K', 18), ('L', 24), ('M', 26),
+                          ('N', 12), ('O', 70), ('P', 50)]:
+        _ul_ws5.column_dimensions[col_letter].width = w
+
+    print(f"  Section move recommendations: {len(_ul_moves)}")
+
+    # ── Sheet 6: Period Rebalance Summary ──
+    _ul_ws6 = _ul_wb.create_sheet('Period Rebalance Summary')
+    _ul_hdr6 = ['Course Code', 'Course Title', 'Department', 'Sections',
+                'Grad Req'] + \
+               [f'Period {p} Demand' for p in PERIODS] + \
+               [f'Period {p} Sections' for p in PERIODS] + \
+               ['Surplus Periods', 'Deficit Periods', 'Moves Recommended']
+    _ul_ws6.append(_ul_hdr6)
+    for c in _ul_ws6[1]:
+        c.font = openpyxl.styles.Font(bold=True, name='Arial')
+
+    _move_counts = {}
+    for m in _ul_moves:
+        _move_counts[m['code']] = _move_counts.get(m['code'], 0) + 1
+
+    for code in sorted(_ul_period_demand.keys()):
+        demand = _ul_period_demand[code]
+        sect_count = _ul_period_sects[code]
+        ci = course_info.get(code, {})
+        orig_cap = _original_caps.get(code, 25)
+        total_sects = sum(sect_count.values())
+
+        surplus = [p for p in PERIODS if sect_count[p] > 0 and demand[p] < orig_cap * 0.5]
+        deficit = [p for p in PERIODS if demand[p] > sect_count[p] * orig_cap and demand[p] > orig_cap]
+        moves = _move_counts.get(code, 0)
+
+        if not surplus and not deficit and moves == 0:
+            continue
+
+        row = [code, ci.get('title', code), ci.get('dept', ''), total_sects,
+               ci.get('grad_req_dept', '')]
+        for p in PERIODS:
+            row.append(demand[p])
+        for p in PERIODS:
+            row.append(sect_count[p])
+        row.append(', '.join(surplus) if surplus else '-')
+        row.append(', '.join(deficit) if deficit else '-')
+        row.append(moves)
+        _ul_ws6.append(row)
+
+    for col_letter, w in [('A', 12), ('B', 35), ('C', 18), ('D', 10), ('E', 12)]:
+        _ul_ws6.column_dimensions[col_letter].width = w
+
+    _ul_summary_extra = [
+        ('', ''),
+        ('MOVE RECOMMENDATIONS', ''),
+        ('Total Move Recommendations', len(_ul_moves)),
+        ('Grad Req Moves', sum(1 for m in _ul_moves if 'GRAD REQ' in m['reason'])),
+        ('Courses With Moves', len(_move_counts)),
+    ]
+    for label, val in _ul_summary_extra:
+        _ul_ws4.append([label, val])
+        if label and label == label.upper() and not val:
+            _ul_ws4.cell(_ul_ws4.max_row, 1).font = openpyxl.styles.Font(bold=True, name='Arial', size=12)
+
     _ul_path = os.path.join(OUTPUT_DIR, 'Unlimited_Seat_Analysis_2026_27.xlsx')
     _ul_wb.save(_ul_path)
     print(f"\n  ** Unlimited Seat Analysis saved: {_ul_path}")
