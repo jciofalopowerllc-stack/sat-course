@@ -1216,7 +1216,7 @@ for _pw_codes in PATHWAY_COURSE_SETS.values():
 def _is_gr12_pae(cid):
     cid_s = str(cid)
     ci = course_info.get(cid_s, {})
-    if not ci.get('is_fy', True) or ci.get('prescribed_term', 'FY') in ('S1', 'S2'):
+    if not ci.get('is_fy', True):
         return False
     if _course_dept_map.get(cid_s, '') not in _GR12_PAE_DEPTS:
         return False
@@ -1281,15 +1281,16 @@ def course_request_priority(pid, cid):
         score += PTS_GRAD_REQ
     elif g == 12 and _is_gr12_pae(cid_s):
         score += PTS_GR12_PAE
-    prescribed = ci.get('prescribed_term', 'FY')
-    if prescribed in ('S1', 'S2') or not ci.get('is_fy', True):
+    # PTS_SEMESTER_ONLY: course is a semester course (T7 Term Type = S)
+    if ci.get('term_type', 'FY') == 'S':
         score += PTS_SEMESTER_ONLY
     cohort = ci.get('cohort_flag', '')
     if cohort and cohort not in ('', 'N', None):
         score += PTS_COHORT_COURSE
     if cid_s in getattr(course_request_priority, '_cogroup_set', set()):
         score += PTS_COSCHEDULE
-    if prescribed in ('S1', 'S2'):
+    # PTS_PRESCRIBED_TERM: course has any section with prescribed S1 or S2 in T6
+    if any(sections[sid].get('prescribed_term') in ('S1', 'S2') for sid in sec_by_code.get(cid_s, [])):
         score += PTS_PRESCRIBED_TERM
     _crp_cache[key] = score
     return score
@@ -1332,15 +1333,16 @@ def course_section_raw(cid):
         score += PTS_GRAD_REQ
     elif _is_gr12_pae(cid_s):
         score += PTS_GR12_PAE
-    prescribed = ci.get('prescribed_term', 'FY')
-    if prescribed in ('S1', 'S2') or not ci.get('is_fy', True):
+    # PTS_SEMESTER_ONLY: course is a semester course (T7 Term Type = S)
+    if ci.get('term_type', 'FY') == 'S':
         score += PTS_SEMESTER_ONLY
     cohort = ci.get('cohort_flag', '')
     if cohort and cohort not in ('', 'N', None):
         score += PTS_COHORT_COURSE
     if cid_s in getattr(course_request_priority, '_cogroup_set', set()):
         score += PTS_COSCHEDULE
-    if prescribed in ('S1', 'S2'):
+    # PTS_PRESCRIBED_TERM: course has any section with prescribed S1 or S2 in T6
+    if any(sections[sid].get('prescribed_term') in ('S1', 'S2') for sid in sec_by_code.get(cid_s, [])):
         score += PTS_PRESCRIBED_TERM
     _section_raw_cache[cid_s] = score
     return score
@@ -1351,8 +1353,8 @@ def _count_section_locks(s):
         locks += 1
     if s.get('period') is not None:
         locks += 1
-    sem = s.get('sem_raw', 'FY')
-    if sem in ('S1', 'S2'):
+    pt = s.get('prescribed_term', 'FY')
+    if pt in ('S1', 'S2'):
         locks += 1
     pc = s.get('prescribed_cohort', '')
     if pc:
@@ -1507,11 +1509,29 @@ for r in range(3, _t7ws_ci.max_row + 1):
 
     title = _t7ws_ci.cell(r, _t7_hdr_ci.get('Course Title', 2)).value or cid
     dept = _t7ws_ci.cell(r, _t7_hdr_ci.get('Department', 3)).value or ''
-    credits = _t7ws_ci.cell(r, _t7_hdr_ci.get('Credits', 4)).value or 0
-    term_raw = str(_t7ws_ci.cell(r, _t7_hdr_ci.get('Prescribed Term', 5)).value or '').strip()
+    term_type_raw = str(_t7ws_ci.cell(r, _t7_hdr_ci.get('Term Type', 4)).value or '').strip().upper()
+    term_credits_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Term Credits', 5)).value
 
-    is_fy = term_raw.upper() in ('FY', 'FULL-YEAR', 'FULL YEAR', '')
+    # Term Type: FY = Full-Year, S = Semester
+    if term_type_raw in ('FY', 'FULL-YEAR', 'FULL YEAR', ''):
+        term_type = 'FY'
+        is_fy = True
+    elif term_type_raw == 'S':
+        term_type = 'S'
+        is_fy = False
+    else:
+        print(f"  *** WARNING: Course {cid} has unrecognized Term Type '{term_type_raw}' — defaulting to FY")
+        term_type = 'FY'
+        is_fy = True
     ctype = 'Full-Year' if is_fy else 'Semester'
+
+    # Term Credits: must match Term Type (FY=5.0, S=2.5; 0 allowed for special courses)
+    credits = float(term_credits_raw) if term_credits_raw else 0
+    if credits > 0:
+        if is_fy and credits != 5.0:
+            print(f"  *** VALIDATION ERROR: Course {cid} Term Type=FY but Term Credits={credits} (expected 5.0)")
+        elif not is_fy and credits != 2.5:
+            print(f"  *** VALIDATION ERROR: Course {cid} Term Type=S but Term Credits={credits} (expected 2.5)")
 
     _singleton_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Singleton', 9)).value
     _ap_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('AP', 10)).value
@@ -1520,8 +1540,7 @@ for r in range(3, _t7ws_ci.max_row + 1):
 
     course_info[cid] = {
         'code': cid, 'title': title, 'dept': str(dept),
-        'credits': credits or 0, 'type': ctype, 'is_fy': is_fy,
-        'prescribed_term': term_raw.upper() if term_raw else 'FY',
+        'credits': credits, 'term_type': term_type, 'type': ctype, 'is_fy': is_fy,
         'is_singleton': str(_singleton_raw).strip().upper() in ('Y', 'YES', 'TRUE', '1'),
         'is_ap': str(_ap_raw).strip().upper() in ('Y', 'YES', 'TRUE', '1'),
         'grad_req_dept': str(_grad_req_raw).strip() if _grad_req_raw and str(_grad_req_raw).strip().upper() not in ('', 'NONE', 'N', 'NO') else '',
@@ -1542,20 +1561,6 @@ if ENGINE_MODE == 'unlimited':
     for _uc_cid in _course_max_enrollment:
         _course_max_enrollment[_uc_cid] = _UNLIMITED_CAP
     print(f"  UNLIMITED MODE: All section caps set to {_UNLIMITED_CAP}, HARD_CAP_ENFORCEMENT=False")
-
-# ── Semester designations ──
-_semester_designations = {}
-_sd_path = os.path.join(os.path.dirname(__file__) or '.', 'semester_designations.json')
-try:
-    with open(_sd_path) as _sdf:
-        _sd_data = json.load(_sdf)
-    for _entry in _sd_data:
-        _sdcode = str(_entry.get('code', '')).strip()
-        if _sdcode and 'section_details' in _entry:
-            _semester_designations[_sdcode] = _entry
-    print(f"  Semester designations loaded: {len(_semester_designations)} courses")
-except FileNotFoundError:
-    print("  semester_designations.json not found — using defaults")
 
 # ── Sections from Template 6 Sheet 2 (Teacher-Course Assignments) ──
 _t6ws_assign = _t6wb_init['Teacher-Course Assignments']
@@ -1580,6 +1585,7 @@ for r in range(3, _t6ws_assign.max_row + 1):
 
     ci = course_info[cid]
     is_fy = ci.get('is_fy', True)
+    term_type = ci.get('term_type', 'FY')
 
     _section_counter[cid] += 1
     secnum = _section_counter[cid]
@@ -1588,27 +1594,39 @@ for r in range(3, _t6ws_assign.max_row + 1):
     if _tid:
         teacher_name = teacher_id_to_name.get(str(_tid).strip(), 'TBD')
 
-    halves = ('S1', 'S2') if is_fy else ('S1',)
-    sem_str = str(prescribed_term or '').strip().upper()
-    if sem_str in ('S1', 'FALL'):
-        halves = ('S1',)
-    elif sem_str in ('S2', 'SPRING'):
-        halves = ('S2',)
-    elif sem_str in ('FY', 'FULL-YEAR', 'FULL YEAR'):
-        halves = ('S1', 'S2')
+    # ── T6 Column E: Prescribed Term (REQUIRED — FY/S1/S2/EC) ──
+    pt_raw = str(prescribed_term or '').strip().upper()
+    if pt_raw in ('FY', 'FULL-YEAR', 'FULL YEAR'):
+        pt_raw = 'FY'
+    elif pt_raw in ('S1', 'FALL'):
+        pt_raw = 'S1'
+    elif pt_raw in ('S2', 'SPRING'):
+        pt_raw = 'S2'
+    elif pt_raw == 'EC':
+        pt_raw = 'EC'
+    elif pt_raw == '':
+        print(f"  *** VALIDATION ERROR: Course {cid} sec {secnum} has BLANK Prescribed Term in T6 Column E — defaulting to EC")
+        pt_raw = 'EC'
+    else:
+        print(f"  *** VALIDATION ERROR: Course {cid} sec {secnum} has unrecognized Prescribed Term '{pt_raw}' in T6 Column E — defaulting to EC")
+        pt_raw = 'EC'
 
-    _sd_entry = _semester_designations.get(cid)
-    if _sd_entry and 'section_details' in _sd_entry:
-        for _sd_sec in _sd_entry['section_details']:
-            if _sd_sec.get('sec') == secnum:
-                _sd_sem = str(_sd_sec.get('semester', '')).strip().upper()
-                if _sd_sem == 'S1':
-                    halves = ('S1',)
-                elif _sd_sem == 'S2':
-                    halves = ('S2',)
-                elif _sd_sem in ('FY', 'FULL-YEAR'):
-                    halves = ('S1', 'S2')
-                break
+    # ── Cross-validate T7 Term Type vs T6 Prescribed Term ──
+    if term_type == 'FY' and pt_raw not in ('FY',):
+        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T7 Term Type=FY but T6 Prescribed Term={pt_raw} (expected FY)")
+    elif term_type == 'S' and pt_raw not in ('S1', 'S2', 'EC'):
+        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T7 Term Type=S but T6 Prescribed Term={pt_raw} (expected S1/S2/EC)")
+
+    # ── Set halves from prescribed term (prescribed = required) ──
+    if pt_raw == 'FY':
+        halves = ('S1', 'S2')
+    elif pt_raw == 'S1':
+        halves = ('S1',)
+    elif pt_raw == 'S2':
+        halves = ('S2',)
+    elif pt_raw == 'EC':
+        # Engine Choice — default to S1, engine will redistribute EC sections later
+        halves = ('S1',)
 
     period = None
     if prescribed_period:
@@ -1626,7 +1644,7 @@ for r in range(3, _t6ws_assign.max_row + 1):
         'period': period, 'halves': halves, 'cap': cap,
         'teacher': teacher_name, 'room': room_str,
         'title': ci.get('title', cid), 'dept': ci.get('dept', ''),
-        'is_fy': is_fy, 'sem_raw': sem_str or str(prescribed_term or ''),
+        'is_fy': is_fy, 'prescribed_term': pt_raw,
         'prescribed_cohort': _pc_str,
     }
     sections.append(sec)
@@ -2551,22 +2569,13 @@ print("\n" + "=" * 60)
 print("[1] PHASE A: ASSIGN PERIODS")
 print("=" * 60)
 
-SEMESTER_LOCKS = {
-    '745': ('S1',),
-    '734': ('S2',),
-    '766': ('S1',),
-    '765': ('S2',),
-    '758': ('S2',),
-}
-
-FULL_FREEDOM = {'849', '851'}
-
-for cid, halves in SEMESTER_LOCKS.items():
-    for sid in sec_by_code.get(cid, []):
-        sections[sid]['halves'] = halves
-
-print(f"  Semester locks applied: {list(SEMESTER_LOCKS.keys())}")
-print(f"  Full freedom courses: {list(FULL_FREEDOM)}")
+# Prescribed terms are already enforced from T6 Column E during section loading.
+# S1/S2 sections are locked; EC sections will be redistributed below.
+_prescribed_s1 = sum(1 for s in sections if s.get('prescribed_term') == 'S1')
+_prescribed_s2 = sum(1 for s in sections if s.get('prescribed_term') == 'S2')
+_prescribed_ec = sum(1 for s in sections if s.get('prescribed_term') == 'EC')
+_prescribed_fy = sum(1 for s in sections if s.get('prescribed_term') == 'FY')
+print(f"  Prescribed terms from T6: FY={_prescribed_fy}, S1={_prescribed_s1}, S2={_prescribed_s2}, EC={_prescribed_ec}")
 
 code_to_cogroup = {}
 for gi, cg in enumerate(cogroups):
@@ -2598,26 +2607,19 @@ for gi, cg in enumerate(cogroups):
     if has_sections:
         print(f"  Co-schedule group '{cg['name']}' ({len(cogroup_sids[gi])} sections) — will assign unified period")
 
-for cid in FULL_FREEDOM:
-    sids = [sid for sid in sec_by_code.get(cid, []) if sections[sid]['period'] is None]
-    if not sids:
-        continue
-    demand = sum(1 for pid in students if cid in sreq[pid])
-    nsec = len(sids)
-    n_s1 = (nsec + 1) // 2
-    for i, sid in enumerate(sids):
-        sections[sid]['halves'] = ('S1',) if i < n_s1 else ('S2',)
-    print(f"  Full Freedom {cid}: {nsec} sections, {n_s1} S1 / {nsec - n_s1} S2 (demand={demand})")
+# ── Redistribute EC (Engine Choice) sections evenly across S1/S2 ──
+_ec_courses = defaultdict(list)
+for s in sections:
+    if s.get('prescribed_term') == 'EC':
+        _ec_courses[s['code']].append(s['sid'])
 
-for cid, sids in sec_by_code.items():
-    ci = course_info.get(cid, {})
-    if ci.get('is_fy', True):
-        continue
-    if cid in FULL_FREEDOM or cid in SEMESTER_LOCKS:
-        continue
-    unpinned = [sid for sid in sids if sections[sid]['period'] is None]
-    for i, sid in enumerate(unpinned):
-        sections[sid]['halves'] = ('S1',) if i % 2 == 0 else ('S2',)
+for cid, ec_sids in _ec_courses.items():
+    nsec = len(ec_sids)
+    n_s1 = (nsec + 1) // 2
+    for i, sid in enumerate(ec_sids):
+        sections[sid]['halves'] = ('S1',) if i < n_s1 else ('S2',)
+    if nsec > 0:
+        print(f"  EC redistribution {cid}: {nsec} sections, {n_s1} S1 / {nsec - n_s1} S2")
 
 def in_same_cogroup(sid_a, sid_b):
     code_a = sections[sid_a]['code']
@@ -3632,11 +3634,6 @@ for _cg in cogroups:
     for _cc in _cg['codes']:
         for _cs in sec_by_code.get(_cc, []):
             COGROUP_SIDS.add(_cs)
-SEMESTER_LOCKED_SIDS = set()
-for _slc in SEMESTER_LOCKS:
-    for _sls in sec_by_code.get(_slc, []):
-        SEMESTER_LOCKED_SIDS.add(_sls)
-
 code_requesters = defaultdict(set)
 for _pid in students:
     for _cid in sreq[_pid]:
@@ -3665,21 +3662,28 @@ def _restore_for_restart(fixed_state):
             s['period'], s['halves'] = fixed_state[s['sid']]
         else:
             s['period'] = None
-    for cid, halves in SEMESTER_LOCKS.items():
-        for sid in sec_by_code.get(cid, []):
-            sections[sid]['halves'] = halves
-    for cid in FULL_FREEDOM:
-        sids = [sid for sid in sec_by_code.get(cid, []) if sections[sid]['period'] is None]
-        n_s1 = (len(sids) + 1) // 2
-        for i, sid in enumerate(sids):
+        # Restore halves from prescribed_term (T6 Column E)
+        pt = s.get('prescribed_term', 'FY')
+        if pt == 'FY':
+            s['halves'] = ('S1', 'S2')
+        elif pt == 'S1':
+            s['halves'] = ('S1',)
+        elif pt == 'S2':
+            s['halves'] = ('S2',)
+        # EC sections will be redistributed below
+    # Re-apply co-group fixed periods
+    for sid in fixed_state:
+        s = sections[sid]
+        s['period'], s['halves'] = fixed_state[sid]
+    # Redistribute EC sections evenly across S1/S2
+    _ec_by_code = defaultdict(list)
+    for s in sections:
+        if s.get('prescribed_term') == 'EC':
+            _ec_by_code[s['code']].append(s['sid'])
+    for cid, ec_sids in _ec_by_code.items():
+        n_s1 = (len(ec_sids) + 1) // 2
+        for i, sid in enumerate(ec_sids):
             sections[sid]['halves'] = ('S1',) if i < n_s1 else ('S2',)
-    for cid, sids_list in sec_by_code.items():
-        ci = course_info.get(cid, {})
-        if ci.get('is_fy', True) or cid in FULL_FREEDOM or cid in SEMESTER_LOCKS:
-            continue
-        unpinned = [sid for sid in sids_list if sections[sid]['period'] is None]
-        for i, sid in enumerate(unpinned):
-            sections[sid]['halves'] = ('S1',) if i % 2 == 0 else ('S2',)
 
 fixed_state = _save_fixed_state()
 
