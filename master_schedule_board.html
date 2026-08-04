@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don Bosco Prep - Master Schedule Board</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#0f172a;color:#e2e8f0;overflow:hidden;height:100vh}
+
+/* Load Screen */
+#load-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:24px}
+#load-screen h1{font-size:28px;font-weight:700;color:#f8fafc}
+#load-screen p{color:#94a3b8;font-size:15px}
+#load-screen .subtitle{color:#64748b;font-size:13px;margin-top:-12px}
+.file-drop{border:2px dashed #334155;border-radius:12px;padding:48px 64px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.file-drop:hover,.file-drop.drag-over{border-color:#3b82f6;background:rgba(59,130,246,.08)}
+.file-drop input{display:none}
+.file-drop .icon{font-size:40px;margin-bottom:12px;display:block}
+.file-drop .label{color:#94a3b8;font-size:14px}
+
+/* App Layout */
+#app{display:none;height:100vh;display:none;flex-direction:column}
+
+/* Scoreboard */
+#scoreboard{background:#0f172a;border-bottom:1px solid #1e293b;padding:12px 20px;flex-shrink:0}
+#scoreboard-top{display:flex;align-items:center;gap:16px}
+.kpi-row{display:flex;gap:12px;flex:1}
+.kpi{background:#1e293b;border-radius:8px;padding:10px 16px;min-width:120px;position:relative}
+.kpi .kpi-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.kpi .kpi-value{font-size:22px;font-weight:700;color:#f8fafc}
+.kpi .kpi-sub{font-size:11px;color:#94a3b8;margin-top:1px}
+.kpi .kpi-delta{position:absolute;top:8px;right:10px;font-size:12px;font-weight:600;padding:1px 6px;border-radius:4px}
+.kpi .kpi-delta.positive{color:#22c55e;background:rgba(34,197,94,.12)}
+.kpi .kpi-delta.negative{color:#ef4444;background:rgba(239,68,68,.12)}
+.kpi .kpi-delta.neutral{color:#64748b;display:none}
+.kpi.accent-red .kpi-value{color:#f87171}
+.kpi.accent-blue .kpi-value{color:#60a5fa}
+.kpi.accent-purple .kpi-value{color:#a78bfa}
+
+/* Gauge */
+#gauge-wrap{width:140px;display:flex;flex-direction:column;align-items:center}
+#gauge-wrap svg{width:140px;height:80px}
+#gauge-pct{font-size:20px;font-weight:700;margin-top:-8px}
+#gauge-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+
+/* Grade Breakdown */
+#grade-bar{display:flex;gap:16px;margin-top:8px;align-items:center}
+.grade-chip{display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8}
+.grade-chip .dot{width:8px;height:8px;border-radius:50%}
+.grade-chip .gval{font-weight:600;color:#e2e8f0}
+.grade-chip .gdelta{font-size:11px;margin-left:2px}
+
+/* Context Panel (right side of scoreboard) */
+#context-panel{background:#1e293b;border-radius:8px;min-width:380px;max-width:480px;padding:12px 16px;margin-left:auto;max-height:120px;overflow-y:auto}
+#context-panel.empty{display:flex;align-items:center;justify-content:center;color:#475569;font-size:13px;font-style:italic}
+#context-panel h3{font-size:13px;font-weight:600;color:#f8fafc;margin-bottom:6px}
+.ctx-row{display:flex;gap:16px;font-size:12px;color:#94a3b8;margin-bottom:3px}
+.ctx-row .ctx-label{color:#64748b;min-width:60px}
+.ctx-row .ctx-val{color:#e2e8f0}
+.ctx-warn{color:#f59e0b;font-weight:600}
+.ctx-err{color:#ef4444;font-weight:600}
+.ctx-ok{color:#22c55e;font-weight:600}
+
+/* Toolbar */
+#toolbar{background:#1e293b;padding:8px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #0f172a;flex-shrink:0}
+#toolbar select{background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer}
+#toolbar button{background:#334155;color:#e2e8f0;border:none;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;transition:background .15s}
+#toolbar button:hover{background:#475569}
+#toolbar button:disabled{opacity:.4;cursor:default}
+#toolbar button.primary{background:#2563eb;color:white}
+#toolbar button.primary:hover{background:#1d4ed8}
+#toolbar .spacer{flex:1}
+#toolbar .move-count{font-size:12px;color:#64748b}
+.mode-badge{background:#7c3aed;color:white;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600}
+.search-box{background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:5px 10px;font-size:12px;width:180px}
+.search-box::placeholder{color:#475569}
+
+/* Board */
+#board{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#0f172a;overflow:hidden}
+.period-col{background:#111827;display:flex;flex-direction:column;overflow:hidden}
+.period-header{text-align:center;padding:8px;font-size:14px;font-weight:700;color:#f8fafc;background:#1e293b;border-bottom:1px solid #334155;flex-shrink:0;position:relative}
+.period-header .col-count{font-size:11px;font-weight:400;color:#64748b;margin-left:6px}
+.card-container{flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:4px}
+.card-container.drop-target{background:rgba(59,130,246,.06);outline:2px dashed #3b82f6;outline-offset:-2px}
+.card-container::-webkit-scrollbar{width:4px}
+.card-container::-webkit-scrollbar-thumb{background:#334155;border-radius:2px}
+
+/* Cards */
+.card{background:#1e293b;border-radius:6px;padding:7px 9px;cursor:grab;border-left:3px solid #475569;transition:transform .12s,box-shadow .12s,opacity .12s;position:relative;user-select:none}
+.card:hover{background:#243147;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.card.selected{outline:2px solid #3b82f6;outline-offset:-1px;background:#1a2744}
+.card.dragging{opacity:.4;transform:scale(.95)}
+.card.ghost{opacity:.3;border-style:dashed}
+.card .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.card .card-code{font-size:12px;font-weight:700;color:#f8fafc}
+.card .card-sec{font-size:10px;color:#64748b}
+.card .card-title{font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.card .card-bottom{display:flex;justify-content:space-between;align-items:center}
+.card .card-teacher{font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.card .card-meta{display:flex;gap:4px;align-items:center}
+.card .card-enroll{font-size:10px;color:#94a3b8}
+.term-badge{font-size:9px;font-weight:600;padding:1px 4px;border-radius:3px}
+.term-badge.fy{background:rgba(59,130,246,.2);color:#60a5fa}
+.term-badge.s1{background:rgba(34,197,94,.2);color:#4ade80}
+.term-badge.s2{background:rgba(249,115,22,.2);color:#fb923c}
+.card .conflict-dot{width:6px;height:6px;border-radius:50%;background:#ef4444;position:absolute;top:4px;right:4px}
+
+/* Detail Panel (right overlay) */
+#detail-panel{position:fixed;top:0;right:-480px;width:480px;height:100vh;background:#111827;border-left:1px solid #1e293b;z-index:100;transition:right .25s ease;overflow-y:auto;padding:16px}
+#detail-panel.open{right:0}
+#detail-panel .close-btn{position:absolute;top:12px;right:12px;background:none;border:none;color:#64748b;font-size:20px;cursor:pointer;padding:4px 8px}
+#detail-panel .close-btn:hover{color:#f8fafc}
+#detail-panel h2{font-size:16px;font-weight:700;color:#f8fafc;margin-bottom:4px}
+#detail-panel h4{font-size:12px;font-weight:600;color:#94a3b8;margin:12px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.detail-grid{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12px;margin-bottom:12px}
+.detail-grid .dl{color:#64748b}
+.detail-grid .dv{color:#e2e8f0}
+
+/* Schedule Grid (teacher/room) */
+.sched-grid{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px}
+.sched-grid th{background:#1e293b;color:#94a3b8;padding:4px 6px;text-align:center;font-weight:600;border:1px solid #0f172a}
+.sched-grid td{padding:4px 6px;text-align:center;border:1px solid #1e293b;color:#e2e8f0;min-width:40px}
+.sched-grid td.occupied{background:#1e293b}
+.sched-grid td.current-section{background:rgba(59,130,246,.2);color:#60a5fa;font-weight:600}
+.sched-grid td.conflict{background:rgba(239,68,68,.15);color:#f87171}
+.sched-grid td.empty-slot{color:#334155}
+
+/* Student list in detail */
+.student-list{max-height:200px;overflow-y:auto;font-size:11px}
+.student-list .st-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #1e293b}
+.student-list .st-name{color:#e2e8f0}
+.student-list .st-grade{color:#64748b}
+
+/* Move Preview */
+.move-preview{position:fixed;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 16px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.5);pointer-events:none;font-size:12px;min-width:200px}
+.move-preview h4{font-size:13px;font-weight:600;color:#f8fafc;margin-bottom:8px}
+.mp-row{display:flex;justify-content:space-between;margin-bottom:4px}
+.mp-label{color:#94a3b8}
+.mp-val{font-weight:600}
+.mp-val.good{color:#22c55e}
+.mp-val.bad{color:#ef4444}
+.mp-val.warn{color:#f59e0b}
+.mp-val.neutral{color:#94a3b8}
+
+/* Export Modal */
+#export-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:center;justify-content:center}
+#export-modal.open{display:flex}
+#export-content{background:#1e293b;border-radius:12px;padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+#export-content h2{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:12px}
+#export-content pre{background:#0f172a;border-radius:6px;padding:12px;font-size:12px;color:#e2e8f0;white-space:pre-wrap;line-height:1.5}
+#export-content .modal-actions{display:flex;gap:8px;margin-top:12px}
+#export-content button{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px}
+.btn-copy{background:#2563eb;color:white}
+.btn-close-modal{background:#334155;color:#e2e8f0}
+
+/* Unlimited mode banner */
+.unlimited-banner{background:#7c3aed;color:white;text-align:center;padding:4px;font-size:12px;font-weight:600;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div id="load-screen">
+  <h1>Master Schedule Board</h1>
+  <p>Don Bosco Prep 2026-27</p>
+  <p class="subtitle">Phase 1 — Section Placement & Clash Analysis</p>
+  <div class="file-drop" id="file-drop">
+    <span class="icon">&#128203;</span>
+    <div class="label">Drop <strong>schedule_solution_v3.json</strong> here<br>or click to browse</div>
+    <input type="file" id="file-input" accept=".json">
+  </div>
+</div>
+
+<div id="app">
+  <div id="unlimited-banner" class="unlimited-banner" style="display:none">UNLIMITED SEAT MODE — Section caps set to 9999 (diagnostic data)</div>
+  <div id="scoreboard">
+    <div id="scoreboard-top">
+      <div class="kpi-row" id="kpi-row"></div>
+      <div id="gauge-wrap">
+        <svg viewBox="0 0 200 110" id="gauge-svg"></svg>
+        <div id="gauge-pct"></div>
+        <div id="gauge-label">Placement Rate</div>
+      </div>
+      <div id="context-panel" class="empty">Click a section card to view details</div>
+    </div>
+    <div id="grade-bar"></div>
+  </div>
+  <div id="toolbar">
+    <label style="font-size:12px;color:#64748b">Term:</label>
+    <select id="filter-term"><option value="all">All Terms</option><option value="FY">Full Year</option><option value="S1">Semester 1</option><option value="S2">Semester 2</option></select>
+    <label style="font-size:12px;color:#64748b">Dept:</label>
+    <select id="filter-dept"><option value="all">All Departments</option></select>
+    <input type="text" class="search-box" id="search-box" placeholder="Search course or teacher...">
+    <div class="spacer"></div>
+    <button id="undo-btn" disabled onclick="undoLastMove()">Undo</button>
+    <button class="primary" onclick="showExport()">Export Changes</button>
+    <span class="move-count" id="move-count">0 moves</span>
+  </div>
+  <main id="board"></main>
+</div>
+
+<div id="detail-panel">
+  <button class="close-btn" onclick="closeDetail()">&times;</button>
+  <div id="detail-content"></div>
+</div>
+
+<div id="export-modal">
+  <div id="export-content"></div>
+</div>
+
+<div class="move-preview" id="move-preview" style="display:none"></div>
+
+<script>
+const PERIODS = ['A','B','C','D','E','F','G'];
+
+const DEPT_COLORS = {
+  'English':'#3b82f6','Mathematics':'#10b981','Science':'#f59e0b','Social Studies':'#8b5cf6',
+  'Theology':'#ec4899','Physical Education':'#06b6d4','Theater':'#f43f5e','Theater Arts':'#f43f5e',
+  'Fine Arts':'#f43f5e','World Language':'#14b8a6','Business':'#6366f1','Computer Science':'#6366f1',
+  'Communication Arts':'#a855f7','Engineering':'#f97316','Humanities':'#8b5cf6',
+  'Special Education':'#64748b','Music':'#d946ef'
+};
+const GRADE_COLORS = {9:'#3b82f6',10:'#8b5cf6',11:'#f59e0b',12:'#ef4444'};
+
+const state = {
+  sections:[], assignments:{}, clashes:[], stats:{},
+  teacherIndex:{}, roomIndex:{}, sectionStudents:{}, studentSchedule:{},
+  sectionByCode:{}, clashByCourse:{}, clashByStudent:{},
+  selectedSid:null, moveHistory:[], originalClashCount:0,
+  currentClashCount:0, currentPlaced:0, totalRequests:0,
+  filters:{term:'all',dept:'all',search:''},
+  unlimitedMode:false, dragSid:null
+};
+
+// ── Data Loading ──
+function loadSolution(json) {
+  state.sections = json.sections;
+  state.assignments = json.assignments;
+  state.clashes = json.clashes.slice();
+  state.stats = json.stats;
+  state.originalClashCount = json.stats.clashes;
+  state.currentClashCount = json.stats.clashes;
+  state.currentPlaced = json.stats.placed;
+  state.totalRequests = json.stats.requests;
+  state.unlimitedMode = state.sections.every(s => s.cap >= 9999);
+  buildIndices();
+}
+
+function buildIndices() {
+  state.teacherIndex = {};
+  state.roomIndex = {};
+  state.sectionStudents = {};
+  state.studentSchedule = {};
+  state.sectionByCode = {};
+  state.clashByCourse = {};
+  state.clashByStudent = {};
+
+  for (const sec of state.sections) {
+    if (!state.teacherIndex[sec.teacher]) state.teacherIndex[sec.teacher] = [];
+    state.teacherIndex[sec.teacher].push(sec);
+    if (!state.roomIndex[sec.room]) state.roomIndex[sec.room] = [];
+    state.roomIndex[sec.room].push(sec);
+    state.sectionStudents[sec.sid] = [];
+    const key = `${sec.code}-${sec.section}`;
+    state.sectionByCode[key] = sec;
+  }
+
+  for (const [sid, stu] of Object.entries(state.assignments)) {
+    state.studentSchedule[sid] = {};
+    for (const [code, c] of Object.entries(stu.courses)) {
+      for (const sem of c.halves) {
+        const key = `${c.period}-${sem}`;
+        if (!state.studentSchedule[sid][key]) state.studentSchedule[sid][key] = [];
+        state.studentSchedule[sid][key].push(code);
+      }
+      const secKey = `${code}-${c.section}`;
+      const sec = state.sectionByCode[secKey];
+      if (sec) state.sectionStudents[sec.sid].push(sid);
+    }
+  }
+
+  for (const cl of state.clashes) {
+    const code = String(cl.code);
+    if (!state.clashByCourse[code]) state.clashByCourse[code] = [];
+    state.clashByCourse[code].push(cl);
+    const sid = String(cl.student);
+    if (!state.clashByStudent[sid]) state.clashByStudent[sid] = [];
+    state.clashByStudent[sid].push(cl);
+  }
+}
+
+// ── Conflict Engine ──
+function hasTermOverlap(h1, h2) {
+  return h1.some(h => h2.includes(h));
+}
+
+function getTeacherConflict(section, newPeriod) {
+  const secs = state.teacherIndex[section.teacher] || [];
+  return secs.filter(s =>
+    s.sid !== section.sid && s.period === newPeriod && hasTermOverlap(section.halves, s.halves)
+  );
+}
+
+function getRoomConflict(section, newPeriod) {
+  const secs = state.roomIndex[section.room] || [];
+  return secs.filter(s =>
+    s.sid !== section.sid && s.period === newPeriod && hasTermOverlap(section.halves, s.halves)
+  );
+}
+
+function previewMove(sectionSid, newPeriod) {
+  const section = state.sections.find(s => s.sid === sectionSid);
+  if (!section || section.period === newPeriod) return null;
+
+  const oldPeriod = section.period;
+  const enrolledStudents = state.sectionStudents[sectionSid] || [];
+  let conflictsCreated = 0;
+  let conflictsResolvedFromOld = 0;
+
+  for (const sid of enrolledStudents) {
+    const sched = state.studentSchedule[sid];
+    if (!sched) continue;
+    for (const sem of section.halves) {
+      const newKey = `${newPeriod}-${sem}`;
+      if (sched[newKey] && sched[newKey].length > 0) {
+        conflictsCreated++;
+        break;
+      }
+    }
+  }
+
+  const courseClashes = state.clashByCourse[String(section.code)] || [];
+  let potentialResolutions = 0;
+  for (const cl of courseClashes) {
+    const sched = state.studentSchedule[String(cl.student)];
+    if (!sched) { potentialResolutions++; continue; }
+    let free = true;
+    for (const sem of section.halves) {
+      const key = `${newPeriod}-${sem}`;
+      if (sched[key] && sched[key].length > 0) { free = false; break; }
+    }
+    if (free) potentialResolutions++;
+  }
+
+  const teacherConflicts = getTeacherConflict(section, newPeriod);
+  const roomConflicts = getRoomConflict(section, newPeriod);
+
+  return {
+    section, oldPeriod, newPeriod,
+    enrolledCount: enrolledStudents.length,
+    conflictsCreated, potentialResolutions,
+    netEstimate: conflictsCreated - potentialResolutions,
+    teacherConflicts, roomConflicts,
+    hasTeacherConflict: teacherConflicts.length > 0,
+    hasRoomConflict: roomConflicts.length > 0
+  };
+}
+
+function applyMove(sectionSid, newPeriod) {
+  const section = state.sections.find(s => s.sid === sectionSid);
+  if (!section || section.period === newPeriod) return null;
+
+  const preview = previewMove(sectionSid, newPeriod);
+  const oldPeriod = section.period;
+  const enrolledStudents = state.sectionStudents[sectionSid] || [];
+
+  for (const sid of enrolledStudents) {
+    const sched = state.studentSchedule[sid];
+    if (!sched) continue;
+    for (const sem of section.halves) {
+      const oldKey = `${oldPeriod}-${sem}`;
+      if (sched[oldKey]) {
+        sched[oldKey] = sched[oldKey].filter(c => String(c) !== String(section.code));
+        if (sched[oldKey].length === 0) delete sched[oldKey];
+      }
+      const newKey = `${newPeriod}-${sem}`;
+      if (!sched[newKey]) sched[newKey] = [];
+      sched[newKey].push(String(section.code));
+    }
+    const stu = state.assignments[sid];
+    if (stu && stu.courses[String(section.code)]) {
+      stu.courses[String(section.code)].period = newPeriod;
+    }
+  }
+
+  section.period = newPeriod;
+
+  state.currentClashCount = state.originalClashCount + state.moveHistory.reduce((sum, m) => sum + m.preview.conflictsCreated, 0) + preview.conflictsCreated;
+
+  state.moveHistory.push({
+    sectionSid, oldPeriod, newPeriod,
+    sectionCode: section.code, sectionTitle: section.title,
+    sectionNum: section.section, teacher: section.teacher,
+    preview, timestamp: new Date().toLocaleTimeString()
+  });
+
+  return preview;
+}
+
+function undoLastMove() {
+  if (state.moveHistory.length === 0) return;
+  const last = state.moveHistory.pop();
+  const section = state.sections.find(s => s.sid === last.sectionSid);
+  if (!section) return;
+
+  const enrolledStudents = state.sectionStudents[last.sectionSid] || [];
+  const curPeriod = section.period;
+
+  for (const sid of enrolledStudents) {
+    const sched = state.studentSchedule[sid];
+    if (!sched) continue;
+    for (const sem of section.halves) {
+      const curKey = `${curPeriod}-${sem}`;
+      if (sched[curKey]) {
+        sched[curKey] = sched[curKey].filter(c => String(c) !== String(section.code));
+        if (sched[curKey].length === 0) delete sched[curKey];
+      }
+      const oldKey = `${last.oldPeriod}-${sem}`;
+      if (!sched[oldKey]) sched[oldKey] = [];
+      sched[oldKey].push(String(section.code));
+    }
+    const stu = state.assignments[sid];
+    if (stu && stu.courses[String(section.code)]) {
+      stu.courses[String(section.code)].period = last.oldPeriod;
+    }
+  }
+
+  section.period = last.oldPeriod;
+  state.currentClashCount = state.originalClashCount + state.moveHistory.reduce((sum, m) => sum + m.preview.conflictsCreated, 0);
+  renderAll();
+}
+
+// ── Grade Breakdown ──
+function getGradeBreakdown() {
+  const counts = {9:0,10:0,11:0,12:0};
+  for (const cl of state.clashes) counts[cl.grade] = (counts[cl.grade]||0) + 1;
+  return counts;
+}
+
+// ── Rendering ──
+function renderAll() {
+  renderScoreboard();
+  renderBoard();
+  document.getElementById('undo-btn').disabled = state.moveHistory.length === 0;
+  document.getElementById('move-count').textContent = `${state.moveHistory.length} move${state.moveHistory.length!==1?'s':''}`;
+  if (state.unlimitedMode) document.getElementById('unlimited-banner').style.display = 'block';
+}
+
+function renderScoreboard() {
+  const kpiRow = document.getElementById('kpi-row');
+  const totalDelta = state.moveHistory.reduce((sum, m) => sum + m.preview.conflictsCreated, 0);
+  const resolvedDelta = state.moveHistory.reduce((sum, m) => sum + m.preview.potentialResolutions, 0);
+  const clashDelta = totalDelta;
+  const displayClashes = state.originalClashCount + clashDelta;
+  const estResolved = resolvedDelta;
+  const adjustedRate = ((state.currentPlaced) / state.totalRequests * 100).toFixed(1);
+
+  kpiRow.innerHTML = `
+    <div class="kpi accent-red">
+      <div class="kpi-label">Clashes</div>
+      <div class="kpi-value">${state.originalClashCount}</div>
+      <div class="kpi-sub">${state.stats.protected_clashes} protected</div>
+      ${clashDelta ? `<div class="kpi-delta ${clashDelta>0?'negative':'positive'}">${clashDelta>0?'+':''}${clashDelta} created</div>` : ''}
+    </div>
+    <div class="kpi accent-blue">
+      <div class="kpi-label">Placed</div>
+      <div class="kpi-value">${state.currentPlaced.toLocaleString()}</div>
+      <div class="kpi-sub">of ${state.totalRequests.toLocaleString()} requests</div>
+      ${estResolved ? `<div class="kpi-delta positive">~${estResolved} resolvable</div>` : ''}
+    </div>
+    <div class="kpi accent-purple">
+      <div class="kpi-label">Sections</div>
+      <div class="kpi-value">${state.sections.length}</div>
+      <div class="kpi-sub">${state.stats.sections_used} used</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Students</div>
+      <div class="kpi-value">${state.stats.students}</div>
+      <div class="kpi-sub">63 teachers</div>
+    </div>
+  `;
+
+  renderGauge(parseFloat(state.stats.placement_rate));
+  renderGradeBar();
+}
+
+function renderGauge(pct) {
+  const svg = document.getElementById('gauge-svg');
+  const r = 70, cx = 100, cy = 95;
+  const startAngle = Math.PI;
+  const endAngle = Math.PI * (1 - pct / 100);
+  const x1 = cx - r, y1 = cy;
+  const x2 = cx + r * Math.cos(endAngle);
+  const y2 = cy - r * Math.sin(endAngle);
+  const largeArc = pct >= 50 ? 1 : 0;
+
+  let color;
+  if (pct < 70) color = '#ef4444';
+  else if (pct < 80) color = '#f97316';
+  else if (pct < 85) color = '#eab308';
+  else if (pct < 90) color = '#84cc16';
+  else if (pct < 95) color = '#22c55e';
+  else color = '#16a34a';
+
+  svg.innerHTML = `
+    <path d="M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy}" stroke="#1e293b" fill="none" stroke-width="14" stroke-linecap="round"/>
+    <path d="M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${color}" fill="none" stroke-width="14" stroke-linecap="round"/>
+    <text x="${cx}" y="${cy-15}" text-anchor="middle" fill="#f8fafc" font-size="24" font-weight="700">${pct}%</text>
+    <text x="${cx}" y="${cy+2}" text-anchor="middle" fill="#64748b" font-size="10">PLACEMENT</text>
+  `;
+}
+
+function renderGradeBar() {
+  const gb = getGradeBreakdown();
+  const bar = document.getElementById('grade-bar');
+  bar.innerHTML = Object.entries(gb).map(([g,c]) =>
+    `<div class="grade-chip"><span class="dot" style="background:${GRADE_COLORS[g]}"></span>Gr${g}: <span class="gval">${c}</span></div>`
+  ).join('');
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  for (const period of PERIODS) {
+    const col = document.createElement('div');
+    col.className = 'period-col';
+
+    const secs = state.sections.filter(s => s.period === period);
+    const filtered = filterSections(secs);
+
+    col.innerHTML = `<div class="period-header">Period ${period}<span class="col-count">(${filtered.length})</span></div>`;
+    const container = document.createElement('div');
+    container.className = 'card-container';
+    container.dataset.period = period;
+
+    container.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      container.classList.add('drop-target');
+      if (state.dragSid !== null) showMovePreview(state.dragSid, period, e);
+    });
+    container.addEventListener('dragleave', () => {
+      container.classList.remove('drop-target');
+      hideMovePreview();
+    });
+    container.addEventListener('drop', e => {
+      e.preventDefault();
+      container.classList.remove('drop-target');
+      hideMovePreview();
+      if (state.dragSid !== null) {
+        const result = applyMove(state.dragSid, period);
+        if (result) renderAll();
+        state.dragSid = null;
+      }
+    });
+
+    filtered.sort((a,b) => a.dept.localeCompare(b.dept) || String(a.code).localeCompare(String(b.code)));
+
+    for (const sec of filtered) {
+      container.appendChild(createCard(sec));
+    }
+
+    col.appendChild(container);
+    board.appendChild(col);
+  }
+}
+
+function filterSections(secs) {
+  const {term, dept, search} = state.filters;
+  return secs.filter(s => {
+    if (term !== 'all') {
+      const t = getTermType(s.halves);
+      if (t !== term) return false;
+    }
+    if (dept !== 'all' && s.dept !== dept) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!String(s.code).includes(q) && !s.title.toLowerCase().includes(q) && !s.teacher.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function getTermType(halves) {
+  if (halves.length === 2) return 'FY';
+  return halves[0];
+}
+
+function createCard(sec) {
+  const card = document.createElement('div');
+  card.className = 'card' + (sec.sid === state.selectedSid ? ' selected' : '');
+  card.draggable = true;
+  card.dataset.sid = sec.sid;
+  card.style.borderLeftColor = DEPT_COLORS[sec.dept] || '#475569';
+
+  const term = getTermType(sec.halves);
+  const enrollDisplay = state.unlimitedMode ? sec.enrolled : `${sec.enrolled}/${sec.cap}`;
+
+  const studentClashes = (state.sectionStudents[sec.sid] || []).filter(sid => {
+    const sched = state.studentSchedule[sid];
+    if (!sched) return false;
+    for (const sem of sec.halves) {
+      const key = `${sec.period}-${sem}`;
+      if (sched[key] && sched[key].length > 1) return true;
+    }
+    return false;
+  });
+
+  card.innerHTML = `
+    <div class="card-top">
+      <span class="card-code">${sec.code}</span>
+      <span class="card-sec">&sect;${sec.section}</span>
+    </div>
+    <div class="card-title">${sec.title}</div>
+    <div class="card-bottom">
+      <span class="card-teacher">${sec.teacher.split(',')[0]}</span>
+      <span class="card-meta">
+        <span class="card-enroll">${enrollDisplay}</span>
+        <span class="term-badge ${term.toLowerCase()}">${term}</span>
+      </span>
+    </div>
+    ${studentClashes.length > 0 ? '<span class="conflict-dot"></span>' : ''}
+  `;
+
+  card.addEventListener('click', e => {
+    e.stopPropagation();
+    selectSection(sec.sid);
+  });
+
+  card.addEventListener('dragstart', e => {
+    state.dragSid = sec.sid;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', sec.sid);
+  });
+
+  card.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+    state.dragSid = null;
+    hideMovePreview();
+    document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+  });
+
+  return card;
+}
+
+// ── Selection & Detail Panel ──
+function selectSection(sid) {
+  state.selectedSid = sid;
+  renderBoard();
+  renderDetailPanel(sid);
+  renderContextPanel(sid);
+}
+
+function closeDetail() {
+  state.selectedSid = null;
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('context-panel').className = 'empty';
+  document.getElementById('context-panel').innerHTML = 'Click a section card to view details';
+  renderBoard();
+}
+
+function renderContextPanel(sid) {
+  const sec = state.sections.find(s => s.sid === sid);
+  if (!sec) return;
+  const panel = document.getElementById('context-panel');
+  panel.className = '';
+  const term = getTermType(sec.halves);
+  const enrolled = state.sectionStudents[sid] || [];
+  const courseClashes = state.clashByCourse[String(sec.code)] || [];
+
+  panel.innerHTML = `
+    <h3>${sec.code} ${sec.title} &sect;${sec.section}</h3>
+    <div class="ctx-row"><span class="ctx-label">Teacher</span><span class="ctx-val">${sec.teacher}</span></div>
+    <div class="ctx-row"><span class="ctx-label">Room</span><span class="ctx-val">${sec.room}</span></div>
+    <div class="ctx-row"><span class="ctx-label">Period</span><span class="ctx-val">${sec.period} (${term})</span></div>
+    <div class="ctx-row"><span class="ctx-label">Enrolled</span><span class="ctx-val">${enrolled.length}${state.unlimitedMode?'':' / '+sec.cap}</span></div>
+    <div class="ctx-row"><span class="ctx-label">Clashes</span><span class="ctx-val ${courseClashes.length>0?'ctx-warn':''}">${courseClashes.length} students want this course</span></div>
+  `;
+}
+
+function renderDetailPanel(sid) {
+  const sec = state.sections.find(s => s.sid === sid);
+  if (!sec) return;
+  const panel = document.getElementById('detail-panel');
+  const content = document.getElementById('detail-content');
+  const term = getTermType(sec.halves);
+  const enrolled = state.sectionStudents[sid] || [];
+  const courseClashes = state.clashByCourse[String(sec.code)] || [];
+
+  let html = `
+    <h2>${sec.code} ${sec.title}</h2>
+    <div class="detail-grid">
+      <span class="dl">Section</span><span class="dv">&sect;${sec.section}</span>
+      <span class="dl">Department</span><span class="dv">${sec.dept}</span>
+      <span class="dl">Period</span><span class="dv">${sec.period}</span>
+      <span class="dl">Term</span><span class="dv">${term} (${sec.halves.join(', ')})</span>
+      <span class="dl">Teacher</span><span class="dv">${sec.teacher}</span>
+      <span class="dl">Room</span><span class="dv">${sec.room}</span>
+      <span class="dl">Enrolled</span><span class="dv">${enrolled.length}${state.unlimitedMode?'':' / '+sec.cap}</span>
+      <span class="dl">Priority</span><span class="dv">${sec.course_section_raw}</span>
+      <span class="dl">Unscheduled</span><span class="dv${courseClashes.length>0?' ctx-warn':''}">${courseClashes.length} students</span>
+    </div>
+  `;
+
+  html += `<h4>Teacher Schedule: ${sec.teacher}</h4>`;
+  html += renderScheduleGrid(state.teacherIndex[sec.teacher] || [], sid);
+
+  html += `<h4>Room Schedule: ${sec.room}</h4>`;
+  html += renderScheduleGrid(state.roomIndex[sec.room] || [], sid);
+
+  html += `<h4>Enrolled Students (${enrolled.length})</h4>`;
+  html += '<div class="student-list">';
+  for (const stuId of enrolled.slice(0, 50)) {
+    const stu = state.assignments[stuId];
+    if (!stu) continue;
+    const stuClashes = state.clashByStudent[stuId] || [];
+    html += `<div class="st-row"><span class="st-name">${stu.name}${stuClashes.length>0?' <span style="color:#f59e0b">('+stuClashes.length+' clashes)</span>':''}</span><span class="st-grade">Gr${stu.grade}</span></div>`;
+  }
+  if (enrolled.length > 50) html += `<div class="st-row" style="color:#64748b;font-style:italic">...and ${enrolled.length-50} more</div>`;
+  html += '</div>';
+
+  if (courseClashes.length > 0) {
+    html += `<h4>Unscheduled Requests (${courseClashes.length})</h4>`;
+    html += '<div class="student-list">';
+    for (const cl of courseClashes.slice(0, 30)) {
+      html += `<div class="st-row"><span class="st-name">${cl.name} <span style="color:#64748b">(${cl.priority_band})</span></span><span class="st-grade">Gr${cl.grade}</span></div>`;
+    }
+    if (courseClashes.length > 30) html += `<div class="st-row" style="color:#64748b;font-style:italic">...and ${courseClashes.length-30} more</div>`;
+    html += '</div>';
+  }
+
+  content.innerHTML = html;
+  panel.classList.add('open');
+}
+
+function renderScheduleGrid(sections, highlightSid) {
+  let html = '<table class="sched-grid"><thead><tr><th></th>';
+  for (const p of PERIODS) html += `<th>${p}</th>`;
+  html += '</tr></thead><tbody>';
+
+  for (const sem of ['S1','S2']) {
+    html += `<tr><th>${sem}</th>`;
+    for (const p of PERIODS) {
+      const inSlot = sections.filter(s => s.period === p && s.halves.includes(sem));
+      if (inSlot.length === 0) {
+        html += '<td class="empty-slot">-</td>';
+      } else if (inSlot.length === 1) {
+        const s = inSlot[0];
+        const cls = s.sid === highlightSid ? 'current-section' : 'occupied';
+        html += `<td class="${cls}" title="${s.title}">${s.code}&sect;${s.section}</td>`;
+      } else {
+        const hasHighlight = inSlot.some(s => s.sid === highlightSid);
+        html += `<td class="${hasHighlight?'conflict':'occupied'}" title="${inSlot.map(s=>s.code).join(', ')}">`;
+        html += inSlot.map(s => `<span${s.sid===highlightSid?' style="color:#60a5fa;font-weight:600"':''}>${s.code}</span>`).join('/');
+        html += '</td>';
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  return html;
+}
+
+// ── Move Preview ──
+function showMovePreview(sid, targetPeriod, e) {
+  const preview = previewMove(sid, targetPeriod);
+  if (!preview) { hideMovePreview(); return; }
+  const el = document.getElementById('move-preview');
+  el.style.display = 'block';
+  el.style.left = (e.clientX + 16) + 'px';
+  el.style.top = (e.clientY - 40) + 'px';
+
+  el.innerHTML = `
+    <h4>${preview.section.code} ${preview.section.title} &sect;${preview.section.section}</h4>
+    <div class="mp-row"><span class="mp-label">Move</span><span class="mp-val neutral">${preview.oldPeriod} &rarr; ${preview.newPeriod}</span></div>
+    <div class="mp-row"><span class="mp-label">Students affected</span><span class="mp-val neutral">${preview.enrolledCount}</span></div>
+    <div class="mp-row"><span class="mp-label">New conflicts</span><span class="mp-val ${preview.conflictsCreated>0?'bad':'good'}">${preview.conflictsCreated}</span></div>
+    <div class="mp-row"><span class="mp-label">Potential resolutions</span><span class="mp-val ${preview.potentialResolutions>0?'good':'neutral'}">${preview.potentialResolutions}</span></div>
+    <div class="mp-row"><span class="mp-label">Net estimate</span><span class="mp-val ${preview.netEstimate>0?'bad':preview.netEstimate<0?'good':'neutral'}">${preview.netEstimate>0?'+':''}${preview.netEstimate}</span></div>
+    <div class="mp-row"><span class="mp-label">Teacher conflict</span><span class="mp-val ${preview.hasTeacherConflict?'bad':'good'}">${preview.hasTeacherConflict?'YES - '+preview.teacherConflicts.map(s=>s.code+'§'+s.section).join(', '):'None'}</span></div>
+    <div class="mp-row"><span class="mp-label">Room conflict</span><span class="mp-val ${preview.hasRoomConflict?'warn':'good'}">${preview.hasRoomConflict?'YES - '+preview.roomConflicts.map(s=>s.code+'§'+s.section).join(', '):'None'}</span></div>
+  `;
+}
+
+function hideMovePreview() {
+  document.getElementById('move-preview').style.display = 'none';
+}
+
+// ── Export ──
+function showExport() {
+  if (state.moveHistory.length === 0) {
+    alert('No moves to export.');
+    return;
+  }
+  const modal = document.getElementById('export-modal');
+  const content = document.getElementById('export-content');
+
+  let text = 'Master Schedule Board - Move Summary\n';
+  text += `Date: ${new Date().toLocaleDateString()}\n`;
+  text += `Solution: schedule_solution_v3.json\n\n`;
+  text += `Moves Applied (${state.moveHistory.length}):\n`;
+  text += '─'.repeat(60) + '\n';
+
+  let totalCreated = 0, totalResolvable = 0;
+  for (let i = 0; i < state.moveHistory.length; i++) {
+    const m = state.moveHistory[i];
+    text += `${i+1}. ${m.sectionCode} ${m.sectionTitle} §${m.sectionNum}\n`;
+    text += `   Period ${m.oldPeriod} → ${m.newPeriod} (Teacher: ${m.teacher})\n`;
+    text += `   Impact: +${m.preview.conflictsCreated} conflicts, ~${m.preview.potentialResolutions} resolvable`;
+    if (m.preview.hasTeacherConflict) text += ' [TEACHER CONFLICT]';
+    if (m.preview.hasRoomConflict) text += ' [ROOM CONFLICT]';
+    text += '\n\n';
+    totalCreated += m.preview.conflictsCreated;
+    totalResolvable += m.preview.potentialResolutions;
+  }
+
+  text += '─'.repeat(60) + '\n';
+  text += `Original: ${state.originalClashCount} clashes (${state.stats.placement_rate}% placement)\n`;
+  text += `Conflicts created: +${totalCreated}\n`;
+  text += `Potentially resolvable: ~${totalResolvable}\n`;
+  text += `\nTo apply: Update prescribed periods in Template 6 Sheet 2, then re-run engine.\n`;
+
+  content.innerHTML = `
+    <h2>Export Move Summary</h2>
+    <pre id="export-text">${text}</pre>
+    <div class="modal-actions">
+      <button class="btn-copy" onclick="copyExport()">Copy to Clipboard</button>
+      <button class="btn-close-modal" onclick="closeExportModal()">Close</button>
+    </div>
+  `;
+  modal.classList.add('open');
+}
+
+function copyExport() {
+  const text = document.getElementById('export-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy to Clipboard', 2000);
+  });
+}
+
+function closeExportModal() {
+  document.getElementById('export-modal').classList.remove('open');
+}
+
+// ── Filter Handlers ──
+function setupFilters() {
+  const deptSelect = document.getElementById('filter-dept');
+  const depts = [...new Set(state.sections.map(s => s.dept))].sort();
+  for (const d of depts) {
+    const opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    deptSelect.appendChild(opt);
+  }
+
+  document.getElementById('filter-term').addEventListener('change', e => {
+    state.filters.term = e.target.value;
+    renderBoard();
+  });
+  deptSelect.addEventListener('change', e => {
+    state.filters.dept = e.target.value;
+    renderBoard();
+  });
+  document.getElementById('search-box').addEventListener('input', e => {
+    state.filters.search = e.target.value;
+    renderBoard();
+  });
+}
+
+// ── File Loading ──
+function initFileHandlers() {
+  const dropZone = document.getElementById('file-drop');
+  const fileInput = document.getElementById('file-input');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) processFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e => {
+    if (e.target.files.length) processFile(e.target.files[0]);
+  });
+}
+
+function processFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const json = JSON.parse(e.target.result);
+      if (!json.sections || !json.assignments) {
+        alert('Invalid solution file. Expected schedule_solution_v3.json format.');
+        return;
+      }
+      loadSolution(json);
+      document.getElementById('load-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      setupFilters();
+      renderAll();
+    } catch(err) {
+      alert('Error parsing JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── Global Click Handler ──
+document.addEventListener('click', e => {
+  if (state.selectedSid !== null && !e.target.closest('.card') && !e.target.closest('#detail-panel')) {
+    closeDetail();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeDetail();
+    closeExportModal();
+  }
+  if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    undoLastMove();
+  }
+});
+
+// ── Init ──
+initFileHandlers();
+</script>
+</body>
+</html>
