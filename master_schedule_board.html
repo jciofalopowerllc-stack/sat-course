@@ -143,6 +143,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .mp-val.warn{color:#f59e0b}
 .mp-val.neutral{color:#94a3b8}
 
+/* Cascade Tree */
+.cascade-section{margin-top:6px;border-top:1px solid #334155;padding-top:6px}
+.cascade-section .cas-header{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:4px}
+.cas-row{display:flex;align-items:center;gap:6px;font-size:11px;padding:2px 0;color:#e2e8f0}
+.cas-icon{width:14px;text-align:center;flex-shrink:0}
+.cas-icon.ok{color:#22c55e}
+.cas-icon.fail{color:#ef4444}
+.cas-icon.resolve{color:#60a5fa}
+.cas-detail{color:#64748b;font-size:10px}
+.cascade-summary{margin-top:6px;padding-top:6px;border-top:1px solid #334155;font-size:12px}
+.cascade-summary .cs-row{display:flex;justify-content:space-between;margin-bottom:2px}
+
 /* Export Modal */
 #export-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:center;justify-content:center}
 #export-modal.open{display:flex}
@@ -163,7 +175,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 <div id="load-screen">
   <h1>Master Schedule Board</h1>
   <p>Don Bosco Prep 2026-27</p>
-  <p class="subtitle">Phase 1 — Section Placement & Clash Analysis</p>
+  <p class="subtitle">Phase 2 — Cascade Solver & Ripple Analysis</p>
   <div class="file-drop" id="file-drop">
     <span class="icon">&#128203;</span>
     <div class="label">Drop <strong>schedule_solution_v3.json</strong> here<br>or click to browse</div>
@@ -308,63 +320,174 @@ function getRoomConflict(section, newPeriod) {
   );
 }
 
-function previewMove(sectionSid, newPeriod) {
+function computeCascade(sectionSid, newPeriod) {
   const section = state.sections.find(s => s.sid === sectionSid);
   if (!section || section.period === newPeriod) return null;
 
   const oldPeriod = section.period;
-  const enrolledStudents = state.sectionStudents[sectionSid] || [];
-  let conflictsCreated = 0;
-  let conflictsResolvedFromOld = 0;
+  const enrolled = state.sectionStudents[sectionSid] || [];
+  const courseClashes = state.clashByCourse[String(section.code)] || [];
 
-  for (const sid of enrolledStudents) {
-    const sched = state.studentSchedule[sid];
-    if (!sched) continue;
-    for (const sem of section.halves) {
-      const newKey = `${newPeriod}-${sem}`;
-      if (sched[newKey] && sched[newKey].length > 0) {
-        conflictsCreated++;
-        break;
+  const result = {
+    section, oldPeriod, newPeriod,
+    enrolledCount: enrolled.length,
+    studentMoves: [],
+    newClashes: [],
+    potentialResolutions: [],
+    teacherConflicts: getTeacherConflict(section, newPeriod),
+    roomConflicts: getRoomConflict(section, newPeriod),
+    hasTeacherConflict: false,
+    hasRoomConflict: false,
+    stats: {}
+  };
+  result.hasTeacherConflict = result.teacherConflicts.length > 0;
+  result.hasRoomConflict = result.roomConflicts.length > 0;
+
+  const simSched = {};
+  const relevantStudents = new Set(enrolled);
+  for (const cl of courseClashes) relevantStudents.add(String(cl.student));
+  for (const sid of relevantStudents) {
+    if (state.studentSchedule[sid]) {
+      simSched[sid] = {};
+      for (const [key, courses] of Object.entries(state.studentSchedule[sid])) {
+        simSched[sid][key] = [...courses];
       }
     }
   }
 
-  const courseClashes = state.clashByCourse[String(section.code)] || [];
-  let potentialResolutions = 0;
-  for (const cl of courseClashes) {
-    const sched = state.studentSchedule[String(cl.student)];
-    if (!sched) { potentialResolutions++; continue; }
-    let free = true;
-    for (const sem of section.halves) {
-      const key = `${newPeriod}-${sem}`;
-      if (sched[key] && sched[key].length > 0) { free = false; break; }
-    }
-    if (free) potentialResolutions++;
+  const simEnroll = {};
+  for (const sec of state.sections) {
+    simEnroll[sec.sid] = (state.sectionStudents[sec.sid] || []).length;
   }
 
-  const teacherConflicts = getTeacherConflict(section, newPeriod);
-  const roomConflicts = getRoomConflict(section, newPeriod);
+  for (const studentId of enrolled) {
+    const sched = simSched[studentId];
+    if (!sched) continue;
+    const stu = state.assignments[studentId];
+    if (!stu) continue;
 
-  return {
-    section, oldPeriod, newPeriod,
-    enrolledCount: enrolledStudents.length,
-    conflictsCreated, potentialResolutions,
-    netEstimate: conflictsCreated - potentialResolutions,
-    teacherConflicts, roomConflicts,
-    hasTeacherConflict: teacherConflicts.length > 0,
-    hasRoomConflict: roomConflicts.length > 0
+    for (const sem of section.halves) {
+      const oldKey = `${oldPeriod}-${sem}`;
+      if (sched[oldKey]) {
+        sched[oldKey] = sched[oldKey].filter(c => String(c) !== String(section.code));
+        if (sched[oldKey].length === 0) delete sched[oldKey];
+      }
+    }
+
+    const conflicting = new Set();
+    for (const sem of section.halves) {
+      const newKey = `${newPeriod}-${sem}`;
+      if (sched[newKey]) {
+        for (const code of sched[newKey]) conflicting.add(code);
+      }
+    }
+
+    for (const sem of section.halves) {
+      const newKey = `${newPeriod}-${sem}`;
+      if (!sched[newKey]) sched[newKey] = [];
+      sched[newKey].push(String(section.code));
+    }
+
+    for (const conflictCode of conflicting) {
+      const courseData = stu.courses[conflictCode];
+      if (!courseData) continue;
+
+      const currentSecSid = findSectionSid(conflictCode, courseData.section);
+      const altSections = state.sections.filter(s =>
+        String(s.code) === String(conflictCode) &&
+        s.sid !== currentSecSid &&
+        JSON.stringify(s.halves) === JSON.stringify(courseData.halves)
+      ).sort((a, b) => simEnroll[a.sid] - simEnroll[b.sid]);
+
+      let placed = false;
+      for (const alt of altSections) {
+        let canFit = true;
+        for (const sem of alt.halves) {
+          const key = `${alt.period}-${sem}`;
+          if (sched[key] && sched[key].filter(c => String(c) !== String(conflictCode)).length > 0) {
+            canFit = false;
+            break;
+          }
+        }
+        if (canFit && (state.unlimitedMode || simEnroll[alt.sid] < alt.cap)) {
+          for (const sem of courseData.halves) {
+            const key = `${courseData.period}-${sem}`;
+            if (sched[key]) {
+              sched[key] = sched[key].filter(c => String(c) !== String(conflictCode));
+              if (sched[key].length === 0) delete sched[key];
+            }
+          }
+          for (const sem of alt.halves) {
+            const key = `${alt.period}-${sem}`;
+            if (!sched[key]) sched[key] = [];
+            sched[key].push(String(conflictCode));
+          }
+          if (currentSecSid !== null) simEnroll[currentSecSid]--;
+          simEnroll[alt.sid]++;
+          result.studentMoves.push({
+            studentId, name: stu.name, grade: stu.grade,
+            courseCode: conflictCode, courseTitle: courseData.title,
+            fromPeriod: courseData.period, toPeriod: alt.period,
+            fromSection: courseData.section, toSection: alt.section,
+            fromSid: currentSecSid, toSid: alt.sid
+          });
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        result.newClashes.push({
+          studentId, name: stu.name, grade: stu.grade,
+          courseCode: conflictCode, courseTitle: courseData.title,
+          reason: altSections.length === 0 ? 'No other sections' : 'All alternatives conflict'
+        });
+      }
+    }
+  }
+
+  for (const cl of courseClashes) {
+    const sched = simSched[String(cl.student)];
+    let free = true;
+    if (sched) {
+      for (const sem of section.halves) {
+        const key = `${newPeriod}-${sem}`;
+        if (sched[key] && sched[key].length > 0) { free = false; break; }
+      }
+    }
+    if (free && (state.unlimitedMode || simEnroll[sectionSid] < section.cap)) {
+      result.potentialResolutions.push({
+        studentId: String(cl.student), name: cl.name, grade: cl.grade,
+        courseCode: String(cl.code)
+      });
+      simEnroll[sectionSid]++;
+    }
+  }
+
+  result.stats = {
+    conflictsFound: result.studentMoves.length + result.newClashes.length,
+    relocated: result.studentMoves.length,
+    newClashCount: result.newClashes.length,
+    resolvedCount: result.potentialResolutions.length,
+    netImpact: result.newClashes.length - result.potentialResolutions.length
   };
+  return result;
+}
+
+function findSectionSid(code, sectionNum) {
+  const key = `${code}-${sectionNum}`;
+  const sec = state.sectionByCode[key];
+  return sec ? sec.sid : null;
 }
 
 function applyMove(sectionSid, newPeriod) {
-  const section = state.sections.find(s => s.sid === sectionSid);
-  if (!section || section.period === newPeriod) return null;
+  const cascade = computeCascade(sectionSid, newPeriod);
+  if (!cascade) return null;
 
-  const preview = previewMove(sectionSid, newPeriod);
-  const oldPeriod = section.period;
-  const enrolledStudents = state.sectionStudents[sectionSid] || [];
+  const section = cascade.section;
+  const oldPeriod = cascade.oldPeriod;
+  const enrolled = state.sectionStudents[sectionSid] || [];
 
-  for (const sid of enrolledStudents) {
+  for (const sid of enrolled) {
     const sched = state.studentSchedule[sid];
     if (!sched) continue;
     for (const sem of section.halves) {
@@ -383,18 +506,51 @@ function applyMove(sectionSid, newPeriod) {
     }
   }
 
-  section.period = newPeriod;
+  for (const move of cascade.studentMoves) {
+    const sched = state.studentSchedule[move.studentId];
+    const stu = state.assignments[move.studentId];
+    if (!sched || !stu) continue;
+    const courseData = stu.courses[move.courseCode];
+    if (!courseData) continue;
 
-  state.currentClashCount = state.originalClashCount + state.moveHistory.reduce((sum, m) => sum + m.preview.conflictsCreated, 0) + preview.conflictsCreated;
+    for (const sem of courseData.halves) {
+      const key = `${courseData.period}-${sem}`;
+      if (sched[key]) {
+        sched[key] = sched[key].filter(c => String(c) !== String(move.courseCode));
+        if (sched[key].length === 0) delete sched[key];
+      }
+    }
+    const altSec = state.sections.find(s => s.sid === move.toSid);
+    if (altSec) {
+      for (const sem of altSec.halves) {
+        const key = `${move.toPeriod}-${sem}`;
+        if (!sched[key]) sched[key] = [];
+        sched[key].push(String(move.courseCode));
+      }
+      if (move.fromSid !== null) {
+        state.sectionStudents[move.fromSid] = (state.sectionStudents[move.fromSid] || []).filter(s => s !== move.studentId);
+      }
+      if (!state.sectionStudents[move.toSid]) state.sectionStudents[move.toSid] = [];
+      state.sectionStudents[move.toSid].push(move.studentId);
+    }
+    courseData.period = move.toPeriod;
+    courseData.section = move.toSection;
+  }
+
+  section.period = newPeriod;
 
   state.moveHistory.push({
     sectionSid, oldPeriod, newPeriod,
     sectionCode: section.code, sectionTitle: section.title,
     sectionNum: section.section, teacher: section.teacher,
-    preview, timestamp: new Date().toLocaleTimeString()
+    cascade, timestamp: new Date().toLocaleTimeString()
   });
 
-  return preview;
+  state.currentClashCount = state.originalClashCount
+    + state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.newClashCount, 0)
+    - state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.resolvedCount, 0);
+
+  return cascade;
 }
 
 function undoLastMove() {
@@ -402,6 +558,40 @@ function undoLastMove() {
   const last = state.moveHistory.pop();
   const section = state.sections.find(s => s.sid === last.sectionSid);
   if (!section) return;
+
+  const cascadeMoves = last.cascade ? last.cascade.studentMoves : [];
+  for (let i = cascadeMoves.length - 1; i >= 0; i--) {
+    const move = cascadeMoves[i];
+    const sched = state.studentSchedule[move.studentId];
+    const stu = state.assignments[move.studentId];
+    if (!sched || !stu) continue;
+    const courseData = stu.courses[move.courseCode];
+    if (!courseData) continue;
+
+    const altSec = state.sections.find(s => s.sid === move.toSid);
+    if (altSec) {
+      for (const sem of altSec.halves) {
+        const key = `${move.toPeriod}-${sem}`;
+        if (sched[key]) {
+          sched[key] = sched[key].filter(c => String(c) !== String(move.courseCode));
+          if (sched[key].length === 0) delete sched[key];
+        }
+      }
+      state.sectionStudents[move.toSid] = (state.sectionStudents[move.toSid] || []).filter(s => s !== move.studentId);
+    }
+
+    for (const sem of courseData.halves) {
+      const key = `${move.fromPeriod}-${sem}`;
+      if (!sched[key]) sched[key] = [];
+      sched[key].push(String(move.courseCode));
+    }
+    if (move.fromSid !== null) {
+      if (!state.sectionStudents[move.fromSid]) state.sectionStudents[move.fromSid] = [];
+      state.sectionStudents[move.fromSid].push(move.studentId);
+    }
+    courseData.period = move.fromPeriod;
+    courseData.section = move.fromSection;
+  }
 
   const enrolledStudents = state.sectionStudents[last.sectionSid] || [];
   const curPeriod = section.period;
@@ -426,7 +616,9 @@ function undoLastMove() {
   }
 
   section.period = last.oldPeriod;
-  state.currentClashCount = state.originalClashCount + state.moveHistory.reduce((sum, m) => sum + m.preview.conflictsCreated, 0);
+  state.currentClashCount = state.originalClashCount
+    + state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.newClashCount, 0)
+    - state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.resolvedCount, 0);
   renderAll();
 }
 
@@ -448,30 +640,29 @@ function renderAll() {
 
 function renderScoreboard() {
   const kpiRow = document.getElementById('kpi-row');
-  const totalDelta = state.moveHistory.reduce((sum, m) => sum + m.preview.conflictsCreated, 0);
-  const resolvedDelta = state.moveHistory.reduce((sum, m) => sum + m.preview.potentialResolutions, 0);
-  const clashDelta = totalDelta;
-  const displayClashes = state.originalClashCount + clashDelta;
-  const estResolved = resolvedDelta;
-  const adjustedRate = ((state.currentPlaced) / state.totalRequests * 100).toFixed(1);
+  const newClashes = state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.newClashCount, 0);
+  const relocated = state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.relocated, 0);
+  const resolved = state.moveHistory.reduce((sum, m) => sum + m.cascade.stats.resolvedCount, 0);
+  const netDelta = newClashes - resolved;
+  const adjustedClashes = state.originalClashCount + netDelta;
 
   kpiRow.innerHTML = `
     <div class="kpi accent-red">
       <div class="kpi-label">Clashes</div>
-      <div class="kpi-value">${state.originalClashCount}</div>
+      <div class="kpi-value">${adjustedClashes}</div>
       <div class="kpi-sub">${state.stats.protected_clashes} protected</div>
-      ${clashDelta ? `<div class="kpi-delta ${clashDelta>0?'negative':'positive'}">${clashDelta>0?'+':''}${clashDelta} created</div>` : ''}
+      ${netDelta ? `<div class="kpi-delta ${netDelta>0?'negative':'positive'}">${netDelta>0?'+':''}${netDelta} net</div>` : ''}
     </div>
     <div class="kpi accent-blue">
       <div class="kpi-label">Placed</div>
       <div class="kpi-value">${state.currentPlaced.toLocaleString()}</div>
       <div class="kpi-sub">of ${state.totalRequests.toLocaleString()} requests</div>
-      ${estResolved ? `<div class="kpi-delta positive">~${estResolved} resolvable</div>` : ''}
+      ${resolved ? `<div class="kpi-delta positive">~${resolved} resolvable</div>` : ''}
     </div>
     <div class="kpi accent-purple">
       <div class="kpi-label">Sections</div>
       <div class="kpi-value">${state.sections.length}</div>
-      <div class="kpi-sub">${state.stats.sections_used} used</div>
+      <div class="kpi-sub">${relocated ? relocated+' students relocated' : state.stats.sections_used+' used'}</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Students</div>
@@ -765,23 +956,58 @@ function renderScheduleGrid(sections, highlightSid) {
 
 // ── Move Preview ──
 function showMovePreview(sid, targetPeriod, e) {
-  const preview = previewMove(sid, targetPeriod);
-  if (!preview) { hideMovePreview(); return; }
+  const cascade = computeCascade(sid, targetPeriod);
+  if (!cascade) { hideMovePreview(); return; }
   const el = document.getElementById('move-preview');
   el.style.display = 'block';
-  el.style.left = (e.clientX + 16) + 'px';
-  el.style.top = (e.clientY - 40) + 'px';
+  const rect = document.body.getBoundingClientRect();
+  let left = e.clientX + 16;
+  if (left + 320 > window.innerWidth) left = e.clientX - 336;
+  el.style.left = left + 'px';
+  el.style.top = Math.max(8, e.clientY - 40) + 'px';
 
-  el.innerHTML = `
-    <h4>${preview.section.code} ${preview.section.title} &sect;${preview.section.section}</h4>
-    <div class="mp-row"><span class="mp-label">Move</span><span class="mp-val neutral">${preview.oldPeriod} &rarr; ${preview.newPeriod}</span></div>
-    <div class="mp-row"><span class="mp-label">Students affected</span><span class="mp-val neutral">${preview.enrolledCount}</span></div>
-    <div class="mp-row"><span class="mp-label">New conflicts</span><span class="mp-val ${preview.conflictsCreated>0?'bad':'good'}">${preview.conflictsCreated}</span></div>
-    <div class="mp-row"><span class="mp-label">Potential resolutions</span><span class="mp-val ${preview.potentialResolutions>0?'good':'neutral'}">${preview.potentialResolutions}</span></div>
-    <div class="mp-row"><span class="mp-label">Net estimate</span><span class="mp-val ${preview.netEstimate>0?'bad':preview.netEstimate<0?'good':'neutral'}">${preview.netEstimate>0?'+':''}${preview.netEstimate}</span></div>
-    <div class="mp-row"><span class="mp-label">Teacher conflict</span><span class="mp-val ${preview.hasTeacherConflict?'bad':'good'}">${preview.hasTeacherConflict?'YES - '+preview.teacherConflicts.map(s=>s.code+'§'+s.section).join(', '):'None'}</span></div>
-    <div class="mp-row"><span class="mp-label">Room conflict</span><span class="mp-val ${preview.hasRoomConflict?'warn':'good'}">${preview.hasRoomConflict?'YES - '+preview.roomConflicts.map(s=>s.code+'§'+s.section).join(', '):'None'}</span></div>
+  const s = cascade.stats;
+  let html = `
+    <h4>${cascade.section.code} ${cascade.section.title} &sect;${cascade.section.section}</h4>
+    <div class="mp-row"><span class="mp-label">Move</span><span class="mp-val neutral">${cascade.oldPeriod} &rarr; ${cascade.newPeriod}</span></div>
+    <div class="mp-row"><span class="mp-label">Students affected</span><span class="mp-val neutral">${cascade.enrolledCount}</span></div>
+    <div class="mp-row"><span class="mp-label">Conflicts at new period</span><span class="mp-val ${s.conflictsFound>0?'warn':'good'}">${s.conflictsFound}</span></div>
+    <div class="mp-row"><span class="mp-label">Auto-relocated</span><span class="mp-val ${s.relocated>0?'good':'neutral'}">${s.relocated}</span></div>
+    <div class="mp-row"><span class="mp-label">New clashes</span><span class="mp-val ${s.newClashCount>0?'bad':'good'}">${s.newClashCount}</span></div>
+    <div class="mp-row"><span class="mp-label">Potential resolutions</span><span class="mp-val ${s.resolvedCount>0?'good':'neutral'}">${s.resolvedCount}</span></div>
+    <div class="mp-row"><span class="mp-label">Net impact</span><span class="mp-val ${s.netImpact>0?'bad':s.netImpact<0?'good':'neutral'}">${s.netImpact>0?'+':''}${s.netImpact}</span></div>
+    <div class="mp-row"><span class="mp-label">Teacher conflict</span><span class="mp-val ${cascade.hasTeacherConflict?'bad':'good'}">${cascade.hasTeacherConflict?'YES - '+cascade.teacherConflicts.map(x=>x.code+'§'+x.section).join(', '):'None'}</span></div>
+    <div class="mp-row"><span class="mp-label">Room conflict</span><span class="mp-val ${cascade.hasRoomConflict?'warn':'good'}">${cascade.hasRoomConflict?'YES - '+cascade.roomConflicts.map(x=>x.code+'§'+x.section).join(', '):'None'}</span></div>
   `;
+
+  if (cascade.studentMoves.length > 0) {
+    html += '<div class="cascade-section"><div class="cas-header">Relocated Students</div>';
+    for (const mv of cascade.studentMoves.slice(0, 8)) {
+      html += `<div class="cas-row"><span class="cas-icon ok">&#10003;</span>${mv.name} (Gr${mv.grade})<span class="cas-detail">${mv.courseCode} §${mv.fromSection}→§${mv.toSection} Per ${mv.fromPeriod}→${mv.toPeriod}</span></div>`;
+    }
+    if (cascade.studentMoves.length > 8) html += `<div class="cas-row" style="color:#64748b;font-style:italic">...+${cascade.studentMoves.length-8} more</div>`;
+    html += '</div>';
+  }
+
+  if (cascade.newClashes.length > 0) {
+    html += '<div class="cascade-section"><div class="cas-header">New Clashes</div>';
+    for (const cl of cascade.newClashes.slice(0, 5)) {
+      html += `<div class="cas-row"><span class="cas-icon fail">&#10007;</span>${cl.name} (Gr${cl.grade})<span class="cas-detail">${cl.courseCode} — ${cl.reason}</span></div>`;
+    }
+    if (cascade.newClashes.length > 5) html += `<div class="cas-row" style="color:#64748b;font-style:italic">...+${cascade.newClashes.length-5} more</div>`;
+    html += '</div>';
+  }
+
+  if (cascade.potentialResolutions.length > 0) {
+    html += '<div class="cascade-section"><div class="cas-header">Potential Resolutions</div>';
+    for (const r of cascade.potentialResolutions.slice(0, 5)) {
+      html += `<div class="cas-row"><span class="cas-icon resolve">&#8593;</span>${r.name} (Gr${r.grade})<span class="cas-detail">${r.courseCode} could be placed</span></div>`;
+    }
+    if (cascade.potentialResolutions.length > 5) html += `<div class="cas-row" style="color:#64748b;font-style:italic">...+${cascade.potentialResolutions.length-5} more</div>`;
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
 }
 
 function hideMovePreview() {
@@ -797,29 +1023,49 @@ function showExport() {
   const modal = document.getElementById('export-modal');
   const content = document.getElementById('export-content');
 
-  let text = 'Master Schedule Board - Move Summary\n';
+  let text = 'Master Schedule Board - Move Summary (Cascade Solver)\n';
   text += `Date: ${new Date().toLocaleDateString()}\n`;
   text += `Solution: schedule_solution_v3.json\n\n`;
   text += `Moves Applied (${state.moveHistory.length}):\n`;
   text += '─'.repeat(60) + '\n';
 
-  let totalCreated = 0, totalResolvable = 0;
+  let totalNew = 0, totalResolved = 0, totalRelocated = 0;
   for (let i = 0; i < state.moveHistory.length; i++) {
     const m = state.moveHistory[i];
+    const cs = m.cascade.stats;
     text += `${i+1}. ${m.sectionCode} ${m.sectionTitle} §${m.sectionNum}\n`;
     text += `   Period ${m.oldPeriod} → ${m.newPeriod} (Teacher: ${m.teacher})\n`;
-    text += `   Impact: +${m.preview.conflictsCreated} conflicts, ~${m.preview.potentialResolutions} resolvable`;
-    if (m.preview.hasTeacherConflict) text += ' [TEACHER CONFLICT]';
-    if (m.preview.hasRoomConflict) text += ' [ROOM CONFLICT]';
-    text += '\n\n';
-    totalCreated += m.preview.conflictsCreated;
-    totalResolvable += m.preview.potentialResolutions;
+    text += `   Cascade: ${cs.conflictsFound} conflicts found, ${cs.relocated} relocated, ${cs.newClashCount} new clashes, ~${cs.resolvedCount} resolvable`;
+    if (m.cascade.hasTeacherConflict) text += ' [TEACHER CONFLICT]';
+    if (m.cascade.hasRoomConflict) text += ' [ROOM CONFLICT]';
+    text += '\n';
+
+    if (m.cascade.studentMoves.length > 0) {
+      text += '   Relocated students:\n';
+      for (const mv of m.cascade.studentMoves) {
+        text += `     ✓ ${mv.name} (Gr${mv.grade}) — ${mv.courseCode} §${mv.fromSection}→§${mv.toSection} Per ${mv.fromPeriod}→${mv.toPeriod}\n`;
+      }
+    }
+    if (m.cascade.newClashes.length > 0) {
+      text += '   New clashes:\n';
+      for (const cl of m.cascade.newClashes) {
+        text += `     ✗ ${cl.name} (Gr${cl.grade}) — ${cl.courseCode} ${cl.courseTitle} (${cl.reason})\n`;
+      }
+    }
+    text += '\n';
+    totalNew += cs.newClashCount;
+    totalResolved += cs.resolvedCount;
+    totalRelocated += cs.relocated;
   }
 
+  const netImpact = totalNew - totalResolved;
   text += '─'.repeat(60) + '\n';
   text += `Original: ${state.originalClashCount} clashes (${state.stats.placement_rate}% placement)\n`;
-  text += `Conflicts created: +${totalCreated}\n`;
-  text += `Potentially resolvable: ~${totalResolvable}\n`;
+  text += `Students auto-relocated: ${totalRelocated}\n`;
+  text += `New clashes created: +${totalNew}\n`;
+  text += `Potentially resolvable: ~${totalResolved}\n`;
+  text += `Net impact: ${netImpact > 0 ? '+' : ''}${netImpact}\n`;
+  text += `Estimated clashes after engine re-run: ${state.originalClashCount + netImpact}\n`;
   text += `\nTo apply: Update prescribed periods in Template 6 Sheet 2, then re-run engine.\n`;
 
   content.innerHTML = `
