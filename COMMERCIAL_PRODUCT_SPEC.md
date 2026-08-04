@@ -49,7 +49,7 @@ The core algorithm runs in four phases:
 | C | Bump Conflicts | Resolve remaining conflicts by bumping lower-priority courses, with CSP recovery |
 | D | Multi-Restart Optimization | 16 random seeds × 60-iteration priority-aware optimization, keep best solution |
 
-**Current Performance:** 301 clashes, 95.1% placement, 0 graduation requirement clashes, 0 P4+ clashes. All 5,033 graduation requirements fulfilled (100%). All 2,104 AP/Honors placements fulfilled (100%). Remaining 301 clashes are electives only (253 P1, 40 P2, 8 P3).
+**Current Performance:** 301 conflictes, 95.1% placement, 0 graduation requirement conflictes, 0 P4+ conflictes. All 5,033 graduation requirements fulfilled (100%). All 2,104 AP/Honors placements fulfilled (100%). Remaining 301 conflictes are electives only (253 P1, 40 P2, 8 P3).
 
 ### 2.2 Data Inputs
 
@@ -235,16 +235,16 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | `course_priorities.json` | JSON | Priority scale (0–5) for 144 courses, department metadata, graduation requirement rules by grade level |
 | `semester_designations.json` | JSON | 43 semester placement rules: pinned, prescribed S1/S2, split, builder choice |
 | `priority_assignments.json` | JSON | Weighted scoring system: 10 input weights, per-course/student/teacher priority assignments |
-| `schedule_solution_v3.json` | JSON | Complete engine output: sections, student assignments, clashes, room assignments, stats |
+| `schedule_solution_v3.json` | JSON | Complete engine output: sections, student assignments, conflictes, room assignments, stats |
 
 ### 4.2 Interactive Boards (9 HTML files in `boards/`)
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Dashboard hub with summary stats (clashes, placement rate, students, sections) |
+| `index.html` | Dashboard hub with summary stats (conflictes, placement rate, students, sections) |
 | `master_schedule_builder.html` | Full course catalog (144 courses) with student request management and validation |
-| `student_clash_report.html` | Drag-and-drop schedule grid for students with conflicts, visual period/semester layout |
-| `conflict_resolution_console.html` | Course-level clash analysis with fix recommendations for affected courses |
+| `student_conflict_report.html` | Drag-and-drop schedule grid for students with conflicts, visual period/semester layout |
+| `conflict_resolution_console.html` | Course-level conflict analysis with fix recommendations for affected courses |
 | `student_request_recommendations.html` | Alternative course options for bumped requests with availability details |
 | `singleton_board.html` | Scheduling grid for 47 singleton courses, teacher-period conflict view |
 | `constraint_builder.html` | Configure semester locks, period locks, and co-schedule constraints for 138 courses |
@@ -262,7 +262,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 | File | Format | Purpose |
 |------|--------|---------|
-| `analyze_clashes.py` | Python | Clash analysis and diagnostics tooling |
+| `analyze_conflictes.py` | Python | Conflict analysis and diagnostics tooling |
 | `apply_singleton_changes.py` | Python | Utility to apply board changes back to engine |
 | `STUDENT_RANK_SCORE_SAMPLE_20.xlsx` | Excel | 20-student sample demonstrating the priority scoring system |
 
@@ -272,14 +272,14 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 ### 5.1 Engine Results History
 
-| Version | Clashes | Placement | Grad Req Clashes | Notes |
+| Version | Conflictes | Placement | Grad Req Conflictes | Notes |
 |---------|---------|-----------|------------------|-------|
 | v1.0 (single-tier) | 207 | 96.8% | 0 P5 | Original engine, single priority scale |
 | v1.1 (composite scoring) | 325 | 95.1% | 0 P5 | Phase B refactor regressed ordering |
 | v1.2 (three-band fix) | 240 | 95.1% | 0 P5 | Three-band priority + priority-aware optimization |
 | v2.0 (pyramid + ripple) | 338 | 94.5% | 0 (incorrect) | Four-level pyramid system. Graduation req detection bug: "Language" vs "World Language" mismatch, PE missing |
 | v2.1 (grad req fix) | 301 | 95.1% | 0 (verified) | Fixed graduation req config: "World Language" match, PE added for grades 9-10. All 5,033 grad reqs fulfilled |
-| v2.2 (pathway elevation) | **99** | **98.4%** | **0** | Pathway detection from Historical Grades + Course Requests. 625/805 students assigned to named pathways. Pathway courses elevated to Level 2. Grades 9-10 clashes eliminated |
+| v2.2 (pathway elevation) | **99** | **98.4%** | **0** | Pathway detection from Historical Grades + Course Requests. 625/805 students assigned to named pathways. Pathway courses elevated to Level 2. Grades 9-10 conflictes eliminated |
 
 ### 5.2 Current Configuration
 
@@ -301,16 +301,16 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 | Metric | Value |
 |--------|-------|
-| Clashes | 99 |
+| Conflictes | 99 |
 | Placement Rate | 98.4% (6,052/6,151) |
 | Graduation Req Fulfillment | 100% (5,033/5,033) |
 | AP/Honors Fulfillment | 100% (2,104/2,104) |
-| P4+ Clashes | 0 |
+| P4+ Conflictes | 0 |
 | Students Affected | 86 |
 | Prior-Year Alignment | 237/316 |
 | Pathway Students Identified | 625/805 |
 
-### 5.4 Clash Breakdown (v2.2)
+### 5.4 Conflict Breakdown (v2.2)
 
 | Category | Count |
 |----------|-------|
@@ -339,9 +339,9 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 
 | Metric | Target |
 |--------|--------|
-| Clashes | 0 |
+| Conflictes | 0 |
 | Placement Rate | 100% |
-| P4+ Clashes | 0 |
+| P4+ Conflictes | 0 |
 
 ---
 
@@ -352,7 +352,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Four-phase scheduling engine (period assignment, student seating, conflict resolution, multi-restart optimization)
 - [x] Course priority scale (0-5) integrated into all engine decision points
 - [x] Interactive singleton board with drag-and-drop
-- [x] Student clash report with impact analysis
+- [x] Student conflict report with impact analysis
 - [x] Conflict resolution console
 - [x] Constraint builder UI
 - [x] Room conflict resolution (28 moves, 0 remaining)
@@ -379,7 +379,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Four-level pyramid system (Graduation Required > No Alternative > Limited Choice > Flexible)
 - [x] Ripple scoring — measures cross-impact of each placement on the rest of the schedule
 - [x] Batch recalculation in Phase B — recalculate scores between batches as the schedule fills
-- [x] Priority-aware optimization — prevents trading high-priority clashes for low-priority ones
+- [x] Priority-aware optimization — prevents trading high-priority conflictes for low-priority ones
 - [x] Priority-aware conflict estimation — optimizer penalizes moves that create high-priority conflicts
 - [x] Post-bump CSP recovery — after bumping, rearrange remaining placements to recover seats
 - [x] Per-restart seating order recomputation — each restart recalculates scores for its specific period layout
@@ -402,9 +402,9 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Graduation requirement bug fix: "Language" → "World Language" in course_priorities.json to match Template 7 department names
 - [x] Physical Education added to graduation requirements for grades 9-10 only (not required grades 11-12)
 - [x] Engine reads grade-specific PE requirements via `grades_9_10_extra` config section in course_priorities.json
-- [x] Result: 338→301 clashes, 94.5%→95.1% placement, 0 graduation requirement clashes (verified correct)
+- [x] Result: 338→301 conflictes, 94.5%→95.1% placement, 0 graduation requirement conflictes (verified correct)
 - [x] Unfulfilled Requests Report generated (Excel): 301 requests, 290 students, sorted by priority band
-- [x] 9 interactive HTML boards generated: clash report, conflict console, recommendations, singleton board, constraint builder, master schedule builder, credit validation, data audit, dashboard index
+- [x] 9 interactive HTML boards generated: conflict report, conflict console, recommendations, singleton board, constraint builder, master schedule builder, credit validation, data audit, dashboard index
 
 ### 6.4 Completed (v2.2 — Pathway Course Elevation)
 
@@ -413,7 +413,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Added `pathway_courses` mapping to `course_priorities.json` (8 pathways, 45 course codes total)
 - [x] Created `detect_pathways.py` — updates Template 8 Pathway column with pathway name for 625/805 students
 - [x] Modified `student_prio()`: elevate pathway courses to Level 2 (No Alternative) for enrolled pathway students
-- [x] Result: 301→99 clashes (-67%), 95.1%→98.4% placement, grades 9-10 clashes eliminated (149→0)
+- [x] Result: 301→99 conflictes (-67%), 95.1%→98.4% placement, grades 9-10 conflictes eliminated (149→0)
 - [ ] 6 pathway courses not in Template 7: App Development, Chorus, Music Service, Music Service Project, Tech Theater Level I, The Story Lab
 
 ### 6.5 Future

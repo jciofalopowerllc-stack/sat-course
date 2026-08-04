@@ -7,7 +7,7 @@ with open('/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab4
 
 sections = data['sections']
 assignments = data['assignments']
-clashes = data['clashes']
+conflicts = data['conflicts']
 
 # Build course info: for each course code, what halves patterns exist across sections?
 course_sections = defaultdict(list)
@@ -46,11 +46,11 @@ def lost_sem_to_halves(lost_sem):
         return ('S2',)
     return None
 
-clash_students = set(c['student'] for c in clashes)
+conflict_students = set(c['student'] for c in conflicts)
 
 student_data = []
 
-for student_id in sorted(clash_students):
+for student_id in sorted(conflict_students):
     assigned_courses = {}
     if student_id in assignments:
         a = assignments[student_id]
@@ -66,27 +66,27 @@ for student_id in sorted(clash_students):
                 'source': 'assigned',
             }
     else:
-        clash_entry = [c for c in clashes if c['student'] == student_id][0]
-        name = clash_entry['name']
-        grade = clash_entry['grade']
+        conflict_entry = [c for c in conflicts if c['student'] == student_id][0]
+        name = conflict_entry['name']
+        grade = conflict_entry['grade']
 
-    clashed_courses = {}
-    for c in clashes:
+    conflicted_courses = {}
+    for c in conflicts:
         if c['student'] == student_id:
             code = c['code']
             halves = lost_sem_to_halves(c['lost_sem'])
-            clashed_courses[code] = {
+            conflicted_courses[code] = {
                 'title': c['course'],
                 'halves': halves,
                 'lost_period': c['lost_period'],
                 'lost_sem': c['lost_sem'],
-                'source': 'clashed',
+                'source': 'conflicted',
             }
 
     all_courses = {}
     for code, info in assigned_courses.items():
         all_courses[code] = info
-    for code, info in clashed_courses.items():
+    for code, info in conflicted_courses.items():
         if code not in all_courses:
             all_courses[code] = info
 
@@ -150,8 +150,8 @@ for student_id in sorted(clash_students):
         'half_courses': half_courses,
         'all_courses': all_courses,
         'assigned_courses': assigned_courses,
-        'clashed_courses': clashed_courses,
-        'num_clashes': len(clashed_courses),
+        'conflicted_courses': conflicted_courses,
+        'num_conflicts': len(conflicted_courses),
     })
 
 cat_a = [s for s in student_data if s['min_slots'] > 7]
@@ -159,10 +159,10 @@ cat_b = [s for s in student_data if s['min_slots'] == 7]
 cat_c = [s for s in student_data if s['min_slots'] < 7]
 
 print("=" * 100)
-print("STRUCTURAL CLASH ANALYSIS")
+print("STRUCTURAL CONFLICT ANALYSIS")
 print("=" * 100)
-print(f"\nTotal students with clashes: {len(student_data)}")
-print(f"Total clashes: {len(clashes)}")
+print(f"\nTotal students with conflicts: {len(student_data)}")
+print(f"Total conflicts: {len(conflicts)}")
 
 print()
 print("=" * 100)
@@ -188,8 +188,8 @@ if cat_a:
         for code, info, sem in s['half_courses']:
             src = info['source']
             print(f"      [{src:8s}] {code} {info['title']} (Half-year, currently {sem}, flexible)")
-        print(f"    Clashed courses (candidates for dropping):")
-        for code, info in s['clashed_courses'].items():
+        print(f"    Conflicted courses (candidates for dropping):")
+        for code, info in s['conflicted_courses'].items():
             print(f"      {code} {info['title']} (lost period {info['lost_period']}, {info['lost_sem']})")
 else:
     print("  NONE - No students have requests exceeding 7 period slots")
@@ -200,12 +200,12 @@ print("CATEGORY B: TIGHT FIT (exactly 7 slots needed - every period must be used
 print("=" * 100)
 if cat_b:
     for s in sorted(cat_b, key=lambda x: x['name']):
-        clashed_str = "; ".join(f"{code} {info['title']} ({info['lost_sem']})"
-                                for code, info in s['clashed_courses'].items())
+        conflicted_str = "; ".join(f"{code} {info['title']} ({info['lost_sem']})"
+                                for code, info in s['conflicted_courses'].items())
         print(f"\n  Student {s['student_id']}: {s['name']} (Grade {s['grade']})")
-        print(f"    Total courses: {s['total_courses']}, Clashes: {s['num_clashes']}")
+        print(f"    Total courses: {s['total_courses']}, Conflictes: {s['num_conflicts']}")
         print(f"    FY: {s['fy_count']}, S1-fixed: {s['h1_fixed']}, S2-fixed: {s['h2_fixed']}, Flex-half: {s['h_flex']}")
-        print(f"    Clashed: {clashed_str}")
+        print(f"    Conflicted: {conflicted_str}")
         print(f"    All courses:")
         for code, info in s['fy_courses']:
             src = info['source']
@@ -237,17 +237,17 @@ for slots in sorted(slots_dist.keys()):
     students_at = [s for s in cat_c if s['min_slots'] == slots]
     print(f"\n  --- {slots} slots needed ({len(students_at)} students) ---")
     for s in sorted(students_at, key=lambda x: x['name']):
-        clashed_str = "; ".join(f"{code} {info['title']} ({info['lost_sem']})"
-                                for code, info in s['clashed_courses'].items())
+        conflicted_str = "; ".join(f"{code} {info['title']} ({info['lost_sem']})"
+                                for code, info in s['conflicted_courses'].items())
         print(f"    {s['student_id']}: {s['name']} (Gr {s['grade']}) - "
               f"{s['total_courses']} courses [{s['fy_count']}FY+{s['h1_fixed']}S1+{s['h2_fixed']}S2+{s['h_flex']}flex] "
-              f"Clashed: {clashed_str}")
+              f"Conflicted: {conflicted_str}")
 
 print()
 print("=" * 100)
 print("SUMMARY")
 print("=" * 100)
-print(f"  Category A (UNRESOLVABLE, > 7 slots): {len(cat_a)} students, {sum(s['num_clashes'] for s in cat_a)} clashes")
-print(f"  Category B (TIGHT, = 7 slots):        {len(cat_b)} students, {sum(s['num_clashes'] for s in cat_b)} clashes")
-print(f"  Category C (RESOLVABLE, < 7 slots):   {len(cat_c)} students, {sum(s['num_clashes'] for s in cat_c)} clashes")
-print(f"  Total:                                 {len(student_data)} students, {sum(s['num_clashes'] for s in student_data)} clashes")
+print(f"  Category A (UNRESOLVABLE, > 7 slots): {len(cat_a)} students, {sum(s['num_conflicts'] for s in cat_a)} conflicts")
+print(f"  Category B (TIGHT, = 7 slots):        {len(cat_b)} students, {sum(s['num_conflicts'] for s in cat_b)} conflicts")
+print(f"  Category C (RESOLVABLE, < 7 slots):   {len(cat_c)} students, {sum(s['num_conflicts'] for s in cat_c)} conflicts")
+print(f"  Total:                                 {len(student_data)} students, {sum(s['num_conflicts'] for s in student_data)} conflicts")

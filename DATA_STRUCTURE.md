@@ -918,16 +918,16 @@ The engine stores the priority values for every Student, Teacher, Room, and Cour
 
 **Why this matters:** The run log makes the schedule 100% defensible. Every placement can be traced back to the exact scores that determined it. No opinion, no guesswork — only math.
 
-### Clash Report
+### Conflict Report
 
 When the engine cannot place a section without creating a conflict, the run log proves exactly WHY.
 
-**What the clash report shows:**
+**What the conflict report shows:**
 
 - Which section could not be placed
 - Which previously placed section is blocking it, and in which run it was placed
 - The priority scores of both sections at the time of the conflict
-- Which prescribed decisions (made by the principal) caused the clash
+- Which prescribed decisions (made by the principal) caused the conflict
 
 **Example — student didn't get a seat:**
 
@@ -941,7 +941,7 @@ When the engine cannot place a section without creating a conflict, the run log 
 
 ### Resolution Options
 
-When a clash is found, the engine does not just report the problem. It provides the principal with a ranked list of data-backed options to resolve it.
+When a conflict is found, the engine does not just report the problem. It provides the principal with a ranked list of data-backed options to resolve it.
 
 **Each option includes:**
 

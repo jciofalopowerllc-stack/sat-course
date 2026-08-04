@@ -3,14 +3,14 @@
 **Date:** 2026-08-01 (updated 2026-08-02)
 **Auditor:** Claude (AI), directed by JC Iofalo
 **Engine:** `schedule_engine_v3.py`
-**Baseline:** Commit 0dff224 — 325 clashes, 95.1% placement
-**Current:** Commit 03dde0a — 301 clashes, 95.1% placement, 0 graduation requirement clashes
+**Baseline:** Commit 0dff224 — 325 conflicts, 95.1% placement
+**Current:** Commit 03dde0a — 301 conflicts, 95.1% placement, 0 graduation requirement conflicts
 
 ---
 
 ## Summary
 
-A code audit of the scheduling engine revealed 6 bugs, 4 improvements, and 3 design discoveries. All bugs have been fixed. The most impactful finding was BUG-6: graduation requirement misclassification caused World Language and Physical Education courses to be treated as electives. After all fixes: 301 clashes (down from 338), 95.1% placement, 0 graduation requirement clashes, all 5,033 grad req placements fulfilled.
+A code audit of the scheduling engine revealed 6 bugs, 4 improvements, and 3 design discoveries. All bugs have been fixed. The most impactful finding was BUG-6: graduation requirement misclassification caused World Language and Physical Education courses to be treated as electives. After all fixes: 301 conflicts (down from 338), 95.1% placement, 0 graduation requirement conflicts, all 5,033 grad req placements fulfilled.
 
 ---
 
@@ -18,7 +18,7 @@ A code audit of the scheduling engine revealed 6 bugs, 4 improvements, and 3 des
 
 ### BUG-1: Phase B seating order regression (Task #1)
 
-**Severity:** Critical — caused ~118 additional clashes
+**Severity:** Critical — caused ~118 additional conflicts
 
 The Phase B refactor replaced tier-based seating (`P5 first → P4 → P3 → ...`) with composite-scored seating (`grad reqs first → electives`). This moved pure-elective P5 courses (AP Art, AP CS, AP Cyber) behind ALL graduation requirements.
 
@@ -33,9 +33,9 @@ The Phase B refactor replaced tier-based seating (`P5 first → P4 → P3 → ..
 
 ### BUG-3: Optimization acceptance is priority-blind (Tasks #3, #4)
 
-**Severity:** High — can introduce P5 clashes during optimization
+**Severity:** High — can introduce P5 conflicts during optimization
 
-Both `run_optimization_pass()` and Phase D best-solution selection compare raw clash count only. A move that trades P1 clashes for P5 clashes is accepted as an improvement.
+Both `run_optimization_pass()` and Phase D best-solution selection compare raw conflict count only. A move that trades P1 conflicts for P5 conflicts is accepted as an improvement.
 
 ### BUG-4: _compute_conflict_risk() dual definition (Task #5)
 
@@ -59,7 +59,7 @@ Two bugs in `course_priorities.json` caused the engine to misidentify graduation
 
 2. **"Physical Education" missing entirely**: PE was not listed in any grade level's required departments, so Health/PE (610), Driver's Ed/PE (620), CPR-AED/PE (631), and Nutrition/PE (642) were all treated as electives.
 
-The engine's "100% graduation requirement fulfillment" stat was incorrect — it was calculating correctly against the wrong list of departments. World Language had 87 affected clashes, PE had 40 affected clashes.
+The engine's "100% graduation requirement fulfillment" stat was incorrect — it was calculating correctly against the wrong list of departments. World Language had 87 affected conflicts, PE had 40 affected conflicts.
 
 **Fix applied:** Two changes to `course_priorities.json`:
 - Changed `"Language"` to `"World Language"` in `grades_9_10_11.required_departments`
@@ -67,7 +67,7 @@ The engine's "100% graduation requirement fulfillment" stat was incorrect — it
 
 Engine code change in `schedule_engine_v3.py`: `GRAD_REQ_DEPTS` construction (line 64) now merges the `grades_9_10_extra` departments into grades 9 and 10 only.
 
-**Impact:** 338→301 clashes, 94.5%→95.1% placement. Graduation requirement fulfillment is now genuinely 100% (5,033/5,033).
+**Impact:** 338→301 conflicts, 94.5%→95.1% placement. Graduation requirement fulfillment is now genuinely 100% (5,033/5,033).
 
 ---
 
@@ -75,7 +75,7 @@ Engine code change in `schedule_engine_v3.py`: `GRAD_REQ_DEPTS` construction (li
 
 ### IMP-1: Deeper optimization search (Task #6)
 
-Increasing from 40→60 iterations, 8→16 candidates, stall 5→8 reduced clashes by ~40 in testing. Requires priority-aware acceptance (BUG-3 fix) first.
+Increasing from 40→60 iterations, 8→16 candidates, stall 5→8 reduced conflicts by ~40 in testing. Requires priority-aware acceptance (BUG-3 fix) first.
 
 ### IMP-2: Post-bump CSP recovery (Task #7)
 
@@ -132,7 +132,7 @@ Fixes were applied in this order:
 
 ## Upcoming: IMP-5 — Pathway Course Elevation
 
-**Severity:** High — 229 of 301 clashes (76%) are in pathway department courses
+**Severity:** High — 229 of 301 conflicts (76%) are in pathway department courses
 
 **Problem:** The engine treats pathway courses as Level 4 (Flexible) electives for all students, but pathway students cannot substitute these courses — they are required for pathway completion. Template 8's Pathway column is Y/N only (no pathway name), only populated for grades 11-12, and the SSP column does not exist in the file.
 
@@ -156,7 +156,7 @@ Fixes were applied in this order:
 7. Communication Arts: 2014, 2024, 2034, 2044, 2054
 8. Theater: 225, 227, 228
 
-**Impact:** 301→99 clashes (-67%), 95.1%→98.4% placement. Grades 9-10 clashes eliminated entirely (149→0). Business department clashes dropped from 136 to 21.
+**Impact:** 301→99 conflicts (-67%), 95.1%→98.4% placement. Grades 9-10 conflicts eliminated entirely (149→0). Business department conflicts dropped from 136 to 21.
 
 **Implementation (completed 2026-08-02):**
 1. Added `pathway_courses` mapping to `course_priorities.json` (8 pathways, 45 course codes)
@@ -165,7 +165,7 @@ Fixes were applied in this order:
 4. Modified `student_prio()` to elevate pathway courses to Level 2 for enrolled students
 5. LEO students auto-mapped to Business pathway
 
-**Remaining 99 clashes:** Grade 11 (55), Grade 12 (44). Departments: Physical Education (34), Science (25), Business (21), Communication Arts (9), Computer Science (5), Humanities (5)
+**Remaining 99 conflicts:** Grade 11 (55), Grade 12 (44). Departments: Physical Education (34), Science (25), Business (21), Communication Arts (9), Computer Science (5), Humanities (5)
 
 ---
 
@@ -188,19 +188,19 @@ All audit findings have been resolved.
 | DISC-1: Grade-dependent P5 | DOCUMENTED | Correct per graduation rules — not a bug |
 | DISC-2: AP elective weight | RESOLVED | Level 2 (No Alternative) in pyramid system |
 | DISC-3: Three-band system | SUPERSEDED | Four-level pyramid system implemented |
-| IMP-5: Pathway course elevation | APPLIED | 301→99 clashes, pathway courses elevated to Level 2 for enrolled students |
+| IMP-5: Pathway course elevation | APPLIED | 301→99 conflicts, pathway courses elevated to Level 2 for enrolled students |
 
 ### Final Results
 
 | Metric | Baseline | After v2.1 Fixes | After v2.2 Pathway |
 |--------|----------|-------------------|-------------------|
-| Clashes | 325 | 301 | **99** |
+| Conflictes | 325 | 301 | **99** |
 | Placement | 95.1% | 95.1% | **98.4%** |
-| Graduation Req Clashes | Unknown (bug) | 0 | **0** |
+| Graduation Req Conflictes | Unknown (bug) | 0 | **0** |
 | Grad Req Fulfillment | Unknown (bug) | 100% (5,033/5,033) | **100% (5,033/5,033)** |
 | AP/Honors Fulfillment | Unknown | 100% (2,104/2,104) | **100% (2,104/2,104)** |
-| P4+ Clashes | 0 | 0 | **0** |
-| Grades 9-10 Clashes | Unknown | 149 | **0** |
+| P4+ Conflictes | 0 | 0 | **0** |
+| Grades 9-10 Conflictes | Unknown | 149 | **0** |
 | Pathway Students Identified | 94 (Y/N only) | 94 (Y/N only) | **625 (named pathways)** |
 
 ---
@@ -208,8 +208,8 @@ All audit findings have been resolved.
 ## Test Protocol
 
 After each fix:
-1. Run engine and record: total clashes, P4+ clashes, placement rate, grad req fulfillment
-2. Compare to baseline (325 clashes, 95.1%)
-3. Verify P4+ clashes remain at 0
+1. Run engine and record: total conflicts, P4+ conflicts, placement rate, grad req fulfillment
+2. Compare to baseline (325 conflicts, 95.1%)
+3. Verify P4+ conflicts remain at 0
 4. Verify graduation requirement fulfillment remains at 100%
-5. If P4+ clashes appear, revert and investigate before proceeding
+5. If P4+ conflicts appear, revert and investigate before proceeding

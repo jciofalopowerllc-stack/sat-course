@@ -58,9 +58,9 @@ Side-by-side comparison of 2025-26 vs 2026-27 schedules per teacher, with sectio
 
 ---
 
-## 3. Remaining Clashes
+## 3. Remaining Conflicts
 
-**File:** `Remaining_Clashes_v2.5.xlsx`
+**File:** `Remaining_Conflicts_v2.5.xlsx`
 
 All unplaced student-course pairs with diagnostic root cause analysis.
 
@@ -80,8 +80,8 @@ All unplaced student-course pairs with diagnostic root cause analysis.
 | L | Blocking Courses | 45 | Left |
 
 - **Sort:** Course Request Priority (descending), then Grade
-- **Tabs:** "Remaining Clashes" (detail) + "Summary" (by grade, priority label, grad req count)
-- **Source:** `schedule_solution_v3.json` clashes array
+- **Tabs:** "Remaining Conflicts" (detail) + "Summary" (by grade, priority label, grad req count)
+- **Source:** `schedule_solution_v3.json` conflicts array
 - **Features:** Auto-filter, freeze row 1, alternating row shading, dark-red header
 
 ---
@@ -90,10 +90,10 @@ All unplaced student-course pairs with diagnostic root cause analysis.
 
 **File:** `Student_Schedule_Report_2026_27.xlsx`
 
-Complete student schedules with S1/S2 split per period, credit values, and clashes.
+Complete student schedules with S1/S2 split per period, credit values, and conflicts.
 
 **Header rows:**
-- Row 1: Student ID, Student Name, Grade, then merged "Period A" through "Period G" headers, Total Sections, Total Credits, Clashes
+- Row 1: Student ID, Student Name, Grade, then merged "Period A" through "Period G" headers, Total Sections, Total Credits, Conflicts
 - Row 2: Blank under first 3 cols, then S1/S2 sub-headers under each period
 
 | Column | Content |
@@ -117,13 +117,13 @@ Complete student schedules with S1/S2 split per period, credit values, and clash
 | Q | Period G — S2 |
 | R | Total Sections |
 | S | Total Credits |
-| T | Clashes |
+| T | Conflicts |
 
 - **Cell format:** `CourseCode: CourseTitle (Credits cr)`
 - **Empty semester slot:** "UNASSIGNED" (bold red font)
 - **Credits:** Per-course value from Template 7, column D
 - **Total Credits:** Sum of all assigned course credits for the school year
-- **Clashes:** Semicolon-separated list of unplaced courses (red font)
+- **Conflicts:** Semicolon-separated list of unplaced courses (red font)
 - **Sort:** Grade, then Student Name
 - **Source:** `schedule_solution_v3.json` assignments + Template 7 (credits)
 - **Features:** Auto-filter, freeze row 2, alternating row shading, merged period headers
@@ -137,7 +137,7 @@ Complete student schedules with S1/S2 split per period, credit values, and clash
 Only students who have at least one UNASSIGNED period/semester slot. Same layout as the Student Schedule Report with an added Unassigned Slots column.
 
 **Header rows:**
-- Row 1: Student ID, Student Name, Grade, then merged "Period A" through "Period G" headers, Total Sections, Total Credits, Unassigned Slots, Clashes
+- Row 1: Student ID, Student Name, Grade, then merged "Period A" through "Period G" headers, Total Sections, Total Credits, Unassigned Slots, Conflicts
 - Row 2: Blank under first 3 cols, then S1/S2 sub-headers under each period
 
 | Column | Content |
@@ -162,7 +162,7 @@ Only students who have at least one UNASSIGNED period/semester slot. Same layout
 | R | Total Sections |
 | S | Total Credits |
 | T | Unassigned Slots |
-| U | Clashes |
+| U | Conflicts |
 
 - **Filter:** Students where any Period A–G × S1/S2 slot is UNASSIGNED
 - **Cell format:** `CourseCode: CourseTitle (Credits cr)`
