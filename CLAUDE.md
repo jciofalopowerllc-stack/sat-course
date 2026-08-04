@@ -44,11 +44,20 @@
 - `python schedule_engine_v3.py unlimited` — Run Job 1 + Job 2 with **unlimited section caps** (diagnostic mode), export `Unlimited_Seat_Analysis_2026_27.xlsx` showing natural demand per section to identify which sections need splitting or moving
 - Default mode is `job1` — the engine will never proceed to Job 2 without explicit approval
 
-### Semester Locks (2026-27)
-- **758 Bloomberg Market Concepts**: S2 ONLY — cannot be placed in S1
-- **766**: S1 only
-- **765**: S2 only
-- These are enforced in `SEMESTER_LOCKS` dict in `schedule_engine_v3.py` (line ~1389) AND in Template 7 `Prescribed Term` column
+### Term Type & Prescribed Term Architecture (REV 08.04.26)
+- **Two distinct concepts, two distinct templates:**
+  - **Template 7 Column D "Term Type"** — describes WHAT a course IS: `FY` (full-year, 5.0 credits) or `S` (semester, 2.5 credits). Classification only — does NOT control placement.
+  - **Template 7 Column E "Term Credits"** — validation failsafe: FY must pair with 5.0, S must pair with 2.5 (0 allowed for special courses like 955 Academic Support).
+  - **Template 6 Sheet 2 Column E "Prescribed Term"** — REQUIRED field, describes WHERE a specific section GOES: `FY`, `S1`, `S2`, or `EC` (Engine Choice). This is the **single authoritative source** for per-section semester placement.
+- **Prescribed = Required** (same as prescribed room and prescribed period):
+  - `FY` → engine MUST place section as full-year (S1+S2)
+  - `S1` → engine MUST place section in S1 only
+  - `S2` → engine MUST place section in S2 only
+  - `EC` → engine MAY place section in either S1 or S2 (Engine Choice — engine decides which is optimal)
+- **Cross-validation rule:** T7 Term Type=FY requires T6 Prescribed Term=FY; T7 Term Type=S requires T6 Prescribed Term=S1/S2/EC. Mismatch = engine validation error.
+- **EC redistribution:** EC sections are distributed evenly across S1/S2 by the engine (n_s1 = (n+1)//2)
+- **Eliminated:** `SEMESTER_LOCKS` dict, `FULL_FREEDOM` set, `semester_designations.json` — all replaced by T6 Column E as sole authority
+- **Distribution (371 sections):** FY=245, S1=15, S2=14, EC=97
 
 ### Teacher Section Prescriptions (2026-27)
 - **Chiaravalloti, Michael (105747)**: 631 CPR-AED Training/PE × 4 semester sections + 642 Nutrition & Fitness/PE × 6 semester sections = 10 total (5 per semester); Daniels (105763) also teaches 631 × 2 semester sections (6 total 631 sections)
@@ -69,11 +78,6 @@
 - Courses affected: 543 Anatomy/Physiology H (9 students), 546 Forensics (27 students), 530 Physics (1 student), 531 Physics H (2 students)
 - Defined in `student_priority_overrides.json`, loaded by engine at startup
 - Engine's `course_request_priority()` and `_is_grad_req_for_student()` check these overrides
-
-### Semester Locks (LEO Programs)
-- **745 LEO II**: S1 only (period determined by engine priority placement)
-- **734 LEO I**: S2 only (period determined by engine priority placement)
-- No course sections are required to be placed in a specific period of the day
 
 ### Room Assignment Rules
 - Sections without a prescribed room may be placed into any room that is free for that period and term
@@ -139,6 +143,9 @@
 - **Tranate (105746)**: Course code corrected 556→557 in Template 6 Sheet 2
 - **Granieri (122120)**: Reassigned from 810/820/830 to 849×8 + 830×1; former sections transferred to TBD Theology (999999)
 - **TBD Theology (999999)**: 830 section removed — 830 should have 9 total sections, not 10
+- **Template 7 REV 08.04.26**: Column D changed from "Credits" to "Term Type" (FY/S), Column E added as "Term Credits" (5.0/2.5/0). Semester courses changed from S1→S. 631 CPR-AED and 642 Nutrition & Fitness had "Physical Education" removed from Graduation Requirement.
+- **Template 6 REV 08.04.26**: Sheet 2 Column E changed from optional to REQUIRED. All 371 rows populated: FY=245, EC=97, S1=15, S2=14. 203 Guitar Ensemble rows 51-52 corrected from EC→FY.
+- **semester_designations.json**: Eliminated — T6 Column E is sole authority for section semester placement
 
 ### Current Results (v3 — latest full run)
 - 748 conflicts (Gr9: 169, Gr10: 164, Gr11: 145, Gr12: 270), 88.5% placement (5781/6529)
