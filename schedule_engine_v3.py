@@ -4383,6 +4383,70 @@ def teacher_load(teacher, semester):
             periods_used.add(s['period'])
     return len(periods_used)
 
+
+def calculate_teacher_stipend(teacher):
+    """Calculate teacher's FY-equivalent period load and 6th-period stipend eligibility.
+
+    Three-term load display (FY / S1 / S2):
+    - S1 = total periods occupied in Semester 1 (FY sections + S1-only sections)
+    - S2 = total periods occupied in Semester 2 (FY sections + S2-only sections)
+    - FY = min(S1, S2) — the full-year equivalent baseline load present in both semesters.
+      A FY section automatically occupies both S1 and S2. The FY column captures how many
+      periods the teacher is consistently teaching across the entire year.
+
+    Standard cap is ALWAYS 5 periods per term (the base before extra compensation).
+    Three terms of 5/5 = 15/15 = no stipend.
+
+    Stipend rules (based on FY equivalent):
+    - Both S1 > 5 AND S2 > 5 → 100% of FY 6th-period stipend
+    - Only S1 > 5 OR only S2 > 5 → 50% of FY 6th-period stipend
+    - Neither over 5 → no stipend (0%)
+
+    Returns dict: {
+        's1_count': int, 's2_count': int, 'fy_count': int,
+        's1_periods': set, 's2_periods': set,
+        'combined': int, 'combined_denom': 15,
+        'stipend_pct': 0 | 50 | 100,
+        'stipend_label': str
+    }
+    """
+    s1_periods = set()
+    s2_periods = set()
+    for sid in teacher_sections.get(teacher, []):
+        s = sections[sid]
+        if not s['period']:
+            continue
+        if 'S1' in s['halves']:
+            s1_periods.add(s['period'])
+        if 'S2' in s['halves']:
+            s2_periods.add(s['period'])
+
+    s1_count = len(s1_periods)
+    s2_count = len(s2_periods)
+    fy_count = min(s1_count, s2_count)
+    combined = fy_count + s1_count + s2_count
+    STANDARD_CAP = 5
+
+    s1_over = s1_count > STANDARD_CAP
+    s2_over = s2_count > STANDARD_CAP
+    if s1_over and s2_over:
+        stipend_pct = 100
+        stipend_label = '100% FY Stipend'
+    elif s1_over or s2_over:
+        stipend_pct = 50
+        stipend_label = '50% FY Stipend'
+    else:
+        stipend_pct = 0
+        stipend_label = 'Standard'
+
+    return {
+        's1_count': s1_count, 's2_count': s2_count, 'fy_count': fy_count,
+        's1_periods': s1_periods, 's2_periods': s2_periods,
+        'combined': combined, 'combined_denom': STANDARD_CAP * 3,
+        'stipend_pct': stipend_pct, 'stipend_label': stipend_label,
+    }
+
+
 load_violations = []
 for teacher in teacher_sections:
     max_s1, max_s2 = get_max_load(teacher)
@@ -4519,9 +4583,10 @@ def export_job1_report():
     for c in range(1, 6):
         ws2.column_dimensions[openpyxl.utils.get_column_letter(c)].width = 16
 
-    # ── Sheet 3: Teacher Load Summary ──
+    # ── Sheet 3: Teacher Load Summary (with FY-equivalent and stipend) ──
     ws3 = wb.create_sheet("Teacher Loads")
-    t_headers = ['Teacher Name', 'Teacher ID', 'S1 Periods', 'S2 Periods', 'Max S1', 'Max S2', 'Overloaded?']
+    t_headers = ['Teacher Name', 'Teacher ID', 'FY/5', 'S1/5', 'S2/5',
+                 'Combined', 'Stipend', 'Max S1', 'Max S2', 'Overloaded?']
     for c, h in enumerate(t_headers, 1):
         cell = ws3.cell(1, c, h)
         cell.font = hdr_font
@@ -4530,15 +4595,30 @@ def export_job1_report():
     t_row = 2
     for tname in sorted(teacher_sections.keys()):
         tid = name_to_id.get(tname, '')
-        s1_load = teacher_load(tname, 'S1')
-        s2_load = teacher_load(tname, 'S2')
+        stip = calculate_teacher_stipend(tname)
         max_s1, max_s2 = get_max_load(tname)
-        overloaded = 'YES' if s1_load > max_s1 or s2_load > max_s2 else ''
-        for c, v in enumerate([tname, tid, s1_load, s2_load, max_s1, max_s2, overloaded], 1):
+        overloaded = 'YES' if stip['s1_count'] > max_s1 or stip['s2_count'] > max_s2 else ''
+        fy_str = f"{stip['fy_count']}/5"
+        s1_str = f"{stip['s1_count']}/5"
+        s2_str = f"{stip['s2_count']}/5"
+        combined_str = f"{stip['combined']}/15"
+        vals = [tname, tid, fy_str, s1_str, s2_str,
+                combined_str, stip['stipend_label'], max_s1, max_s2, overloaded]
+        for c, v in enumerate(vals, 1):
             cell = ws3.cell(t_row, c, v)
             cell.font = Font(name='Arial', size=10)
             cell.border = thin_border
-            if overloaded == 'YES' and c == 7:
+            cell.alignment = Alignment(horizontal='center') if c >= 3 else Alignment()
+            # Red font for counts > 5
+            if c == 3 and stip['fy_count'] > 5:
+                cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
+            elif c == 4 and stip['s1_count'] > 5:
+                cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
+            elif c == 5 and stip['s2_count'] > 5:
+                cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
+            elif c == 7 and stip['stipend_pct'] > 0:
+                cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
+            elif overloaded == 'YES' and c == 10:
                 cell.font = Font(name='Arial', size=10, color='FF0000', bold=True)
         t_row += 1
     for c in range(1, len(t_headers) + 1):

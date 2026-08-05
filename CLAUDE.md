@@ -149,6 +149,28 @@ Scenario filters let the user run the engine on a subset of sections and student
 - **Room double-booking is a hard block** — same as teacher_busy and load_cap; the engine will NOT place two non-co-scheduled sections in the same room, same period, same semester
 - **Pre-flight validation:** Before Job 1 begins, the engine validates every teacher's total prescribed load (FY + S1 + S2 + EC) against their cap, accounting for co-schedule groups as 1 period slot. Any overload is flagged with resolution options (approval or load reduction)
 
+### 6th-Period Stipend Calculation (from JC Iofalo — non-negotiable)
+The engine calculates each teacher's full-year-equivalent period load and 6th-period stipend eligibility. This function is `calculate_teacher_stipend()` in the engine.
+
+**Three-term load display (FY / S1 / S2):**
+- **S1** = total periods occupied in Semester 1 (FY sections + S1-only sections)
+- **S2** = total periods occupied in Semester 2 (FY sections + S2-only sections)
+- **FY** = min(S1, S2) — the full-year equivalent baseline load present in both semesters
+
+**Key concept:** A FY section automatically occupies both S1 and S2. FY, S1, and S2 overlap simultaneously — they are NOT separated. The FY column captures how many periods the teacher is consistently teaching across the entire year. If a teacher works 6 periods in both S1 and S2 (even in different specific periods), FY = 6 — they have a 6th period all year.
+
+**Standard cap = 5 periods per term (always).** The denominator is ALWAYS 5 because that is the cap before extra compensation. Three terms of 5/5 = 15/15 = standard load, no stipend.
+
+**Stipend rules (based on FY equivalent):**
+- Both S1 > 5 AND S2 > 5 → **100% of FY 6th-period stipend** (teacher works 6th period all year)
+- Only S1 > 5 OR only S2 > 5 → **50% of FY 6th-period stipend** (teacher works 6th period one semester)
+- Neither over 5 → **no stipend** (0%)
+
+**Examples:**
+- Saggio: FY=5/5, S1=5/5, S2=6/5 → 16/15 → 50% FY Stipend (extra period S2 only)
+- Corcoran: FY=6/5, S1=6/5, S2=6/5 → 18/15 → 100% FY Stipend (6 periods both semesters)
+- Standard teacher: FY=5/5, S1=5/5, S2=5/5 → 15/15 → No Stipend
+
 ### Consecutive-6-Period Constraint (from JC Iofalo — non-negotiable)
 - **Rule:** Teachers approved for a 6th teaching period MUST NOT be placed in 6 consecutive periods in any semester. The free period must be interior (B through F), not an endpoint (A or G).
 - **Why:** With 7 periods A-G, a teacher teaching 6 periods has exactly 1 free. If that free period is A (periods B-G used) or G (periods A-F used), the teacher has no break — 6 classes in a row. The free period must fall between B and F to ensure at most 5 consecutive periods.
