@@ -2740,6 +2740,7 @@ CONSTRAINT_CLASSES = {
     'HARD': {
         'teacher_busy': 'Teacher already assigned to another section this period',
         'room_busy': 'Room already assigned to another section this period',
+        'consecutive_6': 'Would give teacher 6 consecutive periods (no interior gap)',
         'period_conflict': 'Student cannot be in two places at the same time',
         'credit_cap': 'Student exceeds maximum credit limit',
         'grade_ineligible': 'Student grade not eligible for this course',
@@ -3073,6 +3074,39 @@ def teacher_would_exceed_cap(teacher, period, halves):
                 existing_periods.add(s['period'])
         existing_periods.add(period)
         if len(existing_periods) > cap:
+            return True
+    return False
+
+def would_create_consecutive_6(teacher, period, halves):
+    """Check if placing a section in this period would give the teacher 6
+    consecutive teaching periods in any semester.  With 7 periods A-G,
+    having 6 means only 1 free.  If the free period is A or G (the
+    endpoints), the remaining 6 are consecutive (B-G or A-F).  The rule
+    requires the gap to be interior (B through F) so consecutive runs
+    never exceed 5.
+
+    Only applies to teachers whose total load in that semester would reach
+    exactly 6 (i.e., they have 6th-period approval).  Teachers with 5 or
+    fewer periods cannot have 6 consecutive by definition."""
+    if not teacher or teacher == 'TBD':
+        return False
+    for sem in halves:
+        # Collect the set of periods this teacher would occupy in this semester
+        occupied = set()
+        for sid in teacher_sections.get(teacher, []):
+            s = sections[sid]
+            if s['period'] and sem in s['halves']:
+                occupied.add(s['period'])
+        occupied.add(period)
+        # Only relevant when exactly 6 of 7 periods are occupied
+        if len(occupied) != 6:
+            continue
+        # Find the one free period
+        free = set(PERIODS) - occupied
+        free_period = free.pop()  # exactly one element
+        # If the free period is an endpoint (A or G), the 6 occupied
+        # periods are consecutive — block this placement
+        if free_period == 'A' or free_period == 'G':
             return True
     return False
 
@@ -3522,6 +3556,9 @@ for gi, sids_in_group in cogroup_sids.items():
             if teacher_would_exceed_cap(t, p, group_halves_tuple):
                 blocked = True
                 break
+            if would_create_consecutive_6(t, p, group_halves_tuple):
+                blocked = True
+                break
             if not teacher_available(t, p):
                 blocked = True
                 break
@@ -3639,6 +3676,18 @@ for _pgi, _pg in enumerate(_pairing_groups):
             _max_s1, _max_s2 = get_max_load(_pt)
             if len(_proj_s1) > _max_s1 or len(_proj_s2) > _max_s2:
                 combo_blocked = True
+                break
+
+            # Check consecutive-6 for projected S1 and S2
+            for _proj_set in (_proj_s1, _proj_s2):
+                if len(_proj_set) == 6:
+                    _proj_free = set(PERIODS) - _proj_set
+                    if _proj_free:
+                        _proj_fp = _proj_free.pop()
+                        if _proj_fp == 'A' or _proj_fp == 'G':
+                            combo_blocked = True
+                            break
+            if combo_blocked:
                 break
 
             # Check teacher is available and not busy in each period
@@ -3997,6 +4046,11 @@ def greedy_assign_periods(seed=42, audit=False):
                 if teacher_would_exceed_cap(teacher, p, halves):
                     period_scores[p] = 'load_cap'
                     continue
+                # Consecutive-6-period constraint: teachers with 6th-period
+                # approval must NOT have all 6 in a row (gap must be interior)
+                if would_create_consecutive_6(teacher, p, halves):
+                    period_scores[p] = 'consecutive_6'
+                    continue
                 if teacher and teacher != 'TBD' and not teacher_available(teacher, p):
                     period_scores[p] = 'unavailable'
                     continue
@@ -4281,6 +4335,28 @@ for teacher in teacher_sections:
         load_violations.append({'teacher': teacher, 's1': s1, 's2': s2, 'max_s1': max_s1, 'max_s2': max_s2})
         print(f"  LOAD: {teacher} S1={s1}/{max_s1} S2={s2}/{max_s2}")
 print(f"  Load violations: {len(load_violations)}")
+
+# Consecutive-6 violation check
+consec6_violations = []
+for teacher in teacher_sections:
+    for sem in ('S1', 'S2'):
+        occupied = set()
+        for sid in teacher_sections.get(teacher, []):
+            s = sections[sid]
+            if s['period'] and sem in s['halves']:
+                occupied.add(s['period'])
+        if len(occupied) == 6:
+            free = set(PERIODS) - occupied
+            free_p = free.pop()
+            if free_p == 'A' or free_p == 'G':
+                consec6_violations.append({'teacher': teacher, 'semester': sem,
+                                           'free_period': free_p, 'periods': sorted(occupied)})
+                print(f"  CONSECUTIVE-6: {teacher} {sem} — 6 consecutive periods "
+                      f"({'B-G' if free_p == 'A' else 'A-F'}), free={free_p}")
+if consec6_violations:
+    print(f"  Consecutive-6 violations: {len(consec6_violations)}")
+else:
+    print(f"  Consecutive-6 violations: 0 ✓")
 
 # ── Job 1 Excel Export ──
 def export_job1_report():
@@ -5348,8 +5424,14 @@ def _can_move_section(sid, new_period):
         old_p = s['period']
         s['period'] = None
         exc = teacher_would_exceed_cap(t, new_period, s['halves'])
+        if not exc:
+            exc_c6 = would_create_consecutive_6(t, new_period, s['halves'])
+        else:
+            exc_c6 = False
         s['period'] = old_p
         if exc:
+            return False
+        if exc_c6:
             return False
         if not teacher_available(t, new_period):
             return False
@@ -5646,6 +5728,28 @@ print(f"\n  Prior-year alignment: {prior_match}/{prior_total}")
 print(f"  Teacher load violations: {len(load_violations)}")
 for lv in load_violations:
     print(f"    {lv['teacher']}: S1={lv['s1']}/{lv['max_s1']} S2={lv['s2']}/{lv['max_s2']}")
+
+# Consecutive-6 violation check (full run)
+consec6_violations = []
+for teacher in teacher_sections:
+    for sem in ('S1', 'S2'):
+        occupied = set()
+        for sid in teacher_sections.get(teacher, []):
+            s = sections[sid]
+            if s['period'] and sem in s['halves']:
+                occupied.add(s['period'])
+        if len(occupied) == 6:
+            free = set(PERIODS) - occupied
+            free_p = free.pop()
+            if free_p == 'A' or free_p == 'G':
+                consec6_violations.append({'teacher': teacher, 'semester': sem,
+                                           'free_period': free_p, 'periods': sorted(occupied)})
+                print(f"  CONSECUTIVE-6: {teacher} {sem} — 6 consecutive periods "
+                      f"({'B-G' if free_p == 'A' else 'A-F'}), free={free_p}")
+if consec6_violations:
+    print(f"  Consecutive-6 violations: {len(consec6_violations)}")
+else:
+    print(f"  Consecutive-6 violations: 0 ✓")
 
 # ============================================================
 # 3b. RESOLVE ROOM CONFLICTS

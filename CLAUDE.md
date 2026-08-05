@@ -142,6 +142,20 @@ Scenario filters let the user run the engine on a subset of sections and student
 - Prescribed rooms are NOT exclusively reserved — they are available to other sections in any period/term when the prescribed section is not using them
 - 66 of 371 sections have no prescribed room — this is correct (not a data gap)
 
+### Teacher Load Cap Enforcement (from JC Iofalo — non-negotiable)
+- **Hard cap:** A teacher MUST NOT be assigned more than 5 sections per semester (counting unique periods occupied, with co-schedule groups counting as 1 period) UNLESS explicitly approved for a 6th period in Template 6
+- **6th period approval types:** Full-Year (both semesters), S1-only, or S2-only — defined in Template 6 teacher profiles
+- **No fallback override:** If no valid period exists without exceeding the cap, the section stays **UNPLACED** — the engine does NOT force-place it
+- **Room double-booking is a hard block** — same as teacher_busy and load_cap; the engine will NOT place two non-co-scheduled sections in the same room, same period, same semester
+- **Pre-flight validation:** Before Job 1 begins, the engine validates every teacher's total prescribed load (FY + S1 + S2 + EC) against their cap, accounting for co-schedule groups as 1 period slot. Any overload is flagged with resolution options (approval or load reduction)
+
+### Consecutive-6-Period Constraint (from JC Iofalo — non-negotiable)
+- **Rule:** Teachers approved for a 6th teaching period MUST NOT be placed in 6 consecutive periods in any semester. The free period must be interior (B through F), not an endpoint (A or G).
+- **Why:** With 7 periods A-G, a teacher teaching 6 periods has exactly 1 free. If that free period is A (periods B-G used) or G (periods A-F used), the teacher has no break — 6 classes in a row. The free period must fall between B and F to ensure at most 5 consecutive periods.
+- **Enforcement:** Hard block in `greedy_assign_periods()`, co-schedule group assignment, semester pairing group assignment, and `_can_move_section()` (Phase D optimizer). The engine skips any period that would create 6 consecutive and reports `consecutive_6` as the block reason.
+- **Validation:** Post-placement check reports any violations in both Job 1 and full run output.
+- **Only applies when:** A teacher would have exactly 6 periods occupied in a semester. Teachers with 5 or fewer periods cannot have 6 consecutive by definition.
+
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization + Phase A-1 Diagnostics)
 - `course_priorities.json` — Graduation requirements, pathway courses, singleton courses
