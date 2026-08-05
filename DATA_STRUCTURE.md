@@ -151,6 +151,16 @@ Don Bosco Prep has 8 elective pathway programs. A student enrolled in a pathway 
 
 4. **Student names allowed for Don Bosco engine. Student names/emails/contacts NEVER enter the commercial product scheduling database (PII isolation). Teacher names allowed for both engines.**
 
+5. **Three-Tier Section Placement Order.** The engine places course sections in three tiers. These tiers control the ORDER of placement. Priority values are used WITHIN each tier to rank sections.
+
+   - **Tier 1 — Grade 12 Singletons (placed FIRST):** Sections of courses eligible for Grade 12 (per Template 7 "Grade Levels") with exactly 1 section. Placed by priority values with a HARD zero-conflict constraint — the engine MUST place these in periods with no student scheduling conflicts.
+   - **Tier 2 — Grade 12 Doubletons (placed SECOND):** Sections of courses eligible for Grade 12 with exactly 2 sections. Placed by priority values with the same HARD zero-conflict constraint.
+   - **Tier 3 — All Other Sections (placed LAST):** All remaining sections. Placed by priority values with weighted conflict scoring.
+
+   **Why:** Grade 12 students are in their last year — they cannot retake a missed course. Singletons have no alternative section. Doubletons have minimal flexibility. By placing these first with zero conflicts, the engine guarantees Grade 12 access to their most restricted courses before any other placement decisions consume schedule slots.
+
+6. **Co-schedule is one section, not a conflict.** Co-scheduled sections share the same teacher, room, and period by design. A student enrolled in two co-scheduled courses is NOT in conflict. The engine excludes co-scheduled courses from conflict scoring.
+
 ---
 
 ## Parent Data Inputs
@@ -852,16 +862,22 @@ Once a section is placed on the schedule, the engine fills it with students. Stu
 1. Calculate Course Section Raw Priority Value for every section (AP, Singleton, Grad Req, etc.) — fixed for the year
 2. Calculate all three parent priority values: Student, Teacher, Room — all feed into each other
 3. Calculate Course Section Total Priority Value for every section (Course Section Raw + Top Student + Teacher Total + Room Total)
-4. Rank all sections from highest to lowest Course Section Total Priority Value
-5. Place the highest-ranked section first — prescribed room, prescribed teacher, prescribed term
-6. Fill the section with students — highest Student Priority Value first, until the cap is reached
-7. Flag students who didn't make the cut — save to a report for the principal
-8. Remove placed students from all priority calculations
-9. Recalculate ALL parent priority values (Student, Teacher, Room) with remaining students
-10. Recalculate ALL Course Section Total Priority Values with updated parent values (Raw does not change)
-11. Re-rank all remaining sections
-12. Place the next highest-ranked section
-13. Repeat steps 6-12 until all sections are placed or flagged — this cycle runs thousands of times
+4. **Classify every section into its placement tier:**
+   - **Tier 1** — Grade 12 Singletons: course eligible for Grade 12 AND exactly 1 section
+   - **Tier 2** — Grade 12 Doubletons: course eligible for Grade 12 AND exactly 2 sections
+   - **Tier 3** — All Other Sections: everything else
+5. **Place Tier 1 sections first** — rank by priority values within Tier 1, select period with ZERO student conflicts (hard constraint). Co-scheduled sections are one section, not a conflict.
+6. **Place Tier 2 sections next** — rank by priority values within Tier 2, same ZERO-conflict constraint.
+7. **Place Tier 3 sections last** — rank by priority values, use weighted conflict scoring (not a hard constraint).
+8. Within each tier, the per-placement cycle runs: PLACE → SAVE → REMOVE → RECALCULATE → RE-RANK → next placement.
+9. Fill each placed section with students — highest Student Priority Value first, until the cap is reached
+10. Flag students who didn't make the cut — save to a report for the principal
+11. Remove placed students from all priority calculations
+12. Recalculate ALL parent priority values (Student, Teacher, Room) with remaining students
+13. Recalculate ALL Course Section Total Priority Values with updated parent values (Raw does not change)
+14. Re-rank all remaining sections within their tier
+15. Place the next highest-ranked section in the current tier
+16. Repeat steps 9-15 until all sections are placed or flagged — this cycle runs thousands of times
 
 ### Conflict Resolution
 

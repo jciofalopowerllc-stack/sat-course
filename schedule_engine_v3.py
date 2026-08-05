@@ -2890,10 +2890,16 @@ def _predict_conflict_score(code, period, halves, co_enroll):
     Checks every co-enrolled course: if that course has a section already in this period
     with overlapping semesters, each shared student is a potential conflict weighted by
     student priority + course priority. Teacher/room raw of the conflicting section is added
-    per-pair (sections with more locks = harder to relocate = higher damage)."""
+    per-pair (sections with more locks = harder to relocate = higher damage).
+    Co-scheduled courses are excluded — they share the same period by design and are
+    essentially one section (not a conflict)."""
     conflict_score = 0
     co_courses = co_enroll.get(code, {})
+    # Co-schedule exclusion: courses in the same co-schedule group are NOT conflicts
+    my_cogroup = code_to_cogroup.get(code)
     for other_cid, shared_students in co_courses.items():
+        if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
+            continue  # same co-schedule group — not a conflict
         other_sids = sec_by_code.get(other_cid, [])
         for osid in other_sids:
             os = sections[osid]
@@ -2987,10 +2993,38 @@ def _ensure_conflict_matrix():
         print(f"  Phase A-0: Conflict matrix built — {_cm_pairs} course pairs with weighted conflicts")
     return _co_enroll_cache, _conflict_matrix_cache, _conflict_degree_cache
 
+def _section_tier(code):
+    """Determine which placement tier a section belongs to (Universal Rules).
+    Tier 1: Grade 12 singletons (1 section, Grade 12 eligible)
+    Tier 2: Grade 12 doubletons (2 sections, Grade 12 eligible)
+    Tier 3: All other sections
+    Co-scheduled sections are essentially one section — a co-schedule group's
+    tier is determined by its combined section count across the group."""
+    eligible = course_grade_levels.get(str(code), set())
+    is_gr12 = 12 in eligible
+    if not is_gr12:
+        return 3
+    n_sections = len(sec_by_code.get(code, []))
+    if n_sections == 1:
+        return 1
+    elif n_sections == 2:
+        return 2
+    return 3
+
+
 def greedy_assign_periods(seed=42, audit=False):
-    """Assign each section to a period using per-placement save/remove/recalculate/re-rank.
-    After every section placement, priority caches are cleared, all remaining sections'
-    priority values are recalculated, and the ranking is rebuilt before the next placement."""
+    """Three-tier period assignment (Universal Rules — non-negotiable):
+
+    Tier 1: Grade 12 singletons — placed FIRST, by priority, ZERO student conflicts
+    Tier 2: Grade 12 doubletons — placed NEXT, by priority, ZERO student conflicts
+    Tier 3: All other sections — placed LAST, by priority values
+
+    Within each tier, sections are sorted by priority values (same priority system).
+    Tiers 1 and 2 enforce a HARD zero-conflict constraint: the engine MUST place
+    these sections in periods that cause no student scheduling conflicts.
+    Co-scheduled sections are essentially one section and are NOT counted as conflicts.
+
+    Per-placement cycle: PLACE → SAVE → REMOVE → RECALCULATE → RE-RANK → next."""
     rng = random.Random(seed)
     co_enroll, _, _ = _ensure_conflict_matrix()
 
@@ -3001,142 +3035,165 @@ def greedy_assign_periods(seed=42, audit=False):
         _priority_audit['phase_a']['placements'] = []
 
     step = 0
-    while True:
-        # RECALCULATE: clear caches so priorities reflect current state
-        _clear_priority_caches()
-        _refresh_top_students()
+    tier_labels = {1: 'Gr12 Singletons', 2: 'Gr12 Doubletons', 3: 'All Other Sections'}
 
-        # Collect remaining unassigned sections
-        unassigned = [s for s in sections if s['period'] is None]
-        if not unassigned:
-            break
+    for tier in (1, 2, 3):
+        tier_placed = 0
+        zero_conflict = tier in (1, 2)  # hard constraint for Tiers 1 & 2
 
-        # RE-RANK: deterministic shuffle for tiebreak, then sort by priority
-        rng_step = random.Random(seed + step)
-        rng_step.shuffle(unassigned)
-        unassigned.sort(key=_section_priority_key)
+        while True:
+            # RECALCULATE: clear caches so priorities reflect current state
+            _clear_priority_caches()
+            _refresh_top_students()
 
-        # PLACE: take #1 ranked section, find its best period
-        s = unassigned[0]
-        teacher = s['teacher']
-        room = s['room']
-        halves = s['halves']
-        code = s['code']
+            # Collect remaining unassigned sections for THIS tier
+            unassigned_all = [s for s in sections if s['period'] is None]
+            if not unassigned_all:
+                break
 
-        used_periods = set()
-        period_section_count = Counter()
-        for other_sid in sec_by_code[code]:
-            if sections[other_sid]['period']:
-                used_periods.add(sections[other_sid]['period'])
-                period_section_count[sections[other_sid]['period']] += 1
+            tier_sections = [s for s in unassigned_all if _section_tier(s['code']) == tier]
+            if not tier_sections:
+                break
 
-        total_course_sections = len(sec_by_code[code])
-        ci = course_info.get(code, {})
-        is_singleton_course = is_singleton(code)
+            # RE-RANK: deterministic shuffle for tiebreak, then sort by priority
+            rng_step = random.Random(seed + step)
+            rng_step.shuffle(tier_sections)
+            tier_sections.sort(key=_section_priority_key)
 
-        best_period = None
-        best_score = float('inf')
-        period_scores = {}
+            # PLACE: take #1 ranked section in this tier, find its best period
+            s = tier_sections[0]
+            teacher = s['teacher']
+            room = s['room']
+            halves = s['halves']
+            code = s['code']
 
-        for p in PERIODS:
-            if teacher and teacher != 'TBD' and teacher_busy(teacher, p, halves, s['sid']):
-                period_scores[p] = 'teacher_busy'
-                continue
-            if teacher_would_exceed_cap(teacher, p, halves):
-                period_scores[p] = 'load_cap'
-                continue
-            if teacher and teacher != 'TBD' and not teacher_available(teacher, p):
-                period_scores[p] = 'unavailable'
-                continue
-            score = 0
-            conflict_penalty = _predict_conflict_score(code, p, halves, co_enroll)
-            # FIX Bug 1: Full conflict weight (was *0.5, far too weak).
-            # Singleton courses get 5x weight — placing two singletons
-            # in the same period guarantees unresolvable conflicts.
-            if is_singleton_course:
-                score += conflict_penalty * 5.0
-            else:
-                score += conflict_penalty * 2.0
-            # FIX Bug 2: Period-spreading applies to ALL multi-section courses,
-            # not just grad-req courses with 6+ sections.
-            if total_course_sections >= 2:
-                if p in used_periods:
-                    # Proportional penalty: each additional section in the same
-                    # period makes concentration worse (was flat +10).
-                    score += 25 * (period_section_count.get(p, 0) + 1)
+            used_periods = set()
+            period_section_count = Counter()
+            for other_sid in sec_by_code[code]:
+                if sections[other_sid]['period']:
+                    used_periods.add(sections[other_sid]['period'])
+                    period_section_count[sections[other_sid]['period']] += 1
+
+            total_course_sections = len(sec_by_code[code])
+            is_singleton_course = is_singleton(code)
+
+            best_period = None
+            best_score = float('inf')
+            period_scores = {}
+
+            for p in PERIODS:
+                if teacher and teacher != 'TBD' and teacher_busy(teacher, p, halves, s['sid']):
+                    period_scores[p] = 'teacher_busy'
+                    continue
+                if teacher_would_exceed_cap(teacher, p, halves):
+                    period_scores[p] = 'load_cap'
+                    continue
+                if teacher and teacher != 'TBD' and not teacher_available(teacher, p):
+                    period_scores[p] = 'unavailable'
+                    continue
+                score = 0
+                conflict_penalty = _predict_conflict_score(code, p, halves, co_enroll)
+
+                if zero_conflict:
+                    # TIERS 1 & 2: Zero-conflict constraint (hard rule).
+                    # Any period with student conflicts gets a massive penalty
+                    # so conflict-free periods are ALWAYS preferred. If no
+                    # conflict-free period exists, the least-conflicting is used.
+                    score += conflict_penalty * 10000
                 else:
-                    # Reward picking an uncovered period — stronger when more
-                    # periods are still empty (maximum spread).
-                    uncovered_count = sum(1 for pp in PERIODS if period_section_count.get(pp, 0) == 0)
-                    score -= 15 * uncovered_count
-            elif p in used_periods:
-                score += 10  # single-section courses: keep original flat penalty
-            period_load = sum(1 for sec in sections if sec['period'] == p)
-            score += period_load * 0.1
-            if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
-                score += 5
-            tp = teacher_profiles.get(teacher, {})
-            if tp:
-                if p in tp.get('avoid_periods', []):
-                    score += 2
-                if p in tp.get('preferred_periods', []):
-                    score -= 1
-            prior_prefs = prior_teacher_periods.get((code, teacher), set())
-            if not prior_prefs:
-                prior_prefs = prior_course_periods.get(code, set())
-            if prior_prefs and p in prior_prefs:
-                score -= 0.5
-            score += rng.random() * 0.01
-            period_scores[p] = round(score, 4)
+                    # TIER 3: Weighted conflict scoring.
+                    # Singleton courses get 5x weight (unresolvable if same period).
+                    # All others get 2x weight.
+                    if is_singleton_course:
+                        score += conflict_penalty * 5.0
+                    else:
+                        score += conflict_penalty * 2.0
 
-            if score < best_score:
-                best_score = score
-                best_period = p
+                # Period-spreading for ALL multi-section courses
+                if total_course_sections >= 2:
+                    if p in used_periods:
+                        # Proportional penalty: each additional section in the same
+                        # period makes concentration worse.
+                        score += 25 * (period_section_count.get(p, 0) + 1)
+                    else:
+                        # Reward picking an uncovered period — stronger when more
+                        # periods are still empty (maximum spread).
+                        uncovered_count = sum(1 for pp in PERIODS if period_section_count.get(pp, 0) == 0)
+                        score -= 15 * uncovered_count
+                elif p in used_periods:
+                    score += 10  # single-section courses: flat penalty
 
-        if best_period:
-            s['period'] = best_period
-        else:
-            if teacher and teacher != 'TBD':
-                teacher_per = set()
-                for sid in teacher_sections.get(teacher, []):
-                    if sections[sid]['period']:
-                        teacher_per.add(sections[sid]['period'])
-                if teacher_per:
-                    loads = Counter(sec['period'] for sec in sections if sec['period'])
-                    s['period'] = min(teacher_per, key=lambda p: loads.get(p, 0))
+                period_load = sum(1 for sec in sections if sec['period'] == p)
+                score += period_load * 0.1
+                if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
+                    score += 5
+                tp = teacher_profiles.get(teacher, {})
+                if tp:
+                    if p in tp.get('avoid_periods', []):
+                        score += 2
+                    if p in tp.get('preferred_periods', []):
+                        score -= 1
+                prior_prefs = prior_teacher_periods.get((code, teacher), set())
+                if not prior_prefs:
+                    prior_prefs = prior_course_periods.get(code, set())
+                if prior_prefs and p in prior_prefs:
+                    score -= 0.5
+                score += rng.random() * 0.01
+                period_scores[p] = round(score, 4)
+
+                if score < best_score:
+                    best_score = score
+                    best_period = p
+
+            if best_period:
+                s['period'] = best_period
+            else:
+                if teacher and teacher != 'TBD':
+                    teacher_per = set()
+                    for sid in teacher_sections.get(teacher, []):
+                        if sections[sid]['period']:
+                            teacher_per.add(sections[sid]['period'])
+                    if teacher_per:
+                        loads = Counter(sec['period'] for sec in sections if sec['period'])
+                        s['period'] = min(teacher_per, key=lambda p: loads.get(p, 0))
+                    else:
+                        loads = Counter(sec['period'] for sec in sections if sec['period'])
+                        s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
                 else:
                     loads = Counter(sec['period'] for sec in sections if sec['period'])
                     s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
-            else:
-                loads = Counter(sec['period'] for sec in sections if sec['period'])
-                s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
 
-        step += 1
+            step += 1
+            tier_placed += 1
 
-        # SAVE: record placement with priority values used
-        if audit:
-            cs_raw_val = course_section_raw(code)
-            t_raw_val = teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0
-            t_total_val = teacher_total_priority(teacher) if teacher and teacher != 'TBD' else 0
-            r_raw_val = room_raw_priority(room) if room and room != 'TBD' else 0
-            r_total_val = room_total_priority(room) if room and room != 'TBD' else 0
-            top_st = _top_student_cache.get(code, 0)
-            _priority_audit['phase_a']['placements'].append({
-                'step': step, 'sid': s['sid'], 'code': code,
-                'title': s['title'], 'section': s['section'],
-                'teacher': teacher, 'room': room,
-                'period_assigned': s['period'], 'halves': list(s['halves']),
-                'cs_raw': cs_raw_val, 'top_student_total': top_st,
-                'teacher_raw': t_raw_val, 'teacher_total': t_total_val,
-                'room_raw': r_raw_val, 'room_total': r_total_val,
-                'cs_total': cs_raw_val + top_st + t_total_val + r_total_val,
-                'period_scores': period_scores,
-                'remaining_sections': len(unassigned) - 1,
-            })
-        # REMOVE: section now has a period — excluded from next iteration's unassigned list
+            # SAVE: record placement with priority values used
+            if audit:
+                cs_raw_val = course_section_raw(code)
+                t_raw_val = teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0
+                t_total_val = teacher_total_priority(teacher) if teacher and teacher != 'TBD' else 0
+                r_raw_val = room_raw_priority(room) if room and room != 'TBD' else 0
+                r_total_val = room_total_priority(room) if room and room != 'TBD' else 0
+                top_st = _top_student_cache.get(code, 0)
+                _priority_audit['phase_a']['placements'].append({
+                    'step': step, 'sid': s['sid'], 'code': code,
+                    'title': s['title'], 'section': s['section'],
+                    'teacher': teacher, 'room': room,
+                    'tier': tier,
+                    'period_assigned': s['period'], 'halves': list(s['halves']),
+                    'cs_raw': cs_raw_val, 'top_student_total': top_st,
+                    'teacher_raw': t_raw_val, 'teacher_total': t_total_val,
+                    'room_raw': r_raw_val, 'room_total': r_total_val,
+                    'cs_total': cs_raw_val + top_st + t_total_val + r_total_val,
+                    'period_scores': period_scores,
+                    'remaining_sections': len(unassigned_all) - 1,
+                })
+            # REMOVE: section now has a period — excluded from next iteration's unassigned list
 
-        if step % 50 == 0:
-            print(f"    Step {step}: {len(unassigned)-1} sections remaining")
+            if step % 50 == 0:
+                print(f"    Step {step}: {len(unassigned_all)-1} sections remaining")
+
+        if tier_placed > 0:
+            print(f"    Tier {tier} ({tier_labels[tier]}): {tier_placed} sections placed")
 
     if audit:
         _clear_priority_caches()

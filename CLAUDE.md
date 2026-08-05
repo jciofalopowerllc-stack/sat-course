@@ -37,6 +37,30 @@
    - Per-placement cycle: PLACE → SAVE priority values → REMOVE consumed values → RECALCULATE all remaining → RE-RANK → next placement
    - **After Job 2 completes, the engine exports `Job2_Student_Placements_2026_27.xlsx` for JC to review**
 
+### Three-Tier Section Placement (Universal Rules — from JC Iofalo, non-negotiable)
+The engine places course sections in three tiers. These tiers control the ORDER of placement in `greedy_assign_periods()`. Priority values are used WITHIN each tier to rank sections.
+
+1. **Tier 1 — Grade 12 Singletons (placed FIRST):**
+   - Sections of courses eligible for Grade 12 (per Template 7 "Grade Levels") with exactly 1 section
+   - Placed according to priority values
+   - **ZERO student conflicts** — the engine MUST place these in periods with no student scheduling conflicts
+   - Co-scheduled sections are essentially one section and are NOT counted as conflicts
+
+2. **Tier 2 — Grade 12 Doubletons (placed SECOND):**
+   - Sections of courses eligible for Grade 12 with exactly 2 sections
+   - Placed according to priority values
+   - **ZERO student conflicts** — same hard constraint as Tier 1
+   - Co-scheduled sections are essentially one section and are NOT counted as conflicts
+
+3. **Tier 3 — All Other Sections (placed LAST):**
+   - All remaining sections (Grade 12 courses with 3+ sections, and all non-Grade-12 courses)
+   - Placed according to priority values
+   - Weighted conflict scoring (not a hard zero-conflict constraint)
+
+**Why this works:** Grade 12 students are in their last year — they cannot retake a missed course. Singletons have no alternative section. Doubletons have minimal flexibility. By placing these first with zero conflicts, the engine guarantees Grade 12 access to their most restricted courses before any other placement decisions consume schedule slots.
+
+**Co-schedule rule:** Co-scheduled sections share the same teacher, room, and period by design. They are essentially one section. A student enrolled in two co-scheduled courses is NOT in conflict — the co-schedule IS the schedule. The engine excludes co-scheduled courses from conflict scoring in `_predict_conflict_score()`.
+
 ### Engine Run Modes
 - `python schedule_engine_v3.py` or `python schedule_engine_v3.py job1` — Run Job 1 only, export Excel, **STOP** for review
 - `python schedule_engine_v3.py full` — Run Job 1 + Job 2 (student placement), export both Excel reports
