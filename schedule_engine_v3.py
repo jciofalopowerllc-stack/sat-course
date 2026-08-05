@@ -3177,16 +3177,28 @@ def greedy_assign_periods(seed=42, audit=False):
                     else:
                         score += conflict_penalty * 2.0
 
-                # Period-spreading for ALL multi-section courses
+                # Period-spreading for ALL multi-section courses — HARD constraint.
+                # A course with N sections (N ≤ 7) MUST spread across N unique
+                # periods before any doubling up.  This is treated as a hard
+                # rule: placing two sections of the same course in one period
+                # when an empty period still exists gets a massive penalty
+                # (same magnitude as zero-conflict in Tiers 1 & 2).
                 if total_course_sections >= 2:
-                    if p in used_periods:
-                        # Proportional penalty: each additional section in the same
-                        # period makes concentration worse.
+                    sections_placed_so_far = sum(period_section_count.values())
+                    uncovered_periods = [pp for pp in PERIODS
+                                         if period_section_count.get(pp, 0) == 0]
+                    if p in used_periods and uncovered_periods:
+                        # HARD: empty periods still available — do NOT double up.
+                        score += 10000
+                    elif p in used_periods:
+                        # All 7 periods already have at least one section of this
+                        # course (only possible when sections > 7).  Use proportional
+                        # soft penalty to distribute the extras evenly.
                         score += 25 * (period_section_count.get(p, 0) + 1)
                     else:
                         # Reward picking an uncovered period — stronger when more
                         # periods are still empty (maximum spread).
-                        uncovered_count = sum(1 for pp in PERIODS if period_section_count.get(pp, 0) == 0)
+                        uncovered_count = len(uncovered_periods)
                         score -= 15 * uncovered_count
                 elif p in used_periods:
                     score += 10  # single-section courses: flat penalty
