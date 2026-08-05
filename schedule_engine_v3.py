@@ -3748,6 +3748,7 @@ def greedy_assign_periods(seed=42, audit=False):
         _priority_audit['phase_a']['placements'] = []
 
     step = 0
+    _unplaceable_sids = set()  # sections that cannot be placed without double-booking
     tier_labels = {1: 'Gr12 Singletons', 2: 'Gr12 Doubletons', 3: 'All Other Sections'}
 
     for tier in (1, 2, 3):
@@ -3759,8 +3760,8 @@ def greedy_assign_periods(seed=42, audit=False):
             _clear_priority_caches()
             _refresh_top_students()
 
-            # Collect remaining unassigned sections for THIS tier
-            unassigned_all = [s for s in sections if s['period'] is None]
+            # Collect remaining unassigned sections for THIS tier (exclude unplaceable)
+            unassigned_all = [s for s in sections if s['period'] is None and s['sid'] not in _unplaceable_sids]
             if not unassigned_all:
                 break
 
@@ -3909,20 +3910,33 @@ def greedy_assign_periods(seed=42, audit=False):
             if best_period:
                 s['period'] = best_period
             else:
-                if teacher and teacher != 'TBD':
-                    teacher_per = set()
-                    for sid in teacher_sections.get(teacher, []):
-                        if sections[sid]['period']:
-                            teacher_per.add(sections[sid]['period'])
-                    if teacher_per:
-                        loads = Counter(sec['period'] for sec in sections if sec['period'])
-                        s['period'] = min(teacher_per, key=lambda p: loads.get(p, 0))
-                    else:
-                        loads = Counter(sec['period'] for sec in sections if sec['period'])
-                        s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
+                # NO valid period found — every period is blocked by teacher_busy,
+                # load_cap, or unavailability.  We must NOT silently double-book.
+                # Try to find the LEAST BAD period that avoids a teacher double-booking.
+                _fallback_period = None
+                _fallback_candidates = []
+                loads = Counter(sec['period'] for sec in sections if sec['period'])
+                for _fp in PERIODS:
+                    # Skip if teacher is already teaching in this period+semester
+                    if teacher and teacher != 'TBD' and teacher_busy(teacher, _fp, halves, s['sid']):
+                        continue
+                    # Skip if room is already occupied (unless shared room)
+                    if room and room != 'TBD' and room_busy(room, _fp, halves, s['sid']):
+                        continue
+                    _fallback_candidates.append(_fp)
+                if _fallback_candidates:
+                    # Pick least-loaded valid period (exceeds load cap but no double-booking)
+                    _fallback_period = min(_fallback_candidates, key=lambda p: loads.get(p, 0))
+                    s['period'] = _fallback_period
+                    print(f"    ⚠ FALLBACK: {code} {s['title'][:30]} sid={s['sid']} -> Period {_fallback_period} "
+                          f"(teacher {teacher} exceeds load cap but no double-booking)")
                 else:
-                    loads = Counter(sec['period'] for sec in sections if sec['period'])
-                    s['period'] = min(PERIODS, key=lambda p: loads.get(p, 0))
+                    # TRULY no valid period — teacher is busy in ALL 7 periods.
+                    # Leave section UNPLACED rather than create a double-booking.
+                    s['period'] = None
+                    _unplaceable_sids.add(s['sid'])
+                    print(f"    ✖ UNPLACEABLE: {code} {s['title'][:30]} sid={s['sid']} "
+                          f"teacher={teacher} — busy in ALL periods, cannot place without double-booking")
 
             step += 1
             tier_placed += 1
@@ -3990,6 +4004,62 @@ for teacher, sids in teacher_sections.items():
             if real_conflicts > 1:
                 t_conflicts += real_conflicts - 1
 print(f"  Teacher period conflicts: {t_conflicts}")
+if t_conflicts > 0:
+    print(f"  ⚠ DOUBLE-BOOKING DETAILS:")
+    for teacher, sids in teacher_sections.items():
+        slots_detail = defaultdict(list)
+        for sid in sids:
+            s = sections[sid]
+            if not s['period']:
+                continue
+            for h in s['halves']:
+                slots_detail[(s['period'], h)].append(sid)
+        for (per, sem), sid_list in slots_detail.items():
+            if len(sid_list) > 1:
+                # Check if ALL are co-scheduled
+                all_co = True
+                for i in range(len(sid_list)):
+                    for j in range(i+1, len(sid_list)):
+                        if not in_same_cogroup(sid_list[i], sid_list[j]):
+                            all_co = False
+                            break
+                    if not all_co:
+                        break
+                if not all_co:
+                    sec_strs = [f"{sections[sid]['code']} {sections[sid]['title'][:25]} (sid={sid})" for sid in sid_list]
+                    print(f"    {teacher} Period {per} {sem}: {', '.join(sec_strs)}")
+
+# Room double-booking check
+r_conflicts = 0
+_all_rooms = set(s['room'] for s in sections if s['room'] and s['room'] != 'TBD' and s['period'])
+_all_rooms -= SHARED_ROOMS
+for _rn in _all_rooms:
+    _room_slots = defaultdict(list)
+    for _rs in sections:
+        if _rs['room'] == _rn and _rs['period']:
+            for _rh in _rs['halves']:
+                _room_slots[(_rs['period'], _rh)].append(_rs['sid'])
+    for (per, sem), sid_list in _room_slots.items():
+        if len(sid_list) > 1:
+            all_co = True
+            for i in range(len(sid_list)):
+                for j in range(i+1, len(sid_list)):
+                    if not in_same_cogroup(sid_list[i], sid_list[j]):
+                        all_co = False
+                        break
+                if not all_co:
+                    break
+            if not all_co:
+                r_conflicts += len(sid_list) - 1
+if r_conflicts > 0:
+    print(f"  ⚠ Room double-bookings: {r_conflicts}")
+
+# Unplaced section report
+_unplaced = [s for s in sections if s['period'] is None]
+if _unplaced:
+    print(f"  ⚠ UNPLACED SECTIONS ({len(_unplaced)}) — teacher has no free period:")
+    for _us in _unplaced:
+        print(f"    {_us['code']} {_us['title'][:30]} sid={_us['sid']} teacher={_us['teacher']}")
 
 prior_match = 0
 prior_total = 0
@@ -5068,7 +5138,7 @@ def _conflict_quality(cl):
     return (top_conflicts, mid_conflicts, len(cl))
 
 def _can_move_section(sid, new_period):
-    """Check if section can move to new_period without teacher conflicts."""
+    """Check if section can move to new_period without teacher or room conflicts."""
     if sid in COGROUP_SIDS:
         return False
     if sid in PAIRING_SIDS:
@@ -5078,6 +5148,7 @@ def _can_move_section(sid, new_period):
         return False
     t = s['teacher']
     if t and t != 'TBD':
+        # Teacher double-booking check: teacher already teaching in new_period?
         if any(sections[ts]['period'] == new_period
                and set(sections[ts]['halves']) & set(s['halves'])
                and not in_same_cogroup(sid, ts)
@@ -5090,6 +5161,11 @@ def _can_move_section(sid, new_period):
         if exc:
             return False
         if not teacher_available(t, new_period):
+            return False
+    # Room double-booking check: room already used in new_period?
+    r = s.get('room')
+    if r and r != 'TBD' and r not in SHARED_ROOMS:
+        if room_busy(r, new_period, s['halves'], sid):
             return False
     return True
 
@@ -5864,6 +5940,30 @@ def export_job2_report():
 
 _job2_path = export_job2_report()
 
+# ── Post-Job-2 Student Double-Booking Validation ──
+# Safety net: verify no student ended up in two courses during the same period+semester.
+_student_dbl = 0
+_student_dbl_details = []
+for _pid in students:
+    _s_slots = defaultdict(list)
+    for _cid, _sid in assign.get(_pid, {}).items():
+        for _x in occ_cells(_sid):
+            _s_slots[_x].append(_cid)
+    for _slot, _courses in _s_slots.items():
+        if len(_courses) > 1:
+            _student_dbl += 1
+            if len(_student_dbl_details) < 10:  # cap detail output
+                _student_dbl_details.append(
+                    f"    {students[_pid]} ({_pid}) Period {_slot[0]} {_slot[1]}: "
+                    f"{', '.join(_courses)}"
+                )
+if _student_dbl > 0:
+    print(f"  ✖ STUDENT DOUBLE-BOOKINGS: {_student_dbl} (BUG — should be 0)")
+    for _d in _student_dbl_details:
+        print(_d)
+else:
+    print(f"  ✓ Student double-bookings: 0")
+
 # ============================================================
 # PHASE A-1: POST-RUN DIAGNOSTICS & CROSS-RUN LEARNING
 # ============================================================
@@ -5963,12 +6063,76 @@ for _a1_code, _a1_conflicts in _a1_conflict_by_code.items():
             _p = sections[sid]['period']
             _a1_period_fills[_p] = _a1_period_fills.get(_p, 0) + secfill.get(sid, 0)
         _a1_from_period = min(_a1_covered, key=lambda p: _a1_period_fills.get(p, 0)) if _a1_covered else None
-        _a1_best_move = {
-            'from_period': _a1_from_period,
-            'to_period': _a1_best_uncovered,
-            'teacher': _a1_best_teacher,
-            'estimated_conflict_reduction': _a1_best_reduction,
-        }
+
+        # VALIDATION: Check that the recommended teacher is NOT already teaching
+        # in the target period.  A recommendation that creates a double-booking
+        # is worse than no recommendation.
+        _move_teacher = _a1_best_teacher
+        _move_valid = True
+        if _move_teacher:
+            _move_teacher_busy_periods = set()
+            for _ms in teacher_sections.get(_move_teacher, []):
+                if sections[_ms]['period']:
+                    _move_teacher_busy_periods.add(sections[_ms]['period'])
+            if _a1_best_uncovered in _move_teacher_busy_periods:
+                # Teacher is already busy in the target period — try another teacher
+                _move_valid = False
+                for _alt_tn, _alt_fp in _a1_teacher_free.items():
+                    if _a1_best_uncovered in _alt_fp:
+                        # Also verify this alternate teacher isn't busy there
+                        _alt_busy = set()
+                        for _ams in teacher_sections.get(_alt_tn, []):
+                            if sections[_ams]['period']:
+                                _alt_busy.add(sections[_ams]['period'])
+                        if _a1_best_uncovered not in _alt_busy:
+                            _move_teacher = _alt_tn
+                            _move_valid = True
+                            break
+            # Also check from_period: the teacher must actually HAVE a section there
+            if _move_valid and _a1_from_period:
+                _has_section_in_from = any(
+                    sections[_ms]['period'] == _a1_from_period and sections[_ms]['code'] == _a1_code
+                    for _ms in teacher_sections.get(_move_teacher, [])
+                )
+                if not _has_section_in_from:
+                    # Try to find a teacher who has a section in from_period
+                    for _alt_tn, _alt_fp in _a1_teacher_free.items():
+                        if _a1_best_uncovered in _alt_fp:
+                            _alt_has = any(
+                                sections[_ams]['period'] == _a1_from_period and sections[_ams]['code'] == _a1_code
+                                for _ams in teacher_sections.get(_alt_tn, [])
+                            )
+                            if _alt_has:
+                                _alt_busy = set()
+                                for _ams in teacher_sections.get(_alt_tn, []):
+                                    if sections[_ams]['period']:
+                                        _alt_busy.add(sections[_ams]['period'])
+                                if _a1_best_uncovered not in _alt_busy:
+                                    _move_teacher = _alt_tn
+                                    _move_valid = True
+                                    break
+
+            # Also check room: would the move create a room conflict?
+            if _move_valid and _a1_from_period:
+                _from_sid = None
+                for _ms in teacher_sections.get(_move_teacher, []):
+                    if sections[_ms]['period'] == _a1_from_period and sections[_ms]['code'] == _a1_code:
+                        _from_sid = _ms
+                        break
+                if _from_sid is not None:
+                    _from_room = sections[_from_sid].get('room')
+                    if _from_room and _from_room != 'TBD' and _from_room not in SHARED_ROOMS:
+                        if room_busy(_from_room, _a1_best_uncovered, sections[_from_sid]['halves'], _from_sid):
+                            _move_valid = False
+
+        if _move_valid:
+            _a1_best_move = {
+                'from_period': _a1_from_period,
+                'to_period': _a1_best_uncovered,
+                'teacher': _move_teacher,
+                'estimated_conflict_reduction': _a1_best_reduction,
+            }
+        # If not valid, best_move stays empty — no recommendation rather than a bad one
 
     # Determine severity
     _n_conflicts = len(_a1_conflicts)
