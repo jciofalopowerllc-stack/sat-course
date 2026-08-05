@@ -3032,7 +3032,7 @@ def greedy_assign_periods(seed=42, audit=False):
 
         total_course_sections = len(sec_by_code[code])
         ci = course_info.get(code, {})
-        is_coverage_course = bool(ci.get('grad_req_dept', '')) and total_course_sections >= 6
+        is_singleton_course = is_singleton(code)
 
         best_period = None
         best_score = float('inf')
@@ -3050,15 +3050,27 @@ def greedy_assign_periods(seed=42, audit=False):
                 continue
             score = 0
             conflict_penalty = _predict_conflict_score(code, p, halves, co_enroll)
-            score += conflict_penalty * 0.5
-            if p in used_periods:
-                score += 10
-            if is_coverage_course:
-                uncovered = [pp for pp in PERIODS if period_section_count.get(pp, 0) == 0]
-                if uncovered and p not in used_periods:
-                    score -= 20
-                elif period_section_count.get(p, 0) > 0:
-                    score += 10 * period_section_count[p]
+            # FIX Bug 1: Full conflict weight (was *0.5, far too weak).
+            # Singleton courses get 5x weight — placing two singletons
+            # in the same period guarantees unresolvable conflicts.
+            if is_singleton_course:
+                score += conflict_penalty * 5.0
+            else:
+                score += conflict_penalty * 2.0
+            # FIX Bug 2: Period-spreading applies to ALL multi-section courses,
+            # not just grad-req courses with 6+ sections.
+            if total_course_sections >= 2:
+                if p in used_periods:
+                    # Proportional penalty: each additional section in the same
+                    # period makes concentration worse (was flat +10).
+                    score += 25 * (period_section_count.get(p, 0) + 1)
+                else:
+                    # Reward picking an uncovered period — stronger when more
+                    # periods are still empty (maximum spread).
+                    uncovered_count = sum(1 for pp in PERIODS if period_section_count.get(pp, 0) == 0)
+                    score -= 15 * uncovered_count
+            elif p in used_periods:
+                score += 10  # single-section courses: keep original flat penalty
             period_load = sum(1 for sec in sections if sec['period'] == p)
             score += period_load * 0.1
             if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
