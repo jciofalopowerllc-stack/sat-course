@@ -3144,6 +3144,7 @@ def greedy_assign_periods(seed=42, audit=False):
 
             total_course_sections = len(sec_by_code[code])
             is_singleton_course = is_singleton(code)
+            my_cogroup = code_to_cogroup.get(code)
 
             best_period = None
             best_score = float('inf')
@@ -3202,6 +3203,38 @@ def greedy_assign_periods(seed=42, audit=False):
                         score -= 15 * uncovered_count
                 elif p in used_periods:
                     score += 10  # single-section courses: flat penalty
+
+                # Cross-course co-enrollment spreading: penalize placing this
+                # course in a period where courses that share many students
+                # already have sections.  This prevents co-enrolled courses
+                # (e.g. AP Micro + AP Macro, or English + Precalculus) from
+                # clustering in the same small set of periods, which reduces
+                # student scheduling flexibility even when there's no direct
+                # conflict.  _predict_conflict_score handles DIRECT same-
+                # period/semester conflicts; this handles INDIRECT flexibility
+                # loss from period-set overlap.
+                co_courses = co_enroll.get(code, {})
+                co_period_penalty = 0
+                for other_cid, shared_pids in co_courses.items():
+                    if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
+                        continue  # co-schedule group — not a conflict
+                    n_shared = len(shared_pids)
+                    if n_shared < 3:
+                        continue  # skip low-co-enrollment pairs (noise)
+                    other_sids_list = sec_by_code.get(other_cid, [])
+                    other_total = len(other_sids_list)
+                    if other_total == 0:
+                        continue
+                    # Count sections of the other course already in this period
+                    other_in_p = sum(1 for osid in other_sids_list
+                                    if sections[osid]['period'] == p)
+                    if other_in_p > 0:
+                        # Penalty scales with: shared students × fraction of
+                        # the other course concentrated in this period.
+                        # A course with ALL sections in this period = worst.
+                        frac = other_in_p / other_total
+                        co_period_penalty += n_shared * frac
+                score += co_period_penalty * 2.0
 
                 period_load = sum(1 for sec in sections if sec['period'] == p)
                 score += period_load * 0.1
