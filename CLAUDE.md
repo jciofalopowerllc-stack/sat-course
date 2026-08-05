@@ -77,8 +77,27 @@ A semester pairing group is a set of 2+ course codes whose semester sections mus
 - `python schedule_engine_v3.py full` — Run Job 1 + Job 2 (student placement), export both Excel reports
 - `python schedule_engine_v3.py analyze` — Analyze Job 1+2 outputs, generate `Engine_Analysis_Report.xlsx` (requires prior `full` run)
 - `python schedule_engine_v3.py unlimited` — Run Job 1 + Job 2 with **unlimited section caps** (diagnostic mode), export `Unlimited_Seat_Analysis_2026_27.xlsx` showing natural demand per section to identify which sections need splitting or moving
-- `python schedule_engine_v3.py gr12` — Run Job 1 + Job 2 for **Grade 12 only**: filters to Gr12-eligible course sections + Grade 12 students only, exports `Job1_Section_Placements_GR12_2026_27.xlsx` and `Job2_Student_Placements_GR12_2026_27.xlsx`
+- `python schedule_engine_v3.py gr12` — Run Job 1 + Job 2 for **Grade 12 only** (shorthand for `--grades 12`)
+- `python schedule_engine_v3.py scenario` — **Interactive scenario menu**: presents filter options after data loads, user picks grade levels, cohorts, departments, courses, and/or teachers interactively, then selects Job 1 or Full run
 - Default mode is `job1` — the engine will never proceed to Job 2 without explicit approval
+
+### Scenario Filters (CLI flags — combinable with any mode except `analyze`)
+Scenario filters let the user run the engine on a subset of sections and students for **lighter evaluative runs**. All filters are combinable. Output filenames are auto-suffixed (e.g., `Job1_Section_Placements_GR11+12_DEPT_Science_2026_27.xlsx`).
+
+| Flag | Example | What it filters |
+|------|---------|----------------|
+| `--grades` | `--grades 11,12` | Keep only courses eligible for selected grade levels + students in those grades |
+| `--cohort` | `--cohort LEO_II` | Keep only LEO II students (options: `LEO_II`, `LEO_A`, `LEO_B`) |
+| `--dept` | `--dept "Science,Mathematics"` | Keep only courses in selected departments |
+| `--courses` | `--courses 849,851` | Keep only specific course codes |
+| `--teachers` | `--teachers 122120,106760` | Keep only sections taught by selected teachers (accepts IDs or names separated by `;`) |
+
+**Examples:**
+- `python schedule_engine_v3.py full --grades 12` — Full run, Grade 12 only
+- `python schedule_engine_v3.py job1 --dept Science --grades 11,12` — Job 1, Science dept for Gr11+12
+- `python schedule_engine_v3.py full --cohort LEO_II` — Full run, LEO II students only
+- `python schedule_engine_v3.py full --teachers 122120` — Full run, Granieri's sections + students only
+- `python schedule_engine_v3.py full --courses 849,851 --grades 12` — Full run, Gr12 Theology only
 
 ### Term Type & Prescribed Term Architecture (REV 08.04.26)
 - **Two distinct concepts, two distinct templates:**

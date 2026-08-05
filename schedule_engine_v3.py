@@ -34,7 +34,7 @@ def print(*args, **kwargs):
     kwargs.setdefault('flush', True)
     _print(*args, **kwargs)
 
-import openpyxl, json, math, random, collections, statistics, os, re
+import openpyxl, json, math, random, collections, statistics, os, re, argparse
 from collections import defaultdict, Counter
 
 UPLOAD = "/root/.claude/uploads/a04b5f0d-60df-588f-8acb-79549aab48c5"
@@ -43,16 +43,98 @@ SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549a
 OUTPUT_DIR = os.path.dirname(__file__) or '.'
 PERIODS = list('ABCDEFG')
 
-# ── Engine Run Mode ──
-# 'job1'      → Run Job 1 (section placement) only, export Excel, stop
-# 'full'      → Run Job 1 + Job 2 (student placement), export both Excel reports
-# 'analyze'   → Analyze Job 1 + Job 2 outputs, generate Engine Analysis Report
-# 'unlimited' → Run Job 1 + Job 2 with unlimited section caps (diagnostic mode)
-ENGINE_MODE = sys.argv[1] if len(sys.argv) > 1 else 'job1'
-if ENGINE_MODE not in ('job1', 'full', 'analyze', 'unlimited', 'gr12'):
-    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1', 'full', 'analyze', 'unlimited', or 'gr12'.")
-    sys.exit(1)
+# ── Engine Run Mode + Scenario Filters ──
+# Modes: job1, full, analyze, unlimited, gr12, scenario
+# Scenario filters: --grades, --cohort, --dept, --courses, --teachers
+# Interactive menu: python schedule_engine_v3.py scenario
+_parser = argparse.ArgumentParser(
+    description='Don Bosco Prep 2026-27 Scheduling Engine v3',
+    usage='%(prog)s [mode] [--grades 9,12] [--cohort LEO_II] [--dept Science] [--courses 849,851] [--teachers "Granieri, William"]'
+)
+_parser.add_argument('mode', nargs='?', default='job1',
+                     choices=['job1', 'full', 'analyze', 'unlimited', 'gr12', 'scenario'],
+                     help='Engine mode (default: job1)')
+_parser.add_argument('--grades', type=str, default=None,
+                     help='Comma-separated grade levels to include (e.g., 11,12)')
+_parser.add_argument('--cohort', type=str, default=None,
+                     help='Cohort filter: LEO_II, LEO_A, LEO_B, or ALL')
+_parser.add_argument('--dept', type=str, default=None,
+                     help='Comma-separated departments to include (e.g., "Science,Mathematics")')
+_parser.add_argument('--courses', type=str, default=None,
+                     help='Comma-separated course codes to include (e.g., 849,851,557)')
+_parser.add_argument('--teachers', type=str, default=None,
+                     help='Comma-separated teacher names or IDs (e.g., "Granieri, William" or 122120)')
+_args = _parser.parse_args()
+
+ENGINE_MODE = _args.mode
+
+# Parse scenario filter flags (available in any mode except analyze)
+SCENARIO_GRADES = None    # set of ints, e.g. {9, 12}
+SCENARIO_COHORT = None    # string: 'LEO_II', 'LEO_A', 'LEO_B'
+SCENARIO_DEPTS = None     # set of strings, e.g. {'Science', 'Mathematics'}
+SCENARIO_COURSES = None   # set of strings, e.g. {'849', '851'}
+SCENARIO_TEACHERS = None  # set of strings, e.g. {'Granieri, William', '122120'}
+
+if _args.grades:
+    SCENARIO_GRADES = set(int(g.strip()) for g in _args.grades.split(','))
+if _args.cohort:
+    SCENARIO_COHORT = _args.cohort.strip()
+if _args.dept:
+    SCENARIO_DEPTS = set(d.strip() for d in _args.dept.split(','))
+if _args.courses:
+    SCENARIO_COURSES = set(c.strip() for c in _args.courses.split(','))
+if _args.teachers:
+    # Handle comma-separated but allow "Last, First" format by splitting on ';' or matching IDs
+    if ';' in _args.teachers:
+        SCENARIO_TEACHERS = set(t.strip() for t in _args.teachers.split(';'))
+    else:
+        # Try: if all tokens are numeric, treat as teacher IDs
+        _parts = _args.teachers.split(',')
+        if all(p.strip().isdigit() for p in _parts):
+            SCENARIO_TEACHERS = set(p.strip() for p in _parts)
+        else:
+            # Treat entire string as one teacher name (may contain comma)
+            SCENARIO_TEACHERS = {_args.teachers.strip()}
+
+HAS_SCENARIO_FILTER = any([SCENARIO_GRADES, SCENARIO_COHORT, SCENARIO_DEPTS,
+                           SCENARIO_COURSES, SCENARIO_TEACHERS])
+
+# gr12 mode is shorthand for --grades 12
+if ENGINE_MODE == 'gr12':
+    SCENARIO_GRADES = {12}
+    HAS_SCENARIO_FILTER = True
+
+# Build suffix for output filenames
+def _build_scenario_suffix():
+    parts = []
+    if SCENARIO_GRADES:
+        parts.append('GR' + '+'.join(str(g) for g in sorted(SCENARIO_GRADES)))
+    if SCENARIO_COHORT:
+        parts.append(SCENARIO_COHORT.upper())
+    if SCENARIO_DEPTS:
+        parts.append('DEPT_' + '+'.join(sorted(SCENARIO_DEPTS))[:30])
+    if SCENARIO_COURSES:
+        parts.append('CRS_' + '+'.join(sorted(SCENARIO_COURSES))[:30])
+    if SCENARIO_TEACHERS:
+        parts.append('TCHR')
+    return '_' + '_'.join(parts) if parts else ''
+
+SCENARIO_SUFFIX = _build_scenario_suffix()
+
 print(f"  Engine mode: {ENGINE_MODE}")
+if HAS_SCENARIO_FILTER:
+    print(f"  Scenario filters active:")
+    if SCENARIO_GRADES:
+        print(f"    Grades: {sorted(SCENARIO_GRADES)}")
+    if SCENARIO_COHORT:
+        print(f"    Cohort: {SCENARIO_COHORT}")
+    if SCENARIO_DEPTS:
+        print(f"    Departments: {sorted(SCENARIO_DEPTS)}")
+    if SCENARIO_COURSES:
+        print(f"    Courses: {sorted(SCENARIO_COURSES)}")
+    if SCENARIO_TEACHERS:
+        print(f"    Teachers: {sorted(SCENARIO_TEACHERS)}")
+    print(f"    Output suffix: {SCENARIO_SUFFIX}")
 
 # ── Analyze Mode: runs standalone, does not load engine data ──
 if ENGINE_MODE == 'analyze':
@@ -2801,28 +2883,246 @@ def teacher_available(teacher, period):
     avail = tp.get('availability', {})
     return avail.get(period, True)
 
-# ── GR12 Mode Filter: Grade 12 sections + Grade 12 students only ──
-if ENGINE_MODE == 'gr12':
+# ── Interactive Scenario Menu ──
+# Runs when ENGINE_MODE == 'scenario' with no CLI filter flags.
+# Presents available options based on loaded data, user picks filters interactively.
+if ENGINE_MODE == 'scenario' and not HAS_SCENARIO_FILTER:
     print("\n" + "=" * 60)
-    print("  GR12 MODE — Grade 12 sections + Grade 12 students only")
+    print("  SCENARIO MODE — Interactive Filter Selection")
     print("=" * 60)
-    _gr12_courses = set()
-    for _cid, _gls in course_grade_levels.items():
-        if 12 in _gls:
-            _gr12_courses.add(_cid)
-    # Courses with no grade-level data: include them (assume all grades)
-    for _cid in list(sec_by_code.keys()):
-        if _cid not in course_grade_levels:
-            _gr12_courses.add(_cid)
 
-    # Rebuild sections list with only Gr12-eligible courses
+    # Collect available values from loaded data
+    _avail_grades = sorted(set(grade.values()))
+    _avail_depts = sorted(set(ci.get('dept', '') for ci in course_info.values() if ci.get('dept')))
+    _avail_teachers = sorted(set(s['teacher'] for s in sections if s['teacher'] and s['teacher'] != 'TBD'))
+    _has_leo = bool(cohA or cohB)
+    _n_courses = len(sec_by_code)
+
+    print(f"\n  Loaded data: {len(students)} students, {len(sections)} sections,")
+    print(f"               {_n_courses} courses, {len(_avail_teachers)} teachers")
+    print(f"               Grades: {_avail_grades}")
+    print(f"               Departments: {len(_avail_depts)}")
+    if _has_leo:
+        print(f"               LEO II: Cohort A={len(cohA)}, Cohort B={len(cohB)}")
+
+    print("\n  ┌─────────────────────────────────────────────────┐")
+    print("  │  SELECT SCENARIO FILTERS                        │")
+    print("  │  (combine multiple filters for targeted runs)   │")
+    print("  ├─────────────────────────────────────────────────┤")
+    print("  │  1. Filter by Grade Level(s)                    │")
+    print("  │  2. Filter by Cohort (LEO II)                   │")
+    print("  │  3. Filter by Department(s)                     │")
+    print("  │  4. Filter by Course Code(s)                    │")
+    print("  │  5. Filter by Teacher(s)                        │")
+    print("  │  6. Run ALL (no filters — full engine run)      │")
+    print("  │  0. Exit                                        │")
+    print("  └─────────────────────────────────────────────────┘")
+    print("\n  Enter filter numbers separated by commas (e.g., 1,3)")
+    print("  or enter 6 for a full run with no filters.\n")
+
+    _menu_choice = input("  Your selection: ").strip()
+    if _menu_choice == '0':
+        print("  Exiting.")
+        sys.exit(0)
+    if _menu_choice == '6':
+        print("  Running full engine — no filters applied.")
+        HAS_SCENARIO_FILTER = False
+    else:
+        _selected = set()
+        for _ch in _menu_choice.replace(' ', '').split(','):
+            if _ch.isdigit() and 1 <= int(_ch) <= 5:
+                _selected.add(int(_ch))
+
+        # 1. Grade levels
+        if 1 in _selected:
+            print(f"\n  Available grades: {_avail_grades}")
+            _g_input = input("  Enter grade(s) separated by commas (e.g., 11,12): ").strip()
+            if _g_input:
+                SCENARIO_GRADES = set(int(g.strip()) for g in _g_input.split(',') if g.strip().isdigit())
+                if SCENARIO_GRADES:
+                    print(f"  ✓ Grade filter: {sorted(SCENARIO_GRADES)}")
+
+        # 2. Cohort
+        if 2 in _selected:
+            print("\n  Cohort options:")
+            print("    A = LEO II Cohort A only")
+            print("    B = LEO II Cohort B only")
+            print("    ALL = All LEO II students (A + B)")
+            _c_input = input("  Enter cohort (A/B/ALL): ").strip().upper()
+            if _c_input in ('A', 'B', 'ALL'):
+                SCENARIO_COHORT = 'LEO_A' if _c_input == 'A' else 'LEO_B' if _c_input == 'B' else 'LEO_II'
+                print(f"  ✓ Cohort filter: {SCENARIO_COHORT}")
+
+        # 3. Departments
+        if 3 in _selected:
+            print(f"\n  Available departments:")
+            for _di, _d in enumerate(_avail_depts, 1):
+                # Count sections in this dept
+                _d_count = sum(1 for s in sections if course_info.get(s['code'], {}).get('dept') == _d)
+                print(f"    {_di:2d}. {_d} ({_d_count} sections)")
+            _d_input = input("  Enter department number(s) or name(s), comma-separated: ").strip()
+            if _d_input:
+                _dept_picks = set()
+                for _part in _d_input.split(','):
+                    _part = _part.strip()
+                    if _part.isdigit() and 1 <= int(_part) <= len(_avail_depts):
+                        _dept_picks.add(_avail_depts[int(_part) - 1])
+                    else:
+                        # Match by name (case-insensitive partial match)
+                        for _d in _avail_depts:
+                            if _part.lower() in _d.lower():
+                                _dept_picks.add(_d)
+                if _dept_picks:
+                    SCENARIO_DEPTS = _dept_picks
+                    print(f"  ✓ Department filter: {sorted(SCENARIO_DEPTS)}")
+
+        # 4. Course codes
+        if 4 in _selected:
+            _c_input = input("\n  Enter course code(s) separated by commas (e.g., 849,851): ").strip()
+            if _c_input:
+                _crs_picks = set()
+                for _part in _c_input.split(','):
+                    _code = _part.strip()
+                    if _code in sec_by_code:
+                        _crs_picks.add(_code)
+                    else:
+                        print(f"    WARNING: Course {_code} not found in loaded sections — skipping")
+                if _crs_picks:
+                    SCENARIO_COURSES = _crs_picks
+                    print(f"  ✓ Course filter: {sorted(SCENARIO_COURSES)}")
+
+        # 5. Teachers
+        if 5 in _selected:
+            print(f"\n  {len(_avail_teachers)} teachers available. Enter name(s) or ID(s).")
+            print("  Separate multiple teachers with semicolons (e.g., Granieri, William; Laracy, John)")
+            print("  Or enter teacher IDs separated by commas (e.g., 122120,106760)")
+            _t_input = input("  Teachers: ").strip()
+            if _t_input:
+                _tchr_picks = set()
+                if ';' in _t_input:
+                    for _part in _t_input.split(';'):
+                        _tname = _part.strip()
+                        if _tname in _avail_teachers:
+                            _tchr_picks.add(_tname)
+                        else:
+                            # Partial match
+                            _matches = [t for t in _avail_teachers if _tname.lower() in t.lower()]
+                            if _matches:
+                                _tchr_picks.update(_matches)
+                                print(f"    Matched: {_matches}")
+                            else:
+                                print(f"    WARNING: Teacher '{_tname}' not found — skipping")
+                else:
+                    _parts = _t_input.split(',')
+                    if all(p.strip().isdigit() for p in _parts):
+                        # Teacher IDs
+                        _name_to_id = {v: k for k, v in teacher_id_to_name.items()}
+                        _id_to_name = teacher_id_to_name
+                        for _tid in _parts:
+                            _tid = _tid.strip()
+                            _tname = _id_to_name.get(_tid)
+                            if _tname and _tname in _avail_teachers:
+                                _tchr_picks.add(_tname)
+                                print(f"    ID {_tid} → {_tname}")
+                            else:
+                                print(f"    WARNING: Teacher ID {_tid} not found — skipping")
+                    else:
+                        # Single teacher name with comma
+                        _tname = _t_input.strip()
+                        if _tname in _avail_teachers:
+                            _tchr_picks.add(_tname)
+                        else:
+                            _matches = [t for t in _avail_teachers if _tname.lower() in t.lower()]
+                            if _matches:
+                                _tchr_picks.update(_matches)
+                                print(f"    Matched: {_matches}")
+                            else:
+                                print(f"    WARNING: Teacher '{_tname}' not found — skipping")
+                if _tchr_picks:
+                    SCENARIO_TEACHERS = _tchr_picks
+                    print(f"  ✓ Teacher filter: {sorted(SCENARIO_TEACHERS)}")
+
+        HAS_SCENARIO_FILTER = any([SCENARIO_GRADES, SCENARIO_COHORT, SCENARIO_DEPTS,
+                                   SCENARIO_COURSES, SCENARIO_TEACHERS])
+        SCENARIO_SUFFIX = _build_scenario_suffix()
+
+        if not HAS_SCENARIO_FILTER:
+            print("\n  No valid filters selected — running full engine.")
+
+    # Ask which job mode to run
+    if HAS_SCENARIO_FILTER:
+        print(f"\n  Filters set. Output suffix: {SCENARIO_SUFFIX}")
+    print("\n  Select run mode:")
+    print("    1. Job 1 only (section placement)")
+    print("    2. Full run (Job 1 + Job 2)")
+    _mode_pick = input("  Mode (1/2): ").strip()
+    if _mode_pick == '2':
+        ENGINE_MODE = 'full'
+    else:
+        ENGINE_MODE = 'job1'
+    print(f"  Engine mode set to: {ENGINE_MODE}")
+
+# ── Scenario Filter: Apply all active filters to sections + students ──
+if HAS_SCENARIO_FILTER and ENGINE_MODE not in ('analyze',):
+    print("\n" + "=" * 60)
+    print(f"  SCENARIO FILTER — Applying filters{SCENARIO_SUFFIX}")
+    print("=" * 60)
+
+    # Step 1: Determine which courses pass the filter
+    _keep_courses = set(sec_by_code.keys())  # start with all
+
+    # Grade filter: keep courses eligible for at least one selected grade
+    if SCENARIO_GRADES:
+        _grade_courses = set()
+        for _cid, _gls in course_grade_levels.items():
+            if SCENARIO_GRADES & set(_gls):
+                _grade_courses.add(_cid)
+        # Courses with no grade-level data: include them (assume all grades)
+        for _cid in list(sec_by_code.keys()):
+            if _cid not in course_grade_levels:
+                _grade_courses.add(_cid)
+        _keep_courses &= _grade_courses
+
+    # Department filter: keep courses in selected departments
+    if SCENARIO_DEPTS:
+        _dept_courses = set()
+        for _cid, _ci in course_info.items():
+            if _ci.get('dept', '') in SCENARIO_DEPTS:
+                _dept_courses.add(_cid)
+        _keep_courses &= _dept_courses
+
+    # Course code filter: keep only these specific courses
+    if SCENARIO_COURSES:
+        _keep_courses &= SCENARIO_COURSES
+
+    # Teacher filter: keep only courses that have sections taught by selected teachers
+    if SCENARIO_TEACHERS:
+        _teacher_courses = set()
+        # Resolve teacher IDs to names if needed
+        _resolved_teachers = set()
+        for _t in SCENARIO_TEACHERS:
+            if _t in teacher_id_to_name:
+                # It's a teacher ID
+                _resolved_teachers.add(teacher_id_to_name[_t])
+            else:
+                _resolved_teachers.add(_t)
+        SCENARIO_TEACHERS = _resolved_teachers  # replace with resolved names
+        for _s in sections:
+            if _s['teacher'] in SCENARIO_TEACHERS:
+                _teacher_courses.add(_s['code'])
+        _keep_courses &= _teacher_courses
+
+    # Step 2: Rebuild sections list with only matching courses
     _old_sections = sections[:]
     _old_to_new_sid = {}
     sections = []
     sec_by_code = defaultdict(list)
     teacher_sections = defaultdict(list)
     for _os in _old_sections:
-        if _os['code'] in _gr12_courses:
+        if _os['code'] in _keep_courses:
+            # If teacher filter is active, only keep sections by those teachers
+            if SCENARIO_TEACHERS and _os['teacher'] not in SCENARIO_TEACHERS and _os['teacher'] != 'TBD':
+                continue
             _new_sid = len(sections)
             _old_to_new_sid[_os['sid']] = _new_sid
             _os['sid'] = _new_sid
@@ -2831,11 +3131,11 @@ if ENGINE_MODE == 'gr12':
             if _os['teacher'] and _os['teacher'] != 'TBD':
                 teacher_sections[_os['teacher']].append(_new_sid)
 
-    # Rebuild co-schedule data with new sids
+    # Step 3: Rebuild co-schedule data with new sids
     code_to_cogroup = {}
     for gi, cg in enumerate(cogroups):
-        has_gr12 = any(c in _gr12_courses for c in cg['codes'])
-        if has_gr12:
+        has_match = any(c in _keep_courses for c in cg['codes'])
+        if has_match:
             for code in cg['codes']:
                 if code in sec_by_code:
                     code_to_cogroup[code] = gi
@@ -2848,25 +3148,53 @@ if ENGINE_MODE == 'gr12':
                 if sections[sid]['period'] is None:
                     cogroup_sids[gi].append(sid)
 
-    # Filter students to Grade 12 only
-    _gr12_pids = {pid for pid in students if grade.get(pid) == 12}
-    students = {pid: name for pid, name in students.items() if pid in _gr12_pids}
+    # Step 4: Filter students
+    _keep_pids = set(students.keys())  # start with all
+
+    # Grade filter on students
+    if SCENARIO_GRADES:
+        _keep_pids = {pid for pid in _keep_pids if grade.get(pid) in SCENARIO_GRADES}
+
+    # Cohort filter on students
+    if SCENARIO_COHORT:
+        if SCENARIO_COHORT == 'LEO_II':
+            _keep_pids &= (cohA | cohB)
+        elif SCENARIO_COHORT == 'LEO_A':
+            _keep_pids &= cohA
+        elif SCENARIO_COHORT == 'LEO_B':
+            _keep_pids &= cohB
+
+    # Only keep students who have requests for remaining courses
+    students = {pid: name for pid, name in students.items() if pid in _keep_pids}
     sreq = {pid: [cid for cid in reqs if cid in sec_by_code]
-            for pid, reqs in sreq.items() if pid in _gr12_pids}
+            for pid, reqs in sreq.items() if pid in _keep_pids}
     sreq = {pid: reqs for pid, reqs in sreq.items() if reqs}
     students = {pid: students[pid] for pid in sreq if pid in students}
     grade = {pid: g for pid, g in grade.items() if pid in students}
 
-    # Rebuild demand counters
+    # Step 5: Rebuild demand counters
     _course_demand = Counter()
     for _pid in students:
         for _cid in sreq[_pid]:
             _course_demand[_cid] += 1
 
     _n_removed = len(_old_sections) - len(sections)
-    print(f"  Sections: {len(sections)} ({_n_removed} non-Gr12 removed)")
+    _filter_desc = []
+    if SCENARIO_GRADES:
+        _filter_desc.append(f"Grades {sorted(SCENARIO_GRADES)}")
+    if SCENARIO_COHORT:
+        _filter_desc.append(f"Cohort {SCENARIO_COHORT}")
+    if SCENARIO_DEPTS:
+        _filter_desc.append(f"Depts {sorted(SCENARIO_DEPTS)}")
+    if SCENARIO_COURSES:
+        _filter_desc.append(f"Courses {sorted(SCENARIO_COURSES)}")
+    if SCENARIO_TEACHERS:
+        _filter_desc.append(f"Teachers {sorted(SCENARIO_TEACHERS)}")
+
+    print(f"  Filters: {', '.join(_filter_desc)}")
+    print(f"  Sections: {len(sections)} ({_n_removed} filtered out)")
     print(f"  Courses: {len(sec_by_code)}")
-    print(f"  Students: {len(students)} (Grade 12 only)")
+    print(f"  Students: {len(students)}")
     print(f"  Requests: {sum(len(v) for v in sreq.values())}")
 
 # --- STEP 1: Assign co-schedule groups ---
@@ -3759,8 +4087,7 @@ def export_job1_report():
     ws5.column_dimensions['A'].width = 40
     ws5.column_dimensions['B'].width = 20
 
-    _j1_suffix = '_GR12' if ENGINE_MODE == 'gr12' else ''
-    out_path = os.path.join(OUTPUT_DIR, f'Job1_Section_Placements{_j1_suffix}_2026_27.xlsx')
+    out_path = os.path.join(OUTPUT_DIR, f'Job1_Section_Placements{SCENARIO_SUFFIX}_2026_27.xlsx')
     wb.save(out_path)
     print(f"\n  ** Job 1 Excel export saved: {out_path}")
     return out_path
@@ -3776,11 +4103,17 @@ print(f"  Priority audit log saved to {_audit_a_path}")
 # ── Job 1 Stop Gate ──
 if ENGINE_MODE == 'job1':
     print("\n" + "=" * 60)
-    print("JOB 1 COMPLETE — ENGINE STOPPED")
+    _j1_label = f" (Scenario:{SCENARIO_SUFFIX})" if HAS_SCENARIO_FILTER else ""
+    print(f"JOB 1 COMPLETE — ENGINE STOPPED{_j1_label}")
     print("=" * 60)
     print(f"  Review the export: {_job1_path}")
-    print("  To proceed, re-run with:  python schedule_engine_v3.py full")
-    print("  To re-run Job 1 only:     python schedule_engine_v3.py job1")
+    print("\n  Run options:")
+    print("    python schedule_engine_v3.py full                    — Full run (all students)")
+    print("    python schedule_engine_v3.py job1                    — Re-run Job 1 only")
+    print("    python schedule_engine_v3.py scenario                — Interactive scenario menu")
+    print("    python schedule_engine_v3.py full --grades 11,12     — Full run, Gr11+12 only")
+    print("    python schedule_engine_v3.py job1 --dept Science     — Job 1, Science dept only")
+    print("    python schedule_engine_v3.py full --cohort LEO_II    — Full run, LEO II only")
     sys.exit(0)
 
 
@@ -5398,8 +5731,7 @@ def export_job2_report():
     ws4.column_dimensions['A'].width = 40
     ws4.column_dimensions['B'].width = 60
 
-    _j2_suffix = '_GR12' if ENGINE_MODE == 'gr12' else ''
-    out_path = os.path.join(OUTPUT_DIR, f'Job2_Student_Placements{_j2_suffix}_2026_27.xlsx')
+    out_path = os.path.join(OUTPUT_DIR, f'Job2_Student_Placements{SCENARIO_SUFFIX}_2026_27.xlsx')
     wb.save(out_path)
     print(f"\n  ** Job 2 Excel export saved: {out_path}")
     return out_path
@@ -6306,5 +6638,6 @@ print(f"\n  {_boards_generated} boards generated in {BOARDS_DIR}/")
 
 print("=" * 60)
 _mode_label = ' [UNLIMITED SEAT MODE]' if ENGINE_MODE == 'unlimited' else ''
-print(f"DONE — v3 Enhanced Engine{_mode_label}: {len(conflict)} conflicts, {placement_rate:.1f}% placement")
+_scenario_label = f' [SCENARIO:{SCENARIO_SUFFIX}]' if HAS_SCENARIO_FILTER else ''
+print(f"DONE — v3 Enhanced Engine{_mode_label}{_scenario_label}: {len(conflict)} conflicts, {placement_rate:.1f}% placement")
 print("=" * 60)
