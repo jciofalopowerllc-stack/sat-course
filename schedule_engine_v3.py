@@ -4107,6 +4107,20 @@ def greedy_assign_periods(seed=42, audit=False):
                 elif p in used_periods:
                     score += 10  # single-section courses: flat penalty
 
+                # Semester complement bonus: S1/S2 pairs of the same course
+                # PREFER sharing a period because it conserves the teacher's
+                # period slots (critical for 6th-period teachers).  A section
+                # being placed gets a bonus if another section of the same
+                # course is already in this period with a non-overlapping semester.
+                if total_course_sections >= 2:
+                    for _comp_sid in sec_by_code[code]:
+                        _comp = sections[_comp_sid]
+                        if (_comp['period'] == p
+                                and not (set(_comp['halves']) & set(halves))):
+                            # Non-overlapping semester already in this period
+                            score -= 20  # strong preference to share
+                            break
+
                 # Cross-course co-enrollment spreading: penalize placing this
                 # course in a period where courses that share many students
                 # already have sections.  This prevents co-enrolled courses
