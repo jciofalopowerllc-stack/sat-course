@@ -141,13 +141,15 @@ Scenario filters let the user run the engine on a subset of sections and student
 - 66 of 371 sections have no prescribed room — this is correct (not a data gap)
 
 ### Key Files
-- `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization)
+- `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization + Phase A-1 Diagnostics)
 - `course_priorities.json` — Graduation requirements, pathway courses, singleton courses
 - `detect_pathways.py` — Pathway detection from Historical Grades + Course Requests
 - `templates/` — All input templates (T2, T4, T6, T7, T8, T9, Prior Year, Historical Grades)
 - `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
 - `student_priority_overrides.json` — Student-specific priority overrides (Grade 12 science exceptions)
 - `schedule_solution_v3.json` — Engine output
+- `run_diagnostics.json` — Cross-run learning data (Phase A-1 output, loaded by next run)
+- `DESIGN_Post_Run_Diagnostics.md` — Full design document for the cross-run learning system
 - `priority_audit_log.json` — Per-placement priority audit trail (Phase A + Phase B)
 - `Reports.md` — Report format reference (column layouts, sort orders, features)
 
@@ -238,3 +240,32 @@ Scenario filters let the user run the engine on a subset of sections and student
 - **Enhanced CSP**: 6 rounds in `full_reseat()` and `full_reseat_fast()`
 - **CSP recovery in fast path**: Post-bump CSP recovery and greedy re-add in `full_reseat_fast()`
 - **Phase A-0 conflict matrix**: Pre-computes priority-weighted conflict matrix (3,018 course pairs) and conflict degree per course. Lazy caching via `_ensure_conflict_matrix()` computes once and reuses across Phase D's 16 restarts, keeping conflict scoring consistent
+- **Phase A-1 cross-run diagnostics**: Post-run analyzer writes `run_diagnostics.json` with period coverage analysis, blocking chains, teacher bottlenecks, period hotspots. Next run loads diagnostics and applies bias adjustments to `_predict_conflict_score()` — penalizing problematic periods and rewarding uncovered periods proportional to prior conflict severity
+- **System Improvement Report**: Console output after every Job 2 run showing CRITICAL/HIGH/MEDIUM/LOW findings with actionable fix recommendations, teacher availability, blocking chain analysis, and cross-run conflict delta tracking
+
+### Cross-Run Learning System (Phase A-1)
+The engine learns from its own results across runs. Each run analyzes actual conflicts, writes diagnostics, and the next run reads them to bias section placement toward better periods.
+
+**How it works:**
+1. **Run N**: Job 1 places sections → Job 2 places students → Phase A-1 analyzes conflicts → writes `run_diagnostics.json`
+2. **Run N+1**: Diagnostic loader reads `run_diagnostics.json` → builds `_diagnostic_bias` dict → `_predict_conflict_score()` uses biases → better placements → fewer conflicts
+
+**Five bias types:**
+1. **Coverage penalty**: Penalizes placing sections in periods already covered (if those periods showed conflicts)
+2. **Coverage reward**: Rewards placing sections in uncovered periods (negative bias = prefer)
+3. **Best-move bonus**: Extra reward for the specific target period the analyzer recommends
+4. **Period hotspot cooling**: Penalizes overloaded periods with 3+ conflict-causing courses
+5. **Blocking chain awareness**: Pushes blocked courses toward periods free of their blocking courses
+
+**Severity multipliers:** CRITICAL=3×, HIGH=2×, MEDIUM=1.5×, LOW=1× — ensures the most impactful conflicts get the strongest corrections.
+
+**Safety constraints:**
+- Only the MOST RECENT run's diagnostics are used (prevents stale data)
+- Does NOT override teacher constraints, prescribed periods, or pairing rules
+- Does NOT auto-fix — adjusts scoring weights, not hard rules
+- Does NOT accumulate across many runs
+- Bias is additive to existing conflict score, never replaces it
+
+**Files:**
+- `run_diagnostics.json` — Machine-readable output (course diagnostics, blocking chains, teacher bottlenecks, period hotspots)
+- `DESIGN_Post_Run_Diagnostics.md` — Full design document with data structure spec
