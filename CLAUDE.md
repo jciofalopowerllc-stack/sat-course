@@ -66,6 +66,7 @@ The engine places course sections in three tiers. These tiers control the ORDER 
 - `python schedule_engine_v3.py full` — Run Job 1 + Job 2 (student placement), export both Excel reports
 - `python schedule_engine_v3.py analyze` — Analyze Job 1+2 outputs, generate `Engine_Analysis_Report.xlsx` (requires prior `full` run)
 - `python schedule_engine_v3.py unlimited` — Run Job 1 + Job 2 with **unlimited section caps** (diagnostic mode), export `Unlimited_Seat_Analysis_2026_27.xlsx` showing natural demand per section to identify which sections need splitting or moving
+- `python schedule_engine_v3.py gr12` — Run Job 1 + Job 2 for **Grade 12 only**: filters to Gr12-eligible course sections + Grade 12 students only, exports `Job1_Section_Placements_GR12_2026_27.xlsx` and `Job2_Student_Placements_GR12_2026_27.xlsx`
 - Default mode is `job1` — the engine will never proceed to Job 2 without explicit approval
 
 ### Term Type & Prescribed Term Architecture (REV 08.04.26)

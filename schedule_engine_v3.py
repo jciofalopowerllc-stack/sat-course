@@ -49,8 +49,8 @@ PERIODS = list('ABCDEFG')
 # 'analyze'   → Analyze Job 1 + Job 2 outputs, generate Engine Analysis Report
 # 'unlimited' → Run Job 1 + Job 2 with unlimited section caps (diagnostic mode)
 ENGINE_MODE = sys.argv[1] if len(sys.argv) > 1 else 'job1'
-if ENGINE_MODE not in ('job1', 'full', 'analyze', 'unlimited'):
-    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1', 'full', 'analyze', or 'unlimited'.")
+if ENGINE_MODE not in ('job1', 'full', 'analyze', 'unlimited', 'gr12'):
+    print(f"ERROR: Invalid ENGINE_MODE '{ENGINE_MODE}'. Use 'job1', 'full', 'analyze', 'unlimited', or 'gr12'.")
     sys.exit(1)
 print(f"  Engine mode: {ENGINE_MODE}")
 
@@ -2787,6 +2787,74 @@ def teacher_available(teacher, period):
     avail = tp.get('availability', {})
     return avail.get(period, True)
 
+# ── GR12 Mode Filter: Grade 12 sections + Grade 12 students only ──
+if ENGINE_MODE == 'gr12':
+    print("\n" + "=" * 60)
+    print("  GR12 MODE — Grade 12 sections + Grade 12 students only")
+    print("=" * 60)
+    _gr12_courses = set()
+    for _cid, _gls in course_grade_levels.items():
+        if 12 in _gls:
+            _gr12_courses.add(_cid)
+    # Courses with no grade-level data: include them (assume all grades)
+    for _cid in list(sec_by_code.keys()):
+        if _cid not in course_grade_levels:
+            _gr12_courses.add(_cid)
+
+    # Rebuild sections list with only Gr12-eligible courses
+    _old_sections = sections[:]
+    _old_to_new_sid = {}
+    sections = []
+    sec_by_code = defaultdict(list)
+    teacher_sections = defaultdict(list)
+    for _os in _old_sections:
+        if _os['code'] in _gr12_courses:
+            _new_sid = len(sections)
+            _old_to_new_sid[_os['sid']] = _new_sid
+            _os['sid'] = _new_sid
+            sections.append(_os)
+            sec_by_code[_os['code']].append(_new_sid)
+            if _os['teacher'] and _os['teacher'] != 'TBD':
+                teacher_sections[_os['teacher']].append(_new_sid)
+
+    # Rebuild co-schedule data with new sids
+    code_to_cogroup = {}
+    for gi, cg in enumerate(cogroups):
+        has_gr12 = any(c in _gr12_courses for c in cg['codes'])
+        if has_gr12:
+            for code in cg['codes']:
+                if code in sec_by_code:
+                    code_to_cogroup[code] = gi
+    course_request_priority._cogroup_set = set(code_to_cogroup.keys())
+
+    cogroup_sids = defaultdict(list)
+    for gi, cg in enumerate(cogroups):
+        for code in cg['codes']:
+            for sid in sec_by_code.get(code, []):
+                if sections[sid]['period'] is None:
+                    cogroup_sids[gi].append(sid)
+
+    # Filter students to Grade 12 only
+    _gr12_pids = {pid for pid in students if grade.get(pid) == 12}
+    students = {pid: name for pid, name in students.items() if pid in _gr12_pids}
+    sreq = {pid: [cid for cid in reqs if cid in sec_by_code]
+            for pid, reqs in sreq.items() if pid in _gr12_pids}
+    sreq = {pid: reqs for pid, reqs in sreq.items() if reqs}
+    students = {pid: students[pid] for pid in sreq if pid in students}
+    grade = {pid: g for pid, g in grade.items() if pid in students}
+
+    # Rebuild demand counters
+    _course_demand = Counter()
+    for _pid in students:
+        for _cid in sreq[_pid]:
+            _course_demand[_cid] += 1
+
+    _n_removed = len(_old_sections) - len(sections)
+    print(f"  Sections: {len(sections)} ({_n_removed} non-Gr12 removed)")
+    print(f"  Courses: {len(sec_by_code)}")
+    print(f"  Students: {len(students)} (Grade 12 only)")
+    print(f"  Requests: {sum(len(v) for v in sreq.values())}")
+
 # --- STEP 1: Assign co-schedule groups ---
 assigned_cogroups = set()
 for gi, sids_in_group in cogroup_sids.items():
@@ -3452,7 +3520,8 @@ def export_job1_report():
     ws5.column_dimensions['A'].width = 40
     ws5.column_dimensions['B'].width = 20
 
-    out_path = os.path.join(OUTPUT_DIR, 'Job1_Section_Placements_2026_27.xlsx')
+    _j1_suffix = '_GR12' if ENGINE_MODE == 'gr12' else ''
+    out_path = os.path.join(OUTPUT_DIR, f'Job1_Section_Placements{_j1_suffix}_2026_27.xlsx')
     wb.save(out_path)
     print(f"\n  ** Job 1 Excel export saved: {out_path}")
     return out_path
@@ -5083,7 +5152,8 @@ def export_job2_report():
     ws4.column_dimensions['A'].width = 40
     ws4.column_dimensions['B'].width = 60
 
-    out_path = os.path.join(OUTPUT_DIR, 'Job2_Student_Placements_2026_27.xlsx')
+    _j2_suffix = '_GR12' if ENGINE_MODE == 'gr12' else ''
+    out_path = os.path.join(OUTPUT_DIR, f'Job2_Student_Placements{_j2_suffix}_2026_27.xlsx')
     wb.save(out_path)
     print(f"\n  ** Job 2 Excel export saved: {out_path}")
     return out_path
