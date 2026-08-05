@@ -3635,6 +3635,10 @@ for gi, sids_in_group in cogroup_sids.items():
     for p in PERIODS:
         blocked = False
         for t in group_teachers:
+            # Teacher already busy in this period from a non-co-scheduled section
+            if teacher_busy(t, p, group_halves_tuple, sids_in_group[0]):
+                blocked = True
+                break
             if teacher_would_exceed_cap(t, p, group_halves_tuple):
                 blocked = True
                 break
