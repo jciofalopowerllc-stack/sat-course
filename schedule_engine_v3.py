@@ -2917,6 +2917,96 @@ if _rebalance_count == 0:
 else:
     print(f"    Total EC sections rebalanced: {_rebalance_count}")
 
+# ── Pre-Flight Teacher Load Validation ──
+# After EC redistribution and rebalancing, verify every teacher's total
+# semester load (FY + S1 + S2 + EC-assigned) against their max load cap.
+# Flag any teacher whose prescribed sections would require more periods
+# in a semester than their cap allows.  This catches data contradictions
+# BEFORE Job 1 placement begins.
+print("\n  Pre-flight teacher load validation:")
+_preflight_violations = []
+for _pf_teacher in sorted(teacher_sections.keys()):
+    if _pf_teacher == 'TBD':
+        continue
+    _pf_sids = teacher_sections.get(_pf_teacher, [])
+    if not _pf_sids:
+        continue
+    _pf_max_s1, _pf_max_s2 = get_max_load(_pf_teacher)
+    # Count FY sections (each occupies 1 period in both S1 and S2)
+    _pf_fy = sum(1 for sid in _pf_sids if sections[sid]['halves'] == ('S1', 'S2'))
+    # Count semester-only sections
+    _pf_s1_only = sum(1 for sid in _pf_sids if sections[sid]['halves'] == ('S1',))
+    _pf_s2_only = sum(1 for sid in _pf_sids if sections[sid]['halves'] == ('S2',))
+    # Total periods needed per semester
+    _pf_need_s1 = _pf_fy + _pf_s1_only
+    _pf_need_s2 = _pf_fy + _pf_s2_only
+    _pf_over_s1 = _pf_need_s1 - _pf_max_s1
+    _pf_over_s2 = _pf_need_s2 - _pf_max_s2
+
+    if _pf_over_s1 > 0 or _pf_over_s2 > 0:
+        # Get teacher ID for the report
+        _pf_tid = teacher_profiles.get(_pf_teacher, {}).get('teacher_id', '?')
+        _pf_courses = sorted(set(sections[sid]['code'] for sid in _pf_sids))
+        _pf_course_detail = []
+        for _pf_c in _pf_courses:
+            _pf_c_sids = [sid for sid in _pf_sids if sections[sid]['code'] == _pf_c]
+            _pf_c_fy = sum(1 for sid in _pf_c_sids if sections[sid]['halves'] == ('S1', 'S2'))
+            _pf_c_s1 = sum(1 for sid in _pf_c_sids if sections[sid]['halves'] == ('S1',))
+            _pf_c_s2 = sum(1 for sid in _pf_c_sids if sections[sid]['halves'] == ('S2',))
+            _pf_parts = []
+            if _pf_c_fy: _pf_parts.append(f"{_pf_c_fy} FY")
+            if _pf_c_s1: _pf_parts.append(f"{_pf_c_s1} S1")
+            if _pf_c_s2: _pf_parts.append(f"{_pf_c_s2} S2")
+            _pf_title = sections[_pf_c_sids[0]].get('title', '')[:25]
+            _pf_course_detail.append(f"{_pf_c} {_pf_title} ({', '.join(_pf_parts)})")
+
+        _pf_msg_parts = []
+        if _pf_over_s1 > 0:
+            _pf_msg_parts.append(f"S1={_pf_need_s1}/{_pf_max_s1} (over by {_pf_over_s1})")
+        if _pf_over_s2 > 0:
+            _pf_msg_parts.append(f"S2={_pf_need_s2}/{_pf_max_s2} (over by {_pf_over_s2})")
+
+        _pf_entry = {
+            'teacher': _pf_teacher,
+            'teacher_id': _pf_tid,
+            'fy': _pf_fy,
+            's1_only': _pf_s1_only,
+            's2_only': _pf_s2_only,
+            'need_s1': _pf_need_s1,
+            'need_s2': _pf_need_s2,
+            'max_s1': _pf_max_s1,
+            'max_s2': _pf_max_s2,
+            'over_s1': max(0, _pf_over_s1),
+            'over_s2': max(0, _pf_over_s2),
+            'excess_sids_s1': [],
+            'excess_sids_s2': [],
+        }
+        _preflight_violations.append(_pf_entry)
+
+        print(f"    ⚠ {_pf_teacher} (ID: {_pf_tid}): {', '.join(_pf_msg_parts)}")
+        print(f"      Sections: {_pf_fy} FY + {_pf_s1_only} S1-only + {_pf_s2_only} S2-only "
+              f"= {len(_pf_sids)} total")
+        print(f"      Max load: {_pf_max_s1} periods/semester | "
+              f"Approved 6th: {'FY' if _pf_max_s1 >= 6 and _pf_max_s2 >= 6 else 'S1' if _pf_max_s1 >= 6 else 'S2' if _pf_max_s2 >= 6 else 'NO'}")
+        print(f"      Courses: {'; '.join(_pf_course_detail)}")
+        # Identify which semester needs approval and what type
+        if _pf_over_s1 > 0 and _pf_over_s2 > 0:
+            print(f"      ✖ RESOLUTION REQUIRED: Needs 6th period approval for BOTH semesters, "
+                  f"or reduce load by {max(_pf_over_s1, _pf_over_s2)} section(s)")
+        elif _pf_over_s1 > 0:
+            print(f"      ✖ RESOLUTION REQUIRED: Needs 6th period approval for S1 ONLY, "
+                  f"or reduce S1 load by {_pf_over_s1} section(s)")
+        elif _pf_over_s2 > 0:
+            print(f"      ✖ RESOLUTION REQUIRED: Needs 6th period approval for S2 ONLY, "
+                  f"or reduce S2 load by {_pf_over_s2} section(s)")
+        print(f"      Engine will leave {_pf_over_s1 + _pf_over_s2} section(s) UNPLACED until resolved")
+
+if not _preflight_violations:
+    print("    All teachers within load caps ✓")
+else:
+    print(f"\n    ⚠ {len(_preflight_violations)} teacher(s) exceed load cap — "
+          f"excess sections will be left UNPLACED")
+
 def in_same_cogroup(sid_a, sid_b):
     code_a = sections[sid_a]['code']
     code_b = sections[sid_b]['code']
@@ -3993,32 +4083,22 @@ def greedy_assign_periods(seed=42, audit=False):
                 s['period'] = best_period
             else:
                 # NO valid period found — every period is blocked by teacher_busy,
-                # load_cap, or unavailability.  We must NOT silently double-book.
-                # Try to find the LEAST BAD period that avoids a teacher double-booking.
-                _fallback_period = None
-                _fallback_candidates = []
-                loads = Counter(sec['period'] for sec in sections if sec['period'])
-                for _fp in PERIODS:
-                    # Skip if teacher is already teaching in this period+semester
-                    if teacher and teacher != 'TBD' and teacher_busy(teacher, _fp, halves, s['sid']):
-                        continue
-                    # Skip if room is already occupied (unless shared room)
-                    if room and room != 'TBD' and room_busy(room, _fp, halves, s['sid']):
-                        continue
-                    _fallback_candidates.append(_fp)
-                if _fallback_candidates:
-                    # Pick least-loaded valid period (exceeds load cap but no double-booking)
-                    _fallback_period = min(_fallback_candidates, key=lambda p: loads.get(p, 0))
-                    s['period'] = _fallback_period
-                    print(f"    ⚠ FALLBACK: {code} {s['title'][:30]} sid={s['sid']} -> Period {_fallback_period} "
-                          f"(teacher {teacher} exceeds load cap but no double-booking)")
-                else:
-                    # TRULY no valid period — teacher is busy in ALL 7 periods.
-                    # Leave section UNPLACED rather than create a double-booking.
-                    s['period'] = None
-                    _unplaceable_sids.add(s['sid'])
-                    print(f"    ✖ UNPLACEABLE: {code} {s['title'][:30]} sid={s['sid']} "
-                          f"teacher={teacher} — busy in ALL periods, cannot place without double-booking")
+                # load_cap, room_busy, or unavailability.
+                # Hard rule: do NOT override load cap, do NOT double-book.
+                # Leave section UNPLACED.
+                #
+                # Determine the reason for the block to give a clear message.
+                _block_reasons = Counter()
+                for _bp in PERIODS:
+                    if _bp in period_scores:
+                        _br = period_scores[_bp]
+                        if isinstance(_br, str):
+                            _block_reasons[_br] += 1
+                _block_summary = ', '.join(f"{v}× {k}" for k, v in _block_reasons.most_common())
+                s['period'] = None
+                _unplaceable_sids.add(s['sid'])
+                print(f"    ✖ UNPLACED: {code} {s['title'][:30]} sid={s['sid']} "
+                      f"teacher={teacher} — no valid period ({_block_summary})")
 
             step += 1
             tier_placed += 1
