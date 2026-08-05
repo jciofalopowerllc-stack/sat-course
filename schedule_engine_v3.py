@@ -4051,8 +4051,12 @@ for _rn in _all_rooms:
                     break
             if not all_co:
                 r_conflicts += len(sid_list) - 1
+                sec_strs = [f"{sections[sid]['code']} {sections[sid]['title'][:25]} teacher={sections[sid]['teacher']} (sid={sid})" for sid in sid_list]
+                print(f"    Room {_rn} Period {per} {sem}: {', '.join(sec_strs)}")
 if r_conflicts > 0:
     print(f"  ⚠ Room double-bookings: {r_conflicts}")
+else:
+    print(f"  Room double-bookings: 0 ✓")
 
 # Unplaced section report
 _unplaced = [s for s in sections if s['period'] is None]
