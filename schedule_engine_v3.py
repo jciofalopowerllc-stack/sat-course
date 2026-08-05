@@ -34,13 +34,20 @@ def print(*args, **kwargs):
     kwargs.setdefault('flush', True)
     _print(*args, **kwargs)
 
-import openpyxl, json, math, random, collections, statistics, os, re, argparse
+import openpyxl, json, math, random, collections, statistics, os, re, argparse, datetime
 from collections import defaultdict, Counter
 
 UPLOAD = "/root/.claude/uploads/a04b5f0d-60df-588f-8acb-79549aab48c5"
 TEMPLATES = os.path.join(os.path.dirname(__file__) or '.', 'templates')
 SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab48c5/scratchpad"
 OUTPUT_DIR = os.path.dirname(__file__) or '.'
+DIAGNOSTICS_FILE = os.path.join(OUTPUT_DIR, 'run_diagnostics.json')
+
+# ── Cross-Run Diagnostic Bias (populated by diagnostic loader at startup) ──
+# Maps (course_code, period) → float bias adjustment for _predict_conflict_score()
+# Positive = penalize (prior run showed conflicts here), Negative = reward (uncovered period that would help)
+_diagnostic_bias = {}
+_diagnostic_loaded = False
 PERIODS = list('ABCDEFG')
 
 # ── Engine Run Mode + Scenario Filters ──
@@ -2883,6 +2890,98 @@ def teacher_available(teacher, period):
     avail = tp.get('availability', {})
     return avail.get(period, True)
 
+# ── Cross-Run Diagnostic Loader ──
+# Reads run_diagnostics.json from the PRIOR run and builds _diagnostic_bias dict
+# that adjusts _predict_conflict_score() to learn from past mistakes.
+if os.path.exists(DIAGNOSTICS_FILE):
+    try:
+        with open(DIAGNOSTICS_FILE, 'r') as _df:
+            _prior_diag = json.load(_df)
+        print("\n" + "=" * 60)
+        print("  CROSS-RUN LEARNING — Loading prior run diagnostics")
+        print("=" * 60)
+        print(f"  Prior run: {_prior_diag.get('run_timestamp', 'unknown')}")
+        print(f"  Prior conflicts: {_prior_diag.get('total_conflicts', '?')}")
+        print(f"  Prior placement rate: {_prior_diag.get('placement_rate', '?')}%")
+
+        _bias_count = 0
+        _cd = _prior_diag.get('course_diagnostics', {})
+        for _diag_code, _diag_data in _cd.items():
+            _conflicts = _diag_data.get('conflicts', 0)
+            if _conflicts == 0:
+                continue
+            _covered = _diag_data.get('periods_covered', [])
+            _uncovered = _diag_data.get('periods_uncovered', [])
+            _severity = _diag_data.get('severity', 'LOW')
+
+            # Severity multiplier: CRITICAL=3, HIGH=2, MEDIUM=1.5, LOW=1
+            _sev_mult = {'CRITICAL': 3.0, 'HIGH': 2.0, 'MEDIUM': 1.5, 'LOW': 1.0}.get(_severity, 1.0)
+
+            # 1. Coverage penalty: penalize placing in already-covered periods
+            #    Penalty proportional to conflict count × severity
+            for _per in _covered:
+                _penalty = _conflicts * _sev_mult * 0.5  # 50% of weighted conflict count
+                _diagnostic_bias[(_diag_code, _per)] = _penalty
+                _bias_count += 1
+
+            # 2. Coverage reward: reward placing in uncovered periods
+            #    Reward proportional to conflict count × severity (negative = prefer)
+            for _per in _uncovered:
+                _reward = -_conflicts * _sev_mult * 0.3  # 30% of weighted conflict count (reward)
+                _diagnostic_bias[(_diag_code, _per)] = _reward
+                _bias_count += 1
+
+            # 3. Best move bonus: extra reward for the recommended target period
+            _best_move = _diag_data.get('best_move', {})
+            if _best_move and _best_move.get('to_period'):
+                _to = _best_move['to_period']
+                _est_reduction = _best_move.get('estimated_conflict_reduction', 0)
+                # Add extra reward on top of the uncovered reward
+                _existing = _diagnostic_bias.get((_diag_code, _to), 0)
+                _diagnostic_bias[(_diag_code, _to)] = _existing - _est_reduction * _sev_mult
+                _bias_count += 1
+
+        # 4. Period hotspot cooling: penalize overloaded periods for ANY conflict-prone course
+        _hotspots = _prior_diag.get('period_hotspots', {})
+        for _hp_period, _hp_data in _hotspots.items():
+            _hp_conflicts = _hp_data.get('total_conflicts_involving_period', 0)
+            _hp_courses = _hp_data.get('conflict_courses', [])
+            for _hp_code in _hp_courses:
+                # Add a hotspot penalty (on top of any coverage penalty already set)
+                _existing = _diagnostic_bias.get((_hp_code, _hp_period), 0)
+                _diagnostic_bias[(_hp_code, _hp_period)] = _existing + _hp_conflicts * 0.1
+                _bias_count += 1
+
+        # 5. Blocking chain awareness: push blocked courses toward free periods
+        _chains = _prior_diag.get('blocking_chains', [])
+        for _chain in _chains:
+            _affected = _chain.get('students_affected', 0)
+            _blocked_code = _chain.get('blocked_course', '')
+            _free_periods = _chain.get('free_periods', [])
+            if _blocked_code and _free_periods:
+                for _fp in _free_periods:
+                    _existing = _diagnostic_bias.get((_blocked_code, _fp), 0)
+                    _diagnostic_bias[(_blocked_code, _fp)] = _existing - _affected * 1.5
+                    _bias_count += 1
+
+        _diagnostic_loaded = True
+        print(f"  Loaded {len(_cd)} course diagnostics, {_bias_count} bias adjustments applied")
+        # Print top 10 biases for transparency
+        _sorted_biases = sorted(_diagnostic_bias.items(), key=lambda x: abs(x[1]), reverse=True)
+        if _sorted_biases:
+            print("  Top bias adjustments:")
+            for (_bc, _bp), _bv in _sorted_biases[:10]:
+                _dir = "AVOID" if _bv > 0 else "PREFER"
+                _ci_title = course_info.get(_bc, {}).get('title', _bc)
+                print(f"    {_bc} {_ci_title} in Period {_bp}: {_dir} ({_bv:+.1f})")
+        print("=" * 60)
+    except (json.JSONDecodeError, KeyError) as _e:
+        print(f"\n  WARNING: Could not load prior diagnostics: {_e}")
+        _diagnostic_bias = {}
+        _diagnostic_loaded = False
+else:
+    print("\n  No prior run_diagnostics.json found — first run (no cross-run biases)")
+
 # ── Interactive Scenario Menu ──
 # Runs when ENGINE_MODE == 'scenario' with no CLI filter flags.
 # Presents available options based on loaded data, user picks filters interactively.
@@ -3509,6 +3608,12 @@ def _predict_conflict_score(code, period, halves, co_enroll):
                 conflict_score += s_raw + max(crp_this, crp_other)
             conflict_score += _tr_raw
             break
+    # Cross-run diagnostic bias: adjust score based on prior run analysis
+    # Positive bias = penalize (prior run showed conflicts in this period)
+    # Negative bias = reward (prior run showed this period would reduce conflicts)
+    if _diagnostic_bias:
+        bias = _diagnostic_bias.get((code, period), 0)
+        conflict_score += bias
     return conflict_score
 
 # ── Phase A-0: Conflict Matrix Pre-Analysis ──
@@ -5737,6 +5842,396 @@ def export_job2_report():
     return out_path
 
 _job2_path = export_job2_report()
+
+# ============================================================
+# PHASE A-1: POST-RUN DIAGNOSTICS & CROSS-RUN LEARNING
+# ============================================================
+# Analyzes actual conflicts from the completed run, writes run_diagnostics.json
+# for the NEXT run, and prints a System Improvement Report to the console.
+print("\n" + "=" * 60)
+print("  PHASE A-1 — POST-RUN DIAGNOSTICS & CROSS-RUN LEARNING")
+print("=" * 60)
+
+# ── 1. Period Coverage Analysis ──
+# For every course with conflicts, compute which periods it covers vs doesn't,
+# and which uncovered periods would eliminate the most conflicts.
+_a1_course_diagnostics = {}
+_a1_conflict_by_code = defaultdict(list)
+for _c in conflict:
+    _a1_conflict_by_code[_c['code']].append(_c)
+
+for _a1_code, _a1_conflicts in _a1_conflict_by_code.items():
+    _a1_ci = course_info.get(_a1_code, {})
+    _a1_sids = sec_by_code.get(_a1_code, [])
+    if not _a1_sids:
+        continue
+
+    # Periods this course currently covers
+    _a1_covered = sorted(set(sections[sid]['period'] for sid in _a1_sids if sections[sid]['period']))
+    _a1_uncovered = sorted(set(PERIODS) - set(_a1_covered))
+
+    # Enrollment and capacity
+    _a1_enrolled = sum(secfill.get(sid, 0) for sid in _a1_sids)
+    _a1_capacity = sum(sections[sid].get('cap', 25) for sid in _a1_sids)
+    _a1_spare = _a1_capacity - _a1_enrolled
+
+    # Find top blocking courses (which courses block students from taking this one)
+    _a1_blockers = Counter()
+    for _c in _a1_conflicts:
+        for _bt in _c.get('sections_tried', []):
+            if _bt.get('rejected') == 'period_conflict' and _bt.get('conflicting_course'):
+                _a1_blockers[_bt['conflicting_course']] += 1
+        for _bc in _c.get('blocking_courses', []):
+            _a1_blockers[_bc['code']] += 1
+    _a1_top_blockers = [
+        {'code': bc, 'students_blocked': cnt,
+         'title': course_info.get(bc, {}).get('title', bc)}
+        for bc, cnt in _a1_blockers.most_common(5)
+    ]
+
+    # Teacher free periods for this course's teachers
+    _a1_teacher_free = {}
+    _a1_teachers_for_course = set()
+    for sid in _a1_sids:
+        _t = sections[sid].get('teacher', '')
+        _tn = sections[sid].get('teacher_name', _t)
+        if _t and _t != 'TBD':
+            _a1_teachers_for_course.add((_t, _tn))
+    for _t_id, _t_name in _a1_teachers_for_course:
+        _busy_periods = set()
+        for _ts_sid in teacher_sections.get(_t_id, []):
+            _ts = sections[_ts_sid]
+            if _ts['period']:
+                _busy_periods.add(_ts['period'])
+        _free = sorted(set(PERIODS) - _busy_periods)
+        _a1_teacher_free[_t_name if _t_name else _t_id] = _free
+
+    # Estimate conflict reduction for each uncovered period
+    _a1_best_uncovered = None
+    _a1_best_reduction = 0
+    _a1_best_teacher = None
+    for _up in _a1_uncovered:
+        # Count how many conflicted students could be rescued by a section in this period
+        _rescued = 0
+        for _c in _a1_conflicts:
+            _pid = _c['student']
+            # Check if this student has this period free in at least one semester
+            _period_free = True
+            for _ac, _asid in assign.get(_pid, {}).items():
+                _as = sections[_asid]
+                if _as['period'] == _up:
+                    _period_free = False
+                    break
+            if _period_free:
+                _rescued += 1
+        if _rescued > _a1_best_reduction:
+            _a1_best_reduction = _rescued
+            _a1_best_uncovered = _up
+            # Find a teacher who's free in this period
+            for _tn, _fp in _a1_teacher_free.items():
+                if _up in _fp:
+                    _a1_best_teacher = _tn
+                    break
+
+    # Determine best move recommendation
+    _a1_best_move = {}
+    if _a1_best_uncovered and _a1_best_reduction > 0:
+        # Pick the covered period with lowest fill to move FROM
+        _a1_period_fills = {}
+        for sid in _a1_sids:
+            _p = sections[sid]['period']
+            _a1_period_fills[_p] = _a1_period_fills.get(_p, 0) + secfill.get(sid, 0)
+        _a1_from_period = min(_a1_covered, key=lambda p: _a1_period_fills.get(p, 0)) if _a1_covered else None
+        _a1_best_move = {
+            'from_period': _a1_from_period,
+            'to_period': _a1_best_uncovered,
+            'teacher': _a1_best_teacher,
+            'estimated_conflict_reduction': _a1_best_reduction,
+        }
+
+    # Determine severity
+    _n_conflicts = len(_a1_conflicts)
+    _is_grad_req = any(_c.get('is_grad_req') for _c in _a1_conflicts)
+    _coverage_ratio = len(_a1_covered) / 7.0
+    if _n_conflicts >= 20 or (_is_grad_req and _n_conflicts >= 10):
+        _severity = 'CRITICAL'
+    elif _n_conflicts >= 10 or (_is_grad_req and _n_conflicts >= 5):
+        _severity = 'HIGH'
+    elif _n_conflicts >= 5:
+        _severity = 'MEDIUM'
+    else:
+        _severity = 'LOW'
+
+    # Determine recommendation
+    if len(_a1_covered) <= 2 and _a1_uncovered and _a1_best_reduction > 0:
+        _recommendation = 'MOVE_SECTION'
+    elif len(_a1_covered) == 1:
+        _recommendation = 'ADD_SECTION_OR_MOVE'
+    elif _a1_best_reduction > _n_conflicts * 0.3:
+        _recommendation = 'MOVE_SECTION'
+    elif _a1_spare <= 0:
+        _recommendation = 'EXPAND_CAPACITY'
+    else:
+        _recommendation = 'REDISTRIBUTE'
+
+    _a1_course_diagnostics[_a1_code] = {
+        'title': _a1_ci.get('title', _a1_code),
+        'department': _a1_ci.get('dept', ''),
+        'conflicts': _n_conflicts,
+        'periods_covered': _a1_covered,
+        'periods_uncovered': _a1_uncovered,
+        'coverage_ratio': round(_coverage_ratio, 2),
+        'enrollment': _a1_enrolled,
+        'capacity': _a1_capacity,
+        'spare_seats': _a1_spare,
+        'is_grad_req': _is_grad_req,
+        'top_blockers': _a1_top_blockers,
+        'teacher_free_periods': _a1_teacher_free,
+        'best_move': _a1_best_move,
+        'recommendation': _recommendation,
+        'severity': _severity,
+    }
+
+# ── 2. Period Hotspot Analysis ──
+# Which periods are overloaded with conflict-causing courses
+_a1_period_hotspots = {}
+_a1_period_conflict_courses = defaultdict(set)
+_a1_period_conflict_totals = defaultdict(int)
+for _c in conflict:
+    for _bt in _c.get('sections_tried', []):
+        if _bt.get('rejected') == 'period_conflict':
+            _a1_period_conflict_courses[_bt['period']].add(_c['code'])
+            _a1_period_conflict_totals[_bt['period']] += 1
+    # Also count the lost period
+    _lp = _c.get('lost_period', '')
+    if _lp:
+        _a1_period_conflict_courses[_lp].add(_c['code'])
+        _a1_period_conflict_totals[_lp] += 1
+
+for _per, _courses in _a1_period_conflict_courses.items():
+    if len(_courses) >= 3 or _a1_period_conflict_totals[_per] >= 10:
+        _a1_period_hotspots[_per] = {
+            'conflict_courses': sorted(_courses),
+            'total_conflicts_involving_period': _a1_period_conflict_totals[_per],
+            'recommendation': 'REDISTRIBUTE',
+        }
+
+# ── 3. Blocking Chain Analysis ──
+# Identify multi-course blocking chains the single-course predictor can't see
+_a1_blocking_chains = []
+_a1_blocker_pairs = defaultdict(lambda: {'students': set(), 'blocker_periods': set(), 'blocked_periods': set()})
+for _c in conflict:
+    _blocked_code = _c['code']
+    for _bt in _c.get('sections_tried', []):
+        if _bt.get('rejected') == 'period_conflict' and _bt.get('conflicting_course'):
+            _blocker_code = _bt['conflicting_course']
+            _pair_key = (_blocker_code, _blocked_code)
+            _a1_blocker_pairs[_pair_key]['students'].add(_c['student'])
+            _a1_blocker_pairs[_pair_key]['blocker_periods'].add(_bt['period'])
+            # Track blocked course's covered periods
+            for _bsid in sec_by_code.get(_blocked_code, []):
+                if sections[_bsid]['period']:
+                    _a1_blocker_pairs[_pair_key]['blocked_periods'].add(sections[_bsid]['period'])
+
+for (_blocker, _blocked), _data in _a1_blocker_pairs.items():
+    if len(_data['students']) >= 5:  # Only report chains affecting 5+ students
+        _blocker_covered = sorted(set(sections[sid]['period'] for sid in sec_by_code.get(_blocker, []) if sections[sid]['period']))
+        _blocked_covered = sorted(set(sections[sid]['period'] for sid in sec_by_code.get(_blocked, []) if sections[sid]['period']))
+        _free_periods = sorted(set(PERIODS) - set(_blocker_covered))
+        _overlap = len(set(_blocker_covered) & set(_blocked_covered))
+        _a1_blocking_chains.append({
+            'blocker_course': _blocker,
+            'blocker_title': course_info.get(_blocker, {}).get('title', _blocker),
+            'blocker_periods': _blocker_covered,
+            'blocked_course': _blocked,
+            'blocked_title': course_info.get(_blocked, {}).get('title', _blocked),
+            'blocked_periods': _blocked_covered,
+            'free_periods': _free_periods,
+            'periods_overlapping': _overlap,
+            'students_affected': len(_data['students']),
+            'chain': [
+                f"{_blocker} ({','.join(_blocker_covered)})",
+                f"{_blocked} ({','.join(_blocked_covered)})"
+            ],
+            'description': f"{course_info.get(_blocker, {}).get('title', _blocker)} blocks "
+                           f"{_overlap}/{len(_blocked_covered)} {course_info.get(_blocked, {}).get('title', _blocked)} periods",
+        })
+_a1_blocking_chains.sort(key=lambda x: -x['students_affected'])
+
+# ── 4. Teacher Constraint Bottlenecks ──
+_a1_teacher_bottlenecks = {}
+for _t_id in teacher_sections:
+    _t_sids = teacher_sections[_t_id]
+    if not _t_sids:
+        continue
+    _t_periods = set(sections[sid]['period'] for sid in _t_sids if sections[sid]['period'])
+    _t_free = sorted(set(PERIODS) - _t_periods)
+    # Count conflicts involving this teacher's courses
+    _t_codes = set(sections[sid]['code'] for sid in _t_sids)
+    _t_conflicts = sum(1 for _c in conflict if _c['code'] in _t_codes)
+    # Only flag teachers with conflicts AND limited free periods
+    if _t_conflicts > 0 and len(_t_free) <= 2:
+        _t_name = sections[_t_sids[0]].get('teacher_name', _t_id)
+        _a1_teacher_bottlenecks[_t_name] = {
+            'teacher_id': _t_id,
+            'sections': len(_t_sids),
+            'periods_used': sorted(_t_periods),
+            'free_periods': _t_free,
+            'courses_affected': sorted(_t_codes & set(_a1_conflict_by_code.keys())),
+            'total_conflicts': _t_conflicts,
+        }
+
+# ── 5. Write run_diagnostics.json ──
+_a1_diagnostics = {
+    'run_timestamp': datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
+    'engine_mode': ENGINE_MODE,
+    'scenario_filter': SCENARIO_SUFFIX if HAS_SCENARIO_FILTER else 'none',
+    'total_conflicts': len(conflict),
+    'placement_rate': round(placement_rate, 1),
+    'total_sections': len(sections),
+    'total_students': len(students),
+    'prior_diagnostics_loaded': _diagnostic_loaded,
+    'bias_adjustments_applied': len(_diagnostic_bias),
+    'course_diagnostics': _a1_course_diagnostics,
+    'period_hotspots': _a1_period_hotspots,
+    'blocking_chains': _a1_blocking_chains,
+    'teacher_bottlenecks': _a1_teacher_bottlenecks,
+}
+with open(DIAGNOSTICS_FILE, 'w') as _df:
+    json.dump(_a1_diagnostics, _df, indent=2, default=str)
+print(f"\n  run_diagnostics.json written: {len(_a1_course_diagnostics)} courses, "
+      f"{len(_a1_blocking_chains)} blocking chains, "
+      f"{len(_a1_teacher_bottlenecks)} teacher bottlenecks, "
+      f"{len(_a1_period_hotspots)} period hotspots")
+
+# ── 6. System Improvement Report (Console Output) ──
+print("\n" + "=" * 60)
+print("  SYSTEM IMPROVEMENT REPORT")
+print("=" * 60)
+
+# Sort by severity then conflict count
+_severity_order = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2, 'LOW': 3}
+_a1_sorted = sorted(
+    _a1_course_diagnostics.items(),
+    key=lambda x: (_severity_order.get(x[1]['severity'], 4), -x[1]['conflicts'])
+)
+
+if not _a1_sorted:
+    print("\n  No course conflicts detected — schedule is clean!")
+else:
+    for _code, _diag in _a1_sorted:
+        _sev = _diag['severity']
+        _title = _diag['title']
+        _n = _diag['conflicts']
+        _spare = _diag['spare_seats']
+        _covered = _diag['periods_covered']
+        _uncovered = _diag['periods_uncovered']
+        _blockers = _diag['top_blockers']
+        _best = _diag['best_move']
+        _rec = _diag['recommendation']
+        _tfp = _diag['teacher_free_periods']
+        _is_gr = _diag['is_grad_req']
+
+        print(f"\n[{_sev}] {_code} {_title} — {_n} conflicts, {_spare} spare seats")
+
+        # Problem description
+        _problem_parts = []
+        _problem_parts.append(f"Covers {len(_covered)}/7 periods ({','.join(_covered)})")
+        if _blockers:
+            _top_b = _blockers[0]
+            _problem_parts.append(f"{_top_b['code']} {_top_b['title']} blocks {_top_b['students_blocked']} students")
+        print(f"  Problem: {'; '.join(_problem_parts)}")
+
+        # Impact
+        _impact = f"{_n} students cannot take {_title}"
+        if _is_gr:
+            _impact += " (graduation required)"
+        print(f"  Impact:  {_impact}")
+
+        # Fix recommendation
+        if _best and _best.get('to_period'):
+            _fix = f"Move 1 section to Period {_best['to_period']}"
+            if _best.get('from_period'):
+                _fix += f" (from Period {_best['from_period']})"
+            if _best.get('teacher'):
+                _fix += f" — {_best['teacher']} is free"
+            _fix += f". Est. reduction: {_best.get('estimated_conflict_reduction', '?')} conflicts"
+            print(f"  Fix:     {_fix}")
+        elif _uncovered:
+            print(f"  Fix:     Place section in uncovered period(s): {','.join(_uncovered)}")
+        else:
+            print(f"  Fix:     {_rec}")
+
+        # Teacher availability
+        if _tfp:
+            for _tn, _fp in _tfp.items():
+                if _fp:
+                    print(f"           {_tn} free periods: {','.join(_fp)}")
+
+        # Engine action
+        if _rec in ('MOVE_SECTION', 'REDISTRIBUTE'):
+            print(f"  Action:  ENGINE CAN FIX — next run will bias toward better placement")
+        elif _rec == 'ADD_SECTION_OR_MOVE':
+            print(f"  Action:  CONSIDER — add section or move existing to uncovered period")
+        elif _rec == 'EXPAND_CAPACITY':
+            print(f"  Action:  CAPACITY ISSUE — needs section split or cap increase")
+        else:
+            print(f"  Action:  {_rec}")
+        print(f"  Decision: [ACTION NEEDED]")
+
+    # Blocking chains summary
+    if _a1_blocking_chains:
+        print(f"\n{'─' * 60}")
+        print(f"  BLOCKING CHAINS ({len(_a1_blocking_chains)} detected)")
+        print(f"{'─' * 60}")
+        for _chain in _a1_blocking_chains[:10]:
+            print(f"  {_chain['blocker_course']} {_chain['blocker_title']} ({','.join(_chain['blocker_periods'])})")
+            print(f"    → blocks {_chain['periods_overlapping']}/{len(_chain['blocked_periods'])} periods of "
+                  f"{_chain['blocked_course']} {_chain['blocked_title']} ({','.join(_chain['blocked_periods'])})")
+            print(f"    → {_chain['students_affected']} students affected")
+            if _chain['free_periods']:
+                print(f"    → Free periods (no blocker): {','.join(_chain['free_periods'])}")
+
+    # Teacher bottlenecks summary
+    if _a1_teacher_bottlenecks:
+        print(f"\n{'─' * 60}")
+        print(f"  TEACHER BOTTLENECKS ({len(_a1_teacher_bottlenecks)} detected)")
+        print(f"{'─' * 60}")
+        for _tn, _tb in sorted(_a1_teacher_bottlenecks.items(), key=lambda x: -x[1]['total_conflicts']):
+            print(f"  {_tn}: {_tb['sections']} sections, {len(_tb['free_periods'])} free periods "
+                  f"({','.join(_tb['free_periods']) if _tb['free_periods'] else 'NONE'}), "
+                  f"{_tb['total_conflicts']} conflicts")
+            if _tb['courses_affected']:
+                print(f"    Courses: {', '.join(_tb['courses_affected'])}")
+
+    # Period hotspots summary
+    if _a1_period_hotspots:
+        print(f"\n{'─' * 60}")
+        print(f"  PERIOD HOTSPOTS ({len(_a1_period_hotspots)} detected)")
+        print(f"{'─' * 60}")
+        for _per in sorted(_a1_period_hotspots.keys()):
+            _hp = _a1_period_hotspots[_per]
+            print(f"  Period {_per}: {_hp['total_conflicts_involving_period']} conflict involvements, "
+                  f"{len(_hp['conflict_courses'])} courses ({', '.join(_hp['conflict_courses'][:8])})")
+
+    # Cross-run learning status
+    print(f"\n{'─' * 60}")
+    print(f"  CROSS-RUN LEARNING STATUS")
+    print(f"{'─' * 60}")
+    if _diagnostic_loaded:
+        _prior_conflicts = _prior_diag.get('total_conflicts', '?')
+        _delta = len(conflict) - int(_prior_conflicts) if isinstance(_prior_conflicts, int) else '?'
+        print(f"  Prior run conflicts: {_prior_conflicts}")
+        print(f"  This run conflicts:  {len(conflict)}")
+        if isinstance(_delta, int):
+            _direction = "↓ IMPROVED" if _delta < 0 else ("↑ REGRESSED" if _delta > 0 else "→ NO CHANGE")
+            print(f"  Delta: {_delta:+d} ({_direction})")
+        print(f"  Bias adjustments applied: {len(_diagnostic_bias)}")
+    else:
+        print(f"  First run — no prior diagnostics. Next run will use these findings.")
+    print(f"  Diagnostics saved: {DIAGNOSTICS_FILE}")
+
+print("=" * 60)
 
 # ============================================================
 # 4b. UNLIMITED MODE REPORT
