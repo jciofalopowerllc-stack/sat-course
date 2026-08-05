@@ -4028,8 +4028,13 @@ def greedy_assign_periods(seed=42, audit=False):
             period_section_count = Counter()
             for other_sid in sec_by_code[code]:
                 if sections[other_sid]['period']:
-                    used_periods.add(sections[other_sid]['period'])
-                    period_section_count[sections[other_sid]['period']] += 1
+                    # For period-spreading: only count sections that OVERLAP
+                    # semesters with the current section.  S1 and S2 sections
+                    # of the same course CAN share a period — they don't
+                    # conflict because students take them in different semesters.
+                    if set(sections[other_sid]['halves']) & set(halves):
+                        used_periods.add(sections[other_sid]['period'])
+                        period_section_count[sections[other_sid]['period']] += 1
 
             total_course_sections = len(sec_by_code[code])
             is_singleton_course = is_singleton(code)
