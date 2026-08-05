@@ -205,6 +205,32 @@ All audit findings have been resolved.
 
 ---
 
+## Phase A Overhaul (2026-08-05)
+
+### Three-Tier Section Placement (Universal Rules — from JC Iofalo)
+
+`greedy_assign_periods()` restructured from a single-pass priority sort into three tiers:
+
+| Tier | What | Constraint | Sections |
+|------|------|-----------|----------|
+| 1 | Grade 12 Singletons | ZERO student conflicts (hard) | Courses eligible for Gr12 with exactly 1 section |
+| 2 | Grade 12 Doubletons | ZERO student conflicts (hard) | Courses eligible for Gr12 with exactly 2 sections |
+| 3 | All Other Sections | Weighted conflict scoring | Everything else |
+
+Within each tier, priority values (CS Total) determine placement order — highest first.
+
+### Bug Fixes Applied (same commit)
+
+1. **Conflict penalty weight** — was `* 0.5` (too weak), now `* 5.0` for singletons, `* 2.0` for other courses in Tier 3. Tiers 1 & 2 use `* 10000` (hard zero-conflict).
+2. **Period spreading** — was only for grad-req courses with 6+ sections. Now applies to ALL courses with 2+ sections. Proportional penalty `+25 * sections_in_period` replaces flat `+10`.
+3. **Co-schedule exclusion** — `_predict_conflict_score()` now skips courses in the same co-schedule group. Co-scheduled sections are essentially one section, not a conflict.
+
+### New function: `_section_tier(code)`
+
+Classifies each section into Tier 1, 2, or 3 based on Grade 12 eligibility (Template 7 "Grade Levels") and section count.
+
+---
+
 ## Test Protocol
 
 After each fix:

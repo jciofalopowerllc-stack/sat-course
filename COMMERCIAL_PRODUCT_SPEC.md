@@ -413,7 +413,20 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Result: 301→99 conflictes (-67%), 95.1%→98.4% placement, grades 9-10 conflictes eliminated (149→0)
 - [ ] 6 pathway courses not in Template 7: App Development, Chorus, Music Service, Music Service Project, Tech Theater Level I, The Story Lab
 
-### 6.5 Future
+### 6.5 Completed (v3.0 — Three-Tier Section Placement + Phase A Overhaul)
+
+- [x] Three-Tier Section Placement (Universal Rules — from JC Iofalo, non-negotiable):
+  - Tier 1: Grade 12 Singletons placed FIRST, by priority, ZERO student conflicts (hard constraint)
+  - Tier 2: Grade 12 Doubletons placed SECOND, by priority, ZERO student conflicts (hard constraint)
+  - Tier 3: All Other Sections placed LAST, by priority values with weighted conflict scoring
+- [x] `_section_tier(code)` function classifies sections by Gr12 eligibility + section count
+- [x] `greedy_assign_periods()` restructured: three-pass tier loop, each tier processes sections by priority
+- [x] Conflict penalty weight fix: was `* 0.5` (too weak), now `* 5.0` singletons / `* 2.0` others (Tier 3), `* 10000` (Tiers 1 & 2)
+- [x] Period spreading: applies to ALL courses with 2+ sections, proportional penalty `+25 * sections_in_period`
+- [x] Co-schedule exclusion: `_predict_conflict_score()` skips co-scheduled courses (one section, not a conflict)
+- [x] Audit log records tier for each placement
+
+### 6.6 Future
 
 - [ ] Admin interface for entering/adjusting all 10 priority inputs
 - [ ] Real-time constraint count and weighted sum display during data entry
