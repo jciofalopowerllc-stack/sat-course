@@ -4151,6 +4151,30 @@ def greedy_assign_periods(seed=42, audit=False):
                     prior_prefs = prior_course_periods.get(code, set())
                 if prior_prefs and p in prior_prefs:
                     score -= 0.5
+
+                # Proactive consecutive-6 trap avoidance:
+                # For teachers with 6th-period approval, penalize placements
+                # that would leave ONLY endpoint periods (A and/or G) free.
+                # This prevents "endpoint traps" where the teacher's last
+                # section can't be placed without 6 consecutive periods.
+                if teacher and teacher != 'TBD':
+                    _trap_s1, _trap_s2 = get_max_load(teacher)
+                    for _trap_sem in halves:
+                        _trap_cap = _trap_s1 if _trap_sem == 'S1' else _trap_s2
+                        if _trap_cap < 6:
+                            continue  # no 6th approval → no trap risk
+                        _trap_occ = set()
+                        for _trap_sid in teacher_sections.get(teacher, []):
+                            _ts = sections[_trap_sid]
+                            if _ts['period'] and _trap_sem in _ts['halves']:
+                                _trap_occ.add(_ts['period'])
+                        _trap_occ.add(p)
+                        _trap_free = set(PERIODS) - _trap_occ
+                        _trap_interior = _trap_free - {'A', 'G'}
+                        if len(_trap_occ) >= 5 and len(_trap_free) > 0 and len(_trap_interior) == 0:
+                            # All remaining free periods are endpoints — trap!
+                            score += 5000
+
                 score += rng.random() * 0.01
                 period_scores[p] = round(score, 4)
 
