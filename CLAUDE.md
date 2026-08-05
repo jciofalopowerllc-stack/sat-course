@@ -11,6 +11,7 @@
 6. Every file edit must be immediately followed by commit and push in the same response — no batching, no waiting
 7. Read and follow DATA_STRUCTURE.md before writing any engine code — the data structure defines the priority system, implement it exactly
 8. Identify and fix your own mistakes proactively — do not wait for JC to find them
+9. After every engine run (job1, full, gr12, scenario, unlimited), generate a **System Improvement Report** — analyze results for design flaws, feature gaps, data issues, conflict root causes, and optimization opportunities. Present findings with priority levels (CRITICAL / HIGH / MEDIUM / LOW) and decision types (ACTION NEEDED / FYI). Do NOT implement any recommendation without JC's explicit approval. The report is delivered in conversation, not as a file.
 
 ### Engine Architecture (from JC Iofalo — non-negotiable)
 - Use **schedule_engine_v3.py** (v3 engine) — NOT v4
