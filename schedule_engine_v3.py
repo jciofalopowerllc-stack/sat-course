@@ -2917,17 +2917,23 @@ if os.path.exists(DIAGNOSTICS_FILE):
             # Severity multiplier: CRITICAL=3, HIGH=2, MEDIUM=1.5, LOW=1
             _sev_mult = {'CRITICAL': 3.0, 'HIGH': 2.0, 'MEDIUM': 1.5, 'LOW': 1.0}.get(_severity, 1.0)
 
+            # Bias multipliers are intentionally gentle — nudges, not overrides.
+            # Too-strong biases cause cascading regressions by pushing sections
+            # away from global optima found by Phase D's 16-restart search.
+            # MAX_BIAS caps any single (course, period) adjustment.
+            MAX_BIAS = 15.0  # absolute cap per (course, period) pair
+
             # 1. Coverage penalty: penalize placing in already-covered periods
-            #    Penalty proportional to conflict count × severity
+            #    Gentle nudge proportional to conflict count × severity
             for _per in _covered:
-                _penalty = _conflicts * _sev_mult * 0.5  # 50% of weighted conflict count
+                _penalty = min(_conflicts * _sev_mult * 0.05, MAX_BIAS)
                 _diagnostic_bias[(_diag_code, _per)] = _penalty
                 _bias_count += 1
 
             # 2. Coverage reward: reward placing in uncovered periods
-            #    Reward proportional to conflict count × severity (negative = prefer)
+            #    Gentle nudge (negative = prefer this period)
             for _per in _uncovered:
-                _reward = -_conflicts * _sev_mult * 0.3  # 30% of weighted conflict count (reward)
+                _reward = max(-_conflicts * _sev_mult * 0.03, -MAX_BIAS)
                 _diagnostic_bias[(_diag_code, _per)] = _reward
                 _bias_count += 1
 
@@ -2938,7 +2944,8 @@ if os.path.exists(DIAGNOSTICS_FILE):
                 _est_reduction = _best_move.get('estimated_conflict_reduction', 0)
                 # Add extra reward on top of the uncovered reward
                 _existing = _diagnostic_bias.get((_diag_code, _to), 0)
-                _diagnostic_bias[(_diag_code, _to)] = _existing - _est_reduction * _sev_mult
+                _new_bias = max(_existing - _est_reduction * _sev_mult * 0.1, -MAX_BIAS)
+                _diagnostic_bias[(_diag_code, _to)] = _new_bias
                 _bias_count += 1
 
         # 4. Period hotspot cooling: penalize overloaded periods for ANY conflict-prone course
@@ -2947,9 +2954,10 @@ if os.path.exists(DIAGNOSTICS_FILE):
             _hp_conflicts = _hp_data.get('total_conflicts_involving_period', 0)
             _hp_courses = _hp_data.get('conflict_courses', [])
             for _hp_code in _hp_courses:
-                # Add a hotspot penalty (on top of any coverage penalty already set)
+                # Gentle hotspot penalty (on top of any coverage penalty already set)
                 _existing = _diagnostic_bias.get((_hp_code, _hp_period), 0)
-                _diagnostic_bias[(_hp_code, _hp_period)] = _existing + _hp_conflicts * 0.1
+                _new_val = min(_existing + _hp_conflicts * 0.01, MAX_BIAS)
+                _diagnostic_bias[(_hp_code, _hp_period)] = _new_val
                 _bias_count += 1
 
         # 5. Blocking chain awareness: push blocked courses toward free periods
@@ -2961,7 +2969,8 @@ if os.path.exists(DIAGNOSTICS_FILE):
             if _blocked_code and _free_periods:
                 for _fp in _free_periods:
                     _existing = _diagnostic_bias.get((_blocked_code, _fp), 0)
-                    _diagnostic_bias[(_blocked_code, _fp)] = _existing - _affected * 1.5
+                    _new_val = max(_existing - _affected * 0.15, -MAX_BIAS)
+                    _diagnostic_bias[(_blocked_code, _fp)] = _new_val
                     _bias_count += 1
 
         _diagnostic_loaded = True
@@ -3611,9 +3620,21 @@ def _predict_conflict_score(code, period, halves, co_enroll):
     # Cross-run diagnostic bias: adjust score based on prior run analysis
     # Positive bias = penalize (prior run showed conflicts in this period)
     # Negative bias = reward (prior run showed this period would reduce conflicts)
+    #
+    # Applied PROPORTIONALLY: bias is capped at ±10% of the base score when
+    # there IS a base conflict. This prevents biases from overriding the engine's
+    # natural conflict prediction while still guiding it when periods are close.
+    # When the base score is 0 (no co-enrolled conflicts), the full bias applies
+    # as a pure tiebreaker between otherwise-identical periods.
     if _diagnostic_bias:
         bias = _diagnostic_bias.get((code, period), 0)
-        conflict_score += bias
+        if bias != 0:
+            if conflict_score > 0:
+                max_nudge = conflict_score * 0.10  # cap at ±10% of base score
+                conflict_score += max(min(bias, max_nudge), -max_nudge)
+            else:
+                # No base conflict — apply bias directly as tiebreaker
+                conflict_score += bias
     return conflict_score
 
 # ── Phase A-0: Conflict Matrix Pre-Analysis ──
