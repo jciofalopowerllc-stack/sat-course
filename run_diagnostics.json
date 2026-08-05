@@ -1,0 +1,3457 @@
+{
+  "run_timestamp": "2026-08-05T15:57:57",
+  "engine_mode": "full",
+  "scenario_filter": "_GR12",
+  "total_conflicts": 228,
+  "placement_rate": 85.5,
+  "total_sections": 180,
+  "total_students": 165,
+  "prior_diagnostics_loaded": true,
+  "bias_adjustments_applied": 322,
+  "course_diagnostics": {
+    "448": {
+      "title": "Pre-college Math",
+      "department": "Mathematics",
+      "conflicts": 7,
+      "periods_covered": [
+        "A",
+        "B"
+      ],
+      "periods_uncovered": [
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 13,
+      "capacity": 56,
+      "spare_seats": 43,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "849",
+          "students_blocked": 7,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "851",
+          "students_blocked": 6,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "146",
+          "students_blocked": 5,
+          "title": "World Literature"
+        },
+        {
+          "code": "741",
+          "students_blocked": 2,
+          "title": "Psychology"
+        },
+        {
+          "code": "708",
+          "students_blocked": 1,
+          "title": "Introduction to Business"
+        }
+      ],
+      "teacher_free_periods": {
+        "Gettler, Mary": [
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "F",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "HIGH"
+    },
+    "141": {
+      "title": "College English Honors",
+      "department": "English",
+      "conflicts": 16,
+      "periods_covered": [
+        "A",
+        "B",
+        "F"
+      ],
+      "periods_uncovered": [
+        "C",
+        "D",
+        "E",
+        "G"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 53,
+      "capacity": 84,
+      "spare_seats": 31,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 15,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "849",
+          "students_blocked": 13,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "741",
+          "students_blocked": 7,
+          "title": "Psychology"
+        },
+        {
+          "code": "745",
+          "students_blocked": 7,
+          "title": "Leadership, Entrepreneurship and Opportunity Program II"
+        },
+        {
+          "code": "557",
+          "students_blocked": 6,
+          "title": "AP Physics 1"
+        }
+      ],
+      "teacher_free_periods": {
+        "Dwyer, Kevin": [
+          "C",
+          "D",
+          "E",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "E",
+        "teacher": "Dwyer, Kevin",
+        "estimated_conflict_reduction": 3
+      },
+      "recommendation": "REDISTRIBUTE",
+      "severity": "CRITICAL"
+    },
+    "543": {
+      "title": "Anatomy/Physiology H",
+      "department": "Science",
+      "conflicts": 16,
+      "periods_covered": [
+        "E",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 15,
+      "capacity": 56,
+      "spare_seats": 41,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "743",
+          "students_blocked": 8,
+          "title": "AP European History"
+        },
+        {
+          "code": "453",
+          "students_blocked": 5,
+          "title": "AP Calc AB"
+        },
+        {
+          "code": "351",
+          "students_blocked": 5,
+          "title": "AP Spanish"
+        },
+        {
+          "code": "144",
+          "students_blocked": 5,
+          "title": "Public Speaking"
+        },
+        {
+          "code": "763",
+          "students_blocked": 4,
+          "title": "AP U.S. Government & Politics"
+        }
+      ],
+      "teacher_free_periods": {
+        "Guy, Libbie": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {
+        "from_period": "G",
+        "to_period": "C",
+        "teacher": "Guy, Libbie",
+        "estimated_conflict_reduction": 3
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "CRITICAL"
+    },
+    "752": {
+      "title": "Economics H",
+      "department": "Business",
+      "conflicts": 22,
+      "periods_covered": [
+        "D",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 9,
+      "capacity": 56,
+      "spare_seats": 47,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 12,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "758",
+          "students_blocked": 11,
+          "title": "Bloomberg Market Concepts"
+        },
+        {
+          "code": "745",
+          "students_blocked": 9,
+          "title": "Leadership, Entrepreneurship and Opportunity Program II"
+        },
+        {
+          "code": "440",
+          "students_blocked": 8,
+          "title": "Precalculus"
+        },
+        {
+          "code": "849",
+          "students_blocked": 7,
+          "title": "Catholic Social Teaching"
+        }
+      ],
+      "teacher_free_periods": {
+        "Zawacki, Richard": [
+          "B"
+        ]
+      },
+      "best_move": {
+        "from_period": "G",
+        "to_period": "C",
+        "teacher": null,
+        "estimated_conflict_reduction": 2
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "CRITICAL"
+    },
+    "642": {
+      "title": "Nutrition & Fitness/PE",
+      "department": "Physical Education",
+      "conflicts": 13,
+      "periods_covered": [
+        "B",
+        "C",
+        "D",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.57,
+      "enrollment": 57,
+      "capacity": 168,
+      "spare_seats": 111,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "544",
+          "students_blocked": 14,
+          "title": "Sports Medicine"
+        },
+        {
+          "code": "542",
+          "students_blocked": 14,
+          "title": "Anatomy/Physiology"
+        },
+        {
+          "code": "140",
+          "students_blocked": 13,
+          "title": "World Literature"
+        },
+        {
+          "code": "440",
+          "students_blocked": 11,
+          "title": "Precalculus"
+        },
+        {
+          "code": "849",
+          "students_blocked": 6,
+          "title": "Catholic Social Teaching"
+        }
+      ],
+      "teacher_free_periods": {
+        "Chiaravalloti, Michael": [
+          "A",
+          "E",
+          "F"
+        ]
+      },
+      "best_move": {
+        "from_period": "G",
+        "to_period": "E",
+        "teacher": "Chiaravalloti, Michael",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "REDISTRIBUTE",
+      "severity": "HIGH"
+    },
+    "450": {
+      "title": "Calculus H",
+      "department": "Mathematics",
+      "conflicts": 8,
+      "periods_covered": [
+        "C",
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 13,
+      "capacity": 56,
+      "spare_seats": 43,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "765",
+          "students_blocked": 4,
+          "title": "AP Macroeconomics"
+        },
+        {
+          "code": "543",
+          "students_blocked": 3,
+          "title": "Anatomy/Physiology H"
+        },
+        {
+          "code": "351",
+          "students_blocked": 3,
+          "title": "AP Spanish"
+        },
+        {
+          "code": "144",
+          "students_blocked": 3,
+          "title": "Public Speaking"
+        },
+        {
+          "code": "741",
+          "students_blocked": 2,
+          "title": "Psychology"
+        }
+      ],
+      "teacher_free_periods": {
+        "Gerlach, Reese": [
+          "B",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "E",
+        "to_period": "B",
+        "teacher": "Gerlach, Reese",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "HIGH"
+    },
+    "744": {
+      "title": "Sociology",
+      "department": "Social Studies",
+      "conflicts": 2,
+      "periods_covered": [
+        "C",
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 27,
+      "capacity": 56,
+      "spare_seats": 29,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "491",
+          "students_blocked": 3,
+          "title": "AP Computer Science Principles"
+        },
+        {
+          "code": "352",
+          "students_blocked": 2,
+          "title": "AP Italian"
+        },
+        {
+          "code": "144",
+          "students_blocked": 1,
+          "title": "Public Speaking"
+        }
+      ],
+      "teacher_free_periods": {
+        "Quast, Richard": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    },
+    "591": {
+      "title": "Robotics Project II",
+      "department": "Engineering",
+      "conflicts": 3,
+      "periods_covered": [
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 0,
+      "capacity": 56,
+      "spare_seats": 56,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "590",
+          "students_blocked": 6,
+          "title": "Robotics Project"
+        },
+        {
+          "code": "496",
+          "students_blocked": 3,
+          "title": "AP Cybersecurity"
+        }
+      ],
+      "teacher_free_periods": {
+        "McConnell, George": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "ADD_SECTION_OR_MOVE",
+      "severity": "LOW"
+    },
+    "546": {
+      "title": "Forensics",
+      "department": "Science",
+      "conflicts": 23,
+      "periods_covered": [
+        "A",
+        "E"
+      ],
+      "periods_uncovered": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 15,
+      "capacity": 56,
+      "spare_seats": 41,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 13,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "849",
+          "students_blocked": 13,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "756",
+          "students_blocked": 12,
+          "title": "Introduction to Law"
+        },
+        {
+          "code": "763",
+          "students_blocked": 5,
+          "title": "AP U.S. Government & Politics"
+        },
+        {
+          "code": "351",
+          "students_blocked": 5,
+          "title": "AP Spanish"
+        }
+      ],
+      "teacher_free_periods": {
+        "Connelly, Tiffany": [
+          "B",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "C",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "CRITICAL"
+    },
+    "585": {
+      "title": "Robotics Design",
+      "department": "Engineering",
+      "conflicts": 2,
+      "periods_covered": [
+        "C"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 1,
+      "capacity": 56,
+      "spare_seats": 55,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "352",
+          "students_blocked": 3,
+          "title": "AP Italian"
+        },
+        {
+          "code": "440",
+          "students_blocked": 3,
+          "title": "Precalculus"
+        }
+      ],
+      "teacher_free_periods": {
+        "McConnell, George": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "ADD_SECTION_OR_MOVE",
+      "severity": "LOW"
+    },
+    "206": {
+      "title": "Band",
+      "department": "Humanities",
+      "conflicts": 5,
+      "periods_covered": [
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 1,
+      "capacity": 28,
+      "spare_seats": 27,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "351",
+          "students_blocked": 4,
+          "title": "AP Spanish"
+        },
+        {
+          "code": "496",
+          "students_blocked": 2,
+          "title": "AP Cybersecurity"
+        },
+        {
+          "code": "443",
+          "students_blocked": 2,
+          "title": "AP Precalculus"
+        },
+        {
+          "code": "743",
+          "students_blocked": 2,
+          "title": "AP European History"
+        }
+      ],
+      "teacher_free_periods": {
+        "Lopez, Enrique": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {
+        "from_period": "G",
+        "to_period": "B",
+        "teacher": "Lopez, Enrique",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "MEDIUM"
+    },
+    "590": {
+      "title": "Robotics Project",
+      "department": "Engineering",
+      "conflicts": 7,
+      "periods_covered": [
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 11,
+      "capacity": 56,
+      "spare_seats": 45,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "751",
+          "students_blocked": 6,
+          "title": "American Government & Politics"
+        },
+        {
+          "code": "496",
+          "students_blocked": 6,
+          "title": "AP Cybersecurity"
+        },
+        {
+          "code": "143",
+          "students_blocked": 6,
+          "title": "Creative Writing"
+        },
+        {
+          "code": "743",
+          "students_blocked": 3,
+          "title": "AP European History"
+        }
+      ],
+      "teacher_free_periods": {
+        "McConnell, George": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "ADD_SECTION_OR_MOVE",
+      "severity": "MEDIUM"
+    },
+    "766": {
+      "title": "AP Microeconomics",
+      "department": "Social Studies",
+      "conflicts": 2,
+      "periods_covered": [
+        "C",
+        "D"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "E",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 35,
+      "capacity": 56,
+      "spare_seats": 21,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "761",
+          "students_blocked": 4,
+          "title": "AP Psychology"
+        },
+        {
+          "code": "455",
+          "students_blocked": 2,
+          "title": "AP Calc BC"
+        }
+      ],
+      "teacher_free_periods": {
+        "Konopelski, Louis": [
+          "A",
+          "B",
+          "E",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    },
+    "765": {
+      "title": "AP Macroeconomics",
+      "department": "Social Studies",
+      "conflicts": 2,
+      "periods_covered": [
+        "C",
+        "D"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "E",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 35,
+      "capacity": 56,
+      "spare_seats": 21,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "761",
+          "students_blocked": 4,
+          "title": "AP Psychology"
+        },
+        {
+          "code": "455",
+          "students_blocked": 2,
+          "title": "AP Calc BC"
+        }
+      ],
+      "teacher_free_periods": {
+        "Konopelski, Louis": [
+          "A",
+          "B",
+          "E",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    },
+    "742": {
+      "title": "Economics",
+      "department": "Business",
+      "conflicts": 15,
+      "periods_covered": [
+        "C",
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 13,
+      "capacity": 56,
+      "spare_seats": 43,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "744",
+          "students_blocked": 9,
+          "title": "Sociology"
+        },
+        {
+          "code": "144",
+          "students_blocked": 7,
+          "title": "Public Speaking"
+        },
+        {
+          "code": "756",
+          "students_blocked": 6,
+          "title": "Introduction to Law"
+        },
+        {
+          "code": "546",
+          "students_blocked": 4,
+          "title": "Forensics"
+        },
+        {
+          "code": "741",
+          "students_blocked": 4,
+          "title": "Psychology"
+        }
+      ],
+      "teacher_free_periods": {
+        "Zawacki, Richard": [
+          "B"
+        ]
+      },
+      "best_move": {
+        "from_period": "C",
+        "to_period": "D",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "CRITICAL"
+    },
+    "851": {
+      "title": "Spirituality of Vocation",
+      "department": "Theology",
+      "conflicts": 2,
+      "periods_covered": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "periods_uncovered": [
+        "C",
+        "E",
+        "G"
+      ],
+      "coverage_ratio": 0.57,
+      "enrollment": 163,
+      "capacity": 224,
+      "spare_seats": 61,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "149",
+          "students_blocked": 5,
+          "title": "AP English Literature"
+        },
+        {
+          "code": "359",
+          "students_blocked": 4,
+          "title": "AP Latin"
+        },
+        {
+          "code": "745",
+          "students_blocked": 3,
+          "title": "Leadership, Entrepreneurship and Opportunity Program II"
+        },
+        {
+          "code": "557",
+          "students_blocked": 2,
+          "title": "AP Physics 1"
+        },
+        {
+          "code": "849",
+          "students_blocked": 2,
+          "title": "Catholic Social Teaching"
+        }
+      ],
+      "teacher_free_periods": {
+        "Laracy, John": [
+          "C",
+          "E",
+          "G"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    },
+    "440": {
+      "title": "Precalculus",
+      "department": "Mathematics",
+      "conflicts": 14,
+      "periods_covered": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "E"
+      ],
+      "coverage_ratio": 0.71,
+      "enrollment": 58,
+      "capacity": 140,
+      "spare_seats": 82,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 17,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "849",
+          "students_blocked": 14,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "140",
+          "students_blocked": 11,
+          "title": "World Literature"
+        },
+        {
+          "code": "751",
+          "students_blocked": 8,
+          "title": "American Government & Politics"
+        },
+        {
+          "code": "144",
+          "students_blocked": 4,
+          "title": "Public Speaking"
+        }
+      ],
+      "teacher_free_periods": {
+        "DeLeon, Marco": [
+          "A",
+          "E",
+          "F",
+          "G"
+        ],
+        "Gettler, Mary": [
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "best_move": {
+        "from_period": "B",
+        "to_period": "A",
+        "teacher": "DeLeon, Marco",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "REDISTRIBUTE",
+      "severity": "CRITICAL"
+    },
+    "143": {
+      "title": "Creative Writing",
+      "department": "English",
+      "conflicts": 2,
+      "periods_covered": [
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 11,
+      "capacity": 28,
+      "spare_seats": 17,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "751",
+          "students_blocked": 4,
+          "title": "American Government & Politics"
+        }
+      ],
+      "teacher_free_periods": {
+        "Umbrino, Philip": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "ADD_SECTION_OR_MOVE",
+      "severity": "LOW"
+    },
+    "757": {
+      "title": "International Business Strategies",
+      "department": "Business",
+      "conflicts": 7,
+      "periods_covered": [
+        "A",
+        "B",
+        "E"
+      ],
+      "periods_uncovered": [
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 4,
+      "capacity": 84,
+      "spare_seats": 80,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 10,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "849",
+          "students_blocked": 6,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "453",
+          "students_blocked": 2,
+          "title": "AP Calc AB"
+        },
+        {
+          "code": "742",
+          "students_blocked": 2,
+          "title": "Economics"
+        },
+        {
+          "code": "763",
+          "students_blocked": 1,
+          "title": "AP U.S. Government & Politics"
+        }
+      ],
+      "teacher_free_periods": {
+        "Corcoran, Kevin": []
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "C",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "REDISTRIBUTE",
+      "severity": "HIGH"
+    },
+    "241": {
+      "title": "Studio Art I",
+      "department": "Humanities",
+      "conflicts": 5,
+      "periods_covered": [
+        "C",
+        "F"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 3,
+      "capacity": 56,
+      "spare_seats": 53,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 7,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "765",
+          "students_blocked": 2,
+          "title": "AP Macroeconomics"
+        },
+        {
+          "code": "542",
+          "students_blocked": 2,
+          "title": "Anatomy/Physiology"
+        },
+        {
+          "code": "544",
+          "students_blocked": 2,
+          "title": "Sports Medicine"
+        },
+        {
+          "code": "450",
+          "students_blocked": 2,
+          "title": "Calculus H"
+        }
+      ],
+      "teacher_free_periods": {
+        "Dennehy, Sheri": [
+          "B"
+        ]
+      },
+      "best_move": {
+        "from_period": "C",
+        "to_period": "A",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "MEDIUM"
+    },
+    "758": {
+      "title": "Bloomberg Market Concepts",
+      "department": "Business",
+      "conflicts": 10,
+      "periods_covered": [
+        "D",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 24,
+      "capacity": 56,
+      "spare_seats": 32,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "149",
+          "students_blocked": 10,
+          "title": "AP English Literature"
+        },
+        {
+          "code": "765",
+          "students_blocked": 6,
+          "title": "AP Macroeconomics"
+        },
+        {
+          "code": "456",
+          "students_blocked": 5,
+          "title": "AP Statistics"
+        },
+        {
+          "code": "351",
+          "students_blocked": 3,
+          "title": "AP Spanish"
+        },
+        {
+          "code": "743",
+          "students_blocked": 3,
+          "title": "AP European History"
+        }
+      ],
+      "teacher_free_periods": {
+        "Corcoran, Kevin": []
+      },
+      "best_move": {
+        "from_period": "D",
+        "to_period": "A",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "CRITICAL"
+    },
+    "955": {
+      "title": "Academic Support",
+      "department": "Special Education",
+      "conflicts": 3,
+      "periods_covered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "periods_uncovered": [],
+      "coverage_ratio": 1.0,
+      "enrollment": 5,
+      "capacity": 196,
+      "spare_seats": 191,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 5,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "751",
+          "students_blocked": 3,
+          "title": "American Government & Politics"
+        },
+        {
+          "code": "849",
+          "students_blocked": 3,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "242",
+          "students_blocked": 2,
+          "title": "Studio Art II"
+        },
+        {
+          "code": "448",
+          "students_blocked": 2,
+          "title": "Pre-college Math"
+        }
+      ],
+      "teacher_free_periods": {
+        "Mazella, Julie": [
+          "B",
+          "C",
+          "D",
+          "G"
+        ],
+        "Judge, Michelle": [
+          "A",
+          "E",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    },
+    "351": {
+      "title": "AP Spanish",
+      "department": "World Language",
+      "conflicts": 3,
+      "periods_covered": [
+        "E",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 24,
+      "capacity": 56,
+      "spare_seats": 32,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "745",
+          "students_blocked": 2,
+          "title": "Leadership, Entrepreneurship and Opportunity Program II"
+        },
+        {
+          "code": "456",
+          "students_blocked": 2,
+          "title": "AP Statistics"
+        },
+        {
+          "code": "743",
+          "students_blocked": 2,
+          "title": "AP European History"
+        },
+        {
+          "code": "443",
+          "students_blocked": 1,
+          "title": "AP Precalculus"
+        },
+        {
+          "code": "558",
+          "students_blocked": 1,
+          "title": "AP Physics C"
+        }
+      ],
+      "teacher_free_periods": {
+        "Angotti, Sylvia": [
+          "A",
+          "B",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {
+        "from_period": "G",
+        "to_period": "B",
+        "teacher": "Angotti, Sylvia",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "557": {
+      "title": "AP Physics 1",
+      "department": "Science",
+      "conflicts": 1,
+      "periods_covered": [
+        "A",
+        "F"
+      ],
+      "periods_uncovered": [
+        "B",
+        "C",
+        "D",
+        "E",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 13,
+      "capacity": 56,
+      "spare_seats": 43,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "745",
+          "students_blocked": 2,
+          "title": "Leadership, Entrepreneurship and Opportunity Program II"
+        },
+        {
+          "code": "149",
+          "students_blocked": 1,
+          "title": "AP English Literature"
+        }
+      ],
+      "teacher_free_periods": {
+        "Tranate, John": [
+          "B",
+          "D"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "C",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "473": {
+      "title": "Introduction to Programming",
+      "department": "Computer Science",
+      "conflicts": 1,
+      "periods_covered": [
+        "F"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 3,
+      "capacity": 56,
+      "spare_seats": 53,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "149",
+          "students_blocked": 3,
+          "title": "AP English Literature"
+        }
+      ],
+      "teacher_free_periods": {
+        "Calidas, Riddhi": [
+          "B",
+          "D"
+        ]
+      },
+      "best_move": {
+        "from_period": "F",
+        "to_period": "C",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "2054": {
+      "title": "Digital Media",
+      "department": "Communication Arts",
+      "conflicts": 4,
+      "periods_covered": [
+        "C",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 9,
+      "capacity": 56,
+      "spare_seats": 47,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "440",
+          "students_blocked": 4,
+          "title": "Precalculus"
+        },
+        {
+          "code": "723",
+          "students_blocked": 2,
+          "title": "Introduction to Political Science"
+        },
+        {
+          "code": "544",
+          "students_blocked": 2,
+          "title": "Sports Medicine"
+        },
+        {
+          "code": "708",
+          "students_blocked": 2,
+          "title": "Introduction to Business"
+        },
+        {
+          "code": "743",
+          "students_blocked": 1,
+          "title": "AP European History"
+        }
+      ],
+      "teacher_free_periods": {
+        "Payne, Jamie": [
+          "A",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {
+        "from_period": "C",
+        "to_period": "D",
+        "teacher": "Payne, Jamie",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "472": {
+      "title": "Web Design",
+      "department": "Computer Science",
+      "conflicts": 2,
+      "periods_covered": [
+        "A"
+      ],
+      "periods_uncovered": [
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 4,
+      "capacity": 56,
+      "spare_seats": 52,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "141",
+          "students_blocked": 3,
+          "title": "College English Honors"
+        },
+        {
+          "code": "146",
+          "students_blocked": 3,
+          "title": "World Literature"
+        }
+      ],
+      "teacher_free_periods": {
+        "Calidas, Riddhi": [
+          "B",
+          "D"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "F",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "2044": {
+      "title": "TV/Film Production II",
+      "department": "Communication Arts",
+      "conflicts": 3,
+      "periods_covered": [
+        "C",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 5,
+      "capacity": 56,
+      "spare_seats": 51,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "440",
+          "students_blocked": 2,
+          "title": "Precalculus"
+        },
+        {
+          "code": "351",
+          "students_blocked": 2,
+          "title": "AP Spanish"
+        },
+        {
+          "code": "544",
+          "students_blocked": 2,
+          "title": "Sports Medicine"
+        },
+        {
+          "code": "743",
+          "students_blocked": 1,
+          "title": "AP European History"
+        },
+        {
+          "code": "542",
+          "students_blocked": 1,
+          "title": "Anatomy/Physiology"
+        }
+      ],
+      "teacher_free_periods": {
+        "Payne, Jamie": [
+          "A",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {
+        "from_period": "C",
+        "to_period": "F",
+        "teacher": "Payne, Jamie",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "763": {
+      "title": "AP U.S. Government & Politics",
+      "department": "Social Studies",
+      "conflicts": 2,
+      "periods_covered": [
+        "A",
+        "E"
+      ],
+      "periods_uncovered": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.29,
+      "enrollment": 30,
+      "capacity": 56,
+      "spare_seats": 26,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "453",
+          "students_blocked": 2,
+          "title": "AP Calc AB"
+        },
+        {
+          "code": "745",
+          "students_blocked": 2,
+          "title": "Leadership, Entrepreneurship and Opportunity Program II"
+        },
+        {
+          "code": "557",
+          "students_blocked": 1,
+          "title": "AP Physics 1"
+        },
+        {
+          "code": "558",
+          "students_blocked": 1,
+          "title": "AP Physics C"
+        }
+      ],
+      "teacher_free_periods": {
+        "Martino, Brianna": [
+          "B",
+          "C",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "C",
+        "teacher": "Martino, Brianna",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "140": {
+      "title": "World Literature",
+      "department": "English",
+      "conflicts": 5,
+      "periods_covered": [
+        "B",
+        "D",
+        "F"
+      ],
+      "periods_uncovered": [
+        "A",
+        "C",
+        "E",
+        "G"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 38,
+      "capacity": 84,
+      "spare_seats": 46,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "851",
+          "students_blocked": 6,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "849",
+          "students_blocked": 5,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "741",
+          "students_blocked": 2,
+          "title": "Psychology"
+        },
+        {
+          "code": "494",
+          "students_blocked": 2,
+          "title": "Applied Programming"
+        },
+        {
+          "code": "448",
+          "students_blocked": 2,
+          "title": "Pre-college Math"
+        }
+      ],
+      "teacher_free_periods": {
+        "Nobilione, Lauren": [
+          "C",
+          "E",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "F",
+        "to_period": "E",
+        "teacher": "Nobilione, Lauren",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "REDISTRIBUTE",
+      "severity": "HIGH"
+    },
+    "496": {
+      "title": "AP Cybersecurity",
+      "department": "Computer Science",
+      "conflicts": 2,
+      "periods_covered": [
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 7,
+      "capacity": 28,
+      "spare_seats": 21,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "456",
+          "students_blocked": 2,
+          "title": "AP Statistics"
+        },
+        {
+          "code": "743",
+          "students_blocked": 2,
+          "title": "AP European History"
+        }
+      ],
+      "teacher_free_periods": {
+        "Calidas, Riddhi": [
+          "B",
+          "D"
+        ]
+      },
+      "best_move": {
+        "from_period": "G",
+        "to_period": "B",
+        "teacher": "Calidas, Riddhi",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "558": {
+      "title": "AP Physics C",
+      "department": "Science",
+      "conflicts": 3,
+      "periods_covered": [
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 16,
+      "capacity": 28,
+      "spare_seats": 12,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "453",
+          "students_blocked": 6,
+          "title": "AP Calc AB"
+        }
+      ],
+      "teacher_free_periods": {
+        "Tranate, John": [
+          "B",
+          "D"
+        ]
+      },
+      "best_move": {
+        "from_period": "E",
+        "to_period": "B",
+        "teacher": "Tranate, John",
+        "estimated_conflict_reduction": 2
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "732": {
+      "title": "Business Law",
+      "department": "Business",
+      "conflicts": 2,
+      "periods_covered": [
+        "A",
+        "F",
+        "G"
+      ],
+      "periods_uncovered": [
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 36,
+      "capacity": 84,
+      "spare_seats": 48,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "143",
+          "students_blocked": 2,
+          "title": "Creative Writing"
+        },
+        {
+          "code": "745",
+          "students_blocked": 2,
+          "title": "Leadership, Entrepreneurship and Opportunity Program II"
+        },
+        {
+          "code": "851",
+          "students_blocked": 1,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "146",
+          "students_blocked": 1,
+          "title": "World Literature"
+        },
+        {
+          "code": "149",
+          "students_blocked": 1,
+          "title": "AP English Literature"
+        }
+      ],
+      "teacher_free_periods": {
+        "Corcoran, Kevin": [],
+        "Zawacki, Richard": [
+          "B"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    },
+    "490": {
+      "title": "AP Computer Science A",
+      "department": "Computer Science",
+      "conflicts": 1,
+      "periods_covered": [
+        "C"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 0,
+      "capacity": 28,
+      "spare_seats": 28,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "765",
+          "students_blocked": 2,
+          "title": "AP Macroeconomics"
+        }
+      ],
+      "teacher_free_periods": {
+        "Calidas, Riddhi": [
+          "B",
+          "D"
+        ]
+      },
+      "best_move": {
+        "from_period": "C",
+        "to_period": "B",
+        "teacher": "Calidas, Riddhi",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "544": {
+      "title": "Sports Medicine",
+      "department": "Science",
+      "conflicts": 3,
+      "periods_covered": [
+        "C"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 22,
+      "capacity": 28,
+      "spare_seats": 6,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "723",
+          "students_blocked": 2,
+          "title": "Introduction to Political Science"
+        },
+        {
+          "code": "553",
+          "students_blocked": 2,
+          "title": "AP Chemistry"
+        },
+        {
+          "code": "542",
+          "students_blocked": 2,
+          "title": "Anatomy/Physiology"
+        }
+      ],
+      "teacher_free_periods": {
+        "Connelly, Tiffany": [
+          "B",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "C",
+        "to_period": "G",
+        "teacher": "Connelly, Tiffany",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "145": {
+      "title": "Journalism",
+      "department": "English",
+      "conflicts": 1,
+      "periods_covered": [
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 3,
+      "capacity": 28,
+      "spare_seats": 25,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "453",
+          "students_blocked": 2,
+          "title": "AP Calc AB"
+        }
+      ],
+      "teacher_free_periods": {
+        "Umbrino, Philip": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "F"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "ADD_SECTION_OR_MOVE",
+      "severity": "LOW"
+    },
+    "242": {
+      "title": "Studio Art II",
+      "department": "Humanities",
+      "conflicts": 1,
+      "periods_covered": [
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 9,
+      "capacity": 56,
+      "spare_seats": 47,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "351",
+          "students_blocked": 3,
+          "title": "AP Spanish"
+        }
+      ],
+      "teacher_free_periods": {
+        "Dennehy, Sheri": [
+          "B"
+        ]
+      },
+      "best_move": {
+        "from_period": "E",
+        "to_period": "A",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "243": {
+      "title": "Studio Art III",
+      "department": "Humanities",
+      "conflicts": 1,
+      "periods_covered": [
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 2,
+      "capacity": 56,
+      "spare_seats": 54,
+      "is_grad_req": false,
+      "top_blockers": [
+        {
+          "code": "351",
+          "students_blocked": 3,
+          "title": "AP Spanish"
+        }
+      ],
+      "teacher_free_periods": {
+        "Dennehy, Sheri": [
+          "B"
+        ]
+      },
+      "best_move": {
+        "from_period": "E",
+        "to_period": "A",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "741": {
+      "title": "Psychology",
+      "department": "Social Studies",
+      "conflicts": 1,
+      "periods_covered": [
+        "A",
+        "C",
+        "F"
+      ],
+      "periods_uncovered": [
+        "B",
+        "D",
+        "E",
+        "G"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 44,
+      "capacity": 84,
+      "spare_seats": 40,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "849",
+          "students_blocked": 2,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "851",
+          "students_blocked": 1,
+          "title": "Spirituality of Vocation"
+        },
+        {
+          "code": "765",
+          "students_blocked": 1,
+          "title": "AP Macroeconomics"
+        }
+      ],
+      "teacher_free_periods": {
+        "Saggio, Jack": [
+          "B",
+          "D",
+          "E"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    },
+    "756": {
+      "title": "Introduction to Law",
+      "department": "Social Studies",
+      "conflicts": 1,
+      "periods_covered": [
+        "E"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.14,
+      "enrollment": 12,
+      "capacity": 28,
+      "spare_seats": 16,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "453",
+          "students_blocked": 2,
+          "title": "AP Calc AB"
+        }
+      ],
+      "teacher_free_periods": {
+        "Winters, Jack": [
+          "B",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "E",
+        "to_period": "C",
+        "teacher": null,
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "730": {
+      "title": "U.S. History II",
+      "department": "Social Studies",
+      "conflicts": 1,
+      "periods_covered": [
+        "A",
+        "F",
+        "G"
+      ],
+      "periods_uncovered": [
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 2,
+      "capacity": 84,
+      "spare_seats": 82,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "849",
+          "students_blocked": 2,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "144",
+          "students_blocked": 1,
+          "title": "Public Speaking"
+        },
+        {
+          "code": "851",
+          "students_blocked": 1,
+          "title": "Spirituality of Vocation"
+        }
+      ],
+      "teacher_free_periods": {
+        "Harris, Megan": [
+          "B",
+          "C"
+        ],
+        "Winters, Jack": [
+          "B",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "D",
+        "teacher": "Winters, Jack",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "731": {
+      "title": "U.S. History II H",
+      "department": "Social Studies",
+      "conflicts": 3,
+      "periods_covered": [
+        "A",
+        "C",
+        "E"
+      ],
+      "periods_uncovered": [
+        "B",
+        "D",
+        "F",
+        "G"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 0,
+      "capacity": 84,
+      "spare_seats": 84,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "450",
+          "students_blocked": 4,
+          "title": "Calculus H"
+        },
+        {
+          "code": "849",
+          "students_blocked": 2,
+          "title": "Catholic Social Teaching"
+        },
+        {
+          "code": "141",
+          "students_blocked": 2,
+          "title": "College English Honors"
+        },
+        {
+          "code": "144",
+          "students_blocked": 2,
+          "title": "Public Speaking"
+        },
+        {
+          "code": "744",
+          "students_blocked": 1,
+          "title": "Sociology"
+        }
+      ],
+      "teacher_free_periods": {
+        "Harris, Megan": [
+          "B",
+          "C"
+        ],
+        "Winters, Jack": [
+          "B",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {
+        "from_period": "A",
+        "to_period": "F",
+        "teacher": "Winters, Jack",
+        "estimated_conflict_reduction": 1
+      },
+      "recommendation": "MOVE_SECTION",
+      "severity": "LOW"
+    },
+    "531": {
+      "title": "Physics H",
+      "department": "Science",
+      "conflicts": 1,
+      "periods_covered": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_uncovered": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "coverage_ratio": 0.43,
+      "enrollment": 2,
+      "capacity": 84,
+      "spare_seats": 82,
+      "is_grad_req": true,
+      "top_blockers": [
+        {
+          "code": "751",
+          "students_blocked": 2,
+          "title": "American Government & Politics"
+        },
+        {
+          "code": "543",
+          "students_blocked": 1,
+          "title": "Anatomy/Physiology H"
+        },
+        {
+          "code": "744",
+          "students_blocked": 1,
+          "title": "Sociology"
+        }
+      ],
+      "teacher_free_periods": {
+        "Tranate, John": [
+          "B",
+          "D"
+        ],
+        "McManus, Brianna": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "F",
+          "G"
+        ]
+      },
+      "best_move": {},
+      "recommendation": "REDISTRIBUTE",
+      "severity": "LOW"
+    }
+  },
+  "period_hotspots": {
+    "B": {
+      "conflict_courses": [
+        "140",
+        "141",
+        "440",
+        "448",
+        "642",
+        "757",
+        "851",
+        "955"
+      ],
+      "total_conflicts_involving_period": 79,
+      "recommendation": "REDISTRIBUTE"
+    },
+    "A": {
+      "conflict_courses": [
+        "141",
+        "448",
+        "472",
+        "546",
+        "557",
+        "730",
+        "731",
+        "732",
+        "741",
+        "757",
+        "763",
+        "851",
+        "955"
+      ],
+      "total_conflicts_involving_period": 109,
+      "recommendation": "REDISTRIBUTE"
+    },
+    "F": {
+      "conflict_courses": [
+        "140",
+        "141",
+        "241",
+        "440",
+        "473",
+        "557",
+        "730",
+        "732",
+        "741",
+        "851",
+        "955"
+      ],
+      "total_conflicts_involving_period": 68,
+      "recommendation": "REDISTRIBUTE"
+    },
+    "E": {
+      "conflict_courses": [
+        "145",
+        "242",
+        "243",
+        "351",
+        "450",
+        "531",
+        "543",
+        "546",
+        "558",
+        "731",
+        "742",
+        "744",
+        "756",
+        "757",
+        "763",
+        "955"
+      ],
+      "total_conflicts_involving_period": 131,
+      "recommendation": "REDISTRIBUTE"
+    },
+    "G": {
+      "conflict_courses": [
+        "143",
+        "2044",
+        "2054",
+        "206",
+        "351",
+        "440",
+        "496",
+        "531",
+        "543",
+        "590",
+        "591",
+        "642",
+        "730",
+        "732",
+        "752",
+        "758",
+        "955"
+      ],
+      "total_conflicts_involving_period": 175,
+      "recommendation": "REDISTRIBUTE"
+    },
+    "D": {
+      "conflict_courses": [
+        "140",
+        "440",
+        "642",
+        "752",
+        "758",
+        "765",
+        "766",
+        "851",
+        "955"
+      ],
+      "total_conflicts_involving_period": 124,
+      "recommendation": "REDISTRIBUTE"
+    },
+    "C": {
+      "conflict_courses": [
+        "2044",
+        "2054",
+        "241",
+        "440",
+        "450",
+        "490",
+        "531",
+        "544",
+        "585",
+        "642",
+        "731",
+        "741",
+        "742",
+        "744",
+        "765",
+        "766",
+        "955"
+      ],
+      "total_conflicts_involving_period": 137,
+      "recommendation": "REDISTRIBUTE"
+    }
+  },
+  "blocking_chains": [
+    {
+      "blocker_course": "851",
+      "blocker_title": "Spirituality of Vocation",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "141",
+      "blocked_title": "College English Honors",
+      "blocked_periods": [
+        "A",
+        "B",
+        "F"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 3,
+      "students_affected": 11,
+      "chain": [
+        "851 (A,B,D,F)",
+        "141 (A,B,F)"
+      ],
+      "description": "Spirituality of Vocation blocks 3/3 College English Honors periods"
+    },
+    {
+      "blocker_course": "140",
+      "blocker_title": "World Literature",
+      "blocker_periods": [
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "440",
+      "blocked_title": "Precalculus",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 3,
+      "students_affected": 11,
+      "chain": [
+        "140 (B,D,F)",
+        "440 (B,C,D,F,G)"
+      ],
+      "description": "World Literature blocks 3/5 Precalculus periods"
+    },
+    {
+      "blocker_course": "849",
+      "blocker_title": "Catholic Social Teaching",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "440",
+      "blocked_title": "Precalculus",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 3,
+      "students_affected": 11,
+      "chain": [
+        "849 (A,B,D,F)",
+        "440 (B,C,D,F,G)"
+      ],
+      "description": "Catholic Social Teaching blocks 3/5 Precalculus periods"
+    },
+    {
+      "blocker_course": "851",
+      "blocker_title": "Spirituality of Vocation",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "440",
+      "blocked_title": "Precalculus",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 3,
+      "students_affected": 11,
+      "chain": [
+        "851 (A,B,D,F)",
+        "440 (B,C,D,F,G)"
+      ],
+      "description": "Spirituality of Vocation blocks 3/5 Precalculus periods"
+    },
+    {
+      "blocker_course": "849",
+      "blocker_title": "Catholic Social Teaching",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "141",
+      "blocked_title": "College English Honors",
+      "blocked_periods": [
+        "A",
+        "B",
+        "F"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 3,
+      "students_affected": 10,
+      "chain": [
+        "849 (A,B,D,F)",
+        "141 (A,B,F)"
+      ],
+      "description": "Catholic Social Teaching blocks 3/3 College English Honors periods"
+    },
+    {
+      "blocker_course": "851",
+      "blocker_title": "Spirituality of Vocation",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "546",
+      "blocked_title": "Forensics",
+      "blocked_periods": [
+        "A",
+        "E"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 8,
+      "chain": [
+        "851 (A,B,D,F)",
+        "546 (A,E)"
+      ],
+      "description": "Spirituality of Vocation blocks 1/2 Forensics periods"
+    },
+    {
+      "blocker_course": "849",
+      "blocker_title": "Catholic Social Teaching",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "546",
+      "blocked_title": "Forensics",
+      "blocked_periods": [
+        "A",
+        "E"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 8,
+      "chain": [
+        "849 (A,B,D,F)",
+        "546 (A,E)"
+      ],
+      "description": "Catholic Social Teaching blocks 1/2 Forensics periods"
+    },
+    {
+      "blocker_course": "851",
+      "blocker_title": "Spirituality of Vocation",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "752",
+      "blocked_title": "Economics H",
+      "blocked_periods": [
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 7,
+      "chain": [
+        "851 (A,B,D,F)",
+        "752 (D,G)"
+      ],
+      "description": "Spirituality of Vocation blocks 1/2 Economics H periods"
+    },
+    {
+      "blocker_course": "440",
+      "blocker_title": "Precalculus",
+      "blocker_periods": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "blocked_course": "752",
+      "blocked_title": "Economics H",
+      "blocked_periods": [
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "E"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 7,
+      "chain": [
+        "440 (B,C,D,F,G)",
+        "752 (D,G)"
+      ],
+      "description": "Precalculus blocks 2/2 Economics H periods"
+    },
+    {
+      "blocker_course": "440",
+      "blocker_title": "Precalculus",
+      "blocker_periods": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "blocked_course": "642",
+      "blocked_title": "Nutrition & Fitness/PE",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "E"
+      ],
+      "periods_overlapping": 4,
+      "students_affected": 7,
+      "chain": [
+        "440 (B,C,D,F,G)",
+        "642 (B,C,D,G)"
+      ],
+      "description": "Precalculus blocks 4/4 Nutrition & Fitness/PE periods"
+    },
+    {
+      "blocker_course": "756",
+      "blocker_title": "Introduction to Law",
+      "blocker_periods": [
+        "E"
+      ],
+      "blocked_course": "546",
+      "blocked_title": "Forensics",
+      "blocked_periods": [
+        "A",
+        "E"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 7,
+      "chain": [
+        "756 (E)",
+        "546 (A,E)"
+      ],
+      "description": "Introduction to Law blocks 1/2 Forensics periods"
+    },
+    {
+      "blocker_course": "758",
+      "blocker_title": "Bloomberg Market Concepts",
+      "blocker_periods": [
+        "D",
+        "G"
+      ],
+      "blocked_course": "752",
+      "blocked_title": "Economics H",
+      "blocked_periods": [
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "C",
+        "E",
+        "F"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 7,
+      "chain": [
+        "758 (D,G)",
+        "752 (D,G)"
+      ],
+      "description": "Bloomberg Market Concepts blocks 2/2 Economics H periods"
+    },
+    {
+      "blocker_course": "140",
+      "blocker_title": "World Literature",
+      "blocker_periods": [
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "642",
+      "blocked_title": "Nutrition & Fitness/PE",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 7,
+      "chain": [
+        "140 (B,D,F)",
+        "642 (B,C,D,G)"
+      ],
+      "description": "World Literature blocks 2/4 Nutrition & Fitness/PE periods"
+    },
+    {
+      "blocker_course": "851",
+      "blocker_title": "Spirituality of Vocation",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "757",
+      "blocked_title": "International Business Strategies",
+      "blocked_periods": [
+        "A",
+        "B",
+        "E"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 6,
+      "chain": [
+        "851 (A,B,D,F)",
+        "757 (A,B,E)"
+      ],
+      "description": "Spirituality of Vocation blocks 2/3 International Business Strategies periods"
+    },
+    {
+      "blocker_course": "359",
+      "blocker_title": "AP Latin",
+      "blocker_periods": [
+        "B"
+      ],
+      "blocked_course": "141",
+      "blocked_title": "College English Honors",
+      "blocked_periods": [
+        "A",
+        "B",
+        "F"
+      ],
+      "free_periods": [
+        "A",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 6,
+      "chain": [
+        "359 (B)",
+        "141 (A,B,F)"
+      ],
+      "description": "AP Latin blocks 1/3 College English Honors periods"
+    },
+    {
+      "blocker_course": "149",
+      "blocker_title": "AP English Literature",
+      "blocker_periods": [
+        "D",
+        "F"
+      ],
+      "blocked_course": "758",
+      "blocked_title": "Bloomberg Market Concepts",
+      "blocked_periods": [
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 6,
+      "chain": [
+        "149 (D,F)",
+        "758 (D,G)"
+      ],
+      "description": "AP English Literature blocks 1/2 Bloomberg Market Concepts periods"
+    },
+    {
+      "blocker_course": "743",
+      "blocker_title": "AP European History",
+      "blocker_periods": [
+        "G"
+      ],
+      "blocked_course": "543",
+      "blocked_title": "Anatomy/Physiology H",
+      "blocked_periods": [
+        "E",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 6,
+      "chain": [
+        "743 (G)",
+        "543 (E,G)"
+      ],
+      "description": "AP European History blocks 1/2 Anatomy/Physiology H periods"
+    },
+    {
+      "blocker_course": "351",
+      "blocker_title": "AP Spanish",
+      "blocker_periods": [
+        "E",
+        "G"
+      ],
+      "blocked_course": "543",
+      "blocked_title": "Anatomy/Physiology H",
+      "blocked_periods": [
+        "E",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "F"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 5,
+      "chain": [
+        "351 (E,G)",
+        "543 (E,G)"
+      ],
+      "description": "AP Spanish blocks 2/2 Anatomy/Physiology H periods"
+    },
+    {
+      "blocker_course": "544",
+      "blocker_title": "Sports Medicine",
+      "blocker_periods": [
+        "C"
+      ],
+      "blocked_course": "642",
+      "blocked_title": "Nutrition & Fitness/PE",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 5,
+      "chain": [
+        "544 (C)",
+        "642 (B,C,D,G)"
+      ],
+      "description": "Sports Medicine blocks 1/4 Nutrition & Fitness/PE periods"
+    },
+    {
+      "blocker_course": "557",
+      "blocker_title": "AP Physics 1",
+      "blocker_periods": [
+        "A",
+        "F"
+      ],
+      "blocked_course": "141",
+      "blocked_title": "College English Honors",
+      "blocked_periods": [
+        "A",
+        "B",
+        "F"
+      ],
+      "free_periods": [
+        "B",
+        "C",
+        "D",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 5,
+      "chain": [
+        "557 (A,F)",
+        "141 (A,B,F)"
+      ],
+      "description": "AP Physics 1 blocks 2/3 College English Honors periods"
+    },
+    {
+      "blocker_course": "751",
+      "blocker_title": "American Government & Politics",
+      "blocker_periods": [
+        "G"
+      ],
+      "blocked_course": "440",
+      "blocked_title": "Precalculus",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 5,
+      "chain": [
+        "751 (G)",
+        "440 (B,C,D,F,G)"
+      ],
+      "description": "American Government & Politics blocks 1/5 Precalculus periods"
+    },
+    {
+      "blocker_course": "849",
+      "blocker_title": "Catholic Social Teaching",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "642",
+      "blocked_title": "Nutrition & Fitness/PE",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 5,
+      "chain": [
+        "849 (A,B,D,F)",
+        "642 (B,C,D,G)"
+      ],
+      "description": "Catholic Social Teaching blocks 2/4 Nutrition & Fitness/PE periods"
+    },
+    {
+      "blocker_course": "851",
+      "blocker_title": "Spirituality of Vocation",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "241",
+      "blocked_title": "Studio Art I",
+      "blocked_periods": [
+        "C",
+        "F"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 5,
+      "chain": [
+        "851 (A,B,D,F)",
+        "241 (C,F)"
+      ],
+      "description": "Spirituality of Vocation blocks 1/2 Studio Art I periods"
+    },
+    {
+      "blocker_course": "745",
+      "blocker_title": "Leadership, Entrepreneurship and Opportunity Program II",
+      "blocker_periods": [
+        "A",
+        "G"
+      ],
+      "blocked_course": "752",
+      "blocked_title": "Economics H",
+      "blocked_periods": [
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 5,
+      "chain": [
+        "745 (A,G)",
+        "752 (D,G)"
+      ],
+      "description": "Leadership, Entrepreneurship and Opportunity Program II blocks 1/2 Economics H periods"
+    },
+    {
+      "blocker_course": "456",
+      "blocker_title": "AP Statistics",
+      "blocker_periods": [
+        "G"
+      ],
+      "blocked_course": "758",
+      "blocked_title": "Bloomberg Market Concepts",
+      "blocked_periods": [
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 5,
+      "chain": [
+        "456 (G)",
+        "758 (D,G)"
+      ],
+      "description": "AP Statistics blocks 1/2 Bloomberg Market Concepts periods"
+    },
+    {
+      "blocker_course": "744",
+      "blocker_title": "Sociology",
+      "blocker_periods": [
+        "C",
+        "E"
+      ],
+      "blocked_course": "742",
+      "blocked_title": "Economics",
+      "blocked_periods": [
+        "C",
+        "E"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "D",
+        "F",
+        "G"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 5,
+      "chain": [
+        "744 (C,E)",
+        "742 (C,E)"
+      ],
+      "description": "Sociology blocks 2/2 Economics periods"
+    },
+    {
+      "blocker_course": "849",
+      "blocker_title": "Catholic Social Teaching",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "448",
+      "blocked_title": "Pre-college Math",
+      "blocked_periods": [
+        "A",
+        "B"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 2,
+      "students_affected": 5,
+      "chain": [
+        "849 (A,B,D,F)",
+        "448 (A,B)"
+      ],
+      "description": "Catholic Social Teaching blocks 2/2 Pre-college Math periods"
+    },
+    {
+      "blocker_course": "851",
+      "blocker_title": "Spirituality of Vocation",
+      "blocker_periods": [
+        "A",
+        "B",
+        "D",
+        "F"
+      ],
+      "blocked_course": "140",
+      "blocked_title": "World Literature",
+      "blocked_periods": [
+        "B",
+        "D",
+        "F"
+      ],
+      "free_periods": [
+        "C",
+        "E",
+        "G"
+      ],
+      "periods_overlapping": 3,
+      "students_affected": 5,
+      "chain": [
+        "851 (A,B,D,F)",
+        "140 (B,D,F)"
+      ],
+      "description": "Spirituality of Vocation blocks 3/3 World Literature periods"
+    },
+    {
+      "blocker_course": "542",
+      "blocker_title": "Anatomy/Physiology",
+      "blocker_periods": [
+        "C"
+      ],
+      "blocked_course": "642",
+      "blocked_title": "Nutrition & Fitness/PE",
+      "blocked_periods": [
+        "B",
+        "C",
+        "D",
+        "G"
+      ],
+      "free_periods": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "periods_overlapping": 1,
+      "students_affected": 5,
+      "chain": [
+        "542 (C)",
+        "642 (B,C,D,G)"
+      ],
+      "description": "Anatomy/Physiology blocks 1/4 Nutrition & Fitness/PE periods"
+    }
+  ],
+  "teacher_bottlenecks": {
+    "Dennehy, Sheri": {
+      "teacher_id": "Dennehy, Sheri",
+      "sections": 12,
+      "periods_used": [
+        "A",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "B"
+      ],
+      "courses_affected": [
+        "241",
+        "242",
+        "243"
+      ],
+      "total_conflicts": 7
+    },
+    "Calidas, Riddhi": {
+      "teacher_id": "Calidas, Riddhi",
+      "sections": 8,
+      "periods_used": [
+        "A",
+        "C",
+        "E",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "B",
+        "D"
+      ],
+      "courses_affected": [
+        "472",
+        "473",
+        "490",
+        "496"
+      ],
+      "total_conflicts": 6
+    },
+    "Tranate, John": {
+      "teacher_id": "Tranate, John",
+      "sections": 5,
+      "periods_used": [
+        "A",
+        "C",
+        "E",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "B",
+        "D"
+      ],
+      "courses_affected": [
+        "531",
+        "557",
+        "558"
+      ],
+      "total_conflicts": 5
+    },
+    "Corcoran, Kevin": {
+      "teacher_id": "Corcoran, Kevin",
+      "sections": 9,
+      "periods_used": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "free_periods": [],
+      "courses_affected": [
+        "732",
+        "757",
+        "758"
+      ],
+      "total_conflicts": 19
+    },
+    "Harris, Megan": {
+      "teacher_id": "Harris, Megan",
+      "sections": 5,
+      "periods_used": [
+        "A",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "B",
+        "C"
+      ],
+      "courses_affected": [
+        "730",
+        "731"
+      ],
+      "total_conflicts": 4
+    },
+    "Zawacki, Richard": {
+      "teacher_id": "Zawacki, Richard",
+      "sections": 6,
+      "periods_used": [
+        "A",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "free_periods": [
+        "B"
+      ],
+      "courses_affected": [
+        "732",
+        "742",
+        "752"
+      ],
+      "total_conflicts": 39
+    }
+  }
+}
