@@ -1256,6 +1256,15 @@ PTS_PRESCRIBED_TERM = 10
 PTS_LOCK = 10
 PTS_ROOM_DEMAND = 5
 
+# ── 6th-Period Teacher Priority ──
+# Teachers approved for a 6th period are MORE constrained (consecutive-6 rule
+# eliminates valid periods, load cap ceiling limits options). Their sections must
+# be placed EARLY to guarantee an interior free period and avoid forced unplacement.
+# This boost is applied to the TEACHER and the ROOM (if prescribed), NOT the course.
+# Value is set high enough to guarantee any section with a 6th-period teacher ranks
+# above the theoretical maximum cs_total (~5,790) of any non-6th-period section.
+PTS_SIXTH_PERIOD = 5000
+
 # ── Load reference data from course_priorities.json ──
 with open(os.path.join(os.path.dirname(__file__) or '.', 'course_priorities.json')) as _pf:
     _prio_data = json.load(_pf)
@@ -1450,6 +1459,21 @@ def _count_section_locks(s):
         locks += 1
     return locks
 
+_sixth_period_cache = {}
+def _teacher_has_sixth_period(teacher):
+    """Check if a teacher is approved for a 6th period (FY, S1-only, or S2-only).
+    Uses get_max_load() — if either semester max exceeds 5, the teacher has a 6th.
+    Co-scheduled sections count as 1 period, so this is about APPROVED load, not
+    raw section count."""
+    if not teacher or teacher == 'TBD':
+        return False
+    if teacher in _sixth_period_cache:
+        return _sixth_period_cache[teacher]
+    max_s1, max_s2 = get_max_load(teacher)
+    result = max_s1 > 5 or max_s2 > 5
+    _sixth_period_cache[teacher] = result
+    return result
+
 def teacher_raw_priority(tname):
     locks = 0
     _ctc = globals().get('code_to_cogroup', {})
@@ -1476,7 +1500,14 @@ def teacher_raw_priority(tname):
     for _p, available in avail.items():
         if not available:
             locks += 1
-    return locks * PTS_LOCK
+    raw = locks * PTS_LOCK
+    # 6th-period teacher boost: teachers approved for a 6th period are more
+    # constrained (consecutive-6 rule, load cap ceiling). Boost their raw
+    # priority so ALL their sections are placed early enough to guarantee
+    # an interior free period and avoid forced unplacement.
+    if _teacher_has_sixth_period(tname):
+        raw += PTS_SIXTH_PERIOD
+    return raw
 
 def room_raw_priority(rid):
     rid_s = str(rid)
@@ -3884,7 +3915,11 @@ def _section_priority_key(s):
     """Sort key for section placement order using the DATA_STRUCTURE.md priority system.
     Course Section Total = Course Section Raw + Top Student Total + Teacher Total + Room Total.
     Highest-priority sections are placed first (most negative sort values).
-    Uses _top_student_cache (call _refresh_top_students() after each _clear_priority_caches())."""
+    Uses _top_student_cache (call _refresh_top_students() after each _clear_priority_caches()).
+    6th-period teacher boost: PTS_SIXTH_PERIOD is added to teacher_raw (inside
+    teacher_raw_priority) and to room_raw (here, only if prescribed room exists).
+    This compounds through t_total → r_total → cs_total, guaranteeing 6th-period
+    teacher sections always outrank non-6th-period sections."""
     code = s['code']
     teacher = s['teacher']
     room = s.get('room', 'TBD')
@@ -3893,6 +3928,12 @@ def _section_priority_key(s):
     t_raw = teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0
     t_total = t_raw + max_student_total
     r_raw = room_raw_priority(room) if room and room != 'TBD' else 0
+    # 6th-period room boost: if this section's teacher has a 6th period AND the
+    # section has a prescribed room, boost room_raw so the room is also prioritized.
+    # No boost if no prescribed room (room = 'TBD') — the constraint is on the
+    # teacher, not on a room the engine hasn't assigned yet.
+    if room and room != 'TBD' and teacher and teacher != 'TBD' and _teacher_has_sixth_period(teacher):
+        r_raw += PTS_SIXTH_PERIOD
     r_total = r_raw + t_total + max_student_total
     cs_total = cs_raw + max_student_total + t_total + r_total
     return (

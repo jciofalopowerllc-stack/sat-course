@@ -1044,7 +1044,7 @@ Each cohort section (e.g., LEO II Cohort A vs. LEO II Cohort B) is scored indepe
 
 All tests use the new formula: Course Section Total = Course Section Raw + Top Student Priority Value + Teacher Total Priority Value + Room Total Priority Value.
 
-Point values: AP = 30, Singleton = 25, Grad Req = 20, Gr12 PAE = 20 (mutually exclusive with Grad Req), Semester Only = 15, Cohort = 15, Co-Schedule = 15, Prescribed Term = 10. All characteristics stack. Each teacher/room lock = 10. Room demand = 5 per section. Student grade levels: 9 = 10, 10 = 20, 11 = 30, 12 = 40. Cohort = 50, Special Student Population = 25.
+Point values: AP = 30, Singleton = 25, Grad Req = 20, Gr12 PAE = 20 (mutually exclusive with Grad Req), Semester Only = 15, Cohort = 15, Co-Schedule = 15, Prescribed Term = 10. All characteristics stack. Each teacher/room lock = 10. Room demand = 5 per section. 6th-Period Teacher = 5,000 (applied to teacher raw and room raw if prescribed). Student grade levels: 9 = 10, 10 = 20, 11 = 30, 12 = 40. Cohort = 50, Special Student Population = 25.
 
 | Test | Section A | Section B | Result |
 |------|-----------|-----------|--------|
@@ -1198,12 +1198,18 @@ How locked down the teacher is based on their own prescriptions and availability
 | Prescribed Term | 10 |
 | Prescribed Cohort | 10 |
 | Unavailable Period | 10 |
+| **6th-Period Approved** | **5,000** |
+
+**6th-Period Teacher Boost (5,000 points):** Teachers approved for a 6th period (FY, S1-only, or S2-only) are more constrained than standard 5/5 teachers — the consecutive-6-period rule eliminates valid periods, and the load cap ceiling limits options. A flat 5,000-point boost is added to Teacher Raw when `get_max_load()` returns >5 for either semester. This value is set above the theoretical maximum Course Section Total (~5,790) so that ANY section taught by a 6th-period teacher ALWAYS ranks above ANY section taught by a standard 5/5 teacher in placement order. The boost applies to the teacher, not the course — course characteristics (AP, Singleton, etc.) remain independent. Among 6th-period teachers, normal priority characteristics still break ties correctly.
+
+**Room boost:** When a section has BOTH a 6th-period teacher AND a prescribed room, the room also receives a 5,000-point boost in `_section_priority_key()`. If the teacher has no prescribed room (room = TBD), no room boost is applied — the constraint is on the teacher, not on an unassigned room.
 
 **Co-schedule rule:** Co-scheduled sections count as ONE section for lock counting. If a teacher has a co-schedule group of 4 courses (e.g., AP Art Block: 253, 254, 255, 764), those 4 sections contribute locks only once, not 4 times. If the group has multiple instances (e.g., Studio Art Block with 2 sections each of 242 and 243), each instance counts once (2 lock sets, not 4).
 
 Example: Teacher with 3 prescribed rooms, 1 prescribed period, 2 unavailable periods = 6 locks × 10 = **60**
+Example: 6th-period teacher with 3 locks = 3 × 10 + 5,000 = **5,030**
 
-**Formula:** Teacher Raw = total number of effective locks × 10 (co-scheduled sections count as one)
+**Formula:** Teacher Raw = (total number of effective locks × 10) + (5,000 if approved for 6th period) — co-scheduled sections count as one
 
 #### Teacher Total Priority Value (changes every run)
 
