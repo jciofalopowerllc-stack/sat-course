@@ -9478,10 +9478,10 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 9893.7061,
+          "C": 9896.2061,
           "D": "teacher_busy",
           "E": "teacher_busy",
-          "F": 11479.6524,
+          "F": 11482.1524,
           "G": "teacher_busy"
         },
         "remaining_sections": 211
@@ -9509,8 +9509,8 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 34.8023,
-          "D": 9530.9719,
+          "C": 40.3023,
+          "D": 9536.4719,
           "E": "teacher_busy",
           "F": "teacher_busy",
           "G": "teacher_busy"
@@ -11343,8 +11343,8 @@
         "cs_total": 3085,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 21660.2152,
-          "C": 22498.2347,
+          "B": 21662.7152,
+          "C": 22500.7347,
           "D": "teacher_busy",
           "E": "teacher_busy",
           "F": "teacher_busy",
@@ -12451,9 +12451,9 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 4909.5085,
+          "C": 4912.0085,
           "D": "teacher_busy",
-          "E": 4099.2037,
+          "E": 4101.7037,
           "F": "teacher_busy",
           "G": "teacher_busy"
         },
@@ -13029,7 +13029,7 @@
           "D": "teacher_busy",
           "E": "teacher_busy",
           "F": "teacher_busy",
-          "G": 15591.1086
+          "G": 15599.1086
         },
         "remaining_sections": 99
       },
@@ -13541,7 +13541,7 @@
           "D": "consecutive_6",
           "E": "teacher_busy",
           "F": "teacher_busy",
-          "G": 10353.3055
+          "G": 10361.3055
         },
         "remaining_sections": 83
       },
@@ -13893,7 +13893,7 @@
           "D": "teacher_busy",
           "E": "teacher_busy",
           "F": "teacher_busy",
-          "G": 14651.2081
+          "G": 14659.2081
         },
         "remaining_sections": 72
       },
@@ -14085,7 +14085,7 @@
           "D": "teacher_busy",
           "E": "teacher_busy",
           "F": "teacher_busy",
-          "G": 34724.2084
+          "G": 34726.7084
         },
         "remaining_sections": 66
       },
@@ -15040,8 +15040,8 @@
         "cs_total": 1430,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 51539.0171,
-          "C": 53838.5353,
+          "B": 51547.0171,
+          "C": 53846.5353,
           "D": "teacher_busy",
           "E": "teacher_busy",
           "F": "teacher_busy",
@@ -15104,10 +15104,10 @@
         "cs_total": 935,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 67457.4654,
+          "B": 67459.9654,
           "C": "teacher_busy",
           "D": "teacher_busy",
-          "E": 70362.561,
+          "E": 70365.061,
           "F": "teacher_busy",
           "G": "teacher_busy"
         },
