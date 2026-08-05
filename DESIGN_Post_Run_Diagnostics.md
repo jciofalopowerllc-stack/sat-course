@@ -113,8 +113,19 @@ A recommendation like "move section to Period A — Saggio is free" is incomplet
 - What is Saggio's max load? Is he at cap?
 - What ELSE does Saggio teach? (full course load)
 - Is this a MOVE (relocating existing section) or an ADD (requiring extra period)?
+- **What does Saggio's FULL SCHEDULE look like right now — and what does it become after the move?**
 
 Without this context, the decision-maker cannot say yes or no. The report MUST provide it.
+
+### Design Principle: Revised Schedule Preview
+
+A feasibility assessment tells the decision-maker WHETHER a move is possible. But the decision-maker also needs to see the COMPLETE IMPACT — what the teacher's entire period-by-period schedule looks like before and after the change. A move from Period F to Period A might be "feasible" in isolation, but the decision-maker needs to see that Period A already has a co-scheduled pair, or that the move creates 3 consecutive teaching periods, or that it leaves a gap that could be used differently.
+
+The **Revised Schedule Preview** shows:
+1. **Current Schedule** — Periods A-G, S1 and S2 columns, every course the teacher is currently assigned to
+2. **Revised Schedule** — The same grid after the recommended move is applied, with `◀ CHANGED` markers on affected periods
+
+This lets the decision-maker compare before/after at a glance and catch side effects the engine's feasibility check cannot evaluate (consecutive period fatigue, preferred prep periods, departmental preferences, etc.).
 
 ### Format:
 
@@ -139,6 +150,26 @@ SYSTEM IMPROVEMENT REPORT
         751 American Government & Politics × 1 S1
       ⚠ FEASIBILITY: Saggio has Period A free BUT is at max load (5).
         This is a MOVE (not an add) — relocate existing section, no extra period needed.
+      ── Current Schedule ──
+        Period │ S1                                       │ S2
+        ───────┼──────────────────────────────────────────┼──────────────────────────────────────────
+          A    │ —                                        │ —
+          B    │ 710 World History                        │ 710 World History
+          C    │ 723 Introduction to Political Science    │ 741 Psychology
+          D    │ 710 World History                        │ 710 World History
+          E    │ 741 Psychology                           │ 751 American Government & Politics
+          F    │ 710 World History                        │ 710 World History
+          G    │ —                                        │ —
+      ── Revised Schedule (if recommendation accepted) ──
+        Period │ S1                                       │ S2
+        ───────┼──────────────────────────────────────────┼──────────────────────────────────────────
+          A    │ 710 World History                        │ 710 World History ◀ CHANGED
+          B    │ 710 World History                        │ 710 World History
+          C    │ 723 Introduction to Political Science    │ 741 Psychology
+          D    │ 710 World History                        │ 710 World History
+          E    │ 741 Psychology                           │ 751 American Government & Politics
+          F    │ —                                        │ — ◀ CHANGED
+          G    │ —                                        │ —
     Winters, Jack (ID: 105883):
       Max load: 5 periods | Using: 5 S1, 5 S2 | AT CAP
       Free periods: B
@@ -146,6 +177,17 @@ SYSTEM IMPROVEMENT REPORT
         710 World History × 3 FY, prescribed room: I-012 ◀ THIS COURSE
         731 U.S. History II H × 3 FY
       ✓ FEASIBILITY: Not the recommended teacher for this move.
+      ── Current Schedule ──
+        Period │ S1                                       │ S2
+        ───────┼──────────────────────────────────────────┼──────────────────────────────────────────
+          A    │ 710 World History                        │ 710 World History
+          B    │ —                                        │ —
+          C    │ 731 U.S. History II H                    │ 731 U.S. History II H
+          D    │ 710 World History                        │ 710 World History
+          E    │ 731 U.S. History II H                    │ 731 U.S. History II H
+          F    │ 710 World History                        │ 710 World History
+          G    │ 731 U.S. History II H                    │ 731 U.S. History II H
+      (No schedule change for this teacher under current recommendation)
   Action:  ENGINE CAN FIX — next run will bias toward better placement
   Decision: [ACTION NEEDED]
 

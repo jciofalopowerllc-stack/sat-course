@@ -6306,6 +6306,84 @@ else:
                     else:
                         print(f"      ✗ FEASIBILITY: {_tn} does NOT have Period {_target_p} free. Needs a different teacher or period.")
 
+                # ── REVISED SCHEDULE PREVIEW ──
+                # Show current schedule and what it becomes if the recommendation is accepted.
+                # Build period-by-period grid for this teacher (current state from solution).
+                _all_periods = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+                _current_grid = {p: {'S1': [], 'S2': []} for p in _all_periods}
+                for _tsid in _t_sids:
+                    _ts = sections[_tsid]
+                    _tp = _ts.get('period')
+                    if not _tp:
+                        continue
+                    _tc_code_s = _ts['code']
+                    _tc_title_s = course_info.get(_tc_code_s, {}).get('title', _tc_code_s)
+                    _tc_label = f"{_tc_code_s} {_tc_title_s}"
+                    for _th in _ts.get('halves', []):
+                        if _th in ('S1', 'S2'):
+                            _current_grid[_tp][_th].append(_tc_label)
+
+                # Build revised grid: apply the recommended move if this teacher is recommended
+                _show_revised = False
+                _revised_grid = {p: {'S1': list(_current_grid[p]['S1']), 'S2': list(_current_grid[p]['S2'])} for p in _all_periods}
+                if _best and _best.get('to_period') and _best.get('from_period'):
+                    _from_p = _best['from_period']
+                    _to_p = _best['to_period']
+                    # Find if this teacher has the course in _from_p and is the recommended teacher
+                    _move_label = f"{_code} {_title}"
+                    _is_rec_teacher = (_best.get('teacher') == _tn)
+                    # Even if not the "recommended" teacher, show revised if they teach this course in from_period
+                    _has_course_in_from = False
+                    for _sem in ('S1', 'S2'):
+                        for _lbl in _revised_grid[_from_p][_sem]:
+                            if _lbl.startswith(f"{_code} "):
+                                _has_course_in_from = True
+                                break
+                    if _is_rec_teacher or _has_course_in_from:
+                        _show_revised = True
+                        # Remove ONE instance of this course from from_period
+                        for _sem in ('S1', 'S2'):
+                            for _i, _lbl in enumerate(_revised_grid[_from_p][_sem]):
+                                if _lbl.startswith(f"{_code} "):
+                                    _revised_grid[_from_p][_sem].pop(_i)
+                                    # Add to to_period in same semester
+                                    _revised_grid[_to_p][_sem].append(_lbl)
+                                    break
+
+                # Print schedule grids
+                print(f"      ── Current Schedule ──")
+                print(f"        Period │ S1                                       │ S2")
+                print(f"        ───────┼──────────────────────────────────────────┼──────────────────────────────────────────")
+                for _p in _all_periods:
+                    _s1_str = ', '.join(_current_grid[_p]['S1']) if _current_grid[_p]['S1'] else '—'
+                    _s2_str = ', '.join(_current_grid[_p]['S2']) if _current_grid[_p]['S2'] else '—'
+                    # Truncate long strings
+                    if len(_s1_str) > 40:
+                        _s1_str = _s1_str[:37] + '...'
+                    if len(_s2_str) > 40:
+                        _s2_str = _s2_str[:37] + '...'
+                    print(f"          {_p}    │ {_s1_str:<40s} │ {_s2_str}")
+                if _show_revised:
+                    print(f"      ── Revised Schedule (if recommendation accepted) ──")
+                    print(f"        Period │ S1                                       │ S2")
+                    print(f"        ───────┼──────────────────────────────────────────┼──────────────────────────────────────────")
+                    for _p in _all_periods:
+                        _s1_cur = ', '.join(_current_grid[_p]['S1']) if _current_grid[_p]['S1'] else '—'
+                        _s2_cur = ', '.join(_current_grid[_p]['S2']) if _current_grid[_p]['S2'] else '—'
+                        _s1_rev = ', '.join(_revised_grid[_p]['S1']) if _revised_grid[_p]['S1'] else '—'
+                        _s2_rev = ', '.join(_revised_grid[_p]['S2']) if _revised_grid[_p]['S2'] else '—'
+                        # Mark changed periods
+                        _s1_changed = _s1_cur != _s1_rev
+                        _s2_changed = _s2_cur != _s2_rev
+                        _marker = ' ◀ CHANGED' if (_s1_changed or _s2_changed) else ''
+                        if len(_s1_rev) > 40:
+                            _s1_rev = _s1_rev[:37] + '...'
+                        if len(_s2_rev) > 40:
+                            _s2_rev = _s2_rev[:37] + '...'
+                        print(f"          {_p}    │ {_s1_rev:<40s} │ {_s2_rev}{_marker}")
+                else:
+                    print(f"      (No schedule change for this teacher under current recommendation)")
+
         # Engine action
         if _rec in ('MOVE_SECTION', 'REDISTRIBUTE'):
             print(f"  Action:  ENGINE CAN FIX — next run will bias toward better placement")
