@@ -144,10 +144,12 @@ Scenario filters let the user run the engine on a subset of sections and student
 
 ### Teacher Load Cap Enforcement (from JC Iofalo — non-negotiable)
 - **Hard cap:** A teacher MUST NOT be assigned more than 5 sections per semester (counting unique periods occupied, with co-schedule groups counting as 1 period) UNLESS explicitly approved for a 6th period in Template 6
+- **Absolute ceiling:** 7/5 is NEVER permitted under any circumstance. Maximum per semester is 6 (with approval). `ABSOLUTE_MAX_PERIODS_PER_SEMESTER = 6` in the engine.
 - **6th period approval types:** Full-Year (both semesters), S1-only, or S2-only — defined in Template 6 teacher profiles
 - **No fallback override:** If no valid period exists without exceeding the cap, the section stays **UNPLACED** — the engine does NOT force-place it
 - **Room double-booking is a hard block** — same as teacher_busy and load_cap; the engine will NOT place two non-co-scheduled sections in the same room, same period, same semester
-- **Pre-flight validation:** Before Job 1 begins, the engine validates every teacher's total prescribed load (FY + S1 + S2 + EC) against their cap, accounting for co-schedule groups as 1 period slot. Any overload is flagged with resolution options (approval or load reduction)
+- **FY-equivalent awareness in placement:** When evaluating whether to place a semester section, the engine computes the projected FY-equivalent load using `teacher_load_projection()`. FY = min(S1_count, S2_count). The engine uses this to: (1) enforce the absolute ceiling, (2) score period candidates — preferring placements that minimize FY-equivalent increase and stipend escalation, (3) log the FY-impact transparently in placement reports
+- **Pre-flight validation:** Before Job 1 begins, the engine validates every teacher's total prescribed load (FY + S1 + S2 + EC) against their cap, accounting for co-schedule groups as 1 period slot. Any overload is flagged with resolution options (approval or load reduction) and includes the FY-equivalent stipend impact
 
 ### 6th-Period Stipend Calculation (from JC Iofalo — non-negotiable)
 The engine calculates each teacher's full-year-equivalent period load and 6th-period stipend eligibility. This function is `calculate_teacher_stipend()` in the engine.

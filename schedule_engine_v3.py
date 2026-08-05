@@ -3016,6 +3016,17 @@ for _pf_teacher in sorted(teacher_sections.keys()):
         print(f"      Max load: {_pf_max_s1} periods/semester | "
               f"Approved 6th: {'FY' if _pf_max_s1 >= 6 and _pf_max_s2 >= 6 else 'S1' if _pf_max_s1 >= 6 else 'S2' if _pf_max_s2 >= 6 else 'NO'}")
         print(f"      Courses: {'; '.join(_pf_course_detail)}")
+        # FY-equivalent load display
+        _pf_fy_eq = min(_pf_need_s1, _pf_need_s2)
+        _pf_combined = _pf_fy_eq + _pf_need_s1 + _pf_need_s2
+        if _pf_need_s1 > 5 and _pf_need_s2 > 5:
+            _pf_stipend_label = '100% FY Stipend'
+        elif _pf_need_s1 > 5 or _pf_need_s2 > 5:
+            _pf_stipend_label = '50% FY Stipend'
+        else:
+            _pf_stipend_label = 'No Stipend'
+        print(f"      FY-Equivalent: FY={_pf_fy_eq}/5  S1={_pf_need_s1}/5  S2={_pf_need_s2}/5  |  "
+              f"{_pf_combined}/15  |  {_pf_stipend_label}")
         if _pf_over_s1 > 0 and _pf_over_s2 > 0:
             print(f"      ✖ RESOLUTION REQUIRED: Needs 6th period approval for BOTH semesters, "
                   f"or reduce load by {max(_pf_over_s1, _pf_over_s2)} section(s)")
@@ -3061,20 +3072,91 @@ def room_busy(room, period, halves, exclude_sid=-1):
                 return True
     return False
 
+def teacher_load_projection(teacher, period=None, halves=None):
+    """Compute a teacher's projected FY-equivalent load, with or without
+    a hypothetical new placement.
+
+    Returns: {
+        's1_count': int,        # periods occupied in S1
+        's2_count': int,        # periods occupied in S2
+        'fy_count': int,        # FY-equivalent = min(S1, S2)
+        's1_periods': set,      # which periods
+        's2_periods': set,
+        'combined': int,        # fy + s1 + s2 (out of /15)
+        'stipend_pct': 0|50|100
+    }
+
+    If period and halves are given, they represent a hypothetical
+    section being placed — the projection includes that section.
+    """
+    s1_periods = set()
+    s2_periods = set()
+    for sid in teacher_sections.get(teacher, []):
+        s = sections[sid]
+        if not s['period']:
+            continue
+        if 'S1' in s['halves']:
+            s1_periods.add(s['period'])
+        if 'S2' in s['halves']:
+            s2_periods.add(s['period'])
+
+    # Add hypothetical placement
+    if period and halves:
+        if 'S1' in halves:
+            s1_periods.add(period)
+        if 'S2' in halves:
+            s2_periods.add(period)
+
+    s1_count = len(s1_periods)
+    s2_count = len(s2_periods)
+    fy_count = min(s1_count, s2_count)
+    combined = fy_count + s1_count + s2_count
+    STANDARD_CAP = 5
+
+    s1_over = s1_count > STANDARD_CAP
+    s2_over = s2_count > STANDARD_CAP
+    if s1_over and s2_over:
+        stipend_pct = 100
+    elif s1_over or s2_over:
+        stipend_pct = 50
+    else:
+        stipend_pct = 0
+
+    return {
+        's1_count': s1_count, 's2_count': s2_count, 'fy_count': fy_count,
+        's1_periods': s1_periods, 's2_periods': s2_periods,
+        'combined': combined, 'stipend_pct': stipend_pct,
+    }
+
+
+# Absolute ceiling: 7/5 is NEVER permitted. Maximum per semester is 6 (with approval).
+ABSOLUTE_MAX_PERIODS_PER_SEMESTER = 6
+
+
 def teacher_would_exceed_cap(teacher, period, halves):
+    """Check if placing a section would exceed the teacher's load cap.
+
+    Uses FY-equivalent awareness: computes projected S1, S2, and
+    FY = min(S1, S2) counts after the hypothetical placement.
+
+    Hard rules:
+    - 7/5 is NEVER permitted under any circumstance (absolute ceiling = 6)
+    - Each semester count must not exceed the teacher's approved max
+      (5 standard, 6 with approval)
+    """
     if not teacher or teacher == 'TBD':
         return False
     max_s1, max_s2 = get_max_load(teacher)
-    for sem in halves:
-        cap = max_s1 if sem == 'S1' else max_s2
-        existing_periods = set()
-        for sid in teacher_sections.get(teacher, []):
-            s = sections[sid]
-            if s['period'] and sem in s['halves']:
-                existing_periods.add(s['period'])
-        existing_periods.add(period)
-        if len(existing_periods) > cap:
-            return True
+    # Enforce absolute ceiling: max load can NEVER exceed 6, even if
+    # get_max_load returns something higher due to data issues
+    max_s1 = min(max_s1, ABSOLUTE_MAX_PERIODS_PER_SEMESTER)
+    max_s2 = min(max_s2, ABSOLUTE_MAX_PERIODS_PER_SEMESTER)
+
+    proj = teacher_load_projection(teacher, period, halves)
+    if proj['s1_count'] > max_s1:
+        return True
+    if proj['s2_count'] > max_s2:
+        return True
     return False
 
 def would_create_consecutive_6(teacher, period, halves):
@@ -4172,6 +4254,24 @@ def greedy_assign_periods(seed=42, audit=False):
 
                 period_load = sum(1 for sec in sections if sec['period'] == p)
                 score += period_load * 0.1
+
+                # FY-equivalent load impact scoring:
+                # When placing a semester section, prefer periods that minimize
+                # FY-equivalent (min(S1,S2)) increase and stipend escalation.
+                # A placement that pushes BOTH semesters over 5 (100% stipend)
+                # is costlier than one that pushes only one semester (50%).
+                if teacher and teacher != 'TBD':
+                    proj_before = teacher_load_projection(teacher)
+                    proj_after = teacher_load_projection(teacher, p, halves)
+                    fy_increase = proj_after['fy_count'] - proj_before['fy_count']
+                    stipend_increase = proj_after['stipend_pct'] - proj_before['stipend_pct']
+                    # Penalize placements that increase FY-equivalent beyond 5
+                    if proj_after['fy_count'] > 5 and fy_increase > 0:
+                        score += 3.0 * fy_increase
+                    # Penalize stipend escalation (0→50 or 50→100)
+                    if stipend_increase > 0:
+                        score += stipend_increase * 0.05  # 2.5 for 50→100, 5.0 for 0→100
+
                 # (room_busy is now a hard block above — no soft penalty needed)
                 tp = teacher_profiles.get(teacher, {})
                 if tp:
@@ -4456,6 +4556,21 @@ for teacher in teacher_sections:
         load_violations.append({'teacher': teacher, 's1': s1, 's2': s2, 'max_s1': max_s1, 'max_s2': max_s2})
         print(f"  LOAD: {teacher} S1={s1}/{max_s1} S2={s2}/{max_s2}")
 print(f"  Load violations: {len(load_violations)}")
+
+# FY-equivalent stipend summary (post-placement)
+_stipend_teachers = []
+for _st_teacher in sorted(teacher_sections.keys()):
+    if _st_teacher == 'TBD':
+        continue
+    _st = calculate_teacher_stipend(_st_teacher)
+    if _st['stipend_pct'] > 0:
+        _stipend_teachers.append((_st_teacher, _st))
+if _stipend_teachers:
+    print(f"\n  FY-Equivalent Stipend Summary ({len(_stipend_teachers)} teachers):")
+    for _st_teacher, _st in _stipend_teachers:
+        print(f"    {_st_teacher}: FY={_st['fy_count']}/5  S1={_st['s1_count']}/5  "
+              f"S2={_st['s2_count']}/5  |  {_st['combined']}/{_st['combined_denom']}  |  "
+              f"{_st['stipend_label']}")
 
 # Consecutive-6 violation check
 consec6_violations = []
