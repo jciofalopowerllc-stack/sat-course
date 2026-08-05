@@ -103,35 +103,50 @@ On the NEXT run, the engine loads the diagnostics and applies **period bias adju
 
 ## System Improvement Report (Console Output)
 
-Printed after every Job 2 run. Format:
+Printed after every Job 2 run. Every recommendation includes **full teacher background details** so the decision-maker can evaluate feasibility without looking up Template 6.
+
+### Design Principle: Full Context With Every Recommendation
+
+A recommendation like "move section to Period A — Saggio is free" is incomplete. The decision-maker needs to know:
+- Is Saggio prescribed to teach this course? (Template 6)
+- How many sections? What term types?
+- What is Saggio's max load? Is he at cap?
+- What ELSE does Saggio teach? (full course load)
+- Is this a MOVE (relocating existing section) or an ADD (requiring extra period)?
+
+Without this context, the decision-maker cannot say yes or no. The report MUST provide it.
+
+### Format:
 
 ```
 ============================================================
 SYSTEM IMPROVEMENT REPORT
 ============================================================
 
-[CRITICAL] 440 Precalculus — 26 conflicts, 94 spare seats
-  Problem: Covers 5/7 periods (A,B,D,F,G) but theology (849/851)
-           blocks 4 of those 5 periods for all 165 Gr12 students.
-           Only Period G is free from theology.
-  Impact:  26 students cannot take Precalculus (graduation required)
-  Fix:     Move 1 section to Period C or E (not blocked by theology)
-           DeLeon has C,E free. Gettler has C,D,E free.
-  Action:  ENGINE CAN FIX — next run will bias toward C/E placement
-  Decision: [ACTION NEEDED]
-
-[CRITICAL] 752 Economics H — 24 conflicts, 49 spare seats
-  Problem: Only 2/7 periods covered (B,D). Zawacki's only free period is G.
-  Impact:  24 students cannot take Economics H (graduation required)
-  Fix:     Move 1 section from B or D to G.
-  Action:  ENGINE CAN FIX — next run will bias toward G placement
-  Decision: [ACTION NEEDED]
-
-[HIGH] 590 Robotics Project — 7 conflicts, 45 spare seats
-  Problem: Both sections in Period G (same period, same semester).
-  Impact:  7 students blocked — zero alternative periods
-  Fix:     Move 1 section to A,B,D,E, or F (McConnell has 5 free periods)
-  Action:  ENGINE CAN FIX — this is a placement bug (should have spread)
+[CRITICAL] 710 World History — 70 conflicts, 86 spare seats
+  Problem: Covers 4/7 periods (B,C,D,F); 510 Biology blocks 48 students
+  Impact:  70 students cannot take World History (graduation required)
+  Fix:     Move 1 section to Period A (from Period F) — Saggio, Jack is free.
+           Est. reduction: 7 conflicts
+  ── Teacher Details ──
+    Saggio, Jack (ID: 117711):
+      Max load: 5 periods | Using: 5 S1, 5 S2 | AT CAP
+      Free periods: A,F
+      Prescribed teaching load (Template 6):
+        710 World History × 3 FY ◀ THIS COURSE
+        723 Introduction to Political Science × 1 S1
+        741 Psychology × 1 S1 + 1 S2
+        751 American Government & Politics × 1 S1
+      ⚠ FEASIBILITY: Saggio has Period A free BUT is at max load (5).
+        This is a MOVE (not an add) — relocate existing section, no extra period needed.
+    Winters, Jack (ID: 105883):
+      Max load: 5 periods | Using: 5 S1, 5 S2 | AT CAP
+      Free periods: B
+      Prescribed teaching load (Template 6):
+        710 World History × 3 FY, prescribed room: I-012 ◀ THIS COURSE
+        731 U.S. History II H × 3 FY
+      ✓ FEASIBILITY: Not the recommended teacher for this move.
+  Action:  ENGINE CAN FIX — next run will bias toward better placement
   Decision: [ACTION NEEDED]
 
 ...

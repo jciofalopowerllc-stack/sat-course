@@ -5995,6 +5995,41 @@ for _a1_code, _a1_conflicts in _a1_conflict_by_code.items():
     else:
         _recommendation = 'REDISTRIBUTE'
 
+    # Build teacher background details for this course
+    _a1_teacher_details = {}
+    for _t_id, _t_name in _a1_teachers_for_course:
+        _t_max_s1, _t_max_s2 = get_max_load(_t_name)
+        _t_sids = teacher_sections.get(_t_name, [])
+        _t_s1_p = set()
+        _t_s2_p = set()
+        for _tsid in _t_sids:
+            _ts = sections[_tsid]
+            if _ts['period']:
+                for _th in _ts.get('halves', []):
+                    if _th == 'S1': _t_s1_p.add(_ts['period'])
+                    elif _th == 'S2': _t_s2_p.add(_ts['period'])
+        # Full course load
+        _t_load = {}
+        for _tsid in _t_sids:
+            _ts = sections[_tsid]
+            _tc = _ts['code']
+            if _tc not in _t_load:
+                _t_load[_tc] = {'title': course_info.get(_tc, {}).get('title', _tc), 'fy': 0, 's1': 0, 's2': 0}
+            _t_halves = _ts.get('halves', [])
+            if len(_t_halves) == 2: _t_load[_tc]['fy'] += 1
+            elif 'S1' in _t_halves: _t_load[_tc]['s1'] += 1
+            elif 'S2' in _t_halves: _t_load[_tc]['s2'] += 1
+        _a1_teacher_details[_t_name if _t_name else _t_id] = {
+            'teacher_id': _t_id,
+            'max_load_s1': _t_max_s1,
+            'max_load_s2': _t_max_s2,
+            'periods_used_s1': len(_t_s1_p),
+            'periods_used_s2': len(_t_s2_p),
+            'at_cap': len(_t_s1_p) >= _t_max_s1 and len(_t_s2_p) >= _t_max_s2,
+            'free_periods': _a1_teacher_free.get(_t_name if _t_name else _t_id, []),
+            'full_course_load': _t_load,
+        }
+
     _a1_course_diagnostics[_a1_code] = {
         'title': _a1_ci.get('title', _a1_code),
         'department': _a1_ci.get('dept', ''),
@@ -6008,6 +6043,7 @@ for _a1_code, _a1_conflicts in _a1_conflict_by_code.items():
         'is_grad_req': _is_grad_req,
         'top_blockers': _a1_top_blockers,
         'teacher_free_periods': _a1_teacher_free,
+        'teacher_details': _a1_teacher_details,
         'best_move': _a1_best_move,
         'recommendation': _recommendation,
         'severity': _severity,
@@ -6183,11 +6219,92 @@ else:
         else:
             print(f"  Fix:     {_rec}")
 
-        # Teacher availability
+        # ── TEACHER BACKGROUND DETAILS ──
+        # For every teacher who teaches this course, show their FULL context so
+        # the decision-maker can evaluate whether the recommendation is feasible
+        # without needing to look up Template 6.
         if _tfp:
+            print(f"  ── Teacher Details ──")
             for _tn, _fp in _tfp.items():
-                if _fp:
-                    print(f"           {_tn} free periods: {','.join(_fp)}")
+                # Find teacher ID from name
+                _t_id_found = None
+                for _tid_key, _tname_val in teacher_id_to_name.items():
+                    if _tname_val == _tn:
+                        _t_id_found = _tid_key
+                        break
+                # Get max load
+                _t_max_s1, _t_max_s2 = get_max_load(_tn)
+                _t_max_label = f"{_t_max_s1}" if _t_max_s1 == _t_max_s2 else f"{_t_max_s1} S1 / {_t_max_s2} S2"
+
+                # Count current periods used per semester
+                _t_sids = teacher_sections.get(_tn, [])
+                _t_s1_periods = set()
+                _t_s2_periods = set()
+                for _tsid in _t_sids:
+                    _ts = sections[_tsid]
+                    if _ts['period']:
+                        for _th in _ts.get('halves', []):
+                            if _th == 'S1':
+                                _t_s1_periods.add(_ts['period'])
+                            elif _th == 'S2':
+                                _t_s2_periods.add(_ts['period'])
+                _t_s1_used = len(_t_s1_periods)
+                _t_s2_used = len(_t_s2_periods)
+                _t_at_cap_s1 = _t_s1_used >= _t_max_s1
+                _t_at_cap_s2 = _t_s2_used >= _t_max_s2
+
+                # Build full course load: all courses this teacher teaches with section counts and types
+                _t_course_load = defaultdict(lambda: {'fy': 0, 's1': 0, 's2': 0, 'title': '', 'prescribed_periods': [], 'prescribed_rooms': []})
+                for _tsid in _t_sids:
+                    _ts = sections[_tsid]
+                    _tc = _ts['code']
+                    _t_course_load[_tc]['title'] = course_info.get(_tc, {}).get('title', _tc)
+                    _t_halves = _ts.get('halves', [])
+                    if len(_t_halves) == 2:
+                        _t_course_load[_tc]['fy'] += 1
+                    elif 'S1' in _t_halves:
+                        _t_course_load[_tc]['s1'] += 1
+                    elif 'S2' in _t_halves:
+                        _t_course_load[_tc]['s2'] += 1
+                    if _ts.get('prescribed_period'):
+                        _t_course_load[_tc]['prescribed_periods'].append(_ts['prescribed_period'])
+                    if _ts.get('prescribed_room'):
+                        _t_course_load[_tc]['prescribed_rooms'].append(_ts['prescribed_room'])
+
+                # Print teacher header
+                _id_label = f" (ID: {_t_id_found})" if _t_id_found else ""
+                print(f"    {_tn}{_id_label}:")
+                print(f"      Max load: {_t_max_label} periods | Using: {_t_s1_used} S1, {_t_s2_used} S2 | "
+                      f"{'AT CAP' if _t_at_cap_s1 and _t_at_cap_s2 else 'AT CAP S1' if _t_at_cap_s1 else 'AT CAP S2' if _t_at_cap_s2 else 'HAS ROOM'}")
+                print(f"      Free periods: {','.join(_fp) if _fp else 'NONE'}")
+
+                # Print full course load
+                print(f"      Prescribed teaching load (Template 6):")
+                for _tc_code, _tc_data in sorted(_t_course_load.items()):
+                    _parts = []
+                    if _tc_data['fy'] > 0:
+                        _parts.append(f"{_tc_data['fy']} FY")
+                    if _tc_data['s1'] > 0:
+                        _parts.append(f"{_tc_data['s1']} S1")
+                    if _tc_data['s2'] > 0:
+                        _parts.append(f"{_tc_data['s2']} S2")
+                    _sec_desc = ' + '.join(_parts) if _parts else '?'
+                    _presc_p = f", prescribed periods: {','.join(_tc_data['prescribed_periods'])}" if _tc_data['prescribed_periods'] else ""
+                    _presc_r = f", prescribed room: {','.join(set(_tc_data['prescribed_rooms']))}" if _tc_data['prescribed_rooms'] else ""
+                    _is_this_course = " ◀ THIS COURSE" if _tc_code == _code else ""
+                    print(f"        {_tc_code} {_tc_data['title']} × {_sec_desc}{_presc_p}{_presc_r}{_is_this_course}")
+
+                # Feasibility assessment for the recommended move
+                if _best and _best.get('to_period') and _best.get('teacher') == _tn:
+                    _target_p = _best['to_period']
+                    if _target_p in _fp:
+                        if _t_at_cap_s1 and _t_at_cap_s2:
+                            print(f"      ⚠ FEASIBILITY: {_tn} has Period {_target_p} free BUT is at max load ({_t_max_label}).")
+                            print(f"        This is a MOVE (not an add) — relocate existing section, no extra period needed.")
+                        else:
+                            print(f"      ✓ FEASIBILITY: {_tn} has Period {_target_p} free and has room in load cap. Move is feasible.")
+                    else:
+                        print(f"      ✗ FEASIBILITY: {_tn} does NOT have Period {_target_p} free. Needs a different teacher or period.")
 
         # Engine action
         if _rec in ('MOVE_SECTION', 'REDISTRIBUTE'):
