@@ -2919,10 +2919,9 @@ else:
 
 # ── Pre-Flight Teacher Load Validation ──
 # After EC redistribution and rebalancing, verify every teacher's total
-# semester load (FY + S1 + S2 + EC-assigned) against their max load cap.
-# Flag any teacher whose prescribed sections would require more periods
-# in a semester than their cap allows.  This catches data contradictions
-# BEFORE Job 1 placement begins.
+# semester load against their max load cap.  Co-scheduled sections share
+# one period and count as 1 period slot (not N).  This catches data
+# contradictions BEFORE Job 1 placement begins.
 print("\n  Pre-flight teacher load validation:")
 _preflight_violations = []
 for _pf_teacher in sorted(teacher_sections.keys()):
@@ -2932,20 +2931,41 @@ for _pf_teacher in sorted(teacher_sections.keys()):
     if not _pf_sids:
         continue
     _pf_max_s1, _pf_max_s2 = get_max_load(_pf_teacher)
-    # Count FY sections (each occupies 1 period in both S1 and S2)
-    _pf_fy = sum(1 for sid in _pf_sids if sections[sid]['halves'] == ('S1', 'S2'))
-    # Count semester-only sections
-    _pf_s1_only = sum(1 for sid in _pf_sids if sections[sid]['halves'] == ('S1',))
-    _pf_s2_only = sum(1 for sid in _pf_sids if sections[sid]['halves'] == ('S2',))
-    # Total periods needed per semester
-    _pf_need_s1 = _pf_fy + _pf_s1_only
-    _pf_need_s2 = _pf_fy + _pf_s2_only
+
+    # Identify co-schedule groups this teacher belongs to.
+    # Co-scheduled sections share 1 period → count each group as 1 slot.
+    _pf_cogroup_sids = set()
+    _pf_cogroups = {}  # group_index → set of sids
+    for sid in _pf_sids:
+        _pf_gi = code_to_cogroup.get(sections[sid]['code'])
+        if _pf_gi is not None:
+            _pf_cogroups.setdefault(_pf_gi, set()).add(sid)
+            _pf_cogroup_sids.add(sid)
+
+    # Count period-slot demand per semester
+    # Co-schedule groups: 1 slot per group per semester it covers
+    _pf_cg_s1 = 0
+    _pf_cg_s2 = 0
+    for _pf_gi, _pf_g_sids in _pf_cogroups.items():
+        if any('S1' in sections[sid]['halves'] for sid in _pf_g_sids):
+            _pf_cg_s1 += 1
+        if any('S2' in sections[sid]['halves'] for sid in _pf_g_sids):
+            _pf_cg_s2 += 1
+
+    # Non-co-schedule sections: 1 slot per section per semester
+    _pf_non_co_s1 = sum(1 for sid in _pf_sids
+                        if sid not in _pf_cogroup_sids and 'S1' in sections[sid]['halves'])
+    _pf_non_co_s2 = sum(1 for sid in _pf_sids
+                        if sid not in _pf_cogroup_sids and 'S2' in sections[sid]['halves'])
+
+    _pf_need_s1 = _pf_cg_s1 + _pf_non_co_s1
+    _pf_need_s2 = _pf_cg_s2 + _pf_non_co_s2
     _pf_over_s1 = _pf_need_s1 - _pf_max_s1
     _pf_over_s2 = _pf_need_s2 - _pf_max_s2
 
     if _pf_over_s1 > 0 or _pf_over_s2 > 0:
-        # Get teacher ID for the report
         _pf_tid = teacher_profiles.get(_pf_teacher, {}).get('teacher_id', '?')
+        # Build course detail string
         _pf_courses = sorted(set(sections[sid]['code'] for sid in _pf_sids))
         _pf_course_detail = []
         for _pf_c in _pf_courses:
@@ -2958,7 +2978,17 @@ for _pf_teacher in sorted(teacher_sections.keys()):
             if _pf_c_s1: _pf_parts.append(f"{_pf_c_s1} S1")
             if _pf_c_s2: _pf_parts.append(f"{_pf_c_s2} S2")
             _pf_title = sections[_pf_c_sids[0]].get('title', '')[:25]
-            _pf_course_detail.append(f"{_pf_c} {_pf_title} ({', '.join(_pf_parts)})")
+            _pf_co_tag = ''
+            _pf_c_gi = code_to_cogroup.get(_pf_c)
+            if _pf_c_gi is not None:
+                _pf_co_tag = f" [co-sched]"
+            _pf_course_detail.append(f"{_pf_c} {_pf_title} ({', '.join(_pf_parts)}){_pf_co_tag}")
+
+        # Count raw sections vs period slots for clarity
+        _pf_raw_total = len(_pf_sids)
+        _pf_slot_total_s1 = _pf_need_s1
+        _pf_slot_total_s2 = _pf_need_s2
+        _pf_co_savings = len(_pf_cogroup_sids) - len(_pf_cogroups) if _pf_cogroups else 0
 
         _pf_msg_parts = []
         if _pf_over_s1 > 0:
@@ -2969,27 +2999,22 @@ for _pf_teacher in sorted(teacher_sections.keys()):
         _pf_entry = {
             'teacher': _pf_teacher,
             'teacher_id': _pf_tid,
-            'fy': _pf_fy,
-            's1_only': _pf_s1_only,
-            's2_only': _pf_s2_only,
             'need_s1': _pf_need_s1,
             'need_s2': _pf_need_s2,
             'max_s1': _pf_max_s1,
             'max_s2': _pf_max_s2,
             'over_s1': max(0, _pf_over_s1),
             'over_s2': max(0, _pf_over_s2),
-            'excess_sids_s1': [],
-            'excess_sids_s2': [],
         }
         _preflight_violations.append(_pf_entry)
 
         print(f"    ⚠ {_pf_teacher} (ID: {_pf_tid}): {', '.join(_pf_msg_parts)}")
-        print(f"      Sections: {_pf_fy} FY + {_pf_s1_only} S1-only + {_pf_s2_only} S2-only "
-              f"= {len(_pf_sids)} total")
+        print(f"      {_pf_raw_total} sections → {_pf_slot_total_s1} S1 period slots, "
+              f"{_pf_slot_total_s2} S2 period slots"
+              f"{f' (co-schedule saves {_pf_co_savings} slots)' if _pf_co_savings > 0 else ''}")
         print(f"      Max load: {_pf_max_s1} periods/semester | "
               f"Approved 6th: {'FY' if _pf_max_s1 >= 6 and _pf_max_s2 >= 6 else 'S1' if _pf_max_s1 >= 6 else 'S2' if _pf_max_s2 >= 6 else 'NO'}")
         print(f"      Courses: {'; '.join(_pf_course_detail)}")
-        # Identify which semester needs approval and what type
         if _pf_over_s1 > 0 and _pf_over_s2 > 0:
             print(f"      ✖ RESOLUTION REQUIRED: Needs 6th period approval for BOTH semesters, "
                   f"or reduce load by {max(_pf_over_s1, _pf_over_s2)} section(s)")
@@ -2999,7 +3024,7 @@ for _pf_teacher in sorted(teacher_sections.keys()):
         elif _pf_over_s2 > 0:
             print(f"      ✖ RESOLUTION REQUIRED: Needs 6th period approval for S2 ONLY, "
                   f"or reduce S2 load by {_pf_over_s2} section(s)")
-        print(f"      Engine will leave {_pf_over_s1 + _pf_over_s2} section(s) UNPLACED until resolved")
+        print(f"      Engine will leave excess section(s) UNPLACED until resolved")
 
 if not _preflight_violations:
     print("    All teachers within load caps ✓")
