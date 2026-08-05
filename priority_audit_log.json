@@ -15026,18 +15026,18 @@
         "teacher": "Tuesta, David",
         "room": "S-235",
         "tier": 3,
-        "period_assigned": "G",
+        "period_assigned": null,
         "halves": [
           "S1",
           "S2"
         ],
         "cs_raw": 20,
         "top_student_total": 270,
-        "teacher_raw": 120,
-        "teacher_total": 420,
+        "teacher_raw": 110,
+        "teacher_total": 410,
         "room_raw": 30,
-        "room_total": 720,
-        "cs_total": 1430,
+        "room_total": 710,
+        "cs_total": 1410,
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
@@ -15072,12 +15072,12 @@
         "cs_total": 925,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 84265.1004,
+          "B": 84245.1004,
           "C": "teacher_busy",
           "D": "teacher_busy",
           "E": "teacher_busy",
           "F": "teacher_busy",
-          "G": 74895.8649
+          "G": 64153.7649
         },
         "remaining_sections": 35
       },
@@ -15090,18 +15090,18 @@
         "teacher": "Saggio, Jack",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "B",
+        "period_assigned": null,
         "halves": [
           "S1",
           "S2"
         ],
         "cs_raw": 20,
         "top_student_total": 275,
-        "teacher_raw": 80,
-        "teacher_total": 640,
+        "teacher_raw": 70,
+        "teacher_total": 630,
         "room_raw": 0,
         "room_total": 0,
-        "cs_total": 935,
+        "cs_total": 925,
         "period_scores": {
           "A": "teacher_busy",
           "B": "load_cap",
@@ -15135,13 +15135,13 @@
         "room_total": 750,
         "cs_total": 1445,
         "period_scores": {
-          "A": 49610.2385,
+          "A": 49570.2385,
           "B": "teacher_busy",
           "C": "teacher_busy",
-          "D": 45629.8766,
-          "E": 49531.1388,
+          "D": 45609.8766,
+          "E": 49511.1388,
           "F": 49554.9025,
-          "G": 57997.5742
+          "G": 50054.1409
         },
         "remaining_sections": 33
       },
@@ -15167,13 +15167,13 @@
         "room_total": 760,
         "cs_total": 1465,
         "period_scores": {
-          "A": 49625.2352,
+          "A": 49585.2352,
           "B": "teacher_busy",
           "C": "teacher_busy",
           "D": "teacher_busy",
-          "E": 49546.1369,
+          "E": 49526.1369,
           "F": 49569.9078,
-          "G": 58012.5753
+          "G": 50069.142
         },
         "remaining_sections": 32
       },
@@ -15199,13 +15199,13 @@
         "room_total": 770,
         "cs_total": 1485,
         "period_scores": {
-          "A": 49640.2367,
+          "A": 49600.2367,
           "B": "teacher_busy",
           "C": "teacher_busy",
           "D": "teacher_busy",
           "E": "teacher_busy",
           "F": 49584.9012,
-          "G": 58027.5703
+          "G": 50084.137
         },
         "remaining_sections": 31
       },
@@ -15218,7 +15218,7 @@
         "teacher": "Serra, Carmine",
         "room": "D-102",
         "tier": 3,
-        "period_assigned": "A",
+        "period_assigned": "G",
         "halves": [
           "S1",
           "S2"
@@ -15231,13 +15231,13 @@
         "room_total": 640,
         "cs_total": 1275,
         "period_scores": {
-          "A": 68109.7645,
-          "B": 88161.8074,
-          "C": 71471.9867,
-          "D": 72183.4705,
-          "E": 73267.132,
+          "A": 68069.7645,
+          "B": 72845.3741,
+          "C": 71451.9867,
+          "D": 72163.4705,
+          "E": 73247.132,
           "F": 77851.2605,
-          "G": 73478.3272
+          "G": 63819.5605
         },
         "remaining_sections": 30
       },
@@ -15250,7 +15250,7 @@
         "teacher": "Serra, Carmine",
         "room": "D-102",
         "tier": 3,
-        "period_assigned": "C",
+        "period_assigned": "A",
         "halves": [
           "S1",
           "S2"
@@ -15263,13 +15263,13 @@
         "room_total": 650,
         "cs_total": 1295,
         "period_scores": {
-          "A": "teacher_busy",
-          "B": 88161.8092,
-          "C": 71486.983,
-          "D": 72198.4747,
-          "E": 73282.1295,
-          "F": 77866.2563,
-          "G": 73493.3282
+          "A": 68084.7648,
+          "B": 72845.3719,
+          "C": 71466.9858,
+          "D": 72178.4739,
+          "E": 73262.123,
+          "F": 77866.2616,
+          "G": "teacher_busy"
         },
         "remaining_sections": 29
       },
@@ -15282,7 +15282,7 @@
         "teacher": "Serra, Carmine",
         "room": "D-102",
         "tier": 3,
-        "period_assigned": "D",
+        "period_assigned": "C",
         "halves": [
           "S1",
           "S2"
@@ -15296,12 +15296,12 @@
         "cs_total": 1315,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 88161.8082,
-          "C": "teacher_busy",
-          "D": 72213.4721,
-          "E": 73297.1254,
-          "F": 77881.2564,
-          "G": 73508.3288
+          "B": 72845.3749,
+          "C": 71481.9832,
+          "D": 72193.4699,
+          "E": 73277.123,
+          "F": 77881.2622,
+          "G": "teacher_busy"
         },
         "remaining_sections": 28
       },
@@ -15314,7 +15314,7 @@
         "teacher": "Serra, Carmine",
         "room": "D-102",
         "tier": 3,
-        "period_assigned": "E",
+        "period_assigned": "D",
         "halves": [
           "S1",
           "S2"
@@ -15328,12 +15328,12 @@
         "cs_total": 1335,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 88161.8031,
+          "B": 72845.3697,
           "C": "teacher_busy",
-          "D": "teacher_busy",
-          "E": 73312.1282,
-          "F": 77896.2598,
-          "G": 73523.3291
+          "D": 72208.4727,
+          "E": 73292.1265,
+          "F": 77896.2625,
+          "G": "teacher_busy"
         },
         "remaining_sections": 27
       },
@@ -15346,7 +15346,7 @@
         "teacher": "Serra, Carmine",
         "room": "D-102",
         "tier": 3,
-        "period_assigned": "G",
+        "period_assigned": "B",
         "halves": [
           "S1",
           "S2"
@@ -15360,12 +15360,12 @@
         "cs_total": 1355,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 88161.8035,
+          "B": 72845.3702,
           "C": "teacher_busy",
           "D": "teacher_busy",
-          "E": "teacher_busy",
-          "F": 77911.256,
-          "G": 73538.3309
+          "E": 73307.1226,
+          "F": 77911.2643,
+          "G": "teacher_busy"
         },
         "remaining_sections": 26
       },
@@ -15391,13 +15391,13 @@
         "room_total": 640,
         "cs_total": 1275,
         "period_scores": {
-          "A": 66309.1369,
-          "B": 63480.01,
-          "C": 71833.0027,
-          "D": 75219.0765,
-          "E": 65020.3428,
-          "F": 63424.8341,
-          "G": 74397.6397
+          "A": 66289.1369,
+          "B": 63460.01,
+          "C": 71793.0027,
+          "D": 75179.0765,
+          "E": 64980.2428,
+          "F": 63404.8341,
+          "G": 73756.5397
         },
         "remaining_sections": 25
       },
@@ -15423,13 +15423,13 @@
         "room_total": 650,
         "cs_total": 1295,
         "period_scores": {
-          "A": 66324.137,
-          "B": 63495.008,
-          "C": 71848.0068,
-          "D": 75234.0762,
-          "E": 65035.3348,
+          "A": 66304.137,
+          "B": 63475.008,
+          "C": 71808.0068,
+          "D": 75194.0762,
+          "E": 64995.2348,
           "F": "teacher_busy",
-          "G": 74412.6394
+          "G": 73771.5394
         },
         "remaining_sections": 24
       },
@@ -15455,13 +15455,13 @@
         "room_total": 660,
         "cs_total": 1315,
         "period_scores": {
-          "A": 66339.1411,
+          "A": 66319.1411,
           "B": "teacher_busy",
-          "C": 71863.0003,
-          "D": 75249.0673,
-          "E": 65050.3411,
+          "C": 71823.0003,
+          "D": 75209.0673,
+          "E": 65010.2411,
           "F": "teacher_busy",
-          "G": 74427.637
+          "G": 73786.537
         },
         "remaining_sections": 23
       },
@@ -15487,13 +15487,13 @@
         "room_total": 670,
         "cs_total": 1335,
         "period_scores": {
-          "A": 66354.1372,
+          "A": 66334.1372,
           "B": "teacher_busy",
-          "C": 71878.0057,
-          "D": 75264.0727,
+          "C": 71838.0057,
+          "D": 75224.0727,
           "E": "teacher_busy",
           "F": "teacher_busy",
-          "G": 74442.6401
+          "G": 73801.5401
         },
         "remaining_sections": 22
       },
@@ -15521,11 +15521,11 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 71893.0095,
-          "D": 75279.0704,
+          "C": 71853.0095,
+          "D": 75239.0704,
           "E": "teacher_busy",
           "F": "teacher_busy",
-          "G": 74457.641
+          "G": 73816.541
         },
         "remaining_sections": 21
       },
@@ -15538,7 +15538,7 @@
         "teacher": "Janeczko, Douglas",
         "room": "D-202",
         "tier": 3,
-        "period_assigned": "F",
+        "period_assigned": "B",
         "halves": [
           "S1",
           "S2"
@@ -15551,13 +15551,13 @@
         "room_total": 640,
         "cs_total": 1275,
         "period_scores": {
-          "A": 73071.0343,
-          "B": 78487.0783,
-          "C": 77573.077,
-          "D": 77670.1017,
-          "E": 82839.6311,
-          "F": 71981.2964,
-          "G": 77483.3137
+          "A": 73031.0343,
+          "B": 68067.0783,
+          "C": 77553.077,
+          "D": 77650.1017,
+          "E": 72298.1977,
+          "F": 71961.2964,
+          "G": 70091.547
         },
         "remaining_sections": 20
       },
@@ -15570,7 +15570,7 @@
         "teacher": "Janeczko, Douglas",
         "room": "D-202",
         "tier": 3,
-        "period_assigned": "A",
+        "period_assigned": "G",
         "halves": [
           "S1",
           "S2"
@@ -15583,13 +15583,13 @@
         "room_total": 650,
         "cs_total": 1295,
         "period_scores": {
-          "A": 73086.0336,
-          "B": 78487.0769,
-          "C": 77573.0786,
-          "D": 77685.0979,
-          "E": 82854.6312,
-          "F": "teacher_busy",
-          "G": 77498.3108
+          "A": 73031.0336,
+          "B": "teacher_busy",
+          "C": 77553.0769,
+          "D": 77650.1009,
+          "E": 72298.1979,
+          "F": 71961.2978,
+          "G": 70091.5441
         },
         "remaining_sections": 19
       },
@@ -15602,7 +15602,7 @@
         "teacher": "Janeczko, Douglas",
         "room": "D-202",
         "tier": 3,
-        "period_assigned": "G",
+        "period_assigned": "F",
         "halves": [
           "S1",
           "S2"
@@ -15615,13 +15615,13 @@
         "room_total": 660,
         "cs_total": 1315,
         "period_scores": {
-          "A": "teacher_busy",
-          "B": 78487.083,
-          "C": 77573.0759,
-          "D": 77700.1044,
-          "E": 82869.6335,
-          "F": "teacher_busy",
-          "G": 77513.3076
+          "A": 73046.0385,
+          "B": "teacher_busy",
+          "C": 77553.0759,
+          "D": 77665.1044,
+          "E": 72313.2002,
+          "F": 71976.2965,
+          "G": "teacher_busy"
         },
         "remaining_sections": 18
       },
@@ -15648,12 +15648,12 @@
         "cs_total": 860,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 23792.3673,
-          "C": 31151.8299,
-          "D": 27477.9677,
-          "E": 29071.8298,
+          "B": 23792.4673,
+          "C": 31101.8299,
+          "D": 27427.9677,
+          "E": 29021.7298,
           "F": "teacher_busy",
-          "G": 26192.1596
+          "G": 26192.0596
         },
         "remaining_sections": 17
       },
@@ -15666,7 +15666,7 @@
         "teacher": "Janeczko, Douglas",
         "room": "D-202",
         "tier": 3,
-        "period_assigned": "C",
+        "period_assigned": "E",
         "halves": [
           "S1",
           "S2"
@@ -15679,11 +15679,11 @@
         "room_total": 670,
         "cs_total": 1315,
         "period_scores": {
-          "A": "teacher_busy",
-          "B": 18245.0735,
-          "C": 14977.1529,
-          "D": 17954.8032,
-          "E": 17346.559,
+          "A": 18900.2957,
+          "B": "teacher_busy",
+          "C": 14957.1529,
+          "D": 17934.8032,
+          "E": 14919.7924,
           "F": "teacher_busy",
           "G": "teacher_busy"
         },
@@ -15698,7 +15698,7 @@
         "teacher": "Janeczko, Douglas",
         "room": "D-202",
         "tier": 3,
-        "period_assigned": "E",
+        "period_assigned": "C",
         "halves": [
           "S1",
           "S2"
@@ -15711,11 +15711,11 @@
         "room_total": 680,
         "cs_total": 1335,
         "period_scores": {
-          "A": "teacher_busy",
-          "B": 18260.0673,
-          "C": "teacher_busy",
-          "D": 17969.8054,
-          "E": 17361.5645,
+          "A": 18915.2895,
+          "B": "teacher_busy",
+          "C": 14972.1499,
+          "D": 17949.8089,
+          "E": "teacher_busy",
           "F": "teacher_busy",
           "G": "teacher_busy"
         },
@@ -15730,7 +15730,7 @@
         "teacher": "Judge, Michelle",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "D",
+        "period_assigned": "B",
         "halves": [
           "S1",
           "S2"
@@ -15744,10 +15744,10 @@
         "cs_total": 835,
         "period_scores": {
           "A": "teacher_busy",
-          "B": 22098.1418,
+          "B": 17244.5752,
           "C": "teacher_busy",
-          "D": 21668.0071,
-          "E": 26357.5871,
+          "D": 21618.0071,
+          "E": 26307.4871,
           "F": "teacher_busy",
           "G": "teacher_busy"
         },
@@ -15777,11 +15777,11 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 50758.3397,
-          "D": 48422.6413,
-          "E": 49641.8051,
+          "C": 50718.3397,
+          "D": 48382.5413,
+          "E": 49601.7051,
           "F": "teacher_busy",
-          "G": 49815.7345
+          "G": 49415.6345
         },
         "remaining_sections": 13
       },
@@ -15794,7 +15794,7 @@
         "teacher": "Umbrino, Philip",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "E",
+        "period_assigned": "G",
         "halves": [
           "S1",
           "S2"
@@ -15809,11 +15809,11 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 50773.3353,
+          "C": 50733.3353,
           "D": "teacher_busy",
-          "E": 49656.8014,
+          "E": 49616.7014,
           "F": "teacher_busy",
-          "G": 49830.7412
+          "G": 49430.6412
         },
         "remaining_sections": 12
       },
@@ -15826,7 +15826,7 @@
         "teacher": "Umbrino, Philip",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "G",
+        "period_assigned": "E",
         "halves": [
           "S1",
           "S2"
@@ -15841,11 +15841,11 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 50788.3336,
+          "C": 50748.3336,
           "D": "teacher_busy",
-          "E": "teacher_busy",
+          "E": 49631.7055,
           "F": "teacher_busy",
-          "G": 49845.7389
+          "G": "teacher_busy"
         },
         "remaining_sections": 11
       },
@@ -15871,13 +15871,13 @@
         "room_total": 0,
         "cs_total": 580,
         "period_scores": {
-          "A": 78497.187,
-          "B": 74670.1414,
-          "C": 78845.5555,
-          "D": 70232.5228,
-          "E": 75962.1175,
-          "F": 78973.5531,
-          "G": 73895.96
+          "A": 75909.887,
+          "B": 74367.5414,
+          "C": 78825.5555,
+          "D": 70212.4228,
+          "E": 75942.0175,
+          "F": 78953.5531,
+          "G": 73234.86
         },
         "remaining_sections": 10
       },
@@ -15903,13 +15903,13 @@
         "room_total": 0,
         "cs_total": 590,
         "period_scores": {
-          "A": 78497.1905,
-          "B": 74670.1386,
-          "C": 78845.5577,
+          "A": 75909.8905,
+          "B": 74367.5386,
+          "C": 78825.5577,
           "D": "teacher_busy",
-          "E": 75962.1249,
-          "F": 78973.5507,
-          "G": 73895.9597
+          "E": 75942.0249,
+          "F": 78953.5507,
+          "G": 73234.8597
         },
         "remaining_sections": 9
       },
@@ -15935,12 +15935,12 @@
         "room_total": 0,
         "cs_total": 600,
         "period_scores": {
-          "A": 78512.1898,
-          "B": 74685.1378,
-          "C": 78860.5568,
+          "A": 75924.8898,
+          "B": 74382.5378,
+          "C": 78840.5568,
           "D": "teacher_busy",
-          "E": 75977.1201,
-          "F": 78988.5588,
+          "E": 75957.0201,
+          "F": 78968.5588,
           "G": "teacher_busy"
         },
         "remaining_sections": 8
@@ -15954,7 +15954,7 @@
         "teacher": "Gioni, Christopher",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "E",
+        "period_assigned": "A",
         "halves": [
           "S1",
           "S2"
@@ -15967,12 +15967,12 @@
         "room_total": 0,
         "cs_total": 610,
         "period_scores": {
-          "A": 78527.1911,
+          "A": 75939.8911,
           "B": "teacher_busy",
-          "C": 78875.5564,
+          "C": 78855.5564,
           "D": "teacher_busy",
-          "E": 75992.1185,
-          "F": 79003.5597,
+          "E": 75972.0185,
+          "F": 78983.5597,
           "G": "teacher_busy"
         },
         "remaining_sections": 7
@@ -15986,7 +15986,7 @@
         "teacher": "Gioni, Christopher",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "A",
+        "period_assigned": "E",
         "halves": [
           "S1",
           "S2"
@@ -15999,12 +15999,12 @@
         "room_total": 0,
         "cs_total": 620,
         "period_scores": {
-          "A": 78542.1877,
+          "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 78890.5591,
+          "C": 78870.5543,
           "D": "teacher_busy",
-          "E": "teacher_busy",
-          "F": 79018.5506,
+          "E": 75987.0258,
+          "F": 78998.5506,
           "G": "teacher_busy"
         },
         "remaining_sections": 6
@@ -16018,7 +16018,7 @@
         "teacher": "Oh, Burton",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "C",
+        "period_assigned": "E",
         "halves": [
           "S1",
           "S2"
@@ -16031,11 +16031,11 @@
         "room_total": 0,
         "cs_total": 620,
         "period_scores": {
-          "A": 70925.3012,
+          "A": 60247.2012,
           "B": "teacher_busy",
-          "C": 65235.3682,
-          "D": 66367.035,
-          "E": 70268.4032,
+          "C": 65215.3682,
+          "D": 66346.935,
+          "E": 59616.6366,
           "F": 70298.2071,
           "G": "teacher_busy"
         },
@@ -16050,7 +16050,7 @@
         "teacher": "Oh, Burton",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "D",
+        "period_assigned": "A",
         "halves": [
           "S1",
           "S2"
@@ -16063,11 +16063,11 @@
         "room_total": 0,
         "cs_total": 630,
         "period_scores": {
-          "A": 70940.3035,
+          "A": 60247.2035,
           "B": "teacher_busy",
-          "C": "teacher_busy",
-          "D": 66367.0427,
-          "E": 70268.4089,
+          "C": 65215.3761,
+          "D": 66346.9423,
+          "E": "teacher_busy",
           "F": 70298.2085,
           "G": "teacher_busy"
         },
@@ -16082,7 +16082,7 @@
         "teacher": "Oh, Burton",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "E",
+        "period_assigned": "C",
         "halves": [
           "S1",
           "S2"
@@ -16095,11 +16095,11 @@
         "room_total": 0,
         "cs_total": 640,
         "period_scores": {
-          "A": 70940.3025,
+          "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": "teacher_busy",
-          "D": "teacher_busy",
-          "E": 70268.4064,
+          "C": 65230.3692,
+          "D": 66346.9397,
+          "E": "teacher_busy",
           "F": 70298.2055,
           "G": "teacher_busy"
         },
@@ -16129,11 +16129,11 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 18637.8457,
-          "D": 19916.703,
-          "E": 20987.9609,
+          "C": 18617.8457,
+          "D": 17934.503,
+          "E": 18561.1942,
           "F": 15715.0272,
-          "G": 19091.1239
+          "G": 16454.0239
         },
         "remaining_sections": 2
       },
@@ -16146,7 +16146,7 @@
         "teacher": "Hartmann, Katy",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "C",
+        "period_assigned": "G",
         "halves": [
           "S1",
           "S2"
@@ -16161,11 +16161,11 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": 18652.8539,
-          "D": 19931.7015,
-          "E": 21002.9621,
+          "C": 18632.8539,
+          "D": 17949.5015,
+          "E": 18576.1955,
           "F": "teacher_busy",
-          "G": 19106.1294
+          "G": 16469.0294
         },
         "remaining_sections": 1
       },
@@ -16178,7 +16178,7 @@
         "teacher": "Hartmann, Katy",
         "room": "TBD",
         "tier": 3,
-        "period_assigned": "G",
+        "period_assigned": "D",
         "halves": [
           "S1",
           "S2"
@@ -16193,11 +16193,11 @@
         "period_scores": {
           "A": "teacher_busy",
           "B": "teacher_busy",
-          "C": "teacher_busy",
-          "D": 19946.7061,
-          "E": 21017.964,
+          "C": 18647.8505,
+          "D": 17964.5084,
+          "E": 18591.1945,
           "F": "teacher_busy",
-          "G": 19121.1279
+          "G": "teacher_busy"
         },
         "remaining_sections": 0
       }
@@ -21239,8 +21239,8 @@
           "total": 535
         },
         "Saggio, Jack": {
-          "raw": 80,
-          "total": 640
+          "raw": 70,
+          "total": 630
         },
         "Serra, Carmine": {
           "raw": 100,
@@ -21259,8 +21259,8 @@
           "total": 850
         },
         "Tuesta, David": {
-          "raw": 120,
-          "total": 420
+          "raw": 110,
+          "total": 410
         },
         "Umbrino, Philip": {
           "raw": 60,
@@ -21450,7 +21450,7 @@
         },
         "S-235": {
           "raw": 30,
-          "total": 720
+          "total": 710
         },
         "S-236": {
           "raw": 30,
