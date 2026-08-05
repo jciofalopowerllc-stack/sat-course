@@ -1185,5 +1185,12 @@
       "world_language_waived": true,
       "total_credits_required": 125
     }
-  }
+  },
+  "semester_pairing_groups": [
+    {
+      "label": "Grade 12 Theology",
+      "courses": ["849", "851"],
+      "description": "Semester sections of paired courses must be placed in the same periods. Each period assigned to the group gets one section of each course per semester (S1 + S2). Students are NOT constrained — they may take paired courses in any period, any semester combination."
+    }
+  ]
 }

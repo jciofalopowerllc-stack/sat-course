@@ -2721,6 +2721,20 @@ for gi, cg in enumerate(cogroups):
     if has_sections:
         print(f"  Co-schedule group '{cg['name']}' ({len(cogroup_sids[gi])} sections) — will assign unified period")
 
+# ── Semester Pairing Groups ──
+# Universal rule: semester sections of paired courses must be placed in the
+# same periods, opposite semesters.  Each assigned period gets one S1 section
+# and one S2 section of EVERY course in the group.  Students are NOT
+# constrained — they may take paired courses in any period, any combination.
+# Defined in course_priorities.json "semester_pairing_groups".
+_pairing_groups = _prio_data.get('semester_pairing_groups', [])
+code_to_pairing_group = {}
+for _pgi, _pg in enumerate(_pairing_groups):
+    for _pc in _pg.get('courses', []):
+        code_to_pairing_group[str(_pc)] = _pgi
+if _pairing_groups:
+    print(f"  Semester pairing groups: {len(_pairing_groups)}")
+
 # ── Redistribute EC (Engine Choice) sections evenly across S1/S2 ──
 _ec_courses = defaultdict(list)
 for s in sections:
@@ -2905,6 +2919,178 @@ for gi, sids_in_group in cogroup_sids.items():
     assigned_cogroups.update(sids_in_group)
     print(f"  Co-schedule group '{cogroups[gi]['name']}' -> Period {best_period}")
 
+# --- STEP 1.5: Assign semester pairing groups ---
+# Universal rule: paired courses share the same set of periods.
+# Each period gets one S1 + one S2 section of every course in the group.
+# The engine scores all C(7, periods_needed) combinations and picks the
+# one with the lowest total conflict + load score.  Pairing group sections
+# are fixed before greedy_assign_periods() runs — greedy naturally skips
+# them (period is not None).  The Phase D optimizer also cannot move them.
+from itertools import combinations as _combinations
+assigned_pairing_sids = set()
+
+for _pgi, _pg in enumerate(_pairing_groups):
+    _pg_courses = [str(c) for c in _pg.get('courses', [])]
+    _pg_label = _pg.get('label', f'Pairing Group {_pgi + 1}')
+
+    # Collect sections by course and semester
+    _pg_sec = {}  # code -> {'S1': [sids], 'S2': [sids]}
+    _pg_periods_needed = None
+    _pg_valid = True
+    for _pc in _pg_courses:
+        _s1 = [sid for sid in sec_by_code.get(_pc, [])
+               if sections[sid]['halves'] == ('S1',) and sections[sid]['period'] is None]
+        _s2 = [sid for sid in sec_by_code.get(_pc, [])
+               if sections[sid]['halves'] == ('S2',) and sections[sid]['period'] is None]
+        if len(_s1) != len(_s2):
+            print(f"  WARNING: Pairing group '{_pg_label}' course {_pc} has unequal "
+                  f"S1/S2 split ({len(_s1)}/{len(_s2)}) — skipping pairing")
+            _pg_valid = False
+            break
+        if len(_s1) == 0:
+            print(f"  WARNING: Pairing group '{_pg_label}' course {_pc} has no unassigned "
+                  f"semester sections — skipping pairing")
+            _pg_valid = False
+            break
+        _pg_sec[_pc] = {'S1': _s1, 'S2': _s2}
+        if _pg_periods_needed is None:
+            _pg_periods_needed = len(_s1)
+        elif len(_s1) != _pg_periods_needed:
+            print(f"  WARNING: Pairing group '{_pg_label}' courses have different "
+                  f"section counts — skipping pairing")
+            _pg_valid = False
+            break
+
+    if not _pg_valid or _pg_periods_needed is None or _pg_periods_needed == 0:
+        continue
+
+    # Collect all teachers involved in this pairing group
+    _pg_teachers = set()
+    for _pc in _pg_courses:
+        for sid in sec_by_code.get(_pc, []):
+            t = sections[sid]['teacher']
+            if t and t != 'TBD':
+                _pg_teachers.add(t)
+
+    # Build co-enrollment data for conflict scoring
+    _pg_co_enroll = defaultdict(lambda: defaultdict(list))
+    for pid in students:
+        reqs = sreq[pid]
+        for i, cid_a in enumerate(reqs):
+            if cid_a in set(_pg_courses):
+                for cid_b in reqs[i + 1:]:
+                    _pg_co_enroll[cid_a][cid_b].append(pid)
+                    _pg_co_enroll[cid_b][cid_a].append(pid)
+
+    # Score all C(7, periods_needed) combinations
+    _pg_best_combo = None
+    _pg_best_score = float('inf')
+    _pg_all_combos = []
+
+    for combo in _combinations(PERIODS, _pg_periods_needed):
+        combo_blocked = False
+
+        # Check teacher availability and load for every period in this combo
+        for _pt in _pg_teachers:
+            # Count non-pairing periods already used by this teacher
+            _existing_s1 = set()
+            _existing_s2 = set()
+            for sid in teacher_sections.get(_pt, []):
+                s = sections[sid]
+                if s['period'] and s['code'] not in set(_pg_courses):
+                    if 'S1' in s['halves']:
+                        _existing_s1.add(s['period'])
+                    if 'S2' in s['halves']:
+                        _existing_s2.add(s['period'])
+
+            # Pairing adds periods_needed periods to both S1 and S2
+            _proj_s1 = _existing_s1 | set(combo)
+            _proj_s2 = _existing_s2 | set(combo)
+            _max_s1, _max_s2 = get_max_load(_pt)
+            if len(_proj_s1) > _max_s1 or len(_proj_s2) > _max_s2:
+                combo_blocked = True
+                break
+
+            # Check teacher is available and not busy in each period
+            for p in combo:
+                if not teacher_available(_pt, p):
+                    combo_blocked = True
+                    break
+                # Check for existing teacher conflicts (from co-schedule groups)
+                for sid in teacher_sections.get(_pt, []):
+                    s = sections[sid]
+                    if (s['period'] == p and s['code'] not in set(_pg_courses)
+                            and (set(s['halves']) & {'S1', 'S2'})):
+                        # Teacher already busy in this period from non-pairing course
+                        combo_blocked = True
+                        break
+                if combo_blocked:
+                    break
+            if combo_blocked:
+                break
+
+        if combo_blocked:
+            continue
+
+        # Score: conflict potential + period load balance
+        _combo_score = 0
+        for p in combo:
+            for _pc in _pg_courses:
+                # Score as FY-equivalent: course occupies this period for S1 and S2
+                _co_courses = _pg_co_enroll.get(_pc, {})
+                for other_cid, shared_pids in _co_courses.items():
+                    # Exclude pairing group partners — paired by design
+                    if other_cid in set(_pg_courses):
+                        continue
+                    other_sids = sec_by_code.get(other_cid, [])
+                    for osid in other_sids:
+                        _os = sections[osid]
+                        if _os['period'] != p:
+                            continue
+                        if not (set(('S1', 'S2')) & set(_os['halves'])):
+                            continue
+                        for pid in shared_pids:
+                            _combo_score += student_raw_priority(pid) + max(
+                                course_request_priority(pid, _pc),
+                                course_request_priority(pid, other_cid))
+                        break
+
+            # Period load: prefer less-loaded periods
+            _pload = sum(1 for sec in sections if sec['period'] == p)
+            _combo_score += _pload * 0.5
+
+        _pg_all_combos.append((combo, _combo_score))
+        if _combo_score < _pg_best_score:
+            _pg_best_score = _combo_score
+            _pg_best_combo = combo
+
+    if _pg_best_combo is None:
+        # Fallback: pick least-loaded periods
+        _loads = Counter(sec['period'] for sec in sections if sec['period'])
+        _pg_best_combo = tuple(sorted(PERIODS, key=lambda p: _loads.get(p, 0))[:_pg_periods_needed])
+        print(f"  WARNING: No valid combo for '{_pg_label}' — using least-loaded fallback")
+
+    # Assign sections to periods: one S1 + one S2 of each course per period
+    for i, p in enumerate(_pg_best_combo):
+        for _pc in _pg_courses:
+            for sem in ('S1', 'S2'):
+                _sid = _pg_sec[_pc][sem][i]
+                sections[_sid]['period'] = p
+                assigned_pairing_sids.add(_sid)
+
+    # Report
+    _pg_total_secs = sum(len(_pg_sec[c]['S1']) + len(_pg_sec[c]['S2']) for c in _pg_courses)
+    print(f"  Semester pairing group '{_pg_label}' -> Periods {', '.join(_pg_best_combo)} "
+          f"({_pg_periods_needed} periods × {len(_pg_courses)} courses × 2 semesters = "
+          f"{_pg_total_secs} sections)")
+    # Show combo ranking
+    if _pg_all_combos:
+        _pg_all_combos.sort(key=lambda x: x[1])
+        _top5 = _pg_all_combos[:5]
+        for _rank, (_combo, _sc) in enumerate(_top5, 1):
+            _marker = " ← SELECTED" if _combo == _pg_best_combo else ""
+            print(f"    #{_rank}: Periods {','.join(_combo)} score={_sc:.1f}{_marker}")
+
 # --- STEP 2: Enhanced greedy assignment ---
 def _build_co_enrollment():
     """Build co-enrollment index: for each course, which other courses share students.
@@ -2965,9 +3151,14 @@ def _predict_conflict_score(code, period, halves, co_enroll):
     co_courses = co_enroll.get(code, {})
     # Co-schedule exclusion: courses in the same co-schedule group are NOT conflicts
     my_cogroup = code_to_cogroup.get(code)
+    # Semester pairing exclusion: paired courses share periods by design —
+    # students choose independently, so co-enrollment is NOT a conflict
+    my_pairgroup = code_to_pairing_group.get(code)
     for other_cid, shared_students in co_courses.items():
         if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
             continue  # same co-schedule group — not a conflict
+        if my_pairgroup is not None and code_to_pairing_group.get(other_cid) == my_pairgroup:
+            continue  # same semester pairing group — students choose periods independently
         other_sids = sec_by_code.get(other_cid, [])
         for osid in other_sids:
             os = sections[osid]
@@ -3214,10 +3405,13 @@ def greedy_assign_periods(seed=42, audit=False):
                 # period/semester conflicts; this handles INDIRECT flexibility
                 # loss from period-set overlap.
                 co_courses = co_enroll.get(code, {})
+                my_pairgroup_g = code_to_pairing_group.get(code)
                 co_period_penalty = 0
                 for other_cid, shared_pids in co_courses.items():
                     if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
                         continue  # co-schedule group — not a conflict
+                    if my_pairgroup_g is not None and code_to_pairing_group.get(other_cid) == my_pairgroup_g:
+                        continue  # semester pairing group — students choose periods independently
                     n_shared = len(shared_pids)
                     if n_shared < 3:
                         continue  # skip low-co-enrollment pairs (noise)
@@ -3962,6 +4156,10 @@ for _cg in cogroups:
     for _cc in _cg['codes']:
         for _cs in sec_by_code.get(_cc, []):
             COGROUP_SIDS.add(_cs)
+
+# Semester pairing group sections — immovable by Phase D optimizer
+PAIRING_SIDS = set(assigned_pairing_sids)
+
 code_requesters = defaultdict(set)
 for _pid in students:
     for _cid in sreq[_pid]:
@@ -3970,7 +4168,7 @@ for _pid in students:
 _orig_periods = {}
 _orig_halves = {}
 for s in sections:
-    if s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups:
+    if s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS:
         _orig_periods[s['sid']] = s['period']
         _orig_halves[s['sid']] = s['halves']
     else:
@@ -3980,7 +4178,7 @@ for s in sections:
 def _save_fixed_state():
     fixed = {}
     for s in sections:
-        if s['sid'] in assigned_cogroups:
+        if s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS:
             fixed[s['sid']] = (s['period'], s['halves'])
     return fixed
 
@@ -3999,14 +4197,15 @@ def _restore_for_restart(fixed_state):
         elif pt == 'S2':
             s['halves'] = ('S2',)
         # EC sections will be redistributed below
-    # Re-apply co-group fixed periods
+    # Re-apply co-group AND pairing group fixed periods+halves
     for sid in fixed_state:
         s = sections[sid]
         s['period'], s['halves'] = fixed_state[sid]
     # Redistribute EC sections evenly across S1/S2
+    # EXCLUDE pairing group sections — their halves are fixed by the pairing rule
     _ec_by_code = defaultdict(list)
     for s in sections:
-        if s.get('prescribed_term') == 'EC':
+        if s.get('prescribed_term') == 'EC' and s['sid'] not in PAIRING_SIDS:
             _ec_by_code[s['code']].append(s['sid'])
     for cid, ec_sids in _ec_by_code.items():
         n_s1 = (len(ec_sids) + 1) // 2
@@ -4413,6 +4612,8 @@ def _can_move_section(sid, new_period):
     """Check if section can move to new_period without teacher conflicts."""
     if sid in COGROUP_SIDS:
         return False
+    if sid in PAIRING_SIDS:
+        return False  # semester pairing group — paired by design, immovable
     s = sections[sid]
     if new_period == s['period']:
         return False
@@ -4462,7 +4663,7 @@ def run_optimization_pass(cl=None):
                         sec_sc[sid] += 2
         cands = []
         for sid, score in sec_sc.most_common(120):
-            if sid in COGROUP_SIDS or score < 1:
+            if sid in COGROUP_SIDS or sid in PAIRING_SIDS or score < 1:
                 continue
             s = sections[sid]
             for p in PERIODS:
@@ -4522,7 +4723,7 @@ def run_optimization_pass(cl=None):
             for sid in sec_by_code.get(c['code'], []):
                 sec_sc2[sid] += 1
         top_sids = [sid for sid, _ in sec_sc2.most_common(30)
-                    if sid not in COGROUP_SIDS]
+                    if sid not in COGROUP_SIDS and sid not in PAIRING_SIDS]
         improved2 = False
         for i in range(len(top_sids)):
             if improved2:

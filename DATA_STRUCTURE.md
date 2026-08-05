@@ -605,6 +605,57 @@ The Co-Scheduled Priority Value follows the same recalculation cycle — after t
 - **Co-Schedule Raw Priority Value** = sum of all Course Section Raw values from all sections in the group + teacher locks + room locks. Fixed for the school year.
 - **Co-Schedule Total Priority Value** = Raw + Top Student + Teacher + Room. Changes every run. Saved with run number and school year.
 
+### Semester Pairing Groups — Universal Rule
+
+A semester pairing group is a set of 2 or more course codes whose semester sections must be placed in the **same periods, opposite semesters** during Job 1 (Section Placement). Each period assigned to the group gets one S1 section and one S2 section of **every** course in the group.
+
+**This is a Job 1 constraint only.** Job 2 (Student Placement) treats all courses independently — students may take paired courses in any period, any semester, any combination. The only requirement is that every student who needs the paired courses gets them somewhere in their schedule.
+
+**Why it exists:** When semester courses share the same student population (e.g., all Grade 12 students need both 849 Catholic Social Teaching and 851 Spirituality of Vocation), pairing them in the same periods reduces the number of periods consumed by those courses. Without pairing, 8 sections of 849 and 8 sections of 851 could spread across all 7 periods, leaving zero free periods for other Grade 12 courses. With pairing, they share 4 periods, leaving 3 free.
+
+**Data source:** Defined in `course_priorities.json` under `"semester_pairing_groups"`.
+
+```json
+"semester_pairing_groups": [
+  {
+    "label": "Grade 12 Theology",
+    "courses": ["849", "851"],
+    "description": "..."
+  }
+]
+```
+
+**Engine behavior:**
+
+1. After EC redistribution assigns S1/S2 halves, the engine collects all sections for each course in the pairing group.
+2. It calculates periods needed = sections per course ÷ 2 (e.g., 8 sections → 4 periods).
+3. It scores all C(7, periods_needed) period combinations using conflict potential and period load balance, excluding pairing partners from conflict scoring (they share periods by design).
+4. It selects the combination with the lowest total score and assigns periods.
+5. Each period gets: Course A S1 + Course A S2 + Course B S1 + Course B S2.
+6. Pairing group sections are fixed before `greedy_assign_periods()` runs — greedy naturally skips them.
+7. The Phase D optimizer cannot move pairing group sections.
+
+**Pairing group vs co-schedule group:**
+
+| Property | Co-Schedule Group | Semester Pairing Group |
+|----------|-------------------|----------------------|
+| Sections share | Same teacher, room, AND period | Same period only |
+| Semester | Same semester (one section per course) | Opposite semesters (S1 + S2 per course) |
+| Students | Enrolled in overlapping sections simultaneously | Take courses independently in any period |
+| Purpose | Protect low-enrollment courses | Reduce period consumption for same-population courses |
+| Conflict scoring | Excluded (co-enrolled students are NOT in conflict) | Excluded (students choose periods independently) |
+
+**Example — Course 849 + 851 paired in 4 periods:**
+
+| Period | S1 | S2 |
+|--------|-----|-----|
+| A | 849 sec 1, 851 sec 1 | 849 sec 5, 851 sec 5 |
+| C | 849 sec 2, 851 sec 2 | 849 sec 6, 851 sec 6 |
+| E | 849 sec 3, 851 sec 3 | 849 sec 7, 851 sec 7 |
+| F | 849 sec 4, 851 sec 4 | 849 sec 8, 851 sec 8 |
+
+A student can take 849-S1-Period-A and 851-S1-Period-E, or 849-S2-Period-C and 851-S1-Period-F, or any other combination.
+
 ---
 
 ## Pre-Build Validation Sources

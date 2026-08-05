@@ -61,6 +61,17 @@ The engine places course sections in three tiers. These tiers control the ORDER 
 
 **Co-schedule rule:** Co-scheduled sections share the same teacher, room, and period by design. They are essentially one section. A student enrolled in two co-scheduled courses is NOT in conflict — the co-schedule IS the schedule. The engine excludes co-scheduled courses from conflict scoring in `_predict_conflict_score()`.
 
+### Semester Pairing Groups (Universal Rule — from JC Iofalo, non-negotiable)
+A semester pairing group is a set of 2+ course codes whose semester sections must be placed in the **same periods, opposite semesters** during Job 1 (Section Placement). Each period assigned to the group gets one S1 section and one S2 section of every course in the group.
+
+- **Job 1 constraint only:** The engine pairs sections into shared periods before `greedy_assign_periods()` runs. Pairing group sections are immovable — `greedy_assign_periods()` skips them, and the Phase D optimizer cannot move them.
+- **Job 2 is independent:** Students may take paired courses in any period, any semester, any combination. The only requirement is that every student who needs the paired courses gets them somewhere in their schedule.
+- **Conflict scoring exclusion:** Pairing group partners are excluded from `_predict_conflict_score()` and co-enrollment spreading — they share periods by design, and students choose independently.
+- **Period selection:** The engine scores all C(7, periods_needed) combinations using conflict potential + period load balance, picking the lowest-scoring combo.
+- **Defined in:** `course_priorities.json` → `"semester_pairing_groups"` array.
+- **Current groups:** Grade 12 Theology (849 Catholic Social Teaching + 851 Spirituality of Vocation) — 8 sections each, 4 periods, 16 total sections.
+- **Why:** Without pairing, 849 and 851 could spread across all 7 periods, consuming every period for Grade 12 students. With pairing, they share 4 periods, leaving 3 free for other courses. Mathematical conflict reduction: up to 164 fewer conflicts.
+
 ### Engine Run Modes
 - `python schedule_engine_v3.py` or `python schedule_engine_v3.py job1` — Run Job 1 only, export Excel, **STOP** for review
 - `python schedule_engine_v3.py full` — Run Job 1 + Job 2 (student placement), export both Excel reports
