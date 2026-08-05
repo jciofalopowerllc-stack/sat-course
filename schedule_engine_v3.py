@@ -3806,6 +3806,10 @@ def greedy_assign_periods(seed=42, audit=False):
                 if teacher and teacher != 'TBD' and not teacher_available(teacher, p):
                     period_scores[p] = 'unavailable'
                     continue
+                # Room hard block: prescribed room already occupied → skip period
+                if room and room != 'TBD' and room not in SHARED_ROOMS and room_busy(room, p, halves, s['sid']):
+                    period_scores[p] = 'room_busy'
+                    continue
                 score = 0
                 conflict_penalty = _predict_conflict_score(code, p, halves, co_enroll)
 
@@ -3887,8 +3891,7 @@ def greedy_assign_periods(seed=42, audit=False):
 
                 period_load = sum(1 for sec in sections if sec['period'] == p)
                 score += period_load * 0.1
-                if room and room != 'TBD' and room_busy(room, p, halves, s['sid']):
-                    score += 5
+                # (room_busy is now a hard block above — no soft penalty needed)
                 tp = teacher_profiles.get(teacher, {})
                 if tp:
                     if p in tp.get('avoid_periods', []):
