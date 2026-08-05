@@ -4112,13 +4112,27 @@ def greedy_assign_periods(seed=42, audit=False):
                 # period slots (critical for 6th-period teachers).  A section
                 # being placed gets a bonus if another section of the same
                 # course is already in this period with a non-overlapping semester.
+                # For teachers at 6-period capacity (max_load >= 6), sharing
+                # is a SCHEDULABILITY REQUIREMENT — without it, a section will
+                # be unplaceable.  In that case we floor the score to guarantee
+                # the complement period wins over all other period candidates.
                 if total_course_sections >= 2:
                     for _comp_sid in sec_by_code[code]:
                         _comp = sections[_comp_sid]
                         if (_comp['period'] == p
                                 and not (set(_comp['halves']) & set(halves))):
                             # Non-overlapping semester already in this period
-                            score -= 20  # strong preference to share
+                            if teacher and teacher != 'TBD':
+                                _comp_s1, _comp_s2 = get_max_load(teacher)
+                                if max(_comp_s1, _comp_s2) >= 6:
+                                    # Teacher at 6-period capacity — sharing is critical.
+                                    # Floor score to 1.0 so this period beats any
+                                    # conflict-based score (which can be in the millions).
+                                    score = min(score, 1.0)
+                                else:
+                                    score -= 20
+                            else:
+                                score -= 20
                             break
 
                 # Cross-course co-enrollment spreading: penalize placing this
