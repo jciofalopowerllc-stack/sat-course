@@ -79,10 +79,10 @@ This requires its own file because a co-schedule group can contain 2, 3, or 4 co
 This is the rulebook — not a parent, not a shared resource, not a historical file. It defines the constraints the engine must enforce for the entire school.
 
 **Graduation Requirements by Grade Level (Don Bosco Prep):**
-- **Grades 9-10:** English, Mathematics, Science, Social Studies, World Language, Theology, Physical Education (7 required departments)
-- **Grade 11:** English, Mathematics, Science, Social Studies, World Language, Theology (6 required departments — PE not required)
-- **Grade 12:** English, Mathematics, Theology (3 required), plus Social Studies OR Business (1 of 2). No Science, World Language, or PE requirement for seniors.
-- **Resource Room Exception:** World Language waived, 125 total credits (vs. 140 standard)
+- **Grades 9-10:** English, Mathematics, Science, Social Studies, Language, Theology, Physical Education (7 required departments)
+- **Grade 11:** English, Mathematics, Science, Social Studies, Language, Theology (6 required departments — PE not required)
+- **Grade 12:** English, Mathematics, Theology (3 required), plus Social Studies OR Business (1 of 2). No Science, Language, or PE requirement for seniors.
+- **Resource Room Exception:** Language waived, 125 total credits (vs. 140 standard)
 - **PE Exceptions (grades 9-10):** Band, String Orchestra, and other special circumstances may exempt students from PE
 
 ### Pathway Programs (SSP — Student Special Population)
@@ -212,7 +212,7 @@ Course Priority Values include the course's own restrictions (AP, Singleton, etc
 
 **Course-level priority characteristics** (AP, Singleton, Graduation Requirement, Grade 12 Priority Academic Elective, Semester Only, Cohort Course, Co-Schedule Group, Prescribed Term) add point values to the student's course request total. When a single course qualifies for more than one characteristic, **all applicable values stack** — the student receives the sum of every characteristic that applies.
 
-**Grade 12 Priority Academic Elective (Gr12 PAE)** — 20 points. Courses that are academically important for seniors but not technically graduation-required. This includes: Science courses for Grade 12 (not a Gr12 graduation requirement but academically significant), AP electives that are not in a graduation-required department for that student's grade, LEO program courses, and World Language courses for Grade 12. A course receives either Graduation Requirement (20) OR Grade 12 Priority Academic Elective (20), never both — they are mutually exclusive categories at the same point value.
+**Grade 12 Priority Academic Elective (Gr12 PAE)** — 20 points. Courses that are academically important for seniors but not technically graduation-required. This includes: Science courses for Grade 12 (not a Gr12 graduation requirement but academically significant), AP electives that are not in a graduation-required department for that student's grade, LEO program courses, and Language courses for Grade 12. A course receives either Graduation Requirement (20) OR Grade 12 Priority Academic Elective (20), never both — they are mutually exclusive categories at the same point value.
 
 **Example — Grade 12 student in LEO II, Academic Support, requesting AP Calc BC (AP + Singleton + Grad Req):**
 
@@ -494,7 +494,7 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 | H | Max Enrollment per Section | REQUIRED | Seat cap (e.g., 25) |
 | I | Singleton | REQUIRED | Y/N — only one section exists |
 | J | AP | REQUIRED | Y/N — is this an AP course |
-| K | Graduation Requirement | OPTIONAL | Subject area satisfied (e.g., English, Mathematics, Science, Social Studies, World Language, Theology) — null = elective |
+| K | Graduation Requirement | OPTIONAL | Subject area satisfied (e.g., English, Mathematics, Science, Social Studies, Language, Theology) — null = elective |
 | L | Cohort | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not a cohort course |
 | M | NCAA | OPTIONAL | Y/N — is this course NCAA approved — null = not applicable |
 | N | Prerequisites | OPTIONAL | Course codes, comma-separated (e.g., 110, 421) — null = none |
@@ -502,17 +502,17 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 
 15 columns total.
 
-**Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English", "World Language", "Physical Education"). If the field is null, the course is an elective. The engine uses the course's department name (matched against `course_priorities.json` graduation requirement rules) to determine if a course is a graduation requirement for a specific student's grade level.
+**Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English", "Language", "Physical Education"). If the field is null, the course is an elective. The engine uses the course's department name (matched against `course_priorities.json` graduation requirement rules) to determine if a course is a graduation requirement for a specific student's grade level.
 
 **Graduation requirements are grade-specific:**
 
 | Grades | Required Departments |
 |--------|---------------------|
-| 9-10 | English, Mathematics, Science, Social Studies, World Language, Theology, Physical Education |
-| 11 | English, Mathematics, Science, Social Studies, World Language, Theology |
+| 9-10 | English, Mathematics, Science, Social Studies, Language, Theology, Physical Education |
+| 11 | English, Mathematics, Science, Social Studies, Language, Theology |
 | 12 | English, Mathematics, Theology, Social Studies OR Business |
 
-Physical Education is required for grades 9-10 only. Exceptions exist for students enrolled in Band, String Orchestra, and other special circumstances. World Language and Science are required through grade 11 but not grade 12. Department names in the config must exactly match Template 7's Department column (e.g., "World Language" not "Language").
+Physical Education is required for grades 9-10 only. Exceptions exist for students enrolled in Band, String Orchestra, and other special circumstances. Language and Science are required through grade 11 but not grade 12. Department names in the config must exactly match Template 7's Department column.
 
 **Columns removed from the original Template 7 (not needed by Don Bosco engine):**
 
@@ -1165,7 +1165,7 @@ How restricted the section is based on its own characteristics. These values sta
 | AP | 30 | Course is an AP course |
 | Singleton | 25 | Only 1 section exists for this course |
 | Graduation Requirement | 20 | Course is in a graduation-required department for the student's grade level |
-| Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — full-year courses (T7 Term Type = FY) from English, Mathematics, Science, Social Studies, or World Language departments that are NOT a Grade Level Requirement, NOT a Cohort course, and NOT an SSP course |
+| Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — full-year courses (T7 Term Type = FY) from English, Mathematics, Science, Social Studies, or Language departments that are NOT a Grade Level Requirement, NOT a Cohort course, and NOT an SSP course |
 | Semester Only (Term Type = S) | 15 | Course is a semester course (T7 Term Type = S), not full year |
 | Cohort Course | 15 | Course has a cohort constraint (students must stay together) |
 | Co-Schedule Group | 15 | Course is part of a co-schedule group |

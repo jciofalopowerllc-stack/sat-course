@@ -274,8 +274,8 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 | v1.0 (single-tier) | 207 | 96.8% | 0 P5 | Original engine, single priority scale |
 | v1.1 (composite scoring) | 325 | 95.1% | 0 P5 | Phase B refactor regressed ordering |
 | v1.2 (three-band fix) | 240 | 95.1% | 0 P5 | Three-band priority + priority-aware optimization |
-| v2.0 (pyramid + ripple) | 338 | 94.5% | 0 (incorrect) | Four-level pyramid system. Graduation req detection bug: "Language" vs "World Language" mismatch, PE missing |
-| v2.1 (grad req fix) | 301 | 95.1% | 0 (verified) | Fixed graduation req config: "World Language" match, PE added for grades 9-10. All 5,033 grad reqs fulfilled |
+| v2.0 (pyramid + ripple) | 338 | 94.5% | 0 (incorrect) | Four-level pyramid system. Graduation req detection bug: "Language" vs "Language" mismatch, PE missing |
+| v2.1 (grad req fix) | 301 | 95.1% | 0 (verified) | Fixed graduation req config: "Language" match, PE added for grades 9-10. All 5,033 grad reqs fulfilled |
 | v2.2 (pathway elevation) | **99** | **98.4%** | **0** | Pathway detection from Historical Grades + Course Requests. 625/805 students assigned to named pathways. Pathway courses elevated to Level 2. Grades 9-10 conflictes eliminated |
 
 ### 5.2 Current Configuration
@@ -396,7 +396,7 @@ The LEO student ranks higher and gets placed first — their seat is guaranteed 
 - [x] Co-schedule loader: reads new format (one course per row, 4 columns, grouped by name)
 - [x] Template 9 room profiles: 48 rooms with capacity, availability, shared room flag
 - [x] Shared room fix: only Gymnasium (capacity ≥ 100 AND Shared=Y) allows simultaneous sections — prevents 46/48 rooms from being treated as shared
-- [x] Graduation requirement bug fix: "Language" → "World Language" in course_priorities.json to match Template 7 department names
+- [x] Graduation requirement bug fix: "Language" → "Language" in course_priorities.json to match Template 7 department names
 - [x] Physical Education added to graduation requirements for grades 9-10 only (not required grades 11-12)
 - [x] Engine reads grade-specific PE requirements via `grades_9_10_extra` config section in course_priorities.json
 - [x] Result: 338→301 conflictes, 94.5%→95.1% placement, 0 graduation requirement conflictes (verified correct)

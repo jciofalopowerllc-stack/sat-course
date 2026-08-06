@@ -286,31 +286,31 @@ cat("931", grades=[11], term="S1", grad_req="Theology")  # Community Service 11
 cat("941", grades=[12], term="S1", grad_req="Theology")  # Community Service 12
 
 # WORLD LANGUAGE DEPARTMENT
-cat("312", grades=[9,10], term="FY", ncaa=True, grad_req="World Language")  # Italian I
-cat("322", grades=[9,10,11], term="FY", ncaa=True, grad_req="World Language", prereqs=["312"])  # Italian II
-cat("323", grades=[9,10,11], term="FY", ncaa=True, grad_req="World Language", prereqs=["312"])  # Italian II H
-cat("332", grades=[10,11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["322"])  # Italian III
-cat("333", grades=[10,11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["323"])  # Italian III H
-cat("343", grades=[11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["333"])  # Italian IV H
-cat("352", grades=[11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["333"])  # AP Italian
-cat("314", grades=[9,10], term="FY", ncaa=True, grad_req="World Language")  # Latin I
-cat("315", grades=[9,10], term="FY", ncaa=True, grad_req="World Language")  # Latin I H
-cat("327", grades=[9,10,11], term="FY", ncaa=True, grad_req="World Language", prereqs=["315"])  # Latin II H
-cat("339", grades=[10,11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["327"])  # Latin III H
-cat("353", grades=[11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["339"])  # Latin IV H
-cat("359", grades=[11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["339"])  # AP Latin
-cat("310", grades=[9,10], term="FY", ncaa=True, grad_req="World Language")  # Spanish I
-cat("311", grades=[9,10], term="FY", ncaa=True, grad_req="World Language")  # Spanish I H
-cat("320", grades=[9,10,11], term="FY", ncaa=True, grad_req="World Language", prereqs=["310"])  # Spanish II
-cat("321", grades=[9,10,11], term="FY", ncaa=True, grad_req="World Language", prereqs=["311"])  # Spanish II H
-cat("330", grades=[10,11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["320"])  # Spanish III
-cat("331", grades=[10,11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["321"])  # Spanish III H
-cat("334", grades=[10,11,12], term="FY", ncaa=True, grad_req="World Language")  # French III
-cat("336", grades=[10,11,12], term="FY", ncaa=True, grad_req="World Language")  # German III
-cat("340", grades=[11,12], term="FY", ncaa=True, grad_req="World Language")  # Spanish IV
-cat("344", grades=[11,12], term="FY", ncaa=True, grad_req="World Language")  # French IV
-cat("3440", grades=[11,12], term="FY", ncaa=True, grad_req="World Language")  # French IV (dup)
-cat("351", grades=[11,12], term="FY", ncaa=True, grad_req="World Language", prereqs=["331"])  # AP Spanish
+cat("312", grades=[9,10], term="FY", ncaa=True, grad_req="Language")  # Italian I
+cat("322", grades=[9,10,11], term="FY", ncaa=True, grad_req="Language", prereqs=["312"])  # Italian II
+cat("323", grades=[9,10,11], term="FY", ncaa=True, grad_req="Language", prereqs=["312"])  # Italian II H
+cat("332", grades=[10,11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["322"])  # Italian III
+cat("333", grades=[10,11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["323"])  # Italian III H
+cat("343", grades=[11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["333"])  # Italian IV H
+cat("352", grades=[11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["333"])  # AP Italian
+cat("314", grades=[9,10], term="FY", ncaa=True, grad_req="Language")  # Latin I
+cat("315", grades=[9,10], term="FY", ncaa=True, grad_req="Language")  # Latin I H
+cat("327", grades=[9,10,11], term="FY", ncaa=True, grad_req="Language", prereqs=["315"])  # Latin II H
+cat("339", grades=[10,11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["327"])  # Latin III H
+cat("353", grades=[11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["339"])  # Latin IV H
+cat("359", grades=[11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["339"])  # AP Latin
+cat("310", grades=[9,10], term="FY", ncaa=True, grad_req="Language")  # Spanish I
+cat("311", grades=[9,10], term="FY", ncaa=True, grad_req="Language")  # Spanish I H
+cat("320", grades=[9,10,11], term="FY", ncaa=True, grad_req="Language", prereqs=["310"])  # Spanish II
+cat("321", grades=[9,10,11], term="FY", ncaa=True, grad_req="Language", prereqs=["311"])  # Spanish II H
+cat("330", grades=[10,11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["320"])  # Spanish III
+cat("331", grades=[10,11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["321"])  # Spanish III H
+cat("334", grades=[10,11,12], term="FY", ncaa=True, grad_req="Language")  # French III
+cat("336", grades=[10,11,12], term="FY", ncaa=True, grad_req="Language")  # German III
+cat("340", grades=[11,12], term="FY", ncaa=True, grad_req="Language")  # Spanish IV
+cat("344", grades=[11,12], term="FY", ncaa=True, grad_req="Language")  # French IV
+cat("3440", grades=[11,12], term="FY", ncaa=True, grad_req="Language")  # French IV (dup)
+cat("351", grades=[11,12], term="FY", ncaa=True, grad_req="Language", prereqs=["331"])  # AP Spanish
 
 # SPECIAL EDUCATION
 cat("955", grades=[9,10,11,12], term="FY")  # Academic Support
@@ -323,17 +323,23 @@ DEPT_MAP = {
     "Special Education": "Special Education",
     "Theater Arts": "Theater Arts",
     "Mathematics": "Mathematics",
-    "Music/Art": "Humanities",
+    "Music": "Music",
+    "Art": "Art",
+    "Music/Art": "Music",  # legacy — split manually in T7 (Music vs Art by course)
     "Social Studies": "Social Studies",
     "Science": "Science",
     "English": "English",
     "Physical Education": "Physical Education",
     "Computer Science": "Computer Science",
-    "Language": "World Language",
+    "Language": "Language",
+    "World Language": "Language",  # legacy alias
     "Business": "Business",
     "Theology": "Theology",
     "Engineering": "Engineering",
     "Communication Arts": "Communication Arts",
+    "Humanities": "Art",  # legacy alias
+    "Media Arts": "Communication Arts",  # legacy alias
+    "Student Services": "Special Education",  # legacy alias
 }
 
 # ---- Determine AP status: from source flag + name pattern ----
@@ -351,7 +357,8 @@ DEFAULT_MAX_ENROLL = {
     "Communication Arts": 12,
     "Engineering": 20,
     "Theater Arts": 20,
-    "Humanities": 25,
+    "Art": 25,
+    "Music": 25,
 }
 
 # ---- Build output ----

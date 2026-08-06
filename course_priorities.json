@@ -289,7 +289,7 @@
     "201": {
       "priority": 1,
       "title": "Introduction to Guitar",
-      "dept": "Music/Art",
+      "dept": "Music",
       "sections": 1
     },
     "2014": {
@@ -307,7 +307,7 @@
     "203": {
       "priority": 1,
       "title": "Guitar Ensemble",
-      "dept": "Music/Art",
+      "dept": "Music",
       "sections": 1
     },
     "2034": {
@@ -331,19 +331,19 @@
     "206": {
       "priority": 1,
       "title": "Band",
-      "dept": "Music/Art",
+      "dept": "Music",
       "sections": 1
     },
     "209": {
       "priority": 1,
       "title": "String Orchestra",
-      "dept": "Music/Art",
+      "dept": "Music",
       "sections": 1
     },
     "220": {
       "priority": 1,
       "title": "Music Theory",
-      "dept": "Music/Art",
+      "dept": "Music",
       "sections": 1
     },
     "225": {
@@ -361,49 +361,49 @@
     "241": {
       "priority": 1,
       "title": "Studio Art I",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 2
     },
     "242": {
       "priority": 1,
       "title": "Studio Art II",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 1
     },
     "243": {
       "priority": 1,
       "title": "Studio Art III",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 1
     },
     "248": {
       "priority": 1,
       "title": "Adv Drawing",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 1
     },
     "249": {
       "priority": 1,
       "title": "Adv Painting",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 1
     },
     "253": {
       "priority": 5,
       "title": "AP Drawing",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 1
     },
     "254": {
       "priority": 5,
       "title": "AP 2-D Art and Design",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 1
     },
     "255": {
       "priority": 5,
       "title": "AP 3-D Art and Design",
-      "dept": "Music/Art",
+      "dept": "Art",
       "sections": 1
     },
     "310": {
@@ -1153,7 +1153,7 @@
         "Mathematics",
         "Science",
         "Social Studies",
-        "World Language",
+        "Language",
         "Theology"
       ],
       "elective_slots": 1,
@@ -1178,19 +1178,22 @@
       "theology_courses": 2,
       "elective_slots": 2,
       "credits_per_year": 35,
-      "notes": "No Science or World Language requirement for seniors"
+      "notes": "No Science or Language requirement for seniors"
     },
     "total_credits_to_graduate": 140,
     "resource_room_exception": {
-      "world_language_waived": true,
+      "language_waived": true,
       "total_credits_required": 125
     }
   },
   "semester_pairing_groups": [
     {
       "label": "Grade 12 Theology",
-      "courses": ["849", "851"],
-      "description": "Semester sections of paired courses must be placed in the same periods. Each period assigned to the group gets one section of each course per semester (S1 + S2). Students are NOT constrained — they may take paired courses in any period, any semester combination."
+      "courses": [
+        "849",
+        "851"
+      ],
+      "description": "Semester sections of paired courses must be placed in the same periods. Each period assigned to the group gets one section of each course per semester (S1 + S2). Students are NOT constrained \u2014 they may take paired courses in any period, any semester combination."
     }
   ]
 }

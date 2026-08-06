@@ -10,7 +10,7 @@
 
 ## Summary
 
-A code audit of the scheduling engine revealed 6 bugs, 4 improvements, and 3 design discoveries. All bugs have been fixed. The most impactful finding was BUG-6: graduation requirement misclassification caused World Language and Physical Education courses to be treated as electives. After all fixes: 301 conflicts (down from 338), 95.1% placement, 0 graduation requirement conflicts, all 5,033 grad req placements fulfilled.
+A code audit of the scheduling engine revealed 6 bugs, 4 improvements, and 3 design discoveries. All bugs have been fixed. The most impactful finding was BUG-6: graduation requirement misclassification caused Language and Physical Education courses to be treated as electives. After all fixes: 301 conflicts (down from 338), 95.1% placement, 0 graduation requirement conflicts, all 5,033 grad req placements fulfilled.
 
 ---
 
@@ -55,14 +55,14 @@ Sets are computed and named as if they protect courses, but are never referenced
 
 Two bugs in `course_priorities.json` caused the engine to misidentify graduation requirements:
 
-1. **"Language" vs "World Language"**: The `graduation_requirements.grades_9_10_11.required_departments` list used `"Language"` but Template 7's Department column uses `"World Language"`. The string comparison at `_is_grad_req_dept()` (line 110) failed — all World Language courses (Spanish I/II/III, Italian I/II, Latin) were treated as electives instead of graduation requirements.
+1. **"Language" vs "Language"**: The `graduation_requirements.grades_9_10_11.required_departments` list used `"Language"` but Template 7's Department column uses `"Language"`. The string comparison at `_is_grad_req_dept()` (line 110) failed — all Language courses (Spanish I/II/III, Italian I/II, Latin) were treated as electives instead of graduation requirements.
 
 2. **"Physical Education" missing entirely**: PE was not listed in any grade level's required departments, so Health/PE (610), Driver's Ed/PE (620), CPR-AED/PE (631), and Nutrition/PE (642) were all treated as electives.
 
-The engine's "100% graduation requirement fulfillment" stat was incorrect — it was calculating correctly against the wrong list of departments. World Language had 87 affected conflicts, PE had 40 affected conflicts.
+The engine's "100% graduation requirement fulfillment" stat was incorrect — it was calculating correctly against the wrong list of departments. Language had 87 affected conflicts, PE had 40 affected conflicts.
 
 **Fix applied:** Two changes to `course_priorities.json`:
-- Changed `"Language"` to `"World Language"` in `grades_9_10_11.required_departments`
+- Changed `"Language"` to `"Language"` in `grades_9_10_11.required_departments`
 - Added `grades_9_10_extra.additional_required_departments: ["Physical Education"]` for grades 9-10 only (PE is not required for grades 11-12 per school policy; exceptions exist for Band/Orchestra students in grades 9-10)
 
 Engine code change in `schedule_engine_v3.py`: `GRAD_REQ_DEPTS` construction (line 64) now merges the `grades_9_10_extra` departments into grades 9 and 10 only.
@@ -165,7 +165,7 @@ Fixes were applied in this order:
 4. Modified `student_prio()` to elevate pathway courses to Level 2 for enrolled students
 5. LEO students auto-mapped to Business pathway
 
-**Remaining 99 conflicts:** Grade 11 (55), Grade 12 (44). Departments: Physical Education (34), Science (25), Business (21), Communication Arts (9), Computer Science (5), Humanities (5)
+**Remaining 99 conflicts:** Grade 11 (55), Grade 12 (44). Departments: Physical Education (34), Science (25), Business (21), Communication Arts (9), Computer Science (5), Art/Music (5)
 
 ---
 
@@ -180,7 +180,7 @@ All audit findings have been resolved.
 | BUG-3: Priority-blind optimization | FIXED | Priority-aware acceptance prevents P5 trade-ups |
 | BUG-4: Conflict risk dual definition | FIXED | Single definition, any period overlap |
 | BUG-5: PROT/PROT_P4 dead code | FIXED | Dead code removed |
-| BUG-6: Graduation req misclassification | FIXED | "World Language" match + PE added for grades 9-10 |
+| BUG-6: Graduation req misclassification | FIXED | "Language" match + PE added for grades 9-10 |
 | IMP-1: Deeper optimization | APPLIED | 60 iterations, 16 candidates, stall 8 |
 | IMP-2: Post-bump CSP recovery | APPLIED | Recovers seats after bumping |
 | IMP-3: Per-restart recomputation | APPLIED | Each restart gets ordering tuned to its period layout |

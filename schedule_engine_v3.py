@@ -1306,7 +1306,7 @@ def _is_grad_req_for_student(cid, student_grade, pid=None):
     dept = _course_dept_map.get(str(cid), '')
     return dept in GRAD_REQ_DEPTS.get(student_grade, set())
 
-_GR12_PAE_DEPTS = {'English', 'Mathematics', 'Science', 'Social Studies', 'World Language'}
+_GR12_PAE_DEPTS = {'English', 'Mathematics', 'Science', 'Social Studies', 'Language'}
 _ALL_SSP_COURSES = set()
 for _pw_codes in PATHWAY_COURSE_SETS.values():
     _ALL_SSP_COURSES |= _pw_codes
@@ -2327,9 +2327,9 @@ for pid in sreq:
         # Determine missing departments
         _ue_grade = grade.get(pid, 9)
         _ue_grade_req = {
-            9:  ['English', 'Mathematics', 'Science', 'Social Studies', 'World Language', 'Theology', 'Physical Education'],
-            10: ['English', 'Mathematics', 'Science', 'Social Studies', 'World Language', 'Theology', 'Physical Education'],
-            11: ['English', 'Mathematics', 'Science', 'Social Studies', 'World Language', 'Theology'],
+            9:  ['English', 'Mathematics', 'Science', 'Social Studies', 'Language', 'Theology', 'Physical Education'],
+            10: ['English', 'Mathematics', 'Science', 'Social Studies', 'Language', 'Theology', 'Physical Education'],
+            11: ['English', 'Mathematics', 'Science', 'Social Studies', 'Language', 'Theology'],
             12: ['English', 'Mathematics', 'Theology'],
         }
         _ue_missing = [d for d in _ue_grade_req.get(_ue_grade, []) if d not in _ue_depts]
