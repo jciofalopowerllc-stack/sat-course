@@ -6,16 +6,18 @@ Implements the DATA_STRUCTURE.md priority system:
   - Protection: Graduation Required, Gr12 Priority Academic Elective, Singleton
 
 Template inputs:
-  - Templates 1-5: Core data (sectioning, requests, LEO, co-schedule, prior year)
+  - Template 2: Student Course Requests
+  - Template 4: Co-Schedule Groups
   - Template 6: Teacher Profiles (load caps, period availability, preferences)
   - Template 7: Course Profiles (characteristics, prerequisites, room requirements)
   - Template 8: Student Profiles + Transcript History (duplicate/prereq validation)
   - Template 9: Room Profiles (capacity, type, equipment)
+  - Historical Grades: Prior academic performance
+  - Prior Year Master Schedule: Historical reference (not a placement factor)
 
 Features:
   1. Pre-flight validation: duplicate detection + prerequisite + grade eligibility
-  2. Contract cascade: load limits from contract types
-  3. Teacher profile constraints: period availability, preferences
+  2. Teacher profile constraints: period availability, preferences
   4. Room profile awareness: type matching, capacity enforcement
   5. Multi-restart Phase D: 16 seeds, deeper search (40 iterations)
   6. Constraint chain analysis: detect unavoidable conflicts early
@@ -34,10 +36,8 @@ def print(*args, **kwargs):
     kwargs.setdefault('flush', True)
     _print(*args, **kwargs)
 
-import openpyxl, json, math, random, collections, statistics, os, re, argparse, datetime
+import openpyxl, json, math, random, statistics, os, re, argparse, datetime
 from collections import defaultdict, Counter
-
-UPLOAD = "/root/.claude/uploads/a04b5f0d-60df-588f-8acb-79549aab48c5"
 TEMPLATES = os.path.join(os.path.dirname(__file__) or '.', 'templates')
 SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab48c5/scratchpad"
 OUTPUT_DIR = os.path.dirname(__file__) or '.'
@@ -2100,37 +2100,6 @@ try:
 except FileNotFoundError:
     print("  Template 7 not found — skipping prerequisite data")
 
-# ── Template 10: Contracts ──
-contracts = {}
-t10_path = os.path.join(TEMPLATES, 'Template_10_Contracts.xlsx')
-try:
-    t10wb = openpyxl.load_workbook(t10_path, data_only=True)
-    t10ws = t10wb.active
-    for r in range(2, t10ws.max_row + 1):
-        ccode = t10ws.cell(r, 1).value
-        cname = t10ws.cell(r, 2).value
-        if not ccode:
-            continue
-        max_teach = t10ws.cell(r, 6).value
-        max_consec = t10ws.cell(r, 8).value
-        max_total = t10ws.cell(r, 9).value
-        prep_req = t10ws.cell(r, 10).value
-        duty_max = t10ws.cell(r, 12).value
-        overload = t10ws.cell(r, 15).value
-        contracts[str(ccode).strip()] = {
-            'name': str(cname or ''),
-            'max_teaching': int(max_teach) if max_teach and str(max_teach) != 'N/A' else 5,
-            'max_consecutive': int(max_consec) if max_consec and str(max_consec) != 'N/A' else 3,
-            'max_total': int(max_total) if max_total and str(max_total) != 'N/A' else 7,
-            'prep_required': int(prep_req) if prep_req and str(prep_req) != 'N/A' else 1,
-            'duty_max': int(duty_max) if duty_max and str(duty_max) != 'N/A' else 1,
-            'overload_threshold': int(overload) if overload and str(overload) != 'N/A' else 6,
-        }
-    t10wb.close()
-    print(f"  Contracts loaded: {len(contracts)} types")
-except FileNotFoundError:
-    print("  Template 10 not found — using default contract rules")
-
 
 # ── Credit Validation Gate ──
 CREDIT_CAP = 35.0
@@ -2713,10 +2682,6 @@ def get_max_load(teacher, semester=None):
     tp = teacher_profiles.get(teacher, {})
     if tp:
         base = tp.get('max_periods', 5)
-        contract_code = tp.get('contract', 'Standard')
-        ct = contracts.get(contract_code, contracts.get('STD', {}))
-        if ct:
-            base = min(base, ct.get('max_teaching', base))
         max_s1 = base
         max_s2 = base
         if tp.get('approved_6_fy'):
