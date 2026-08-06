@@ -310,3 +310,41 @@ The engine learns from its own results across runs. Each run analyzes actual con
 **Files:**
 - `run_diagnostics.json` — Machine-readable output (course diagnostics, blocking chains, teacher bottlenecks, period hotspots)
 - `DESIGN_Post_Run_Diagnostics.md` — Full design document with data structure spec
+
+### ⏸️ PAUSED WORK: Room Ownership & Exclusivity System (2026-08-06)
+
+**Status:** Design approved in principle. Implementation paused — templates need cleanup first.
+
+**What was completed:**
+1. PTS_SIXTH_PERIOD = 5,000 boost implemented and committed (teacher_raw + room_raw for 6th-period teachers)
+2. Room Priority Values export created (47 rooms) — JC revised with YES/NO exclusivity flags
+3. JC uploaded `Room_Priority_Values_Revised_08.05.24.xlsx` with 6 exclusive (NO) rooms and 41 shareable (YES) rooms
+4. Design document presented and discussed for three capabilities: Exclusive Room Enforcement, Prescribed Teacher Priority (bump), TBD Room Assignment
+5. JC uploaded Template 1 (Course Sectioning) — file NOT currently in templates/ folder, NOT loaded by engine
+
+**JC's expanded design vision (three-template cross-validation):**
+- **Template 9** (Room Profiles): Add Column F "Exclusive" (Y/N) + Column G "Preferred Teacher ID"
+- **Template 6** (Teacher Profiles, Sheet 1): Add Column R "Preferred Room" (teacher-level room preference)
+- **Template 1** (Course Sectioning, Sheet 2): Change Column J from "Teacher" (name) → "Teacher ID" (numeric ID)
+- Cross-validation at engine startup: Template 9 Room→Teacher ↔ Template 6 Teacher→Room ↔ Template 1 Section→Teacher+Room
+
+**Exclusive rooms (from JC's revision):** Gym, S-338, I-111, J-223, J-120, Success Center (6 rooms)
+**Shareable rooms:** All other 41 rooms
+
+**Template cleanup needed BEFORE implementation:**
+- Template 1 not in templates/ folder (350 sections vs Template 6's 371 — needs sync)
+- Template 1 Sheet 2 Column J has teacher names, needs Teacher IDs
+- Template 6 Sheet 1 needs new "Preferred Room" column (currently 17 cols, A-Q)
+- Template 9 needs Column F "Exclusive" and Column G "Preferred Teacher ID" (currently 5 cols, A-E)
+
+**Engine gaps identified (to implement after template cleanup):**
+1. No room exclusivity concept — any section can use any room if free
+2. No room assignment for TBD sections — 66 sections stay room='TBD' in output
+3. No prescribed-teacher bump — first-placed-first-served, no ownership priority
+4. No cross-template validation (T1 ↔ T6 ↔ T9)
+
+**Key data points:**
+- 66 of 371 sections have no prescribed room (14 teachers without rooms)
+- 13 teachers have 6th-period approval (PTS_SIXTH_PERIOD = 5,000 boost active)
+- Template 9 "Shared Room" column (E) is for simultaneous-use (Gym), NOT exclusivity — separate concept
+- Room_raw_priority currently based on demand (sections × 5) — Gym inflated at 150 but irrelevant since PE-only
