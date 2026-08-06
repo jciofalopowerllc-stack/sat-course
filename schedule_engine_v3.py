@@ -10,9 +10,8 @@ Template inputs:
   - Template 4: Co-Schedule Groups
   - Template 6: Teacher Profiles (load caps, period availability, preferences)
   - Template 7: Course Profiles (characteristics, prerequisites, room requirements)
-  - Template 8: Student Profiles + Transcript History (duplicate/prereq validation)
+  - Template 8: Student Profiles + Transcript History (duplicate/prereq/grade validation)
   - Template 9: Room Profiles (capacity, type, equipment)
-  - Historical Grades: Prior academic performance
   - Prior Year Master Schedule: Historical reference (not a placement factor)
 
 Features:
@@ -1952,30 +1951,39 @@ try:
 except FileNotFoundError:
     print("  Template 6 not found — using defaults for teacher profiles")
 
-# ── Transcript History from Template_Historical_Grades.xlsx ──
+# ── Transcript History from Template 8 Sheet 2 ──
 transcript = defaultdict(list)
-_thg_path = os.path.join(TEMPLATES, 'Template_Historical_Grades.xlsx')
 try:
-    _thgwb = openpyxl.load_workbook(_thg_path, data_only=True)
-    _thgws = _thgwb.active
-    for r in range(3, _thgws.max_row + 1):
-        sid = _thgws.cell(r, 1).value
-        year = _thgws.cell(r, 2).value
-        ccode = _thgws.cell(r, 3).value
-        final_grade = _thgws.cell(r, 5).value
-        passed = _thgws.cell(r, 6).value
-        if sid and ccode:
-            transcript[str(sid).strip()].append({
-                'year': str(year or ''),
-                'code': str(ccode).strip(),
-                'grade': str(final_grade or ''),
-                'passed': str(passed or '').upper() == 'Y',
-            })
-    _thgwb.close()
-    total_transcript = sum(len(v) for v in transcript.values())
-    print(f"  Transcript records loaded: {total_transcript} ({len(transcript)} students)")
+    _t8twb = openpyxl.load_workbook(t8_path, data_only=True)
+    _t8tws = None
+    for _sn in ('Transcript History',):
+        if _sn in _t8twb.sheetnames:
+            _t8tws = _t8twb[_sn]
+            break
+    if _t8tws:
+        # Headers row 1, REQUIRED row 2, data starts row 3
+        # Cols: A=Student ID, B=Academic Year, C=Course Code, D=Course Title,
+        #       E=Department, F=Credits, G=Final Grade, H=Passed (Y/N), I=Final Exam Grade
+        for r in range(3, _t8tws.max_row + 1):
+            sid = _t8tws.cell(r, 1).value
+            year = _t8tws.cell(r, 2).value
+            ccode = _t8tws.cell(r, 3).value
+            final_grade = _t8tws.cell(r, 7).value
+            passed = _t8tws.cell(r, 8).value
+            if sid and ccode:
+                transcript[str(sid).strip()].append({
+                    'year': str(year or ''),
+                    'code': str(ccode).strip(),
+                    'grade': str(final_grade or ''),
+                    'passed': str(passed or '').upper() == 'Y',
+                })
+        total_transcript = sum(len(v) for v in transcript.values())
+        print(f"  Transcript records loaded: {total_transcript} ({len(transcript)} students)")
+    else:
+        print("  T8 'Transcript History' sheet not found — skipping transcript validation")
+    _t8twb.close()
 except FileNotFoundError:
-    print("  Template_Historical_Grades.xlsx not found — skipping transcript validation")
+    print("  Template 8 not found — skipping transcript validation")
 
 # ── Template 8: Student Profiles (SSP, LEO, Pathway, Academic Support) ──
 student_profiles = {}

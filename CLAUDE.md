@@ -185,8 +185,8 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization + Phase A-1 Diagnostics)
 - `course_priorities.json` — Graduation requirements, pathway courses, singleton courses
-- `detect_pathways.py` — Pathway detection from Historical Grades + Course Requests
-- `templates/` — All input templates (T2, T4, T6, T7, T8, T9, Prior Year, Historical Grades)
+- `detect_pathways.py` — Pathway detection from T8 Transcript History + Course Requests
+- `templates/` — All input templates (T2, T4, T6, T7, T8, T9, Prior Year)
 - `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
 - `student_priority_overrides.json` — Student-specific priority overrides (Grade 12 science exceptions)
 - `schedule_solution_v3.json` — Engine output

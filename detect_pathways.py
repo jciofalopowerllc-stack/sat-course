@@ -32,16 +32,17 @@ for pathway_name, codes in PATHWAY_COURSES.items():
     for code in codes:
         code_to_pathways[str(code)].append(pathway_name)
 
-# ── Load Historical Grades ──
-hist_path = os.path.join(TEMPLATES, 'Template_Historical_Grades.xlsx')
-wb_hist = openpyxl.load_workbook(hist_path, data_only=True)
-ws_hist = wb_hist.active
+# ── Load Transcript History from Template 8 Sheet 2 ──
+t8_path = os.path.join(TEMPLATES, 'Template_8_Student_Profiles.xlsx')
+wb_hist = openpyxl.load_workbook(t8_path, data_only=True)
+ws_hist = wb_hist['Transcript History']
 
 student_history = defaultdict(set)  # sid → set of completed pathway course codes
+# Cols: A=Student ID, B=Academic Year, C=Course Code, ..., H=Passed (Y/N)
 for r in range(3, ws_hist.max_row + 1):
     sid = ws_hist.cell(r, 1).value
     ccode = ws_hist.cell(r, 3).value
-    passed = ws_hist.cell(r, 6).value
+    passed = ws_hist.cell(r, 8).value
     if sid and ccode:
         sid_str = str(sid).strip()
         ccode_str = str(ccode).strip()
@@ -49,7 +50,7 @@ for r in range(3, ws_hist.max_row + 1):
             if str(passed or '').upper() == 'Y':
                 student_history[sid_str].add(ccode_str)
 wb_hist.close()
-print(f"Historical grades: {len(student_history)} students with pathway course completions")
+print(f"Transcript history: {len(student_history)} students with pathway course completions")
 
 # ── Load Course Requests (Template 2) ──
 t2_path = os.path.join(TEMPLATES, 'Template_2_Student_Course_Requests.xlsx')
