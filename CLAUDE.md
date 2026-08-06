@@ -141,6 +141,8 @@ Scenario filters let the user run the engine on a subset of sections and student
 - Sections without a prescribed room may be placed into any room that is free for that period and term
 - Prescribed rooms are NOT exclusively reserved — they are available to other sections in any period/term when the prescribed section is not using them
 - 66 of 371 sections have no prescribed room — this is correct (not a data gap)
+- **Room conflict resolution:** When two sections from different teachers are assigned the same room+period, the section with a prescribed room (from T6 Sheet 2) stays; the other is moved to the nearest free room (same wing preferred). If neither has a prescribed room, course section priority breaks the tie. **Prior Year data is never used as a placement factor.**
+- **J-321** is historically a Theology room (used by Arcede for 810 Theology 9 in 2025-26). Available for other departments when no Theology class is scheduled.
 
 ### Teacher Load Cap Enforcement (from JC Iofalo — non-negotiable)
 - **Hard cap:** A teacher MUST NOT be assigned more than 5 sections per semester (counting unique periods occupied, with co-schedule groups counting as 1 period) UNLESS explicitly approved for a 6th period in Template 6
@@ -283,6 +285,27 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 - **Phase A-0 conflict matrix**: Pre-computes priority-weighted conflict matrix (3,018 course pairs) and conflict degree per course. Lazy caching via `_ensure_conflict_matrix()` computes once and reuses across Phase D's 16 restarts, keeping conflict scoring consistent
 - **Phase A-1 cross-run diagnostics**: Post-run analyzer writes `run_diagnostics.json` with period coverage analysis, blocking chains, teacher bottlenecks, period hotspots. Next run loads diagnostics and applies bias adjustments to `_predict_conflict_score()` — penalizing problematic periods and rewarding uncovered periods proportional to prior conflict severity
 - **System Improvement Report**: Console output after every Job 2 run showing CRITICAL/HIGH/MEDIUM/LOW findings with full teacher background details (ID, max load, current periods used, complete prescribed course load from Template 6, feasibility assessment — MOVE vs ADD), **Revised Schedule Preview** (current vs proposed period-by-period teacher schedule with ◀ CHANGED markers), blocking chain analysis, teacher bottlenecks, period hotspots, and cross-run conflict delta tracking
+
+### Prior Year Data Policy (from JC Iofalo — non-negotiable)
+The engine loads Prior Year schedule data from `Template_Prior_Year_Master_Schedule.xlsx` and `202526_Master_Schedule_With_Teacher_ID.xlsx`. This data is a **historical reference only** — it is NEVER used as an authoritative source for current year placement decisions.
+
+**Permitted uses (reference/comparison only):**
+- Track prior-year alignment as an informational metric (how many sections match their prior year period)
+- Report `prior_year_match` flag per section in output for administrative review
+- Teacher Schedule Review & Tally report shows side-by-side 2025-26 vs 2026-27
+- Verify current year assignments when uncertain (e.g., confirm a room change is intentional, not an error)
+
+**Prohibited uses (do NOT implement):**
+- Score bonus/penalty based on prior year period match
+- Determine room conflict winners based on prior year room usage
+- Prefer or avoid periods because of prior year data
+- Use prior year teacher-room associations to influence placement
+
+**Sole authorities for current year placement:**
+- Template 6 (Teacher Profiles + Teacher-Course Assignments) — prescribed rooms, periods, terms, cohorts
+- Template 7 (Course Profiles) — course characteristics, grade eligibility
+- Template 9 (Room Profiles) — room availability, capacity, shared status
+- `course_priorities.json` — graduation requirements, pathways, singleton designations
 
 ### Cross-Run Learning System (Phase A-1)
 The engine learns from its own results across runs. Each run analyzes actual conflicts, writes diagnostics, and the next run reads them to bias section placement toward better periods.

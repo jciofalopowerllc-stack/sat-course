@@ -1763,6 +1763,7 @@ for r in range(3, _t6ws_assign.max_row + 1):
         'sid': sid, 'code': cid, 'section': secnum,
         'period': period, 'halves': halves, 'cap': cap,
         'teacher': teacher_name, 'room': room_str,
+        'prescribed_room': room_str,  # Original T6 prescribed room (immutable reference)
         'title': ci.get('title', cid), 'dept': ci.get('dept', ''),
         'is_fy': is_fy, 'prescribed_term': pt_raw,
         'prescribed_cohort': _pc_str,
@@ -4324,11 +4325,8 @@ def greedy_assign_periods(seed=42, audit=False):
                         score += 2
                     if p in tp.get('preferred_periods', []):
                         score -= 1
-                prior_prefs = prior_teacher_periods.get((code, teacher), set())
-                if not prior_prefs:
-                    prior_prefs = prior_course_periods.get(code, set())
-                if prior_prefs and p in prior_prefs:
-                    score -= 0.5
+                # Prior-year data is a historical REFERENCE only — not a placement factor.
+                # Alignment is tracked in output stats for comparison, never as a score bonus.
 
                 # Proactive consecutive-6 trap avoidance:
                 # For teachers with 6th-period approval, penalize placements
@@ -6051,28 +6049,6 @@ else:
 # ============================================================
 # 3b. RESOLVE ROOM CONFLICTS
 # ============================================================
-PRIOR_YEAR_ROOMS = {
-    "O'Connor, Paul": {"Classroom D-101": 5},
-    "Mazella, Julie": {"Classroom D-103": 5},
-    "DeLeon, Marco": {"Classroom D-102": 1, "Classroom D-103": 2, "Classroom D-204": 1, "Classroom I-114": 1},
-    "Nobilione, Lauren": {"Classroom D-104": 5},
-    "Saggio, Jack": {"Classroom D-104": 2, "Classroom D-201": 1, "Classroom D-203": 1, "Classroom I-117": 1, "Classroom J-321": 1},
-    "Gettler, Mary": {"Classroom D-105": 6},
-    "Gerlach, Reese": {"Classroom D-107": 6},
-    "Hampson, Elizabeth": {"Classroom D-108": 5},
-    "Montegari, James": {"Classroom I-114": 5},
-    "Martino, Brianna": {"Classroom I-113": 1, "Classroom I-114": 1, "Classroom I-117": 1, "Classroom I-119": 1, "Classroom S-235": 1},
-    "Dwyer, Kevin": {"Classroom I-115": 5},
-    "Lomascolo, Frank": {"Classroom J-320": 5},
-    "Arcede, Francis": {"Classroom J-321": 5},
-    "Langan, John": {"Classroom J-320": 1, "Classroom J-323": 2, "Lecture Hall D-206": 1},
-    "Carr, Lynette": {"Classroom S-231": 6},
-    "Angotti, Sylvia": {"Classroom S-231": 2, "Classroom S-232": 1, "Classroom I-119": 1, "Classroom J-221": 1},
-    "Zawacki, Richard": {"Classroom S-233": 5},
-    "Corcoran, Kevin": {"Classroom S-238": 10},
-    "Guy, Libbie": {"Classroom I-115": 1, "Classroom S-238": 1},
-}
-
 EXEMPT_ROOMS = SHARED_ROOMS | {'Gymnasium'}
 ALL_ROOMS = sorted(set(s['room'] for s in sections if s['room'] not in ('TBD', 'Unassigned') and s['room'] not in EXEMPT_ROOMS))
 
@@ -6114,25 +6090,27 @@ for pass_num in range(max_passes):
         break
     print(f"  Pass {pass_num+1}: {len(conflicts)} conflicts")
     for (room, period), slist in sorted(conflicts.items()):
+        # Decide who stays using CURRENT YEAR data only:
+        # 1. Prescribed room match (T6 Sheet 2 authority) wins
+        # 2. Then course section priority (higher stays)
+        # 3. Then enrollment (higher stays)
         scored = []
         for s in slist:
-            py = PRIOR_YEAR_ROOMS.get(s['teacher'], {}).get(room, 0)
-            scored.append((py, secfill.get(s['sid'], 0), s))
-        scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
-        stay = scored[0][2]
-        for _, _, mover in scored[1:]:
+            prescribed = 1 if s.get('prescribed_room', 'TBD') not in ('TBD', 'Unassigned') and s.get('room') == s.get('prescribed_room') else 0
+            cs_raw = course_section_raw(s['code'])
+            scored.append((prescribed, cs_raw, secfill.get(s['sid'], 0), s))
+        scored.sort(key=lambda x: (x[0], x[1], x[2]), reverse=True)
+        stay = scored[0][3]
+        for _, _, _, mover in scored[1:]:
             if mover['teacher'] == stay['teacher']:
                 continue
             if not (set(mover['halves']) & set(stay['halves'])):
                 continue
-            mover_priors = PRIOR_YEAR_ROOMS.get(mover['teacher'], {})
-            wing = room.split('-')[0].split()[-1] if '-' in room else ''
+            # Find a free room: prefer same wing, then any
+            wing = room.split('-')[0] if '-' in room else ''
             candidates = []
-            for pr in sorted(mover_priors, key=lambda r: -mover_priors[r]):
-                if pr not in candidates and pr != room:
-                    candidates.append(pr)
             for r in ALL_ROOMS:
-                if r not in candidates and r != room and wing and wing + '-' in r:
+                if r != room and wing and r.startswith(wing + '-'):
                     candidates.append(r)
             for r in ALL_ROOMS:
                 if r not in candidates and r != room:
@@ -7024,7 +7002,7 @@ else:
                         _t_course_load[_tc]['s2'] += 1
                     if _ts.get('prescribed_period'):
                         _t_course_load[_tc]['prescribed_periods'].append(_ts['prescribed_period'])
-                    if _ts.get('prescribed_room'):
+                    if _ts.get('prescribed_room') and _ts['prescribed_room'] not in ('TBD', 'Unassigned'):
                         _t_course_load[_tc]['prescribed_rooms'].append(_ts['prescribed_room'])
 
                 # Print teacher header
