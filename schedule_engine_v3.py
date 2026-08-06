@@ -1831,7 +1831,7 @@ try:
         _sid = _t8ws_n.cell(r, 1).value
         _last = _t8ws_n.cell(r, 2).value
         _first = _t8ws_n.cell(r, 3).value
-        _gv = _t8ws_n.cell(r, 4).value
+        _gv = _t8ws_n.cell(r, 4).value  # Grade Level column
         if not _sid:
             continue
         _pid = str(_sid).strip()
@@ -1962,17 +1962,15 @@ try:
             break
     if _t8tws:
         # Headers row 1, REQUIRED row 2, data starts row 3
-        # Cols: A=Student ID, B=Academic Year, C=Course Code, D=Course Title,
-        #       E=Department, F=Credits, G=Final Grade, H=Passed (Y/N), I=Final Exam Grade
+        # Cols: A=Student ID, B=Grad Year, C=Course Code, D=Final Grade,
+        #       E=Passed (Y/N), F=Final Exam Grade
         for r in range(3, _t8tws.max_row + 1):
             sid = _t8tws.cell(r, 1).value
-            year = _t8tws.cell(r, 2).value
             ccode = _t8tws.cell(r, 3).value
-            final_grade = _t8tws.cell(r, 7).value
-            passed = _t8tws.cell(r, 8).value
+            final_grade = _t8tws.cell(r, 4).value
+            passed = _t8tws.cell(r, 5).value
             if sid and ccode:
                 transcript[str(sid).strip()].append({
-                    'year': str(year or ''),
                     'code': str(ccode).strip(),
                     'grade': str(final_grade or ''),
                     'passed': str(passed or '').upper() == 'Y',
