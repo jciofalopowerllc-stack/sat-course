@@ -1827,11 +1827,12 @@ _student_grades = {}
 try:
     _t8wb_n = openpyxl.load_workbook(t8_path, data_only=True)
     _t8ws_n = _t8wb_n[_t8wb_n.sheetnames[0]]
+    # Cols: A=Grad Year, B=Student ID, C=Last Name, D=First Name, E=Grade Level
     for r in range(3, _t8ws_n.max_row + 1):
-        _sid = _t8ws_n.cell(r, 1).value
-        _last = _t8ws_n.cell(r, 2).value
-        _first = _t8ws_n.cell(r, 3).value
-        _gv = _t8ws_n.cell(r, 4).value  # Grade Level column
+        _sid = _t8ws_n.cell(r, 2).value
+        _last = _t8ws_n.cell(r, 3).value
+        _first = _t8ws_n.cell(r, 4).value
+        _gv = _t8ws_n.cell(r, 5).value  # Grade Level column
         if not _sid:
             continue
         _pid = str(_sid).strip()
