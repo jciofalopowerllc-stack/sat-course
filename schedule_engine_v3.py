@@ -1962,10 +1962,10 @@ try:
             break
     if _t8tws:
         # Headers row 1, REQUIRED row 2, data starts row 3
-        # Cols: A=Student ID, B=Grad Year, C=Course Code, D=Final Grade,
+        # Cols: A=Grad Year, B=Student ID, C=Course Code, D=Final Grade,
         #       E=Passed (Y/N), F=Final Exam Grade
         for r in range(3, _t8tws.max_row + 1):
-            sid = _t8tws.cell(r, 1).value
+            sid = _t8tws.cell(r, 2).value
             ccode = _t8tws.cell(r, 3).value
             final_grade = _t8tws.cell(r, 4).value
             passed = _t8tws.cell(r, 5).value
