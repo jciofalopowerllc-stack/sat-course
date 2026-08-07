@@ -19,6 +19,7 @@
 
 ### Engine Architecture (from JC Iofalo — non-negotiable)
 - Use **schedule_engine_v3.py** (v3 engine) — NOT v4
+- **`Engine_Templates_With_Data.xlsx` is the SOLE AUTHORITATIVE SOURCE** — no legacy files, no fallbacks, no alternative data sources. If a required template sheet (e.g., T5 Student Course Requests) is empty, the engine MUST refuse to run. No silent fallback to any other file.
 - Do NOT change template FORMAT — only add/update data within existing columns
 - Do NOT make decisions without user (JC Iofalo) approval
 
@@ -136,7 +137,7 @@ Scenario filters let the user run the engine on a subset of sections and student
 ### Grade 12 Science Requirement Exceptions (2026-27)
 - 39 specific Grade 12 student-course pairs are treated as **graduation_required** priority even though Science is not a standard Gr12 required department
 - Courses affected: 543 Anatomy/Physiology H (9 students), 546 Forensics (27 students), 530 Physics (1 student), 531 Physics H (2 students)
-- Defined in `Engine_Templates_With_Data.xlsx` → T12_Student Priority Overrides (39 rows). Also in `student_priority_overrides.json` (legacy, to be replaced by T12)
+- Defined in `Engine_Templates_With_Data.xlsx` → T12_Student Priority Overrides (39 rows)
 - Engine's `course_request_priority()` and `_is_grad_req_for_student()` check these overrides
 
 ### Room Assignment Rules
@@ -187,8 +188,8 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization + Phase A-1 Diagnostics)
 - `Engine_Templates_With_Data.xlsx` — **Consolidated workbook (sole authority)** — 12 sheets (T1–T12), all input templates + config data. INDEX sheet has full layout reference.
-- `course_priorities.json` — Graduation requirements, pathway courses, singleton courses (legacy — T10, T11, T1 Col 20 now hold this data in the workbook)
-- `student_priority_overrides.json` — Student-specific priority overrides (legacy — T12 now holds this data in the workbook)
+- `course_priorities.json` — Graduation requirements, pathway courses, singleton courses (T10, T11, T1 Col 20 hold canonical data in the workbook)
+- `student_priority_overrides.json` — Student-specific priority overrides (T12 holds canonical data in the workbook)
 - `detect_pathways.py` — Pathway detection from T8 Transcript History + Course Requests
 - `schedule_solution_v3.json` — Engine output
 - `run_diagnostics.json` — Cross-run learning data (Phase A-1 output, loaded by next run)
@@ -289,10 +290,10 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 - **CSP recovery in fast path**: Post-bump CSP recovery and greedy re-add in `full_reseat_fast()`
 - **Phase A-0 conflict matrix**: Pre-computes priority-weighted conflict matrix (3,018 course pairs) and conflict degree per course. Lazy caching via `_ensure_conflict_matrix()` computes once and reuses across Phase D's 16 restarts, keeping conflict scoring consistent
 - **Phase A-1 cross-run diagnostics**: Post-run analyzer writes `run_diagnostics.json` with period coverage analysis, blocking chains, teacher bottlenecks, period hotspots. Next run loads diagnostics and applies bias adjustments to `_predict_conflict_score()` — penalizing problematic periods and rewarding uncovered periods proportional to prior conflict severity
-- **System Improvement Report**: Console output after every Job 2 run showing CRITICAL/HIGH/MEDIUM/LOW findings with full teacher background details (ID, max load, current periods used, complete prescribed course load from Template 6, feasibility assessment — MOVE vs ADD), **Revised Schedule Preview** (current vs proposed period-by-period teacher schedule with ◀ CHANGED markers), blocking chain analysis, teacher bottlenecks, period hotspots, and cross-run conflict delta tracking
+- **System Improvement Report**: Console output after every Job 2 run showing CRITICAL/HIGH/MEDIUM/LOW findings with full teacher background details (ID, max load, current periods used, complete prescribed course load from T7, feasibility assessment — MOVE vs ADD), **Revised Schedule Preview** (current vs proposed period-by-period teacher schedule with ◀ CHANGED markers), blocking chain analysis, teacher bottlenecks, period hotspots, and cross-run conflict delta tracking
 
 ### Prior Year Data Policy (from JC Iofalo — non-negotiable)
-The engine loads Prior Year schedule data from `Template_Prior_Year_Master_Schedule.xlsx` and `202526_Master_Schedule_With_Teacher_ID.xlsx`. This data is a **historical reference only** — it is NEVER used as an authoritative source for current year placement decisions.
+The engine loads Prior Year schedule data from `T9_Prior Year Master Sections` (within Engine_Templates_With_Data.xlsx). This data is a **historical reference only** — it is NEVER used as an authoritative source for current year placement decisions.
 
 **Permitted uses (reference/comparison only):**
 - Track prior-year alignment as an informational metric (how many sections match their prior year period)
@@ -352,7 +353,7 @@ The engine learns from its own results across runs. Each run analyzes actual con
 2. Room Priority Values export created (47 rooms) — JC revised with YES/NO exclusivity flags
 3. JC uploaded `Room_Priority_Values_Revised_08.05.24.xlsx` with 6 exclusive (NO) rooms and 41 shareable (YES) rooms
 4. Design document presented and discussed for three capabilities: Exclusive Room Enforcement, Prescribed Teacher Priority (bump), TBD Room Assignment
-5. JC uploaded Template 1 (Course Sectioning) — file NOT currently in templates/ folder, NOT loaded by engine
+5. JC uploaded Template 1 (Course Sectioning) — NOT currently loaded by engine
 
 **JC's expanded design vision (three-template cross-validation):**
 - **Template 9** (Room Profiles): Add Column F "Exclusive" (Y/N) + Column G "Preferred Teacher ID"
@@ -364,10 +365,10 @@ The engine learns from its own results across runs. Each run analyzes actual con
 **Shareable rooms:** All other 41 rooms
 
 **Template cleanup needed BEFORE implementation:**
-- Template 1 not in templates/ folder (350 sections vs Template 6's 371 — needs sync)
+- Template 1 not loaded by engine (350 sections vs Template 6's 371 — needs sync)
 - Template 1 Sheet 2 Column J has teacher names, needs Teacher IDs
-- Template 6 Sheet 1 needs new "Preferred Room" column (currently 17 cols, A-Q)
-- Template 9 needs Column F "Exclusive" and Column G "Preferred Teacher ID" (currently 5 cols, A-E)
+- T2 (Teacher Profiles) needs new "Preferred Room" column (currently 17 cols, A-Q)
+- T4 (Room Profiles) needs Column F "Exclusive" and Column G "Preferred Teacher ID" (currently 5 cols, A-E)
 
 **Engine gaps identified (to implement after template cleanup):**
 1. No room exclusivity concept — any section can use any room if free

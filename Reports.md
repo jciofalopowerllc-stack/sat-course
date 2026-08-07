@@ -58,7 +58,7 @@ Side-by-side comparison of 2025-26 vs 2026-27 schedules per teacher, with sectio
 - Row 12: Blank separator
 
 - **Empty slots:** "UNASSIGNED" in bold
-- **Source:** `schedule_solution_v3.json` + `202526_Master_Schedule_With_Teacher_ID.xlsx`
+- **Source:** `schedule_solution_v3.json` + `T9_Prior Year Master Sections` (from Engine_Templates_With_Data.xlsx)
 
 ---
 

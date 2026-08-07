@@ -76,7 +76,7 @@ This requires its own file because a co-schedule group can contain 2, 3, or 4 co
 
 | # | File | What it holds |
 |---|------|--------------|
-| 8 | **School Settings** | Credit cap (35), periods (A-G), graduation requirements by grade level. Stored in `Engine_Templates_With_Data.xlsx` → T10_Graduation Requirements (also legacy `course_priorities.json`) |
+| 8 | **School Settings** | Credit cap (35), periods (A-G), graduation requirements by grade level. Stored in `Engine_Templates_With_Data.xlsx` → T10_Graduation Requirements |
 
 This is the rulebook — not a parent, not a shared resource, not a historical file. It defines the constraints the engine must enforce for the entire school.
 
