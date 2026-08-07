@@ -30,8 +30,8 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 
 - **Prescribed** = input. The principal decided before the build. The engine must respect it.
 - **Assigned** = output. The engine decided during the build.
-- **Null** = no data applies. The field intentionally has no value. The engine must select the least restrictive option.
-- **Blank** = error. The user missed a field.
+- **N/A** = no data applies. The field intentionally has no value for this row. The cell MUST contain the literal string `N/A` — it must NOT be left blank. The engine treats `N/A` as "no constraint" and selects the least restrictive option.
+- **Blank** = error. Every cell in every template (T1–T9) MUST contain a data entry. There are NO permitted blank cells. If no data applies, the cell must contain `N/A`. The engine MUST flag any blank cell as a validation error at startup and refuse to run until corrected. This is a non-negotiable rule from JC Iofalo.
 
 ---
 
