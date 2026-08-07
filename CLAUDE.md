@@ -12,7 +12,7 @@
 7. Read and follow DATA_STRUCTURE.md before writing any engine code — the data structure defines the priority system, implement it exactly
 8. Identify and fix your own mistakes proactively — do not wait for JC to find them
 9. After every engine run (job1, full, gr12, scenario, unlimited), generate a **System Improvement Report** — analyze results for design flaws, feature gaps, data issues, conflict root causes, and optimization opportunities. Present findings with priority levels (CRITICAL / HIGH / MEDIUM / LOW) and decision types (ACTION NEEDED / FYI). Do NOT implement any recommendation without JC's explicit approval. The report is delivered in conversation, not as a file.
-10. Every recommendation in the System Improvement Report MUST include **full background details** so the decision-maker can evaluate feasibility without looking up templates. For teacher-related recommendations, this means: teacher name and ID, max load cap, current periods used (S1/S2), free periods, their COMPLETE prescribed course load from Template 6 (all courses, section counts, term types, prescribed periods/rooms), and a feasibility assessment stating whether the fix is a MOVE (relocating an existing section) or an ADD (requiring an additional period beyond max load). Never present a recommendation without the context needed to say yes or no.
+10. Every recommendation in the System Improvement Report MUST include **full background details** so the decision-maker can evaluate feasibility without looking up templates. For teacher-related recommendations, this means: teacher name and ID, max load cap, current periods used (S1/S2), free periods, their COMPLETE prescribed course load from Template 7 (all courses, section counts, term types, prescribed periods/rooms), and a feasibility assessment stating whether the fix is a MOVE (relocating an existing section) or an ADD (requiring an additional period beyond max load). Never present a recommendation without the context needed to say yes or no.
 11. Every recommendation MUST include a **Revised Schedule Preview** showing the teacher's full period-by-period schedule (Periods A-G, S1/S2 columns) in two views: (1) **Current Schedule** — what the teacher's schedule looks like right now, and (2) **Revised Schedule (if recommendation accepted)** — what the teacher's schedule would look like after the recommended move, with changed periods marked `◀ CHANGED`. This lets the decision-maker see the complete before-and-after impact at a glance without mentally reconstructing the schedule. If the recommendation does not change a particular teacher's schedule, print "(No schedule change for this teacher under current recommendation)" instead.
 12. **No blank cells permitted in any template.** Every cell in every template (T1–T9) MUST contain a value. Use `N/A` for fields where no data applies (e.g., no prescribed room, no cohort, no prerequisite). Blank/empty cells are data entry errors — the engine MUST flag them as validation errors at startup and refuse to run until corrected. This applies to all existing and future templates. When creating or editing templates programmatically, always write `N/A` instead of leaving a cell empty.
 13. **Y/N column convention.** Columns whose header contains `(Y/N)` (e.g., `Singleton (Y/N)`, `Avail Period A (Y/N)`, `Passed (Y/N)`) must contain exactly `Y` or `N` — never `N/A`, never blank. All other columns use `N/A` when no data applies. The `(Y/N)` suffix in the header IS the contract — the engine validates this at startup and flags any non-Y/N value in a `(Y/N)` column as an error. 26 Y/N columns exist across T1 (6), T2 (13), T3 (5), T4 (1), T6 (1).
@@ -109,16 +109,16 @@ Scenario filters let the user run the engine on a subset of sections and student
 - **Two distinct concepts, two distinct templates:**
   - **Template 7 Column D "Term Type"** — describes WHAT a course IS: `FY` (full-year, 5.0 credits) or `SE` (semester, 2.5 credits). Classification only — does NOT control placement.
   - **Template 7 Column E "Term Credits"** — validation failsafe: FY must pair with 5.0, SE must pair with 2.5 (0 allowed for special courses like 955 Academic Support).
-  - **Template 6 Sheet 2 Column E "Prescribed Term"** — REQUIRED field, describes WHERE a specific section GOES: `FY`, `S1`, `S2`, or `EC` (Engine Choice). This is the **single authoritative source** for per-section semester placement.
+  - **Template 7 Column H "Prescribed Term"** — REQUIRED field, describes WHERE a specific section GOES: `FY`, `S1`, `S2`, or `EC` (Engine Choice). This is the **single authoritative source** for per-section semester placement.
 - **Prescribed = Required** (same as prescribed room and prescribed period):
   - `FY` → engine MUST place section as full-year (S1+S2)
   - `S1` → engine MUST place section in S1 only
   - `S2` → engine MUST place section in S2 only
   - `EC` → engine MAY place section in either S1 or S2 (Engine Choice — engine decides which is optimal)
-- **Cross-validation rule:** T7 Term Type=FY requires T6 Prescribed Term=FY; T7 Term Type=SE requires T6 Prescribed Term=S1/S2/EC. Mismatch = engine validation error.
+- **Cross-validation rule:** T1 Term Type=FY requires T7 Prescribed Term=FY; T1 Term Type=SE requires T7 Prescribed Term=S1/S2/EC. Mismatch = engine validation error.
 - **EC redistribution:** EC sections are distributed evenly across S1/S2 by the engine (n_s1 = (n+1)//2)
-- **Eliminated:** `SEMESTER_LOCKS` dict, `FULL_FREEDOM` set, `semester_designations.json` — all replaced by T6 Column E as sole authority
-- **Distribution (371 sections):** FY=245, S1=15, S2=14, EC=97
+- **Eliminated:** `SEMESTER_LOCKS` dict, `FULL_FREEDOM` set, `semester_designations.json` — all replaced by T7 Column H as sole authority
+- **Distribution (367 sections):** FY=243, S1=36, S2=34, EC=54
 
 ### Teacher Section Prescriptions (2026-27)
 - **Chiaravalloti, Michael (105747)**: 631 CPR-AED Training/PE × 4 semester sections + 642 Nutrition & Fitness/PE × 6 semester sections = 10 total (5 per semester); Daniels (105763) also teaches 631 × 2 semester sections (6 total 631 sections)
@@ -127,12 +127,12 @@ Scenario filters let the user run the engine on a subset of sections and student
 - **Laracy, John (106760)**: 851 Spirituality of Vocation × 8 semester sections
 - **Umbrino, Philip (105768)**: 130 British Literature × 3 full-year sections (added to existing pool)
 - **Lopez, Enrique (102255)**: 201 Introduction to Guitar × 2 semester sections (co-scheduled with 203 Guitar Ensemble, same period/room); 203 Guitar Ensemble is full-year (5 credits, 2 sections)
-- **Tranate, John (105746)**: 557 AP Physics 1 × 2 sections (typo corrected from 556→557 in Template 6)
+- **Tranate, John (105746)**: 557 AP Physics 1 × 2 sections (typo corrected from 556→557 in Template 7)
 - **Dennehy (105810)**: 248 Adv Drawing × 1 semester section, Room J-322
 - **Granieri, William (122120)**: 849 Catholic Social Teaching × 8 semester sections + 830 Theology 11 × 1 section (reassigned from 810/820/830 to TBD Theology teacher)
 - **TBD Theology, New (999999)**: Placeholder for new hire — 810 Theology 9 × 3 + 820 Theology 10 × 2 (transferred from Granieri). Replace with real name/ID when available.
 - **Saggio, Jack (117711)**: 723 Introduction to Political Science × 1 semester section
-- Sections defined in Template 6 Sheet 2 ("Teacher-Course Assignments"), one row per section
+- Sections defined in T7_Teacher-Section Assignments, one row per section
 
 ### Grade 12 Science Requirement Exceptions (2026-27)
 - 39 specific Grade 12 student-course pairs are treated as **graduation_required** priority even though Science is not a standard Gr12 required department
@@ -144,13 +144,13 @@ Scenario filters let the user run the engine on a subset of sections and student
 - Sections without a prescribed room may be placed into any room that is free for that period and term
 - Prescribed rooms are NOT exclusively reserved — they are available to other sections in any period/term when the prescribed section is not using them
 - 66 of 371 sections have no prescribed room — this is correct (not a data gap)
-- **Room conflict resolution:** When two sections from different teachers are assigned the same room+period, the section with a prescribed room (from T6 Sheet 2) stays; the other is moved to the nearest free room (same wing preferred). If neither has a prescribed room, course section priority breaks the tie. **Prior Year data is never used as a placement factor.**
+- **Room conflict resolution:** When two sections from different teachers are assigned the same room+period, the section with a prescribed room (from T7) stays; the other is moved to the nearest free room (same wing preferred). If neither has a prescribed room, course section priority breaks the tie. **Prior Year data is never used as a placement factor.**
 - **J-321** is historically a Theology room (used by Arcede for 810 Theology 9 in 2025-26). Available for other departments when no Theology class is scheduled.
 
 ### Teacher Load Cap Enforcement (from JC Iofalo — non-negotiable)
-- **Hard cap:** A teacher MUST NOT be assigned more than 5 sections per semester (counting unique periods occupied, with co-schedule groups counting as 1 period) UNLESS explicitly approved for a 6th period in Template 6
+- **Hard cap:** A teacher MUST NOT be assigned more than 5 sections per semester (counting unique periods occupied, with co-schedule groups counting as 1 period) UNLESS explicitly approved for a 6th period in T2 (Teacher Profiles)
 - **Absolute ceiling:** 7/5 is NEVER permitted under any circumstance. Maximum per semester is 6 (with approval). `ABSOLUTE_MAX_PERIODS_PER_SEMESTER = 6` in the engine.
-- **6th period approval types:** Full-Year (both semesters), S1-only, or S2-only — defined in Template 6 teacher profiles
+- **6th period approval types:** Full-Year (both semesters), S1-only, or S2-only — defined in T2 (Teacher Profiles)
 - **No fallback override:** If no valid period exists without exceeding the cap, the section stays **UNPLACED** — the engine does NOT force-place it
 - **Room double-booking is a hard block** — same as teacher_busy and load_cap; the engine will NOT place two non-co-scheduled sections in the same room, same period, same semester
 - **FY-equivalent awareness in placement:** When evaluating whether to place a semester section, the engine computes the projected FY-equivalent load using `teacher_load_projection()`. FY = min(S1_count, S2_count). The engine uses this to: (1) enforce the absolute ceiling, (2) score period candidates — preferring placements that minimize FY-equivalent increase and stipend escalation, (3) log the FY-impact transparently in placement reports
@@ -242,12 +242,12 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 ### Data Corrections Applied
 - **556 AP Physics**: Removed from all templates — erroneous entry. AP Physics is only **557 AP Physics 1**
 - **Linear Algebra**: Removed from Template 7 and Template 2 — not a real course (1 student request from 106297 also removed)
-- **Tranate (105746)**: Course code corrected 556→557 in Template 6 Sheet 2
+- **Tranate (105746)**: Course code corrected 556→557 in Template 7
 - **Granieri (122120)**: Reassigned from 810/820/830 to 849×8 + 830×1; former sections transferred to TBD Theology (999999)
 - **TBD Theology (999999)**: 830 section removed — 830 should have 9 total sections, not 10
 - **Template 7 REV 08.04.26**: Column D changed from "Credits" to "Term Type" (FY/SE), Column E added as "Term Credits" (5.0/2.5/0). Semester courses changed from S1→SE. 631 CPR-AED and 642 Nutrition & Fitness had "Physical Education" removed from Graduation Requirement.
-- **Template 6 REV 08.04.26**: Sheet 2 Column E changed from optional to REQUIRED. All 371 rows populated: FY=245, EC=97, S1=15, S2=14. 203 Guitar Ensemble rows 51-52 corrected from EC→FY.
-- **semester_designations.json**: Eliminated — T6 Column E is sole authority for section semester placement
+- **Template 7 REV 08.04.26**: Column H "Prescribed Term" changed from optional to REQUIRED. All 371 rows populated: FY=245, EC=97, S1=15, S2=14. 203 Guitar Ensemble rows 51-52 corrected from EC→FY.
+- **semester_designations.json**: Eliminated — T7 Column H is sole authority for section semester placement
 - **Template 2 REV 08.04.26.V3**: Replaced V2. 6,100 requests, 804 students, 141 courses (4 duplicate rows: 106243/642, 106291/642, 112088/2044, 112896/320). English (110-149), Arts (201-255), History (310-311) requests restored. Theology/Academic Support (849, 851, 830, 955) requests removed. Student 121012 included with 6 requests (410,510,570,610,710,810). **Post-V3 fix:** Added 428 missing Theology requests (830×98 Gr11, 849×165 Gr12, 851×165 Gr12). Added 28 missing 955 Academic Support requests (confirmed from SIS). **Post-audit fix (08.06.26):** Removed 10 course 202 (Chorus) requests — not scheduled A-G. Removed 4 duplicate rows (106243/642, 106291/642, 112088/2044, 112896/320). Final T2: 6,544 rows (header + REQUIRED + 6,542 data), 805 students, 143 courses.
 - **Template 8 REV 08.04.26.V2**: 804 students. Added 121012 Garcia, Jace Jaden (Gr9). Prior additions retained: 116597 Giordano, Joseph (Gr9), 120834 McNeal, Harlem (Gr10). 105477 Hinspeter, Jack (Gr12) retained (previously documented as removed in error — student is active with 11 course requests). Note: 105477 has no Transcript History in T8 Sheet 2. **Post-audit fix (08.06.26):** Removed duplicate 116597 row; fixed student 121012 trailing non-breaking space in ID.
 
@@ -357,15 +357,15 @@ The engine learns from its own results across runs. Each run analyzes actual con
 
 **JC's expanded design vision (three-template cross-validation):**
 - **Template 9** (Room Profiles): Add Column F "Exclusive" (Y/N) + Column G "Preferred Teacher ID"
-- **Template 6** (Teacher Profiles, Sheet 1): Add Column R "Preferred Room" (teacher-level room preference)
+- **T2** (Teacher Profiles): Add Column R "Preferred Room" (teacher-level room preference)
 - **Template 1** (Course Sectioning, Sheet 2): Change Column J from "Teacher" (name) → "Teacher ID" (numeric ID)
-- Cross-validation at engine startup: Template 9 Room→Teacher ↔ Template 6 Teacher→Room ↔ Template 1 Section→Teacher+Room
+- Cross-validation at engine startup: Template 9 Room→Teacher ↔ T2 Teacher→Room ↔ Template 1 Section→Teacher+Room
 
 **Exclusive rooms (from JC's revision):** Gym, S-338, I-111, J-223, J-120, Success Center (6 rooms)
 **Shareable rooms:** All other 41 rooms
 
 **Template cleanup needed BEFORE implementation:**
-- Template 1 not loaded by engine (350 sections vs Template 6's 371 — needs sync)
+- Template 1 not loaded by engine (350 sections vs Template 7's 367 — needs sync)
 - Template 1 Sheet 2 Column J has teacher names, needs Teacher IDs
 - T2 (Teacher Profiles) needs new "Preferred Room" column (currently 17 cols, A-Q)
 - T4 (Room Profiles) needs Column F "Exclusive" and Column G "Preferred Teacher ID" (currently 5 cols, A-E)
@@ -374,7 +374,7 @@ The engine learns from its own results across runs. Each run analyzes actual con
 1. No room exclusivity concept — any section can use any room if free
 2. No room assignment for TBD sections — 66 sections stay room='TBD' in output
 3. No prescribed-teacher bump — first-placed-first-served, no ownership priority
-4. No cross-template validation (T1 ↔ T6 ↔ T9)
+4. No cross-template validation (T1 ↔ T2 ↔ T4 ↔ T7)
 
 **Key data points:**
 - 66 of 371 sections have no prescribed room (14 teachers without rooms)

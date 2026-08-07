@@ -546,7 +546,7 @@ if ENGINE_MODE == 'analyze':
                     'solution': (f"Reduce from {len(acad_support_secs)} to 2-3 sections. "
                                  f"This frees {len(as_empty)} teacher-period slots that could be "
                                  f"reallocated to courses with capacity shortages."),
-                    'location': 'Template 6 / Template 7 — reduce section count',
+                    'location': 'Template 7 — reduce section count',
                     'impact_estimate': f'Frees {len(as_empty)} period-teacher slots',
                     'affected_courses': '955 Academic Support',
                 })
@@ -562,7 +562,7 @@ if ENGINE_MODE == 'analyze':
                 'solution': (f"Add 1 section (cap +25) to {dm['code']}. Place in a period not currently "
                              f"covered: currently in periods {','.join(dm['periods'])}, "
                              f"missing {','.join(set('ABCDEFG') - set(dm['periods'])) or 'none'}."),
-                'location': 'Template 6 — add teacher-course assignment row',
+                'location': 'Template 7 — add teacher-section assignment row',
                 'impact_estimate': f'-{min(dm["unscheduled"], 25)} conflicts (est.)',
                 'affected_courses': f'{dm["code"]} {dm["title"]}',
             })
@@ -575,8 +575,8 @@ if ENGINE_MODE == 'analyze':
                 'problem': (f"{teacher_conflicts} genuine teacher period conflicts exist (non-co-scheduled). "
                             f"These prevent optimal period distribution."),
                 'solution': ("Review Job 1 'Teacher Conflicts' sheet. Reassign conflicting teacher-course "
-                             "pairs to different sections or adjust teacher assignments in Template 6."),
-                'location': 'Template 6 / Teacher-Course Assignments',
+                             "pairs to different sections or adjust teacher assignments in Template 7."),
+                'location': 'Template 7 / Teacher-Section Assignments',
                 'impact_estimate': 'Removes scheduling constraints, enables better period distribution',
                 'affected_courses': 'Teacher-specific',
             })
@@ -1103,7 +1103,7 @@ REPORT_FORMATS = {
         'filename': 'Master_Section_Report_2026_27.xlsx',
         'title': 'Master Section Report',
         'description': 'One row per section showing teacher, period, term, enrollment.',
-        'source': 'schedule_solution_v3.json + Template 6 (teacher IDs)',
+        'source': 'schedule_solution_v3.json + Template 7 (teacher IDs)',
         'columns': [
             {'header': 'Teacher ID', 'width': 12, 'align': 'center'},
             {'header': 'Teacher Name', 'width': 25, 'align': 'left'},
@@ -1433,7 +1433,7 @@ def course_request_priority(pid, cid):
         score += PTS_COHORT_COURSE
     if cid_s in getattr(course_request_priority, '_cogroup_set', set()):
         score += PTS_COSCHEDULE
-    # PTS_PRESCRIBED_TERM: course has any section with prescribed S1 or S2 in T6
+    # PTS_PRESCRIBED_TERM: course has any section with prescribed S1 or S2 in T7
     if any(sections[sid].get('prescribed_term') in ('S1', 'S2') for sid in sec_by_code.get(cid_s, [])):
         score += PTS_PRESCRIBED_TERM
     # PTS_PRIORITY_LEVEL: counselor-designated priority (T5 Column D, scale 1-5)
@@ -1488,7 +1488,7 @@ def course_section_raw(cid):
         score += PTS_COHORT_COURSE
     if cid_s in getattr(course_request_priority, '_cogroup_set', set()):
         score += PTS_COSCHEDULE
-    # PTS_PRESCRIBED_TERM: course has any section with prescribed S1 or S2 in T6
+    # PTS_PRESCRIBED_TERM: course has any section with prescribed S1 or S2 in T7
     if any(sections[sid].get('prescribed_term') in ('S1', 'S2') for sid in sec_by_code.get(cid_s, [])):
         score += PTS_PRESCRIBED_TERM
     _section_raw_cache[cid_s] = score
@@ -1796,7 +1796,7 @@ for r in range(2, _t7_ws.max_row + 1):
         halves = ('S1',)
 
     # T7 has no Prescribed Period column — engine assigns all periods
-    # (1 section in old T6 had prescribed period A for course 710; now engine-assigned)
+    # (1 section in old T7 had prescribed period A for course 710; now engine-assigned)
     period = None
 
     room_str = str(room).strip() if room and str(room).strip() not in ('None', '', 'N/A') else 'TBD'
@@ -2861,7 +2861,7 @@ def get_max_load(teacher, semester=None):
         return (3, 3)
     return (5, 5)
 
-# Build COURSE_TEACHER_LOCKS from Template 6 "Course-Teacher Lock" column
+# Build COURSE_TEACHER_LOCKS from Template 7 "Course-Teacher Lock" column
 COURSE_TEACHER_LOCKS = {}
 for _tname, _tp in teacher_profiles.items():
     _lock_codes = _tp.get('course_teacher_locks', '')
@@ -2934,13 +2934,13 @@ print("\n" + "=" * 60)
 print("[1] PHASE A: ASSIGN PERIODS")
 print("=" * 60)
 
-# Prescribed terms are already enforced from T6 Column E during section loading.
+# Prescribed terms are already enforced from T7 Column H during section loading.
 # S1/S2 sections are locked; EC sections will be redistributed below.
 _prescribed_s1 = sum(1 for s in sections if s.get('prescribed_term') == 'S1')
 _prescribed_s2 = sum(1 for s in sections if s.get('prescribed_term') == 'S2')
 _prescribed_ec = sum(1 for s in sections if s.get('prescribed_term') == 'EC')
 _prescribed_fy = sum(1 for s in sections if s.get('prescribed_term') == 'FY')
-print(f"  Prescribed terms from T6: FY={_prescribed_fy}, S1={_prescribed_s1}, S2={_prescribed_s2}, EC={_prescribed_ec}")
+print(f"  Prescribed terms from T7: FY={_prescribed_fy}, S1={_prescribed_s1}, S2={_prescribed_s2}, EC={_prescribed_ec}")
 
 code_to_cogroup = {}
 for gi, cg in enumerate(cogroups):
@@ -5515,7 +5515,7 @@ def _restore_for_restart(fixed_state):
             s['period'], s['halves'] = fixed_state[s['sid']]
         else:
             s['period'] = None
-        # Restore halves from prescribed_term (T6 Column E)
+        # Restore halves from prescribed_term (T7 Column H)
         pt = s.get('prescribed_term', 'FY')
         if pt == 'FY':
             s['halves'] = ('S1', 'S2')
@@ -6327,7 +6327,7 @@ for pass_num in range(max_passes):
     print(f"  Pass {pass_num+1}: {len(conflicts)} conflicts")
     for (room, period), slist in sorted(conflicts.items()):
         # Decide who stays using CURRENT YEAR data only:
-        # 1. Prescribed room match (T6 Sheet 2 authority) wins
+        # 1. Prescribed room match (T7 authority) wins
         # 2. Then course section priority (higher stays)
         # 3. Then enrollment (higher stays)
         scored = []
@@ -7192,7 +7192,7 @@ else:
         # ── TEACHER BACKGROUND DETAILS ──
         # For every teacher who teaches this course, show their FULL context so
         # the decision-maker can evaluate whether the recommendation is feasible
-        # without needing to look up Template 6.
+        # without needing to look up Template 7.
         if _tfp:
             print(f"  ── Teacher Details ──")
             for _tn, _fp in _tfp.items():
@@ -7249,7 +7249,7 @@ else:
                 print(f"      Free periods: {','.join(_fp) if _fp else 'NONE'}")
 
                 # Print full course load
-                print(f"      Prescribed teaching load (Template 6):")
+                print(f"      Prescribed teaching load (Template 7):")
                 for _tc_code, _tc_data in sorted(_t_course_load.items()):
                     _parts = []
                     if _tc_data['fy'] > 0:
