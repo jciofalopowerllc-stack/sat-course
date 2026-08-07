@@ -258,7 +258,7 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 
 ### Priority System (DATA_STRUCTURE.md — current engine implementation)
 - **Two-level priority:** Course Section Priority determines section placement order; Student Priority determines student fill order
-- **8 stacking course characteristics:** AP (30), Singleton (25), Graduation Requirement (20), Gr12 PAE (20), Semester Only (15), Cohort Course (15), Co-Schedule Group (15), Prescribed Term (10)
+- **9 stacking course characteristics:** AP (30), Singleton (25), Graduation Requirement (20), Gr12 PAE (20), Priority Level (0–20), Semester Only (15), Cohort Course (15), Co-Schedule Group (15), Prescribed Term (10)
 - **6th-Period Teacher boost (5,000):** Applied to Teacher Raw and Room Raw (if prescribed room). Teachers approved for a 6th period are more constrained (consecutive-6 rule, load cap ceiling). The 5,000-point boost guarantees their sections always rank above any non-6th-period teacher's sections (theoretical max cs_total without boost is ~5,790). Boost applies to the TEACHER and ROOM, NOT to course characteristics — course identity stays independent. Among 6th-period teachers, normal priority characteristics still break ties.
 - **Student Raw** = Grade Level (10/20/30/40) + Cohort LEO II (50) + SSP (25)
 - **Student Total** = Raw + sum of course request priorities
@@ -266,10 +266,17 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 - **Protection:** Courses with Graduation Requirement OR Gr12 PAE OR Singleton flag cannot be bumped
 - **Tiebreaker:** When two sections have the same Total, Course Section Raw breaks the tie
 - **Recalculation:** After every batch of placements, caches are cleared and all totals re-ranked
+- **Priority Level (T5 Col D):** Counselor-designated per-request priority, 9th stacking characteristic:
+  - 5 = MANDATORY (+20) — counselor-mandated, student MUST take this course
+  - 4 = PROGRAM (+15) — required for student's pathway/SSP track
+  - 3 = PREFERRED (+10) — first-choice elective (default if not specified)
+  - 2 = INTEREST (+5) — student interested but flexible, acceptable to substitute
+  - 1 = ALTERNATE (+0) — backup request, fill only if higher-priority requests can't be placed
 - **Priority value columns in templates:** Engine_Templates_With_Data.xlsx stores computed priority values alongside source data for full transparency and auditability:
   - **T2** Col 19: `6th Period Boost` (5000 or 0) — derived from 6th Period FY/S1/S2 approval columns
   - **T3** Cols 13-16: `Grade Level Points` (10/20/30/40), `LEO II Points` (50/0), `SSP Points` (25/0), `Student Raw Priority` (sum, range 10–115)
-  - **T7** Col 15: `Course Section Raw` (sum of 8 components, range 0–90) + Col 16: `Placement Tier` (1/2/3) + Cols 17-24: 8 individual component columns (`AP Points`, `Singleton Points`, `Grad Req Points`, `Gr12 PAE Points`, `Semester Only Points`, `Cohort Points`, `Co-Schedule Points`, `Prescribed Term Points`) + Col 25: `Grade Levels` (from T1, e.g. "9,10,11,12" — drives three-tier placement system)
+  - **T5** Cols A-D: INPUT (Student ID, Course Code, Alternate Course Code, Priority Level 1-5); Cols E-J: ENGINE-COMPUTED (Student Grade Level, Student Raw Priority, Course Request Priority, Student Total Priority, Graduation Required Y/N, Protected Y/N)
+  - **T7** Col 15: `Course Section Raw` (sum of 9 components, range 0–110) + Col 16: `Placement Tier` (1/2/3) + Cols 17-24: 8 individual component columns (`AP Points`, `Singleton Points`, `Grad Req Points`, `Gr12 PAE Points`, `Semester Only Points`, `Cohort Points`, `Co-Schedule Points`, `Prescribed Term Points`) + Col 25: `Grade Levels` (from T1, e.g. "9,10,11,12" — drives three-tier placement system)
 
 ### Engine Improvements Applied (retained from prior work)
 - **Double-booking fix**: Students may only occupy one course per period-semester slot — bump logic enforces this unconditionally
