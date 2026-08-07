@@ -273,6 +273,10 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 - **Protection:** Courses with Graduation Requirement OR Gr12 PAE OR Singleton flag cannot be bumped
 - **Tiebreaker:** When two sections have the same Total, Course Section Raw breaks the tie
 - **Recalculation:** After every batch of placements, caches are cleared and all totals re-ranked
+- **Priority value columns in templates:** Engine_Templates_With_Data.xlsx stores computed priority values alongside source data for full transparency and auditability:
+  - **T2** Col 19: `6th Period Boost` (5000 or 0) — derived from 6th Period FY/S1/S2 approval columns
+  - **T3** Cols 13-16: `Grade Level Points` (10/20/30/40), `LEO II Points` (50/0), `SSP Points` (25/0), `Student Raw Priority` (sum, range 10–115)
+  - **T7** Col 15: `Course Section Raw` (sum of 8 components, range 0–90) + Col 16: `Placement Tier` (1/2/3) + Cols 17-24: 8 individual component columns (`AP Points`, `Singleton Points`, `Grad Req Points`, `Gr12 PAE Points`, `Semester Only Points`, `Cohort Points`, `Co-Schedule Points`, `Prescribed Term Points`)
 
 ### Engine Improvements Applied (retained from prior work)
 - **Double-booking fix**: Students may only occupy one course per period-semester slot — bump logic enforces this unconditionally
