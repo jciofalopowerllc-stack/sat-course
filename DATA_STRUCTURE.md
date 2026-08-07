@@ -32,6 +32,8 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 - **Assigned** = output. The engine decided during the build.
 - **N/A** = no data applies. The field intentionally has no value for this row. The cell MUST contain the literal string `N/A` — it must NOT be left blank. The engine treats `N/A` as "no constraint" and selects the least restrictive option.
 - **Blank** = error. Every cell in every template (T1–T9) MUST contain a data entry. There are NO permitted blank cells. If no data applies, the cell must contain `N/A`. The engine MUST flag any blank cell as a validation error at startup and refuse to run until corrected. This is a non-negotiable rule from JC Iofalo.
+- **Y/N columns** = columns whose header contains `(Y/N)` (e.g., `Singleton (Y/N)`, `Avail Period A (Y/N)`, `Passed (Y/N)`). These columns expect exactly `Y` or `N` — never `N/A`, never blank. The engine validates this at startup: any cell in a `(Y/N)` column that is not exactly `Y` or `N` is flagged as a validation error.
+- **Non-Y/N columns** = all other columns. These use `N/A` when no data applies (never blank). The `(Y/N)` suffix in the header IS the contract — no external lookup needed to know what a column expects.
 
 ---
 
