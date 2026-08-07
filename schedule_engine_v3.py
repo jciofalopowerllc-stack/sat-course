@@ -13,8 +13,8 @@ Data source (sole authority):
     T9_Prior Year Master Sections, T10_Graduation Requirements,
     T11_Pathway Courses, T12_Student Priority Overrides
 
-  Fallback: If T5 (Student Course Requests) is empty, the engine falls back
-  to templates/Template_2_Student_Course_Requests.xlsx if available.
+  NO FALLBACK: Engine_Templates_With_Data.xlsx is the sole authoritative source.
+  If T5 (Student Course Requests) is empty, the engine refuses to run.
 
 Features:
   1. Pre-flight validation: duplicate detection + prerequisite + grade eligibility
@@ -44,7 +44,6 @@ def print(*args, **kwargs):
 
 import openpyxl, json, math, random, statistics, os, re, argparse, datetime
 from collections import defaultdict, Counter
-TEMPLATES = os.path.join(os.path.dirname(__file__) or '.', 'templates')  # legacy fallback only (T5)
 ENGINE_WB_PATH = os.path.join(os.path.dirname(__file__) or '.', 'Engine_Templates_With_Data.xlsx')
 SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab48c5/scratchpad"
 OUTPUT_DIR = os.path.dirname(__file__) or '.'
@@ -1122,7 +1121,7 @@ REPORT_FORMATS = {
         'filename': 'Teacher_Schedule_Review_and_Tally.xlsx',
         'title': 'Teacher Schedule Review & Tally',
         'description': 'Side-by-side 2025-26 vs 2026-27 schedules per teacher with tally.',
-        'source': 'schedule_solution_v3.json + 202526_Master_Schedule_With_Teacher_ID.xlsx',
+        'source': 'schedule_solution_v3.json + T9_Prior Year Master Sections',
         'layout': {
             'col_A': 'Teacher Name (repeated per period row)',
             'col_B': 'Period (A-G)',
@@ -1885,7 +1884,7 @@ for _cid, _ci in course_info.items():
 
 # ── T5_Student Course Requests (2-column format) ──
 # T5 columns: 1=Student ID, 2=Course Code
-# If T5 is empty, falls back to legacy Template_2 file
+# If T5 is empty, engine REFUSES TO RUN (sole authority: Engine_Templates_With_Data.xlsx)
 _t5_ws = _engine_wb['T5_Student Course Requests']
 students = {}
 sreq = defaultdict(list)
@@ -1911,35 +1910,16 @@ for r in range(_t5_start_row, (_t5_ws.max_row or 1) + 1):
     _t5_data_rows += 1
 
 if _t5_data_rows == 0:
-    # T5 is empty — fall back to legacy Template_2 file
-    t2_path = os.path.join(TEMPLATES, 'Template_2_Student_Course_Requests.xlsx')
-    if os.path.exists(t2_path):
-        print("  *** T5_Student Course Requests is EMPTY — falling back to legacy Template_2 ***")
-        rwb = openpyxl.load_workbook(t2_path, data_only=True)
-        rws = rwb.active
-        for r in range(3, rws.max_row + 1):  # Legacy template: data at row 3
-            pid_raw = rws.cell(r, 1).value
-            cid_raw = rws.cell(r, 2).value
-            if pid_raw is None or cid_raw is None:
-                continue
-            pid = str(pid_raw).strip()
-            cid = str(cid_raw).strip()
-            if cid == '0':
-                continue
-            if cid not in sec_by_code:
-                continue
-            if pid not in students:
-                students[pid] = _student_names.get(pid, pid)
-                grade[pid] = _student_grades.get(pid, 9)
-            if cid not in sreq[pid]:
-                sreq[pid].append(cid)
-        rwb.close()
-        print(f"  Students (from legacy Template_2): {len(students)}")
-        print(f"  Requests (from legacy Template_2): {sum(len(v) for v in sreq.values())}")
-    else:
-        print("  *** FATAL: T5_Student Course Requests is EMPTY and no legacy Template_2 found ***")
-        print("  *** Upload course request data to T5 before running the engine ***")
-        sys.exit(1)
+    print("\n  ╔══════════════════════════════════════════════════════════════╗")
+    print("  ║  FATAL: T5_Student Course Requests is EMPTY                 ║")
+    print("  ║                                                             ║")
+    print("  ║  Engine_Templates_With_Data.xlsx is the SOLE authoritative  ║")
+    print("  ║  source. Student course requests MUST be in T5.             ║")
+    print("  ║  No fallback files. No legacy data.                         ║")
+    print("  ║                                                             ║")
+    print("  ║  Upload course request data to T5 before running.           ║")
+    print("  ╚══════════════════════════════════════════════════════════════╝")
+    sys.exit(1)
 else:
     print(f"  Students (from T5): {len(students)}")
     print(f"  Requests (from T5): {sum(len(v) for v in sreq.values())}")
