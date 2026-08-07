@@ -6913,12 +6913,12 @@ _a1_period_conflict_courses = defaultdict(set)
 _a1_period_conflict_totals = defaultdict(int)
 for _c in conflict:
     for _bt in _c.get('sections_tried', []):
-        if _bt.get('rejected') == 'period_conflict':
+        if _bt.get('rejected') == 'period_conflict' and _bt.get('period') is not None:
             _a1_period_conflict_courses[_bt['period']].add(_c['code'])
             _a1_period_conflict_totals[_bt['period']] += 1
     # Also count the lost period
     _lp = _c.get('lost_period', '')
-    if _lp:
+    if _lp and _lp is not None:
         _a1_period_conflict_courses[_lp].add(_c['code'])
         _a1_period_conflict_totals[_lp] += 1
 
@@ -7282,7 +7282,7 @@ else:
         print(f"\n{'─' * 60}")
         print(f"  PERIOD HOTSPOTS ({len(_a1_period_hotspots)} detected)")
         print(f"{'─' * 60}")
-        for _per in sorted(_a1_period_hotspots.keys()):
+        for _per in sorted(k for k in _a1_period_hotspots.keys() if k is not None):
             _hp = _a1_period_hotspots[_per]
             print(f"  Period {_per}: {_hp['total_conflicts_involving_period']} conflict involvements, "
                   f"{len(_hp['conflict_courses'])} courses ({', '.join(_hp['conflict_courses'][:8])})")
