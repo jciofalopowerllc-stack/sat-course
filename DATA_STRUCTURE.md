@@ -76,7 +76,7 @@ This requires its own file because a co-schedule group can contain 2, 3, or 4 co
 
 | # | File | What it holds |
 |---|------|--------------|
-| 8 | **School Settings** | Credit cap (35), periods (A-G), graduation requirements by grade level. Stored in `course_priorities.json` |
+| 8 | **School Settings** | Credit cap (35), periods (A-G), graduation requirements by grade level. Stored in `Engine_Templates_With_Data.xlsx` → T10_Graduation Requirements (also legacy `course_priorities.json`) |
 
 This is the rulebook — not a parent, not a shared resource, not a historical file. It defines the constraints the engine must enforce for the entire school.
 
@@ -338,7 +338,7 @@ Each row connects one teacher to one course they teach, with prescriptions speci
 | B | Course Code | REQUIRED | Must match a Course Code in the Course file |
 | C | Prescribed Room | OPTIONAL | Room number (e.g., S-234) — null = engine decides |
 | D | Prescribed Period | OPTIONAL | A, B, C, D, E, F, G — null = engine decides |
-| E | Prescribed Term | REQUIRED | `FY`, `S1`, `S2`, `EC` — **prescribed = required** (same enforcement as prescribed room/period). `FY` = must be full-year. `S1` = must be S1 only. `S2` = must be S2 only. `EC` = Engine Choice (engine decides S1 or S2). This is the **single authoritative source** for per-section semester placement. Cross-validated against Template 7 Term Type: T7=FY requires T6=FY; T7=S requires T6=S1/S2/EC. |
+| E | Prescribed Term | REQUIRED | `FY`, `S1`, `S2`, `EC` — **prescribed = required** (same enforcement as prescribed room/period). `FY` = must be full-year. `S1` = must be S1 only. `S2` = must be S2 only. `EC` = Engine Choice (engine decides S1 or S2). This is the **single authoritative source** for per-section semester placement. Cross-validated against Template 7 Term Type: T7=FY requires T6=FY; T7=SE requires T6=S1/S2/EC. |
 | F | Prescribed Cohort | OPTIONAL | Cohort name (e.g., LEO II Cohort A) — null = not a cohort course |
 
 6 columns total.
@@ -489,8 +489,8 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 | A | Course Code | REQUIRED | Unique code (e.g., 745) |
 | B | Course Title | REQUIRED | Course name (e.g., AP Calculus AB) |
 | C | Department | REQUIRED | Department name (e.g., MATH, ENG, THEO) |
-| D | Term Type | REQUIRED | `FY` (full-year) or `S` (semester) — course classification only, does NOT control per-section placement. That is determined by Template 6 Column E (Prescribed Term). |
-| E | Term Credits | REQUIRED | `5.0` (FY), `2.5` (S), or `0` (special courses like 955 Academic Support) — validation failsafe. Cross-validated: FY must pair with 5.0, S must pair with 2.5. |
+| D | Term Type | REQUIRED | `FY` (full-year) or `SE` (semester) — course classification only, does NOT control per-section placement. That is determined by Template 6 Column E (Prescribed Term). |
+| E | Term Credits | REQUIRED | `5.0` (FY), `2.5` (SE), or `0` (special courses like 955 Academic Support) — validation failsafe. Cross-validated: FY must pair with 5.0, SE must pair with 2.5. |
 | F | Grade Levels | REQUIRED | Eligible grades, comma-separated (e.g., 11, 12) |
 | G | Sections Needed | REQUIRED | Number of sections (e.g., 8) |
 | H | Max Enrollment per Section | REQUIRED | Seat cap (e.g., 25) |
@@ -501,10 +501,15 @@ Every student, teacher, and room has a complete history: their raw score plus ho
 | M | NCAA | OPTIONAL | Y/N — is this course NCAA approved — null = not applicable |
 | N | Prerequisites | OPTIONAL | Course codes, comma-separated (e.g., 110, 421) — null = none |
 | O | Corequisites | OPTIONAL | Course codes, comma-separated — null = none |
+| P | Singleton (Y/N) | REQUIRED | Y/N — only one section exists (Rule 13 Y/N column) |
+| Q | Doubleton (Y/N) | REQUIRED | Y/N — exactly two sections exist (Rule 13 Y/N column) |
+| R | Gr12 Eligible (Y/N) | REQUIRED | Y/N — course eligible for Grade 12 students (Rule 13 Y/N column) |
+| S | Pathway Course (Y/N) | REQUIRED | Y/N — course belongs to an SSP pathway (Rule 13 Y/N column). Cross-validated against T11. |
+| T | Semester Pairing Group | REQUIRED | Group label (e.g., "Grade 12 Theology") or N/A. Courses in the same group have their semester sections paired into shared periods. |
 
-15 columns total.
+20 columns total (6 Y/N columns: Singleton, Doubleton, AP, NCAA Course, Gr12 Eligible, Pathway Course).
 
-**Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English", "Language", "Physical Education"). If the field is null, the course is an elective. The engine uses the course's department name (matched against `course_priorities.json` graduation requirement rules) to determine if a course is a graduation requirement for a specific student's grade level.
+**Graduation Requirement vs. Elective:** If a course counts toward a grade level's graduation requirement, the `Graduation Requirement` field names the subject area it satisfies (e.g., "English", "Language", "Physical Education"). If the field is null, the course is an elective. The engine uses the course's department name (matched against T10_Graduation Requirements in `Engine_Templates_With_Data.xlsx`) to determine if a course is a graduation requirement for a specific student's grade level.
 
 **Graduation requirements are grade-specific:**
 
@@ -542,6 +547,10 @@ The original Template 7 had 28 columns. The following 17 columns were removed:
 
 - AP (Y/N) — engine needs a clear yes/no, old "Level" field mixed AP with Honors
 - NCAA (Y/N) — engine needs to validate NCAA students' course requests
+- Course Section Raw (Col 15) — sum of 8 priority components, range 0-90
+- Placement Tier (Col 16) — 1 (Gr12 Singleton), 2 (Gr12 Doubleton), 3 (All Other)
+- 8 component columns (Cols 17-24) — AP Points, Singleton Points, Grad Req Points, Gr12 PAE Points, Semester Only Points, Cohort Points, Co-Schedule Points, Prescribed Term Points
+- Grade Levels (Col 25) — eligible grades from T1 Col 6 (e.g., "9,10,11,12"). Drives three-tier placement system.
 
 **Commercial product note:** Some removed columns may be needed for the commercial engine. Specifications will be defined after the Don Bosco Prep engine build is completed.
 
@@ -615,7 +624,7 @@ A semester pairing group is a set of 2 or more course codes whose semester secti
 
 **Why it exists:** When semester courses share the same student population (e.g., all Grade 12 students need both 849 Catholic Social Teaching and 851 Spirituality of Vocation), pairing them in the same periods reduces the number of periods consumed by those courses. Without pairing, 8 sections of 849 and 8 sections of 851 could spread across all 7 periods, leaving zero free periods for other Grade 12 courses. With pairing, they share 4 periods, leaving 3 free.
 
-**Data source:** Defined in `course_priorities.json` under `"semester_pairing_groups"`.
+**Data source:** Defined in `Engine_Templates_With_Data.xlsx` → T1 Col 20 "Semester Pairing Group" (per-course group label) and `course_priorities.json` → `"semester_pairing_groups"` (group definitions with descriptions).
 
 ```json
 "semester_pairing_groups": [
@@ -696,6 +705,47 @@ The engine needs to validate course requests before the build runs. This require
 | Room | where this section met |
 
 The engine cross-references these two files using Course Code + Section to connect a student's grade to the teacher and room from that year.
+
+### Graduation Requirements (T10)
+
+| Field | Purpose |
+|-------|---------|
+| Grade Level | Which grade (9, 10, 11, 12) this requirement applies to |
+| Required Department | Department name that is required for this grade level |
+| Requirement Type | `Required` (mandatory) or `Required-Either` (student picks one from set) |
+| Notes | Additional context (e.g., "Student must take Social Studies OR Business") |
+
+Policy values follow the data rows: Credits Per Year (35), Elective Slots, Gr12 Theology Courses (2), Total Credits to Graduate (140), Resource Room exceptions.
+
+Replaces `course_priorities.json` → `graduation_requirements` section. This is the sole authority for which departments are required at each grade level.
+
+### Pathway Courses (T11)
+
+| Field | Purpose |
+|-------|---------|
+| Pathway | SSP pathway name (Business, LEO, Computer Science, Engineering, Fine Arts, Music Arts, Communication Arts, Theater) |
+| Course Code | Course that belongs to this pathway |
+| Course Title | Course name (denormalized from T1) |
+| Department | Department name (denormalized from T1) |
+
+A course may appear in multiple pathways (e.g., 708 Introduction to Business appears in both Business and LEO). 8 pathways, 45 unique courses, 50 total rows.
+
+Replaces `course_priorities.json` → `pathway_courses` section. Used by the engine to determine SSP Points (+25) for students on a pathway.
+
+### Student Priority Overrides (T12)
+
+| Field | Purpose |
+|-------|---------|
+| Student ID | Student identifier |
+| Student Name | "Last, First" format |
+| Course Code | Course that receives the override |
+| Course Title | Course name |
+| Override Priority | Priority type to apply (currently only `graduation_required`) |
+| Reason | Why this override exists (e.g., "Grade 12 science requirement exception") |
+
+39 student-course pairs where the course is treated as a graduation requirement even though the department is not normally required for the student's grade level. All current overrides are Grade 12 science exceptions.
+
+Replaces `student_priority_overrides.json` entirely. The engine's `_is_grad_req_for_student()` checks these overrides.
 
 ---
 

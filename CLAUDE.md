@@ -73,7 +73,7 @@ A semester pairing group is a set of 2+ course codes whose semester sections mus
 - **Job 2 is independent:** Students may take paired courses in any period, any semester, any combination. The only requirement is that every student who needs the paired courses gets them somewhere in their schedule.
 - **Conflict scoring exclusion:** Pairing group partners are excluded from `_predict_conflict_score()` and co-enrollment spreading — they share periods by design, and students choose independently.
 - **Period selection:** The engine scores all C(7, periods_needed) combinations using conflict potential + period load balance, picking the lowest-scoring combo.
-- **Defined in:** `course_priorities.json` → `"semester_pairing_groups"` array.
+- **Defined in:** `Engine_Templates_With_Data.xlsx` → T1 Col 20 "Semester Pairing Group" (per-course label) and `course_priorities.json` → `"semester_pairing_groups"` array (group definitions with descriptions).
 - **Current groups:** Grade 12 Theology (849 Catholic Social Teaching + 851 Spirituality of Vocation) — 8 sections each, 4 periods, 16 total sections.
 - **Why:** Without pairing, 849 and 851 could spread across all 7 periods, consuming every period for Grade 12 students. With pairing, they share 4 periods, leaving 3 free for other courses. Mathematical conflict reduction: up to 164 fewer conflicts.
 
@@ -136,7 +136,7 @@ Scenario filters let the user run the engine on a subset of sections and student
 ### Grade 12 Science Requirement Exceptions (2026-27)
 - 39 specific Grade 12 student-course pairs are treated as **graduation_required** priority even though Science is not a standard Gr12 required department
 - Courses affected: 543 Anatomy/Physiology H (9 students), 546 Forensics (27 students), 530 Physics (1 student), 531 Physics H (2 students)
-- Defined in `student_priority_overrides.json`, loaded by engine at startup
+- Defined in `Engine_Templates_With_Data.xlsx` → T12_Student Priority Overrides (39 rows). Also in `student_priority_overrides.json` (legacy, to be replaced by T12)
 - Engine's `course_request_priority()` and `_is_grad_req_for_student()` check these overrides
 
 ### Room Assignment Rules
@@ -186,11 +186,10 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (4-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization + Phase A-1 Diagnostics)
-- `course_priorities.json` — Graduation requirements, pathway courses, singleton courses
+- `Engine_Templates_With_Data.xlsx` — **Consolidated workbook (sole authority)** — 12 sheets (T1–T12), all input templates + config data. INDEX sheet has full layout reference.
+- `course_priorities.json` — Graduation requirements, pathway courses, singleton courses (legacy — T10, T11, T1 Col 20 now hold this data in the workbook)
+- `student_priority_overrides.json` — Student-specific priority overrides (legacy — T12 now holds this data in the workbook)
 - `detect_pathways.py` — Pathway detection from T8 Transcript History + Course Requests
-- `templates/` — All input templates (T2, T4, T6, T7, T8, T9, Prior Year)
-- `templates/202526_Master_Schedule_With_Teacher_ID.xlsx` — Official 2025-26 master schedule with teacher names and IDs
-- `student_priority_overrides.json` — Student-specific priority overrides (Grade 12 science exceptions)
 - `schedule_solution_v3.json` — Engine output
 - `run_diagnostics.json` — Cross-run learning data (Phase A-1 output, loaded by next run)
 - `DESIGN_Post_Run_Diagnostics.md` — Full design document for the cross-run learning system
@@ -276,7 +275,7 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 - **Priority value columns in templates:** Engine_Templates_With_Data.xlsx stores computed priority values alongside source data for full transparency and auditability:
   - **T2** Col 19: `6th Period Boost` (5000 or 0) — derived from 6th Period FY/S1/S2 approval columns
   - **T3** Cols 13-16: `Grade Level Points` (10/20/30/40), `LEO II Points` (50/0), `SSP Points` (25/0), `Student Raw Priority` (sum, range 10–115)
-  - **T7** Col 15: `Course Section Raw` (sum of 8 components, range 0–90) + Col 16: `Placement Tier` (1/2/3) + Cols 17-24: 8 individual component columns (`AP Points`, `Singleton Points`, `Grad Req Points`, `Gr12 PAE Points`, `Semester Only Points`, `Cohort Points`, `Co-Schedule Points`, `Prescribed Term Points`)
+  - **T7** Col 15: `Course Section Raw` (sum of 8 components, range 0–90) + Col 16: `Placement Tier` (1/2/3) + Cols 17-24: 8 individual component columns (`AP Points`, `Singleton Points`, `Grad Req Points`, `Gr12 PAE Points`, `Semester Only Points`, `Cohort Points`, `Co-Schedule Points`, `Prescribed Term Points`) + Col 25: `Grade Levels` (from T1, e.g. "9,10,11,12" — drives three-tier placement system)
 
 ### Engine Improvements Applied (retained from prior work)
 - **Double-booking fix**: Students may only occupy one course per period-semester slot — bump logic enforces this unconditionally
@@ -308,10 +307,14 @@ The engine loads Prior Year schedule data from `Template_Prior_Year_Master_Sched
 - Use prior year teacher-room associations to influence placement
 
 **Sole authorities for current year placement:**
-- Template 6 (Teacher Profiles + Teacher-Course Assignments) — prescribed rooms, periods, terms, cohorts
-- Template 7 (Course Profiles) — course characteristics, grade eligibility
-- Template 9 (Room Profiles) — room availability, capacity, shared status
-- `course_priorities.json` — graduation requirements, pathways, singleton designations
+- `Engine_Templates_With_Data.xlsx` — **consolidated workbook** containing all templates and config:
+  - T1 (Course Profiles) — course characteristics, grade levels, semester pairing groups
+  - T2 (Teacher Profiles) — availability, load caps, 6th period approval
+  - T7 (Teacher-Section Assignments) — sections, prescribed rooms/periods/terms/cohorts, priority breakdowns, grade levels
+  - T4 (Room Profiles) — room availability, capacity, shared status
+  - T10 (Graduation Requirements) — required departments by grade level
+  - T11 (Pathway Courses) — SSP pathway-course assignments
+  - T12 (Student Priority Overrides) — student-specific graduation-required exceptions
 
 ### Cross-Run Learning System (Phase A-1)
 The engine learns from its own results across runs. Each run analyzes actual conflicts, writes diagnostics, and the next run reads them to bias section placement toward better periods.
