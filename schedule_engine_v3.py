@@ -3022,74 +3022,75 @@ for cid, ec_sids in _ec_courses.items():
 # This pass checks each teacher's total S1 vs S2 load (FY + EC) against
 # their max load cap, and flips EC sections from the overloaded semester
 # to the underloaded one to minimize or eliminate load violations.
+#
+# Extracted as a function so Phase D's _restore_for_restart() can re-run it
+# after re-distributing EC sections — without this, restarts undo the
+# rebalance and teachers with FY+EC combos end up over cap.
+
+def _teacher_aware_ec_rebalance(verbose=True):
+    """Flip EC sections between S1/S2 to keep each teacher within load cap.
+    Returns number of EC sections flipped."""
+    rebalance_count = 0
+    ec_by_teacher = defaultdict(list)
+    for s in sections:
+        if s.get('prescribed_term') == 'EC':
+            t = s.get('teacher')
+            if t and t != 'TBD':
+                ec_by_teacher[t].append(s['sid'])
+
+    for rb_teacher, rb_ec_sids in ec_by_teacher.items():
+        rb_all_sids = teacher_sections.get(rb_teacher, [])
+        rb_s1_count = sum(1 for sid in rb_all_sids if 'S1' in sections[sid]['halves'])
+        rb_s2_count = sum(1 for sid in rb_all_sids if 'S2' in sections[sid]['halves'])
+        rb_max_s1, rb_max_s2 = get_max_load(rb_teacher)
+
+        if rb_s1_count <= rb_max_s1 and rb_s2_count <= rb_max_s2:
+            continue
+
+        rb_flipped = []
+        for rb_sid in sorted(rb_ec_sids):
+            s = sections[rb_sid]
+            current_halves = s['halves']
+            if rb_s1_count > rb_max_s1 and current_halves == ('S1',):
+                if rb_s2_count < rb_max_s2:
+                    s['halves'] = ('S2',)
+                    rb_s1_count -= 1
+                    rb_s2_count += 1
+                    rb_flipped.append((rb_sid, s['code'], 'S1→S2'))
+                elif rb_s2_count == rb_max_s2 and rb_s1_count > rb_s2_count:
+                    s['halves'] = ('S2',)
+                    rb_s1_count -= 1
+                    rb_s2_count += 1
+                    rb_flipped.append((rb_sid, s['code'], 'S1→S2'))
+            elif rb_s2_count > rb_max_s2 and current_halves == ('S2',):
+                if rb_s1_count < rb_max_s1:
+                    s['halves'] = ('S1',)
+                    rb_s2_count -= 1
+                    rb_s1_count += 1
+                    rb_flipped.append((rb_sid, s['code'], 'S2→S1'))
+                elif rb_s1_count == rb_max_s1 and rb_s2_count > rb_s1_count:
+                    s['halves'] = ('S1',)
+                    rb_s2_count -= 1
+                    rb_s1_count += 1
+                    rb_flipped.append((rb_sid, s['code'], 'S2→S1'))
+
+            if rb_s1_count <= rb_max_s1 and rb_s2_count <= rb_max_s2:
+                break
+
+        if rb_flipped:
+            rebalance_count += len(rb_flipped)
+            if verbose:
+                rb_status_s1 = f"{'✓' if rb_s1_count <= rb_max_s1 else '⚠ OVER'}"
+                rb_status_s2 = f"{'✓' if rb_s2_count <= rb_max_s2 else '⚠ OVER'}"
+                print(f"    {rb_teacher}: flipped {len(rb_flipped)} EC sections "
+                      f"→ S1={rb_s1_count}/{rb_max_s1} {rb_status_s1}, "
+                      f"S2={rb_s2_count}/{rb_max_s2} {rb_status_s2}")
+                for rb_sid, rb_code, rb_dir in rb_flipped:
+                    print(f"      {rb_code} sid={rb_sid} {rb_dir}")
+    return rebalance_count
+
 print("\n  Teacher-aware EC rebalance:")
-_rebalance_count = 0
-# Group EC sections by teacher
-_ec_by_teacher = defaultdict(list)
-for s in sections:
-    if s.get('prescribed_term') == 'EC':
-        t = s.get('teacher')
-        if t and t != 'TBD':
-            _ec_by_teacher[t].append(s['sid'])
-
-for _rb_teacher, _rb_ec_sids in _ec_by_teacher.items():
-    # Count this teacher's current semester load (FY + already-assigned EC + prescribed S1/S2)
-    _rb_all_sids = teacher_sections.get(_rb_teacher, [])
-    _rb_s1_count = sum(1 for sid in _rb_all_sids if 'S1' in sections[sid]['halves'])
-    _rb_s2_count = sum(1 for sid in _rb_all_sids if 'S2' in sections[sid]['halves'])
-    _rb_max_s1, _rb_max_s2 = get_max_load(_rb_teacher)
-
-    # Check if either semester is over cap
-    if _rb_s1_count <= _rb_max_s1 and _rb_s2_count <= _rb_max_s2:
-        continue  # No violation — skip
-
-    # Find EC sections we can flip (only this teacher's EC sections)
-    _rb_flipped = []
-    # Sort by sid for determinism
-    for _rb_sid in sorted(_rb_ec_sids):
-        s = sections[_rb_sid]
-        current_halves = s['halves']
-        if _rb_s1_count > _rb_max_s1 and current_halves == ('S1',):
-            # S1 is over — try flipping this section to S2
-            if _rb_s2_count < _rb_max_s2:
-                s['halves'] = ('S2',)
-                _rb_s1_count -= 1
-                _rb_s2_count += 1
-                _rb_flipped.append((_rb_sid, s['code'], 'S1→S2'))
-            elif _rb_s2_count == _rb_max_s2 and _rb_s1_count > _rb_s2_count:
-                # Both at/over cap, but S1 is worse — flip to even out
-                s['halves'] = ('S2',)
-                _rb_s1_count -= 1
-                _rb_s2_count += 1
-                _rb_flipped.append((_rb_sid, s['code'], 'S1→S2'))
-        elif _rb_s2_count > _rb_max_s2 and current_halves == ('S2',):
-            # S2 is over — try flipping this section to S1
-            if _rb_s1_count < _rb_max_s1:
-                s['halves'] = ('S1',)
-                _rb_s2_count -= 1
-                _rb_s1_count += 1
-                _rb_flipped.append((_rb_sid, s['code'], 'S2→S1'))
-            elif _rb_s1_count == _rb_max_s1 and _rb_s2_count > _rb_s1_count:
-                # Both at/over cap, but S2 is worse — flip to even out
-                s['halves'] = ('S1',)
-                _rb_s2_count -= 1
-                _rb_s1_count += 1
-                _rb_flipped.append((_rb_sid, s['code'], 'S2→S1'))
-
-        # Stop if both semesters are now within cap
-        if _rb_s1_count <= _rb_max_s1 and _rb_s2_count <= _rb_max_s2:
-            break
-
-    if _rb_flipped:
-        _rebalance_count += len(_rb_flipped)
-        _rb_status_s1 = f"{'✓' if _rb_s1_count <= _rb_max_s1 else '⚠ OVER'}"
-        _rb_status_s2 = f"{'✓' if _rb_s2_count <= _rb_max_s2 else '⚠ OVER'}"
-        print(f"    {_rb_teacher}: flipped {len(_rb_flipped)} EC sections "
-              f"→ S1={_rb_s1_count}/{_rb_max_s1} {_rb_status_s1}, "
-              f"S2={_rb_s2_count}/{_rb_max_s2} {_rb_status_s2}")
-        for _rb_sid, _rb_code, _rb_dir in _rb_flipped:
-            print(f"      {_rb_code} sid={_rb_sid} {_rb_dir}")
-
+_rebalance_count = _teacher_aware_ec_rebalance(verbose=True)
 if _rebalance_count == 0:
     print("    No rebalancing needed — all teachers within load caps")
 else:
@@ -5569,6 +5570,10 @@ def _restore_for_restart(fixed_state):
         n_s1 = (len(ec_sids) + 1) // 2
         for i, sid in enumerate(ec_sids):
             sections[sid]['halves'] = ('S1',) if i < n_s1 else ('S2',)
+    # Re-run teacher-aware EC rebalance — without this, per-course EC
+    # redistribution can overload a teacher's semester (e.g., 4 FY + 2 EC
+    # all assigned to S1 = 6 periods, exceeding a 5-period cap).
+    _teacher_aware_ec_rebalance(verbose=False)
 
 fixed_state = _save_fixed_state()
 
