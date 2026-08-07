@@ -1258,6 +1258,13 @@ PTS_COHORT_COURSE = 15
 PTS_COSCHEDULE = 15
 PTS_PRESCRIBED_TERM = 10
 
+# ── Counselor-Designated Priority Level (T5 Column D) ──
+# Human input: counselor/registrar assigns 1-5 per student-course request.
+# Stacks with the 8 course characteristics as a 9th signal.
+# Scale: 5=MANDATORY(+20), 4=PROGRAM(+15), 3=PREFERRED(+10), 2=INTEREST(+5), 1=ALTERNATE(+0)
+PTS_PRIORITY_LEVEL = {5: 20, 4: 15, 3: 10, 2: 5, 1: 0}
+PRIORITY_LEVEL_LABELS = {5: 'MANDATORY', 4: 'PROGRAM', 3: 'PREFERRED', 2: 'INTEREST', 1: 'ALTERNATE'}
+
 # ── Teacher/Room lock points ──
 PTS_LOCK = 10
 PTS_ROOM_DEMAND = 5
@@ -1429,6 +1436,9 @@ def course_request_priority(pid, cid):
     # PTS_PRESCRIBED_TERM: course has any section with prescribed S1 or S2 in T6
     if any(sections[sid].get('prescribed_term') in ('S1', 'S2') for sid in sec_by_code.get(cid_s, [])):
         score += PTS_PRESCRIBED_TERM
+    # PTS_PRIORITY_LEVEL: counselor-designated priority (T5 Column D, scale 1-5)
+    pl = _request_priority_level.get((pid_s, cid_s), 3)
+    score += PTS_PRIORITY_LEVEL.get(pl, 10)
     _crp_cache[key] = score
     return score
 
@@ -1882,15 +1892,19 @@ print(f"  Student names/grades from T3: {len(_student_names)} students")
 for _cid, _ci in course_info.items():
     _course_dept_map[_cid] = _ci.get('dept', '')
 
-# ── T5_Student Course Requests (2-column format) ──
-# T5 columns: 1=Student ID, 2=Course Code
+# ── T5_Student Course Requests ──
+# T5 input columns: 1=Student ID, 2=Course Code, 3=Alternate Course Code, 4=Priority Level (1-5)
+# T5 engine-computed columns (5-10): populated at startup for transparency/auditability
 # If T5 is empty, engine REFUSES TO RUN (sole authority: Engine_Templates_With_Data.xlsx)
 _t5_ws = _engine_wb['T5_Student Course Requests']
 students = {}
 sreq = defaultdict(list)
 grade = {}
+_request_priority_level = {}   # (pid, cid) → int 1-5 (counselor-designated priority level)
+_request_alternate = {}        # (pid, cid) → str alternate course code or 'N/A'
 _t5_data_rows = 0
 _t5_start_row = 2  # T5 data starts at row 2
+_t5_invalid_priority = 0
 for r in range(_t5_start_row, (_t5_ws.max_row or 1) + 1):
     pid_raw = _t5_ws.cell(r, 1).value
     cid_raw = _t5_ws.cell(r, 2).value
@@ -1902,11 +1916,28 @@ for r in range(_t5_start_row, (_t5_ws.max_row or 1) + 1):
         continue
     if cid not in sec_by_code:
         continue
+    # Column C: Alternate Course Code (optional — default N/A)
+    alt_raw = _t5_ws.cell(r, 3).value
+    alt_code = str(alt_raw).strip() if alt_raw and str(alt_raw).strip() not in ('N/A', '') else 'N/A'
+    # Column D: Priority Level 1-5 (optional — default 3 PREFERRED)
+    pl_raw = _t5_ws.cell(r, 4).value
+    pl = 3  # default: PREFERRED
+    if pl_raw is not None:
+        try:
+            pl_int = int(pl_raw)
+            if 1 <= pl_int <= 5:
+                pl = pl_int
+            else:
+                _t5_invalid_priority += 1
+        except (ValueError, TypeError):
+            _t5_invalid_priority += 1
     if pid not in students:
         students[pid] = _student_names.get(pid, pid)
         grade[pid] = _student_grades.get(pid, 9)
     if cid not in sreq[pid]:
         sreq[pid].append(cid)
+    _request_priority_level[(pid, cid)] = pl
+    _request_alternate[(pid, cid)] = alt_code
     _t5_data_rows += 1
 
 if _t5_data_rows == 0:
@@ -1923,6 +1954,17 @@ if _t5_data_rows == 0:
 else:
     print(f"  Students (from T5): {len(students)}")
     print(f"  Requests (from T5): {sum(len(v) for v in sreq.values())}")
+    # Priority Level distribution
+    _pl_dist = Counter(_request_priority_level.values())
+    _pl_parts = []
+    for _plv in sorted(_pl_dist.keys(), reverse=True):
+        _pl_parts.append(f"{PRIORITY_LEVEL_LABELS.get(_plv, '?')}({_plv})={_pl_dist[_plv]}")
+    print(f"  Priority Levels: {', '.join(_pl_parts)}")
+    _alt_count = sum(1 for v in _request_alternate.values() if v != 'N/A')
+    if _alt_count:
+        print(f"  Alternate course codes specified: {_alt_count}")
+    if _t5_invalid_priority:
+        print(f"  *** WARNING: {_t5_invalid_priority} rows had invalid Priority Level (not 1-5) — defaulted to 3 (PREFERRED) ***")
 
 # ── T2_Teacher Profiles (full profiles) ──
 # T2 columns: 1=Teacher ID, 2=Last Name, 3=First Name, 4=Department,
