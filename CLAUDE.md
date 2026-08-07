@@ -106,15 +106,15 @@ Scenario filters let the user run the engine on a subset of sections and student
 
 ### Term Type & Prescribed Term Architecture (REV 08.04.26)
 - **Two distinct concepts, two distinct templates:**
-  - **Template 7 Column D "Term Type"** — describes WHAT a course IS: `FY` (full-year, 5.0 credits) or `S` (semester, 2.5 credits). Classification only — does NOT control placement.
-  - **Template 7 Column E "Term Credits"** — validation failsafe: FY must pair with 5.0, S must pair with 2.5 (0 allowed for special courses like 955 Academic Support).
+  - **Template 7 Column D "Term Type"** — describes WHAT a course IS: `FY` (full-year, 5.0 credits) or `SE` (semester, 2.5 credits). Classification only — does NOT control placement.
+  - **Template 7 Column E "Term Credits"** — validation failsafe: FY must pair with 5.0, SE must pair with 2.5 (0 allowed for special courses like 955 Academic Support).
   - **Template 6 Sheet 2 Column E "Prescribed Term"** — REQUIRED field, describes WHERE a specific section GOES: `FY`, `S1`, `S2`, or `EC` (Engine Choice). This is the **single authoritative source** for per-section semester placement.
 - **Prescribed = Required** (same as prescribed room and prescribed period):
   - `FY` → engine MUST place section as full-year (S1+S2)
   - `S1` → engine MUST place section in S1 only
   - `S2` → engine MUST place section in S2 only
   - `EC` → engine MAY place section in either S1 or S2 (Engine Choice — engine decides which is optimal)
-- **Cross-validation rule:** T7 Term Type=FY requires T6 Prescribed Term=FY; T7 Term Type=S requires T6 Prescribed Term=S1/S2/EC. Mismatch = engine validation error.
+- **Cross-validation rule:** T7 Term Type=FY requires T6 Prescribed Term=FY; T7 Term Type=SE requires T6 Prescribed Term=S1/S2/EC. Mismatch = engine validation error.
 - **EC redistribution:** EC sections are distributed evenly across S1/S2 by the engine (n_s1 = (n+1)//2)
 - **Eliminated:** `SEMESTER_LOCKS` dict, `FULL_FREEDOM` set, `semester_designations.json` — all replaced by T6 Column E as sole authority
 - **Distribution (371 sections):** FY=245, S1=15, S2=14, EC=97
@@ -245,7 +245,7 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 - **Tranate (105746)**: Course code corrected 556→557 in Template 6 Sheet 2
 - **Granieri (122120)**: Reassigned from 810/820/830 to 849×8 + 830×1; former sections transferred to TBD Theology (999999)
 - **TBD Theology (999999)**: 830 section removed — 830 should have 9 total sections, not 10
-- **Template 7 REV 08.04.26**: Column D changed from "Credits" to "Term Type" (FY/S), Column E added as "Term Credits" (5.0/2.5/0). Semester courses changed from S1→S. 631 CPR-AED and 642 Nutrition & Fitness had "Physical Education" removed from Graduation Requirement.
+- **Template 7 REV 08.04.26**: Column D changed from "Credits" to "Term Type" (FY/SE), Column E added as "Term Credits" (5.0/2.5/0). Semester courses changed from S1→SE. 631 CPR-AED and 642 Nutrition & Fitness had "Physical Education" removed from Graduation Requirement.
 - **Template 6 REV 08.04.26**: Sheet 2 Column E changed from optional to REQUIRED. All 371 rows populated: FY=245, EC=97, S1=15, S2=14. 203 Guitar Ensemble rows 51-52 corrected from EC→FY.
 - **semester_designations.json**: Eliminated — T6 Column E is sole authority for section semester placement
 - **Template 2 REV 08.04.26.V3**: Replaced V2. 6,100 requests, 804 students, 141 courses (4 duplicate rows: 106243/642, 106291/642, 112088/2044, 112896/320). English (110-149), Arts (201-255), History (310-311) requests restored. Theology/Academic Support (849, 851, 830, 955) requests removed. Student 121012 included with 6 requests (410,510,570,610,710,810). **Post-V3 fix:** Added 428 missing Theology requests (830×98 Gr11, 849×165 Gr12, 851×165 Gr12). Added 28 missing 955 Academic Support requests (confirmed from SIS). **Post-audit fix (08.06.26):** Removed 10 course 202 (Chorus) requests — not scheduled A-G. Removed 4 duplicate rows (106243/642, 106291/642, 112088/2044, 112896/320). Final T2: 6,544 rows (header + REQUIRED + 6,542 data), 805 students, 143 courses.

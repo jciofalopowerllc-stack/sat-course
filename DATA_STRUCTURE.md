@@ -55,7 +55,7 @@ The meeting point where a Student, Teacher, and Room come together at a specific
 |---|------|--------------|
 | 4 | **Course** | Course code, title, department, credits, prerequisites, number of sections, prescribed term (FY/S1/S2) |
 
-Term Type (FY or S) is a property of the course code — NOT a separate file. Per-section placement (FY/S1/S2/EC) is in the Teacher-Course Assignments file (Template 6 Sheet 2 Column E). Cohort assignment is a field in the Student file — NOT a separate file.
+Term Type (FY or SE) is a property of the course code — NOT a separate file. Per-section placement (FY/S1/S2/EC) is in the Teacher-Course Assignments file (Template 6 Sheet 2 Column E). Cohort assignment is a field in the Student file — NOT a separate file.
 
 ### Constraint File
 
@@ -554,7 +554,7 @@ The engine processes each course section's data in this order:
 | 1 | Identify | Course Section > Course Code | Which course this section belongs to |
 | 2 | Identify | Course Section > Section Number | Which section of the course (e.g., Section 1 of 8) |
 | 3 | Load | Course Section > Course Characteristics | Load AP, Singleton, Graduation Requirement, Cohort, Co-Schedule from Course file; load Term Type from Template 7 |
-| 4 | Check | Course Section > Semester Only | Is this a semester course (T7 Term Type = S)? If yes, add Semester Only points |
+| 4 | Check | Course Section > Semester Only | Is this a semester course (T7 Term Type = SE)? If yes, add Semester Only points |
 | 5 | **Calculate** | **Course Section > Raw Priority Value** | **Sum of all applicable course characteristics (AP + Singleton + Grad Req + Semester Only + Cohort + Co-Schedule + Prescribed Term). FIXED for the school year. No student, teacher, or room data. Saved by school year.** |
 | 6 | Identify | Course Section > Assigned Teacher | Load the teacher assigned to this section from Teacher-Course Assignments |
 | 7 | Load | Course Section > Teacher Total Priority Value | The assigned teacher's Total Priority Value |
@@ -856,7 +856,7 @@ Locks come from three files — Course, Teacher, and Room:
 
 | Lock | When it counts |
 |------|---------------|
-| Semester only (Term Type = S) | Course is a semester course (T7 Term Type = S) — restricted to half the schedule |
+| Semester only (Term Type = SE) | Course is a semester course (T7 Term Type = SE) — restricted to half the schedule |
 | Singleton | Only one section exists — zero flexibility |
 | AP | Student chose AP over non-AP — contingent upon prerequisites being met |
 | Graduation Requirement | Required course — must be placed |
@@ -1168,7 +1168,7 @@ How restricted the section is based on its own characteristics. These values sta
 | Singleton | 25 | Only 1 section exists for this course |
 | Graduation Requirement | 20 | Course is in a graduation-required department for the student's grade level |
 | Grade 12 Priority Academic Elective (Gr12 PAE) | 20 | Mutually exclusive with Graduation Requirement — full-year courses (T7 Term Type = FY) from English, Mathematics, Science, Social Studies, or Language departments that are NOT a Grade Level Requirement, NOT a Cohort course, and NOT an SSP course |
-| Semester Only (Term Type = S) | 15 | Course is a semester course (T7 Term Type = S), not full year |
+| Semester Only (Term Type = SE) | 15 | Course is a semester course (T7 Term Type = SE), not full year |
 | Cohort Course | 15 | Course has a cohort constraint (students must stay together) |
 | Co-Schedule Group | 15 | Course is part of a co-schedule group |
 | Prescribed Term | 10 | Section has a prescribed S1 or S2 in T6 Column E — not awarded for FY or EC sections |

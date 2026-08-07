@@ -1383,8 +1383,8 @@ def course_request_priority(pid, cid):
         score += PTS_GRAD_REQ
     elif g == 12 and _is_gr12_pae(cid_s):
         score += PTS_GR12_PAE
-    # PTS_SEMESTER_ONLY: course is a semester course (T7 Term Type = S)
-    if ci.get('term_type', 'FY') == 'S':
+    # PTS_SEMESTER_ONLY: course is a semester course (T7 Term Type = SE)
+    if ci.get('term_type', 'FY') == 'SE':
         score += PTS_SEMESTER_ONLY
     cohort = ci.get('cohort_flag', '')
     if cohort and cohort not in ('', 'N', None):
@@ -1435,8 +1435,8 @@ def course_section_raw(cid):
         score += PTS_GRAD_REQ
     elif _is_gr12_pae(cid_s):
         score += PTS_GR12_PAE
-    # PTS_SEMESTER_ONLY: course is a semester course (T7 Term Type = S)
-    if ci.get('term_type', 'FY') == 'S':
+    # PTS_SEMESTER_ONLY: course is a semester course (T7 Term Type = SE)
+    if ci.get('term_type', 'FY') == 'SE':
         score += PTS_SEMESTER_ONLY
     cohort = ci.get('cohort_flag', '')
     if cohort and cohort not in ('', 'N', None):
@@ -1636,12 +1636,12 @@ for r in range(3, _t7ws_ci.max_row + 1):
     term_type_raw = str(_t7ws_ci.cell(r, _t7_hdr_ci.get('Term Type', 4)).value or '').strip().upper()
     term_credits_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Term Credits', 5)).value
 
-    # Term Type: FY = Full-Year, S = Semester
+    # Term Type: FY = Full-Year, SE = Semester
     if term_type_raw in ('FY', 'FULL-YEAR', 'FULL YEAR', ''):
         term_type = 'FY'
         is_fy = True
-    elif term_type_raw == 'S':
-        term_type = 'S'
+    elif term_type_raw in ('SE', 'S', 'SEMESTER'):
+        term_type = 'SE'
         is_fy = False
     else:
         print(f"  *** WARNING: Course {cid} has unrecognized Term Type '{term_type_raw}' — defaulting to FY")
@@ -1655,7 +1655,7 @@ for r in range(3, _t7ws_ci.max_row + 1):
         if is_fy and credits != 5.0:
             print(f"  *** VALIDATION ERROR: Course {cid} Term Type=FY but Term Credits={credits} (expected 5.0)")
         elif not is_fy and credits != 2.5:
-            print(f"  *** VALIDATION ERROR: Course {cid} Term Type=S but Term Credits={credits} (expected 2.5)")
+            print(f"  *** VALIDATION ERROR: Course {cid} Term Type=SE but Term Credits={credits} (expected 2.5)")
 
     _singleton_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Singleton', 9)).value
     _ap_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('AP', 10)).value
@@ -1738,8 +1738,8 @@ for r in range(3, _t6ws_assign.max_row + 1):
     # ── Cross-validate T7 Term Type vs T6 Prescribed Term ──
     if term_type == 'FY' and pt_raw not in ('FY',):
         print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T7 Term Type=FY but T6 Prescribed Term={pt_raw} (expected FY)")
-    elif term_type == 'S' and pt_raw not in ('S1', 'S2', 'EC'):
-        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T7 Term Type=S but T6 Prescribed Term={pt_raw} (expected S1/S2/EC)")
+    elif term_type == 'SE' and pt_raw not in ('S1', 'S2', 'EC'):
+        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T7 Term Type=SE but T6 Prescribed Term={pt_raw} (expected S1/S2/EC)")
 
     # ── Set halves from prescribed term (prescribed = required) ──
     if pt_raw == 'FY':
