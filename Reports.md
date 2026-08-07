@@ -2,6 +2,10 @@
 
 Reference for all reports generated from `schedule_engine_v3.py` output. Report format definitions are stored in the engine's `REPORT_FORMATS` dict.
 
+## Universal Data Rule — No Blank Cells
+
+**Every cell in every template (T1–T9) and every engine-generated report MUST contain a value.** Use `N/A` for fields where no data applies. Blank/empty cells are prohibited — the engine flags them as validation errors at startup and refuses to run until corrected. When generating reports, write `N/A` into any cell that would otherwise be empty.
+
 ---
 
 ## 1. Master Section Report
