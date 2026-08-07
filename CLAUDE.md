@@ -251,17 +251,10 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 - **Template 2 REV 08.04.26.V3**: Replaced V2. 6,100 requests, 804 students, 141 courses (4 duplicate rows: 106243/642, 106291/642, 112088/2044, 112896/320). English (110-149), Arts (201-255), History (310-311) requests restored. Theology/Academic Support (849, 851, 830, 955) requests removed. Student 121012 included with 6 requests (410,510,570,610,710,810). **Post-V3 fix:** Added 428 missing Theology requests (830×98 Gr11, 849×165 Gr12, 851×165 Gr12). Added 28 missing 955 Academic Support requests (confirmed from SIS). **Post-audit fix (08.06.26):** Removed 10 course 202 (Chorus) requests — not scheduled A-G. Removed 4 duplicate rows (106243/642, 106291/642, 112088/2044, 112896/320). Final T2: 6,544 rows (header + REQUIRED + 6,542 data), 805 students, 143 courses.
 - **Template 8 REV 08.04.26.V2**: 804 students. Added 121012 Garcia, Jace Jaden (Gr9). Prior additions retained: 116597 Giordano, Joseph (Gr9), 120834 McNeal, Harlem (Gr10). 105477 Hinspeter, Jack (Gr12) retained (previously documented as removed in error — student is active with 11 course requests). Note: 105477 has no Transcript History in T8 Sheet 2. **Post-audit fix (08.06.26):** Removed duplicate 116597 row; fixed student 121012 trailing non-breaking space in ID.
 
-### Current Results (v3 — latest full run, STALE — pre-T2 revision)
-- 748 conflicts (Gr9: 169, Gr10: 164, Gr11: 145, Gr12: 270), 88.5% placement (5781/6529)
-- 0 double-bookings, 0 teacher load violations
-- Graduation requirement fulfillment: 4799/5420 (88.5%)
-- AP/Honors fulfillment: 648/682 (95.0%)
-- Protected course conflicts: 666
-- Root cause: 680 all_periods_blocked, 126 singleton_collision, 5 period_conflict
-- 371 sections across 143 courses, 63 teachers
-- Phase D: 16 restarts, best seed=4269
-- Phase A-0: Conflict matrix (3,018 pairs) with lazy caching across restarts
-- Engine Analysis Report generated: 17 recommendations (7 code, 6 rule, 4 process)
+### Current Results
+- **NO RESULTS** — Engine memory wiped clean (08.07.26). All prior output was generated from corrupted data (wrong teacher IDs + stale legacy student requests) and has been deleted.
+- Engine CANNOT run until T5_Student Course Requests is populated in Engine_Templates_With_Data.xlsx.
+- First clean run will produce fresh output from the sole authoritative source.
 
 ### Priority System (DATA_STRUCTURE.md — current engine implementation)
 - **Two-level priority:** Course Section Priority determines section placement order; Student Priority determines student fill order
