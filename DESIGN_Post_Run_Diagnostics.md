@@ -4,6 +4,8 @@
 **Date:** 2026-08-05  
 **Status:** DESIGN — awaiting JC approval before implementation
 
+> **Universal Data Rule:** Every cell in every template (T1–T9) must contain a value. Use `N/A` for fields where no data applies. Blank cells are validation errors — engine refuses to run until corrected.
+
 ---
 
 ## The Problem
