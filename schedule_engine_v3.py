@@ -4267,6 +4267,87 @@ def greedy_assign_periods(seed=42, audit=False):
     _unplaceable_sids = set()  # sections that cannot be placed without double-booking
     tier_labels = {1: 'Gr12 Singletons', 2: 'Gr12 Doubletons', 3: 'All Other Sections'}
 
+    # ── Consecutive-6 Pre-Reservation ──
+    # For teachers with 6th-period approval who will have 6 sections in a semester,
+    # reserve one interior period (B-F) as "free" BEFORE greedy assignment begins.
+    # This prevents the "endpoint trap" where all sections pack into a contiguous
+    # B-F block, leaving only A/G free (both endpoints → consecutive-6 violation).
+    # The reserved period is blocked during greedy_assign, guaranteeing an interior gap.
+    _c6_reserved = {}  # teacher -> {period, semesters}
+    INTERIOR_PERIODS = {'B', 'C', 'D', 'E', 'F'}
+
+    for teacher, sids in teacher_sections.items():
+        if not teacher or teacher == 'TBD':
+            continue
+        max_s1, max_s2 = get_max_load(teacher)
+        if max_s1 < 6 and max_s2 < 6:
+            continue  # no 6th-period approval — no reservation needed
+
+        # Count sections per semester (including already-placed co-schedule/pairing)
+        s1_sids = [sid for sid in sids if 'S1' in sections[sid]['halves']]
+        s2_sids = [sid for sid in sids if 'S2' in sections[sid]['halves']]
+        needs_reserve_s1 = max_s1 >= 6 and len(s1_sids) >= 6
+        needs_reserve_s2 = max_s2 >= 6 and len(s2_sids) >= 6
+        if not needs_reserve_s1 and not needs_reserve_s2:
+            continue
+
+        # Find already-occupied periods from co-schedule/pairing group assignments
+        occupied_s1 = set()
+        occupied_s2 = set()
+        for sid in sids:
+            s = sections[sid]
+            if s['period']:
+                if 'S1' in s['halves']:
+                    occupied_s1.add(s['period'])
+                if 'S2' in s['halves']:
+                    occupied_s2.add(s['period'])
+
+        # Determine which semesters need reservation
+        reserve_sems = []
+        if needs_reserve_s1:
+            reserve_sems.append('S1')
+        if needs_reserve_s2:
+            reserve_sems.append('S2')
+
+        # Find candidate interior periods — must be free in ALL semesters that need reservation
+        occupied_union = set()
+        if 'S1' in reserve_sems:
+            occupied_union |= occupied_s1
+        if 'S2' in reserve_sems:
+            occupied_union |= occupied_s2
+        candidate_interior = INTERIOR_PERIODS - occupied_union
+
+        if not candidate_interior:
+            # All interior periods already occupied — can't reserve (co-schedule/pairing filled them)
+            continue
+
+        # Score each candidate: pick the interior period with the HIGHEST total
+        # conflict score across this teacher's courses — that's the period we'd
+        # least want to place in anyway, so reserving it costs the least.
+        teacher_codes = set(sections[sid]['code'] for sid in sids)
+        best_reserve = None
+        best_conflict = -1
+        for p in sorted(candidate_interior):
+            conflict_sum = 0
+            for cid in teacher_codes:
+                for other_cid in co_enroll.get(cid, {}):
+                    # Check if other_cid has sections already in this period
+                    for other_sid in sec_by_code.get(other_cid, []):
+                        if sections[other_sid]['period'] == p:
+                            conflict_sum += len(co_enroll[cid][other_cid])
+            if conflict_sum > best_conflict:
+                best_conflict = conflict_sum
+                best_reserve = p
+            elif conflict_sum == best_conflict and best_reserve is not None:
+                # Tiebreak: prefer the period closest to the middle (D)
+                if abs(ord(p) - ord('D')) < abs(ord(best_reserve) - ord('D')):
+                    best_reserve = p
+
+        if best_reserve:
+            _c6_reserved[teacher] = {'period': best_reserve, 'semesters': reserve_sems}
+            print(f"  Consecutive-6 pre-reservation: {teacher} — reserving period "
+                  f"{best_reserve} as free ({', '.join(reserve_sems)})")
+
     for tier in (1, 2, 3):
         tier_placed = 0
         zero_conflict = tier in (1, 2)  # hard constraint for Tiers 1 & 2
@@ -4329,6 +4410,16 @@ def greedy_assign_periods(seed=42, audit=False):
                 if would_create_consecutive_6(teacher, p, halves):
                     period_scores[p] = 'consecutive_6'
                     continue
+                # Consecutive-6 pre-reservation: block the reserved interior
+                # period so greedy assign never places there, guaranteeing an
+                # interior gap for teachers with 6 sections in a semester.
+                if teacher in _c6_reserved:
+                    _res = _c6_reserved[teacher]
+                    if p == _res['period']:
+                        # Only block if this semester needs the reservation
+                        if any(sem in halves for sem in _res['semesters']):
+                            period_scores[p] = 'c6_reserved'
+                            continue
                 if teacher and teacher != 'TBD' and not teacher_available(teacher, p):
                     period_scores[p] = 'unavailable'
                     continue
@@ -4473,11 +4564,11 @@ def greedy_assign_periods(seed=42, audit=False):
                 # Prior-year data is a historical REFERENCE only — not a placement factor.
                 # Alignment is tracked in output stats for comparison, never as a score bonus.
 
-                # Proactive consecutive-6 trap avoidance:
+                # Proactive consecutive-6 trap avoidance (supplementary to pre-reservation):
                 # For teachers with 6th-period approval, penalize placements
                 # that would leave ONLY endpoint periods (A and/or G) free.
-                # This prevents "endpoint traps" where the teacher's last
-                # section can't be placed without 6 consecutive periods.
+                # Pre-reservation handles most cases; this catches edge cases
+                # where the teacher wasn't pre-reserved (e.g., fewer than 6 sections).
                 if teacher and teacher != 'TBD':
                     _trap_s1, _trap_s2 = get_max_load(teacher)
                     for _trap_sem in halves:
