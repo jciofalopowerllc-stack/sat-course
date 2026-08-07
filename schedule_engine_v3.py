@@ -2162,6 +2162,58 @@ def validate_no_blank_cells(wb_path, sheet_names=None):
     _vwb.close()
     return blanks
 
+
+def validate_yn_columns(wb_path, sheet_names=None):
+    """Validate Y/N column convention: columns with '(Y/N)' in header must contain
+    exactly 'Y' or 'N' in every data row. Returns list of violations.
+    """
+    import openpyxl as _opx
+    _vwb = _opx.load_workbook(wb_path, data_only=True)
+    violations = []
+    for _sname in (sheet_names or _vwb.sheetnames):
+        if _sname not in _vwb.sheetnames:
+            continue
+        _ws = _vwb[_sname]
+        if _ws.max_row is None or _ws.max_row < 2:
+            continue
+        # Find columns with (Y/N) in header
+        _yn_cols = {}
+        for _c in range(1, (_ws.max_column or 0) + 1):
+            _hv = _ws.cell(1, _c).value
+            if _hv and '(Y/N)' in str(_hv):
+                _yn_cols[_c] = str(_hv).strip()
+        if not _yn_cols:
+            continue
+        # Build full header map for row-emptiness check
+        _all_headers = {}
+        for _c in range(1, (_ws.max_column or 0) + 1):
+            _hv = _ws.cell(1, _c).value
+            if _hv is not None:
+                _all_headers[_c] = str(_hv).strip()
+        # Check data rows
+        for _r in range(2, _ws.max_row + 1):
+            # Skip entirely empty rows
+            _row_has_data = False
+            for _c in _all_headers:
+                _cv = _ws.cell(_r, _c).value
+                if _cv is not None and str(_cv).strip() != '':
+                    _row_has_data = True
+                    break
+            if not _row_has_data:
+                continue
+            for _c, _h in _yn_cols.items():
+                _cv = _ws.cell(_r, _c).value
+                _sv = str(_cv).strip() if _cv is not None else ''
+                if _sv not in ('Y', 'N'):
+                    violations.append({
+                        'sheet': _sname, 'row': _r, 'col': _c,
+                        'header': _h, 'col_letter': _opx.utils.get_column_letter(_c),
+                        'value': _sv if _sv else '(blank)'
+                    })
+    _vwb.close()
+    return violations
+
+
 # Run blank-cell validation on Engine_Templates_With_Data.xlsx if it exists
 _engine_templates_path = os.path.join(os.path.dirname(__file__) or '.', 'Engine_Templates_With_Data.xlsx')
 if os.path.exists(_engine_templates_path):
@@ -2188,6 +2240,25 @@ if os.path.exists(_engine_templates_path):
         print(f"  *** Engine will proceed but data quality is compromised ***")
     else:
         print(f"  Blank cell validation: PASSED (all cells populated)")
+
+    # Y/N column validation — columns with (Y/N) in header must contain exactly Y or N
+    print("\n── Y/N Column Validation ──")
+    _yn_violations = validate_yn_columns(_engine_templates_path, _blank_check_sheets)
+    if _yn_violations:
+        print(f"  *** Y/N VIOLATIONS: {len(_yn_violations)} cells with invalid values ***")
+        _yn_by_sheet = defaultdict(list)
+        for _v in _yn_violations:
+            _yn_by_sheet[_v['sheet']].append(_v)
+        for _s, _vl in sorted(_yn_by_sheet.items()):
+            print(f"    {_s}: {len(_vl)} violations")
+            for _v in _vl[:5]:
+                print(f"      Row {_v['row']}, Col {_v['col_letter']} ({_v['header']}): '{_v['value']}' — expected Y or N")
+            if len(_vl) > 5:
+                print(f"      ... and {len(_vl) - 5} more")
+        print(f"\n  *** Columns with (Y/N) in header must contain exactly 'Y' or 'N' ***")
+        print(f"  *** Use 'N/A' only in non-Y/N columns for intentional absence ***")
+    else:
+        print(f"  Y/N column validation: PASSED (all Y/N columns contain valid values)")
 
 # ── Credit Validation Gate ──
 CREDIT_CAP = 35.0
