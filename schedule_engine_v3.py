@@ -5,14 +5,16 @@ Implements the DATA_STRUCTURE.md priority system:
   - All course characteristics stack (AP, Singleton, Grad Req, Gr12 PAE, etc.)
   - Protection: Graduation Required, Gr12 Priority Academic Elective, Singleton
 
-Template inputs:
-  - Template 2: Student Course Requests
-  - Template 4: Co-Schedule Groups
-  - Template 6: Teacher Profiles (load caps, period availability, preferences)
-  - Template 7: Course Profiles (characteristics, prerequisites, room requirements)
-  - Template 8: Student Profiles + Transcript History (duplicate/prereq/grade validation)
-  - Template 9: Room Profiles (capacity, type, equipment)
-  - Prior Year Master Schedule: Historical reference (not a placement factor)
+Data source (sole authority):
+  Engine_Templates_With_Data.xlsx — 12 sheets:
+    T1_Course Profiles, T2_Teacher Profiles, T3_Student Profiles,
+    T4_Room Profiles, T5_Student Course Requests, T6_Student Prerequisites,
+    T7_Teacher-Section Assignments, T8_Co-Schedule Groups,
+    T9_Prior Year Master Sections, T10_Graduation Requirements,
+    T11_Pathway Courses, T12_Student Priority Overrides
+
+  Fallback: If T5 (Student Course Requests) is empty, the engine falls back
+  to templates/Template_2_Student_Course_Requests.xlsx if available.
 
 Features:
   1. Pre-flight validation: duplicate detection + prerequisite + grade eligibility
@@ -30,7 +32,7 @@ Outputs:
   - credit_violations.json: credit cap violations detail (in scratchpad)
 
 Data Integrity Rule (non-negotiable):
-  Every cell in every template (T1–T9) MUST contain a value.
+  Every cell in every template (T1–T12) MUST contain a value.
   Use 'N/A' for fields where no data applies.
   Blank/empty cells are data entry errors — flagged at startup.
 """
@@ -42,7 +44,8 @@ def print(*args, **kwargs):
 
 import openpyxl, json, math, random, statistics, os, re, argparse, datetime
 from collections import defaultdict, Counter
-TEMPLATES = os.path.join(os.path.dirname(__file__) or '.', 'templates')
+TEMPLATES = os.path.join(os.path.dirname(__file__) or '.', 'templates')  # legacy fallback only (T5)
+ENGINE_WB_PATH = os.path.join(os.path.dirname(__file__) or '.', 'Engine_Templates_With_Data.xlsx')
 SCRATCHPAD = "/tmp/claude-0/-home-user-sat-course/a04b5f0d-60df-588f-8acb-79549aab48c5/scratchpad"
 OUTPUT_DIR = os.path.dirname(__file__) or '.'
 DIAGNOSTICS_FILE = os.path.join(OUTPUT_DIR, 'run_diagnostics.json')
@@ -1269,34 +1272,67 @@ PTS_ROOM_DEMAND = 5
 # above the theoretical maximum cs_total (~5,790) of any non-6th-period section.
 PTS_SIXTH_PERIOD = 5000
 
-# ── Load reference data from course_priorities.json ──
-with open(os.path.join(os.path.dirname(__file__) or '.', 'course_priorities.json')) as _pf:
-    _prio_data = json.load(_pf)
-SINGLETON_COURSES = set(str(c) for c in _prio_data.get('singleton_courses', []))
+# ── Load reference data from Engine_Templates_With_Data.xlsx ──
+# Opens consolidated workbook early for config data (T1, T10, T11, T12).
+# The workbook reference (_engine_wb) is reused by the main data loading section below.
+_engine_wb = openpyxl.load_workbook(ENGINE_WB_PATH, data_only=True)
+print(f"  Consolidated workbook opened: {ENGINE_WB_PATH}")
 
-_pathway_cfg = _prio_data.get('pathway_courses', {})
-_pathway_cfg.pop('_notes', None)
-PATHWAY_COURSE_SETS = {name: set(str(c) for c in codes) for name, codes in _pathway_cfg.items()}
+# SINGLETON_COURSES — from T1 Col 9 "Singleton (Y/N)"
+_t1_ws_cfg = _engine_wb['T1_Course Profiles']
+SINGLETON_COURSES = set()
+for _r in range(2, _t1_ws_cfg.max_row + 1):
+    _code = _t1_ws_cfg.cell(_r, 1).value
+    _sing = _t1_ws_cfg.cell(_r, 9).value  # Singleton (Y/N)
+    if _code and str(_sing).strip().upper() == 'Y':
+        SINGLETON_COURSES.add(str(_code).strip())
+print(f"  Singleton courses from T1: {len(SINGLETON_COURSES)}")
 
-_grad_req = _prio_data.get('graduation_requirements', {})
-_pe_extra = set(_grad_req.get('grades_9_10_extra', {}).get('additional_required_departments', []))
-GRAD_REQ_DEPTS = {
-    9:  set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])) | _pe_extra,
-    10: set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])) | _pe_extra,
-    11: set(_grad_req.get('grades_9_10_11', {}).get('required_departments', [])),
-    12: set(_grad_req.get('grade_12', {}).get('required_departments', []))
-         | set(_grad_req.get('grade_12', {}).get('required_either', [])),
-}
+# PATHWAY_COURSE_SETS — from T11_Pathway Courses
+_t11_ws = _engine_wb['T11_Pathway Courses']
+PATHWAY_COURSE_SETS = {}
+for _r in range(2, _t11_ws.max_row + 1):
+    _pw = _t11_ws.cell(_r, 1).value  # Pathway
+    _cc = _t11_ws.cell(_r, 2).value  # Course Code
+    if _pw and _cc and str(_pw).strip() != '':
+        _pw_name = str(_pw).strip()
+        _cc_str = str(_cc).strip()
+        if not _cc_str.replace('-', '').isdigit():
+            continue  # Skip notes rows
+        if _pw_name not in PATHWAY_COURSE_SETS:
+            PATHWAY_COURSE_SETS[_pw_name] = set()
+        PATHWAY_COURSE_SETS[_pw_name].add(_cc_str)
+print(f"  Pathway course sets from T11: {len(PATHWAY_COURSE_SETS)} pathways, {sum(len(v) for v in PATHWAY_COURSE_SETS.values())} courses")
 
-# ── Student-specific priority overrides ──
+# GRAD_REQ_DEPTS — from T10_Graduation Requirements
+_t10_ws = _engine_wb['T10_Graduation Requirements']
+GRAD_REQ_DEPTS = {9: set(), 10: set(), 11: set(), 12: set()}
+for _r in range(2, _t10_ws.max_row + 1):
+    _gl = _t10_ws.cell(_r, 1).value  # Grade Level
+    _dept = _t10_ws.cell(_r, 2).value  # Required Department
+    _rtype = _t10_ws.cell(_r, 3).value  # Requirement Type
+    if _gl is None or _dept is None:
+        continue
+    _gl_str = str(_gl).strip()
+    if not _gl_str.isdigit():
+        break  # Stop at policy rows (non-numeric grade level)
+    _g = int(_gl_str)
+    _dept_str = str(_dept).strip()
+    _rtype_str = str(_rtype).strip() if _rtype else ''
+    if _g in GRAD_REQ_DEPTS and _rtype_str in ('Required', 'Required-Either'):
+        GRAD_REQ_DEPTS[_g].add(_dept_str)
+print(f"  Graduation requirements from T10: Gr9={len(GRAD_REQ_DEPTS[9])}, Gr10={len(GRAD_REQ_DEPTS[10])}, Gr11={len(GRAD_REQ_DEPTS[11])}, Gr12={len(GRAD_REQ_DEPTS[12])}")
+
+# ── Student-specific priority overrides — from T12_Student Priority Overrides ──
 _STUDENT_PRIO_OVERRIDES = set()
-_spo_path = os.path.join(os.path.dirname(__file__) or '.', 'student_priority_overrides.json')
-if os.path.exists(_spo_path):
-    with open(_spo_path) as _spof:
-        _spo_data = json.load(_spof)
-    for _ov in _spo_data.get('overrides', []):
-        _STUDENT_PRIO_OVERRIDES.add((str(_ov['student_id']).strip(), str(_ov['course_code']).strip()))
-    print(f"  Student priority overrides loaded: {len(_STUDENT_PRIO_OVERRIDES)} pairs")
+_t12_ws = _engine_wb['T12_Student Priority Overrides']
+for _r in range(2, _t12_ws.max_row + 1):
+    _sid = _t12_ws.cell(_r, 1).value  # Student ID
+    _cc = _t12_ws.cell(_r, 3).value   # Course Code
+    if _sid and _cc:
+        _STUDENT_PRIO_OVERRIDES.add((str(_sid).strip(), str(_cc).strip()))
+if _STUDENT_PRIO_OVERRIDES:
+    print(f"  Student priority overrides from T12: {len(_STUDENT_PRIO_OVERRIDES)} pairs")
 
 _course_dept_map = {}
 
@@ -1596,45 +1632,40 @@ print("=" * 60)
 # ============================================================
 print("\n[0] LOADING DATA...")
 
-# ── Build Teacher ID → Name map from Template 6 Sheet 1 ──
-t6_path = os.path.join(TEMPLATES, 'Template_6_Teacher_Profiles.xlsx')
-_t6wb_init = openpyxl.load_workbook(t6_path, data_only=True)
-_t6ws_profiles = _t6wb_init['Teacher Profiles']
+# ── Build Teacher ID → Name map from T2_Teacher Profiles ──
+_t2_ws = _engine_wb['T2_Teacher Profiles']
 teacher_id_to_name = {}
-for r in range(3, _t6ws_profiles.max_row + 1):
-    _tid = _t6ws_profiles.cell(r, 1).value
-    _last = _t6ws_profiles.cell(r, 2).value
-    _first = _t6ws_profiles.cell(r, 3).value
+for r in range(2, _t2_ws.max_row + 1):
+    _tid = _t2_ws.cell(r, 1).value   # Teacher ID
+    _last = _t2_ws.cell(r, 2).value  # Last Name
+    _first = _t2_ws.cell(r, 3).value # First Name
     if _tid and _last:
         _tname = f"{_last}, {_first}" if _first else str(_last)
         teacher_id_to_name[str(_tid).strip()] = _tname
 print(f"  Teacher ID→Name map: {len(teacher_id_to_name)} teachers")
 
-# ── Course info from Template 7 ──
-t7_path = os.path.join(TEMPLATES, 'Template_7_Course_Profiles.xlsx')
-_t7wb_ci = openpyxl.load_workbook(t7_path, data_only=True)
-_t7ws_ci = _t7wb_ci.active
-_t7_hdr_ci = {}
-for c in range(1, _t7ws_ci.max_column + 1):
-    v = _t7ws_ci.cell(1, c).value
-    if v:
-        _t7_hdr_ci[str(v).strip()] = c
+# ── Course info from T1_Course Profiles ──
+# T1 columns: 1=Course Code, 2=Course Title, 3=Department, 4=Term Type,
+#   5=Term Credits, 6=Grade Levels, 7=Sections Needed, 8=Max Enrollment per Section,
+#   9=Singleton(Y/N), 10=Doubleton(Y/N), 11=AP(Y/N), 12=Graduation Requirement,
+#   13=Cohort, 14=SSP, 15=NCAA(Y/N), 16=Prerequisites, 17=Corequisites,
+#   18=Gr12 Eligible(Y/N), 19=Pathway Course(Y/N), 20=Semester Pairing Group
+_t1_ws = _engine_wb['T1_Course Profiles']
 
 course_info = {}
 _course_max_enrollment = {}
-for r in range(3, _t7ws_ci.max_row + 1):
-    _cc = _t7_hdr_ci.get('Course Code', 1)
-    code = _t7ws_ci.cell(r, _cc).value
+for r in range(2, _t1_ws.max_row + 1):
+    code = _t1_ws.cell(r, 1).value  # Course Code
     if not code:
         continue
     cid = str(code).strip()
     if not cid.replace('-', '').isdigit():
         continue
 
-    title = _t7ws_ci.cell(r, _t7_hdr_ci.get('Course Title', 2)).value or cid
-    dept = _t7ws_ci.cell(r, _t7_hdr_ci.get('Department', 3)).value or ''
-    term_type_raw = str(_t7ws_ci.cell(r, _t7_hdr_ci.get('Term Type', 4)).value or '').strip().upper()
-    term_credits_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Term Credits', 5)).value
+    title = _t1_ws.cell(r, 2).value or cid        # Course Title
+    dept = _t1_ws.cell(r, 3).value or ''           # Department
+    term_type_raw = str(_t1_ws.cell(r, 4).value or '').strip().upper()  # Term Type
+    term_credits_raw = _t1_ws.cell(r, 5).value     # Term Credits
 
     # Term Type: FY = Full-Year, SE = Semester
     if term_type_raw in ('FY', 'FULL-YEAR', 'FULL YEAR', ''):
@@ -1649,7 +1680,7 @@ for r in range(3, _t7ws_ci.max_row + 1):
         is_fy = True
     ctype = 'Full-Year' if is_fy else 'Semester'
 
-    # Term Credits: must match Term Type (FY=5.0, S=2.5; 0 allowed for special courses)
+    # Term Credits: must match Term Type (FY=5.0, SE=2.5; 0 allowed for special courses)
     credits = float(term_credits_raw) if term_credits_raw else 0
     if credits > 0:
         if is_fy and credits != 5.0:
@@ -1657,24 +1688,23 @@ for r in range(3, _t7ws_ci.max_row + 1):
         elif not is_fy and credits != 2.5:
             print(f"  *** VALIDATION ERROR: Course {cid} Term Type=SE but Term Credits={credits} (expected 2.5)")
 
-    _singleton_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Singleton', 9)).value
-    _ap_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('AP', 10)).value
-    _grad_req_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Graduation Requirement', 11)).value
-    _cohort_raw = _t7ws_ci.cell(r, _t7_hdr_ci.get('Cohort', 12)).value
+    _singleton_raw = _t1_ws.cell(r, 9).value   # Singleton (Y/N)
+    _ap_raw = _t1_ws.cell(r, 11).value          # AP (Y/N)
+    _grad_req_raw = _t1_ws.cell(r, 12).value    # Graduation Requirement
+    _cohort_raw = _t1_ws.cell(r, 13).value       # Cohort
 
     course_info[cid] = {
         'code': cid, 'title': title, 'dept': str(dept),
         'credits': credits, 'term_type': term_type, 'type': ctype, 'is_fy': is_fy,
         'is_singleton': str(_singleton_raw).strip().upper() in ('Y', 'YES', 'TRUE', '1'),
         'is_ap': str(_ap_raw).strip().upper() in ('Y', 'YES', 'TRUE', '1'),
-        'grad_req_dept': str(_grad_req_raw).strip() if _grad_req_raw and str(_grad_req_raw).strip().upper() not in ('', 'NONE', 'N', 'NO') else '',
-        'cohort_flag': str(_cohort_raw).strip() if _cohort_raw and str(_cohort_raw).strip().upper() not in ('', 'NONE', 'N', 'NO') else '',
+        'grad_req_dept': str(_grad_req_raw).strip() if _grad_req_raw and str(_grad_req_raw).strip().upper() not in ('', 'NONE', 'N', 'NO', 'N/A') else '',
+        'cohort_flag': str(_cohort_raw).strip() if _cohort_raw and str(_cohort_raw).strip().upper() not in ('', 'NONE', 'N', 'NO', 'N/A') else '',
     }
-    _me = _t7ws_ci.cell(r, _t7_hdr_ci.get('Max Enrollment per Section', 8)).value
+    _me = _t1_ws.cell(r, 8).value  # Max Enrollment per Section
     _course_max_enrollment[cid] = int(_me) if _me else 25
 
-_t7wb_ci.close()
-print(f"  Courses loaded from Template 7: {len(course_info)}")
+print(f"  Courses loaded from T1: {len(course_info)}")
 HARD_CAP_ENFORCEMENT = True
 
 _original_caps = dict(_course_max_enrollment)
@@ -1686,20 +1716,24 @@ if ENGINE_MODE == 'unlimited':
         _course_max_enrollment[_uc_cid] = _UNLIMITED_CAP
     print(f"  UNLIMITED MODE: All section caps set to {_UNLIMITED_CAP}, HARD_CAP_ENFORCEMENT=False")
 
-# ── Sections from Template 6 Sheet 2 (Teacher-Course Assignments) ──
-_t6ws_assign = _t6wb_init['Teacher-Course Assignments']
+# ── Sections from T7_Teacher-Section Assignments ──
+# T7 columns: 1=Course Code, 2=Course Title, 3=Department, 4=Credits,
+#   5=TERM TYPE, 6=Level, 7=Section #, 8=Prescribed Term, 9=Section Enrollment Cap,
+#   10=Teacher ID, 11=Teacher, 12=Prescribed Room, 13=Prescribed Cohort,
+#   14=Co-Schedule Group Code, 15=CSR, 16=Placement Tier, 17-24=component points,
+#   25=Grade Levels
+_t7_ws = _engine_wb['T7_Teacher-Section Assignments']
 sections = []
 sec_by_code = defaultdict(list)
 teacher_sections = defaultdict(list)
 _section_counter = defaultdict(int)
 
-for r in range(3, _t6ws_assign.max_row + 1):
-    _tid = _t6ws_assign.cell(r, 1).value
-    code = _t6ws_assign.cell(r, 2).value
-    room = _t6ws_assign.cell(r, 3).value
-    prescribed_period = _t6ws_assign.cell(r, 4).value
-    prescribed_term = _t6ws_assign.cell(r, 5).value
-    prescribed_cohort = _t6ws_assign.cell(r, 6).value
+for r in range(2, _t7_ws.max_row + 1):
+    code = _t7_ws.cell(r, 1).value          # Course Code
+    _tid = _t7_ws.cell(r, 10).value          # Teacher ID
+    room = _t7_ws.cell(r, 12).value          # Prescribed Room
+    prescribed_term = _t7_ws.cell(r, 8).value  # Prescribed Term
+    prescribed_cohort = _t7_ws.cell(r, 13).value  # Prescribed Cohort
 
     if code is None:
         continue
@@ -1718,7 +1752,7 @@ for r in range(3, _t6ws_assign.max_row + 1):
     if _tid:
         teacher_name = teacher_id_to_name.get(str(_tid).strip(), 'TBD')
 
-    # ── T6 Column E: Prescribed Term (REQUIRED — FY/S1/S2/EC) ──
+    # ── T7 Column 8: Prescribed Term (REQUIRED — FY/S1/S2/EC) ──
     pt_raw = str(prescribed_term or '').strip().upper()
     if pt_raw in ('FY', 'FULL-YEAR', 'FULL YEAR'):
         pt_raw = 'FY'
@@ -1729,17 +1763,17 @@ for r in range(3, _t6ws_assign.max_row + 1):
     elif pt_raw == 'EC':
         pt_raw = 'EC'
     elif pt_raw == '':
-        print(f"  *** VALIDATION ERROR: Course {cid} sec {secnum} has BLANK Prescribed Term in T6 Column E — defaulting to EC")
+        print(f"  *** VALIDATION ERROR: Course {cid} sec {secnum} has BLANK Prescribed Term in T7 Column 8 — defaulting to EC")
         pt_raw = 'EC'
     else:
-        print(f"  *** VALIDATION ERROR: Course {cid} sec {secnum} has unrecognized Prescribed Term '{pt_raw}' in T6 Column E — defaulting to EC")
+        print(f"  *** VALIDATION ERROR: Course {cid} sec {secnum} has unrecognized Prescribed Term '{pt_raw}' in T7 Column 8 — defaulting to EC")
         pt_raw = 'EC'
 
-    # ── Cross-validate T7 Term Type vs T6 Prescribed Term ──
+    # ── Cross-validate T1 Term Type vs T7 Prescribed Term ──
     if term_type == 'FY' and pt_raw not in ('FY',):
-        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T7 Term Type=FY but T6 Prescribed Term={pt_raw} (expected FY)")
+        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T1 Term Type=FY but T7 Prescribed Term={pt_raw} (expected FY)")
     elif term_type == 'SE' and pt_raw not in ('S1', 'S2', 'EC'):
-        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T7 Term Type=SE but T6 Prescribed Term={pt_raw} (expected S1/S2/EC)")
+        print(f"  *** CROSS-VALIDATION ERROR: Course {cid} sec {secnum} T1 Term Type=SE but T7 Prescribed Term={pt_raw} (expected S1/S2/EC)")
 
     # ── Set halves from prescribed term (prescribed = required) ──
     if pt_raw == 'FY':
@@ -1752,22 +1786,21 @@ for r in range(3, _t6ws_assign.max_row + 1):
         # Engine Choice — default to S1, engine will redistribute EC sections later
         halves = ('S1',)
 
+    # T7 has no Prescribed Period column — engine assigns all periods
+    # (1 section in old T6 had prescribed period A for course 710; now engine-assigned)
     period = None
-    if prescribed_period:
-        p = str(prescribed_period).strip().upper()
-        if p in PERIODS:
-            period = p
 
-    room_str = str(room).strip() if room and str(room).strip() not in ('None', '') else 'TBD'
-    cap = _course_max_enrollment.get(cid, 25)
+    room_str = str(room).strip() if room and str(room).strip() not in ('None', '', 'N/A') else 'TBD'
+    cap_raw = _t7_ws.cell(r, 9).value  # Section Enrollment Cap
+    cap = int(cap_raw) if cap_raw else _course_max_enrollment.get(cid, 25)
 
     sid = len(sections)
-    _pc_str = str(prescribed_cohort).strip() if prescribed_cohort and str(prescribed_cohort).strip().upper() not in ('', 'NONE', 'N', 'NO') else ''
+    _pc_str = str(prescribed_cohort).strip() if prescribed_cohort and str(prescribed_cohort).strip().upper() not in ('', 'NONE', 'N', 'NO', 'N/A') else ''
     sec = {
         'sid': sid, 'code': cid, 'section': secnum,
         'period': period, 'halves': halves, 'cap': cap,
         'teacher': teacher_name, 'room': room_str,
-        'prescribed_room': room_str,  # Original T6 prescribed room (immutable reference)
+        'prescribed_room': room_str,  # Original T7 prescribed room (immutable reference)
         'title': ci.get('title', cid), 'dept': ci.get('dept', ''),
         'is_fy': is_fy, 'prescribed_term': pt_raw,
         'prescribed_cohort': _pc_str,
@@ -1777,98 +1810,91 @@ for r in range(3, _t6ws_assign.max_row + 1):
     if teacher_name and teacher_name != 'TBD':
         teacher_sections[teacher_name].append(sid)
 
-_t6wb_init.close()
 print(f"  Sections: {len(sections)}")
 print(f"  Courses with sections: {len(sec_by_code)}")
 print(f"  Teachers with sections: {len(teacher_sections)}")
 
-# ── Template 9: Room Profiles ──
+# ── T4_Room Profiles ──
+# T4 columns: 1=Room ID, 2=Capacity, 3=Available Periods, 4=Available Terms, 5=Shared Room(Y/N)
 room_profiles = {}
 SHARED_ROOMS = set()
-t9_path = os.path.join(TEMPLATES, 'Template_9_Room_Profiles.xlsx')
-try:
-    _t9wb = openpyxl.load_workbook(t9_path, data_only=True)
-    _t9ws = _t9wb.active
-    _all_periods = set(PERIODS)
-    _all_terms = {'FY', 'S1', 'S2'}
-    for r in range(3, _t9ws.max_row + 1):
-        _rid = _t9ws.cell(r, 1).value
-        _rcap = _t9ws.cell(r, 2).value
-        _ravail_p = _t9ws.cell(r, 3).value
-        _ravail_t = _t9ws.cell(r, 4).value
-        _rshared = _t9ws.cell(r, 5).value
-        if not _rid:
-            continue
-        rid = str(_rid).strip()
-        _cap = int(_rcap) if _rcap else 25
-        _is_simultaneous = _cap >= 100 and str(_rshared or 'N').upper() == 'Y'
-        if _is_simultaneous:
-            SHARED_ROOMS.add(rid)
-        _avail_periods = set(p.strip().upper() for p in str(_ravail_p or 'A,B,C,D,E,F,G').split(',')) if _ravail_p else set(_all_periods)
-        _unavail_periods = _all_periods - _avail_periods
-        _avail_terms_raw = str(_ravail_t or 'FY,S1,S2').split(',')
-        _avail_terms = set(t.strip().upper() for t in _avail_terms_raw) if _ravail_t else set(_all_terms)
-        if 'FY' in _avail_terms:
-            _avail_terms |= {'S1', 'S2'}
-        _unavail_terms = _all_terms - _avail_terms
-        room_profiles[rid] = {
-            'capacity': _cap,
-            'shared': _is_simultaneous,
-            'available_periods': _avail_periods,
-            'unavailable_periods': _unavail_periods,
-            'available_terms': _avail_terms,
-            'unavailable_terms': _unavail_terms,
-        }
-    _t9wb.close()
-    _restricted_rooms = sum(1 for rp in room_profiles.values() if rp['unavailable_periods'] or rp['unavailable_terms'])
-    print(f"  Room profiles loaded: {len(room_profiles)} rooms (simultaneous-use: {SHARED_ROOMS or 'none'}, restricted: {_restricted_rooms})")
-except FileNotFoundError:
-    print("  Template 9 not found — using defaults for room profiles")
+_t4_ws = _engine_wb['T4_Room Profiles']
+_all_periods = set(PERIODS)
+_all_terms = {'FY', 'S1', 'S2'}
+for r in range(2, _t4_ws.max_row + 1):
+    _rid = _t4_ws.cell(r, 1).value
+    _rcap = _t4_ws.cell(r, 2).value
+    _ravail_p = _t4_ws.cell(r, 3).value
+    _ravail_t = _t4_ws.cell(r, 4).value
+    _rshared = _t4_ws.cell(r, 5).value
+    if not _rid:
+        continue
+    rid = str(_rid).strip()
+    _cap = int(_rcap) if _rcap else 25
+    _is_simultaneous = _cap >= 100 and str(_rshared or 'N').upper() == 'Y'
+    if _is_simultaneous:
+        SHARED_ROOMS.add(rid)
+    _avail_periods = set(p.strip().upper() for p in str(_ravail_p or 'A,B,C,D,E,F,G').split(',')) if _ravail_p else set(_all_periods)
+    _unavail_periods = _all_periods - _avail_periods
+    _avail_terms_raw = str(_ravail_t or 'FY,S1,S2').split(',')
+    _avail_terms = set(t.strip().upper() for t in _avail_terms_raw) if _ravail_t else set(_all_terms)
+    if 'FY' in _avail_terms:
+        _avail_terms |= {'S1', 'S2'}
+    _unavail_terms = _all_terms - _avail_terms
+    room_profiles[rid] = {
+        'capacity': _cap,
+        'shared': _is_simultaneous,
+        'available_periods': _avail_periods,
+        'unavailable_periods': _unavail_periods,
+        'available_terms': _avail_terms,
+        'unavailable_terms': _unavail_terms,
+    }
+_restricted_rooms = sum(1 for rp in room_profiles.values() if rp['unavailable_periods'] or rp['unavailable_terms'])
+print(f"  Room profiles loaded: {len(room_profiles)} rooms (simultaneous-use: {SHARED_ROOMS or 'none'}, restricted: {_restricted_rooms})")
 
-# ── Student names and grades from Template 8 (for Template 2 join) ──
-t8_path = os.path.join(TEMPLATES, 'Template_8_Student_Profiles.xlsx')
+# ── Student names and grades from T3_Student Profiles ──
+# T3 columns: 1=Grad Year, 2=Student ID, 3=Last Name, 4=First Name, 5=Grade Level,
+#   6=NCAA(Y/N), 7=LEO II(Y/N), 8=LEO I(Y/N), 9=Academic Support(Y/N), 10=SSP,
+#   11=Cohort Name, 12=Cohort Locked(Y/N), 13=Grade Level Points, 14=LEO II Points,
+#   15=SSP Points, 16=Student Raw Priority
+_t3_ws = _engine_wb['T3_Student Profiles']
 _student_names = {}
 _student_grades = {}
-try:
-    _t8wb_n = openpyxl.load_workbook(t8_path, data_only=True)
-    _t8ws_n = _t8wb_n[_t8wb_n.sheetnames[0]]
-    # Cols: A=Grad Year, B=Student ID, C=Last Name, D=First Name, E=Grade Level
-    for r in range(3, _t8ws_n.max_row + 1):
-        _sid = _t8ws_n.cell(r, 2).value
-        _last = _t8ws_n.cell(r, 3).value
-        _first = _t8ws_n.cell(r, 4).value
-        _gv = _t8ws_n.cell(r, 5).value  # Grade Level column
-        if not _sid:
-            continue
-        _pid = str(_sid).strip()
-        _student_names[_pid] = f"{_last}, {_first}" if _last and _first else str(_last or _first or _pid)
-        _g = 9
-        if _gv:
-            _gs = str(_gv).strip()
-            for _d in ['12', '11', '10', '9']:
-                if _d in _gs:
-                    _g = int(_d)
-                    break
-        _student_grades[_pid] = _g
-    _t8wb_n.close()
-    print(f"  Student names/grades from T8: {len(_student_names)} students")
-except FileNotFoundError:
-    print("  Template 8 not found — student names will use IDs")
+for r in range(2, _t3_ws.max_row + 1):
+    _sid = _t3_ws.cell(r, 2).value   # Student ID
+    _last = _t3_ws.cell(r, 3).value  # Last Name
+    _first = _t3_ws.cell(r, 4).value # First Name
+    _gv = _t3_ws.cell(r, 5).value    # Grade Level
+    if not _sid:
+        continue
+    _pid = str(_sid).strip()
+    _student_names[_pid] = f"{_last}, {_first}" if _last and _first else str(_last or _first or _pid)
+    _g = 9
+    if _gv:
+        _gs = str(_gv).strip()
+        for _d in ['12', '11', '10', '9']:
+            if _d in _gs:
+                _g = int(_d)
+                break
+    _student_grades[_pid] = _g
+print(f"  Student names/grades from T3: {len(_student_names)} students")
 
 # Populate course→department map for graduation-requirement priority
 for _cid, _ci in course_info.items():
     _course_dept_map[_cid] = _ci.get('dept', '')
 
-# ── Template 2: Student Course Requests (2-column format) ──
-t2_path = os.path.join(TEMPLATES, 'Template_2_Student_Course_Requests.xlsx')
-rwb = openpyxl.load_workbook(t2_path, data_only=True)
-rws = rwb.active
+# ── T5_Student Course Requests (2-column format) ──
+# T5 columns: 1=Student ID, 2=Course Code
+# If T5 is empty, falls back to legacy Template_2 file
+_t5_ws = _engine_wb['T5_Student Course Requests']
 students = {}
 sreq = defaultdict(list)
 grade = {}
-for r in range(3, rws.max_row + 1):
-    pid_raw = rws.cell(r, 1).value
-    cid_raw = rws.cell(r, 2).value
+_t5_data_rows = 0
+_t5_start_row = 2  # T5 data starts at row 2
+for r in range(_t5_start_row, (_t5_ws.max_row or 1) + 1):
+    pid_raw = _t5_ws.cell(r, 1).value
+    cid_raw = _t5_ws.cell(r, 2).value
     if pid_raw is None or cid_raw is None:
         continue
     pid = str(pid_raw).strip()
@@ -1882,214 +1908,190 @@ for r in range(3, rws.max_row + 1):
         grade[pid] = _student_grades.get(pid, 9)
     if cid not in sreq[pid]:
         sreq[pid].append(cid)
+    _t5_data_rows += 1
 
-print(f"  Students: {len(students)}")
-print(f"  Requests: {sum(len(v) for v in sreq.values())}")
-rwb.close()
-
-# ── Template 6: Teacher Profiles (Sheet 1) ──
-teacher_profiles = {}
-try:
-    t6wb = openpyxl.load_workbook(t6_path, data_only=True)
-    t6ws = t6wb['Teacher Profiles']
-    t6_hdr = {}
-    for c in range(1, t6ws.max_column + 1):
-        v = t6ws.cell(1, c).value
-        if v:
-            t6_hdr[str(v).strip()] = c
-
-    def t6col(name, default=None):
-        return t6_hdr.get(name, default)
-
-    for r in range(3, t6ws.max_row + 1):
-        last = t6ws.cell(r, t6col('Last Name', 2)).value
-        first = t6ws.cell(r, t6col('First Name', 3)).value
-        if not last:
-            continue
-        tname = f"{last}, {first}" if first else str(last)
-
-        def _read(col_name, fallback_col=None):
-            c = t6col(col_name, fallback_col)
-            return t6ws.cell(r, c).value if c else None
-
-        max_periods = _read('Max Teaching Periods')
-
-        avail = {}
-        for period in PERIODS:
-            v = _read(f'Avail Period {period}') or _read(f'Avail Per {period}')
-            avail[period] = str(v).upper() != 'N' if v else True
-
-        approved_6_fy = str(_read('Approved 6th Period FY') or _read('Approved 6-Period Full-Year') or 'N').upper() == 'Y'
-        approved_6_s1 = str(_read('Approved 6th Period S1 Only') or _read('Approved 6-Period Semester 1') or 'N').upper() == 'Y'
-        approved_6_s2 = str(_read('Approved 6th Period S2 Only') or _read('Approved 6-Period Semester 2') or 'N').upper() == 'Y'
-
-        dept1 = str(_read('Department') or _read('Department 1') or '')
-
-        ssp_teacher = str(_read('Special Student Population Teacher') or _read('SSP Teacher') or 'N').upper() == 'Y'
-
-        teacher_profiles[tname] = {
-            'max_periods': int(max_periods) if max_periods and str(max_periods) != 'N/A' else 5,
-            'max_consecutive': 3,
-            'prep_required': 2,
-            'duty_periods': 0,
-            'availability': avail,
-            'approved_6_fy': approved_6_fy,
-            'approved_6_s1': approved_6_s1,
-            'approved_6_s2': approved_6_s2,
-            'requires_2_consec_free': False,
-            'preferred_room': '',
-            'preferred_wing': '',
-            'preferred_periods': [],
-            'avoid_periods': [],
-            'contract': 'Standard',
-            'department_1': dept1,
-            'department_2': '',
-            'ssp_teacher': ssp_teacher,
-            'teaches_leo': False,
-            'teaches_pathway': False,
-            'teaches_acad_support': False,
-            'course_teacher_locks': '',
-            'computed_mtp': None,
-            'computed_tssp': None,
-        }
-    t6wb.close()
-    print(f"  Teacher profiles loaded: {len(teacher_profiles)}")
-except FileNotFoundError:
-    print("  Template 6 not found — using defaults for teacher profiles")
-
-# ── Transcript History from Template 8 Sheet 2 ──
-transcript = defaultdict(list)
-try:
-    _t8twb = openpyxl.load_workbook(t8_path, data_only=True)
-    _t8tws = None
-    for _sn in ('Transcript History',):
-        if _sn in _t8twb.sheetnames:
-            _t8tws = _t8twb[_sn]
-            break
-    if _t8tws:
-        # Headers row 1, REQUIRED row 2, data starts row 3
-        # Cols: A=Grad Year, B=Student ID, C=Course Code, D=Final Grade,
-        #       E=Passed (Y/N), F=Final Exam Grade
-        for r in range(3, _t8tws.max_row + 1):
-            sid = _t8tws.cell(r, 2).value
-            ccode = _t8tws.cell(r, 3).value
-            final_grade = _t8tws.cell(r, 4).value
-            passed = _t8tws.cell(r, 5).value
-            if sid and ccode:
-                transcript[str(sid).strip()].append({
-                    'code': str(ccode).strip(),
-                    'grade': str(final_grade or ''),
-                    'passed': str(passed or '').upper() == 'Y',
-                })
-        total_transcript = sum(len(v) for v in transcript.values())
-        print(f"  Transcript records loaded: {total_transcript} ({len(transcript)} students)")
+if _t5_data_rows == 0:
+    # T5 is empty — fall back to legacy Template_2 file
+    t2_path = os.path.join(TEMPLATES, 'Template_2_Student_Course_Requests.xlsx')
+    if os.path.exists(t2_path):
+        print("  *** T5_Student Course Requests is EMPTY — falling back to legacy Template_2 ***")
+        rwb = openpyxl.load_workbook(t2_path, data_only=True)
+        rws = rwb.active
+        for r in range(3, rws.max_row + 1):  # Legacy template: data at row 3
+            pid_raw = rws.cell(r, 1).value
+            cid_raw = rws.cell(r, 2).value
+            if pid_raw is None or cid_raw is None:
+                continue
+            pid = str(pid_raw).strip()
+            cid = str(cid_raw).strip()
+            if cid == '0':
+                continue
+            if cid not in sec_by_code:
+                continue
+            if pid not in students:
+                students[pid] = _student_names.get(pid, pid)
+                grade[pid] = _student_grades.get(pid, 9)
+            if cid not in sreq[pid]:
+                sreq[pid].append(cid)
+        rwb.close()
+        print(f"  Students (from legacy Template_2): {len(students)}")
+        print(f"  Requests (from legacy Template_2): {sum(len(v) for v in sreq.values())}")
     else:
-        print("  T8 'Transcript History' sheet not found — skipping transcript validation")
-    _t8twb.close()
-except FileNotFoundError:
-    print("  Template 8 not found — skipping transcript validation")
+        print("  *** FATAL: T5_Student Course Requests is EMPTY and no legacy Template_2 found ***")
+        print("  *** Upload course request data to T5 before running the engine ***")
+        sys.exit(1)
+else:
+    print(f"  Students (from T5): {len(students)}")
+    print(f"  Requests (from T5): {sum(len(v) for v in sreq.values())}")
 
-# ── Template 8: Student Profiles (SSP, LEO, Pathway, Academic Support) ──
+# ── T2_Teacher Profiles (full profiles) ──
+# T2 columns: 1=Teacher ID, 2=Last Name, 3=First Name, 4=Department,
+#   5=Max Teaching Periods, 6=Approved 6th Period FY(Y/N), 7=Approved 6th Period S1 Only(Y/N),
+#   8=Approved 6th Period S2 Only(Y/N), 9-15=Avail Period A-G(Y/N),
+#   16=Approved SSP Teacher(Y/N), 17=Approved Co-Scheduled Group Teacher(Y/N),
+#   18=Approved Cohort Teacher(Y/N), 19=6th Period Boost
+teacher_profiles = {}
+for r in range(2, _t2_ws.max_row + 1):
+    last = _t2_ws.cell(r, 2).value   # Last Name
+    first = _t2_ws.cell(r, 3).value  # First Name
+    if not last:
+        continue
+    tname = f"{last}, {first}" if first else str(last)
+
+    max_periods = _t2_ws.cell(r, 5).value  # Max Teaching Periods
+
+    avail = {}
+    for pi, period in enumerate(PERIODS):
+        v = _t2_ws.cell(r, 9 + pi).value  # Avail Period A(col 9) through G(col 15)
+        avail[period] = str(v).upper() != 'N' if v else True
+
+    approved_6_fy = str(_t2_ws.cell(r, 6).value or 'N').upper() == 'Y'
+    approved_6_s1 = str(_t2_ws.cell(r, 7).value or 'N').upper() == 'Y'
+    approved_6_s2 = str(_t2_ws.cell(r, 8).value or 'N').upper() == 'Y'
+
+    dept1 = str(_t2_ws.cell(r, 4).value or '')  # Department
+
+    ssp_teacher = str(_t2_ws.cell(r, 16).value or 'N').upper() == 'Y'  # Approved SSP Teacher
+
+    teacher_profiles[tname] = {
+        'max_periods': int(max_periods) if max_periods and str(max_periods) != 'N/A' else 5,
+        'max_consecutive': 3,
+        'prep_required': 2,
+        'duty_periods': 0,
+        'availability': avail,
+        'approved_6_fy': approved_6_fy,
+        'approved_6_s1': approved_6_s1,
+        'approved_6_s2': approved_6_s2,
+        'requires_2_consec_free': False,
+        'preferred_room': '',
+        'preferred_wing': '',
+        'preferred_periods': [],
+        'avoid_periods': [],
+        'contract': 'Standard',
+        'department_1': dept1,
+        'department_2': '',
+        'ssp_teacher': ssp_teacher,
+        'teaches_leo': False,
+        'teaches_pathway': False,
+        'teaches_acad_support': False,
+        'course_teacher_locks': '',
+        'computed_mtp': None,
+        'computed_tssp': None,
+    }
+print(f"  Teacher profiles loaded: {len(teacher_profiles)}")
+
+# ── Transcript History from T6_Student Prerequisites ──
+# T6 columns: 1=Grad Year, 2=Student ID, 3=Course Code, 4=Final Grade,
+#   5=Passed(Y/N), 6=Final Exam Grade
+_t6_ws = _engine_wb['T6_Student Prerequisites']
+transcript = defaultdict(list)
+for r in range(2, _t6_ws.max_row + 1):
+    sid = _t6_ws.cell(r, 2).value   # Student ID
+    ccode = _t6_ws.cell(r, 3).value # Course Code
+    final_grade = _t6_ws.cell(r, 4).value  # Final Grade
+    passed = _t6_ws.cell(r, 5).value       # Passed (Y/N)
+    if sid and ccode:
+        transcript[str(sid).strip()].append({
+            'code': str(ccode).strip(),
+            'grade': str(final_grade or ''),
+            'passed': str(passed or '').upper() == 'Y',
+        })
+total_transcript = sum(len(v) for v in transcript.values())
+print(f"  Transcript records from T6: {total_transcript} ({len(transcript)} students)")
+
+# ── T3_Student Profiles (SSP, LEO, Pathway, Academic Support) ──
+# T3 columns: 1=Grad Year, 2=Student ID, 3=Last Name, 4=First Name, 5=Grade Level,
+#   6=NCAA(Y/N), 7=LEO II(Y/N), 8=LEO I(Y/N), 9=Academic Support(Y/N), 10=SSP,
+#   11=Cohort Name, 12=Cohort Locked(Y/N), 13=Grade Level Points, 14=LEO II Points,
+#   15=SSP Points, 16=Student Raw Priority
 student_profiles = {}
-try:
-    t8wb2 = openpyxl.load_workbook(t8_path, data_only=True)
-    t8_profile_sheet = None
-    for _sn in ('Student Profiles', 'Profiles', 'Sheet1'):
-        if _sn in t8wb2.sheetnames:
-            t8_profile_sheet = t8wb2[_sn]
-            break
-    if t8_profile_sheet is None:
-        t8_profile_sheet = t8wb2[t8wb2.sheetnames[0]]
-    t8_hdr = {}
-    for c in range(1, t8_profile_sheet.max_column + 1):
-        v = t8_profile_sheet.cell(1, c).value
-        if v:
-            t8_hdr[str(v).strip()] = c
-    def _t8col(name):
-        return t8_hdr.get(name)
-    for r in range(3, t8_profile_sheet.max_row + 1):
-        sid_col = _t8col('Student ID') or 1
-        sid = t8_profile_sheet.cell(r, sid_col).value
-        if not sid:
-            continue
-        sid_str = str(sid).strip()
-        _leo_col = _t8col('LEO II')
-        _leo1_col = _t8col('LEO I')
-        _pathway_col = _t8col('Pathway')
-        _acad_col = _t8col('Academic Support')
-        _ssp_col = _t8col('SSP')
-        _grade_col = _t8col('Grade Level')
-        is_leo = str(t8_profile_sheet.cell(r, _leo_col).value or 'N').upper() == 'Y' if _leo_col else False
-        is_leo_i = str(t8_profile_sheet.cell(r, _leo1_col).value or 'N').upper() == 'Y' if _leo1_col else False
-        _pathway_raw = str(t8_profile_sheet.cell(r, _pathway_col).value or 'N').strip() if _pathway_col else 'N'
-        is_pathway = _pathway_raw not in ('N', 'n', '')
-        _pathway_name = _pathway_raw if is_pathway else 'N'
-        is_acad_support = str(t8_profile_sheet.cell(r, _acad_col).value or 'N').upper() == 'Y' if _acad_col else False
-        ssp_val = t8_profile_sheet.cell(r, _ssp_col).value if _ssp_col else None
-        ssp_score = int(ssp_val) if ssp_val and str(ssp_val).strip().isdigit() else None
-        grade_val = t8_profile_sheet.cell(r, _grade_col).value if _grade_col else None
-        if ssp_score is None:
-            if is_leo:
-                ssp_score = 5
-            elif is_pathway:
-                ssp_score = 4
-            elif is_acad_support:
-                ssp_score = 3
-            else:
-                ssp_score = 1
-        student_profiles[sid_str] = {
-            'is_leo': is_leo,
-            'is_leo_i': is_leo_i,
-            'is_pathway': is_pathway,
-            'pathway_name': _pathway_name,
-            'is_acad_support': is_acad_support,
-            'ssp': ssp_score,
-            'grade': str(grade_val or ''),
-        }
-    t8wb2.close()
-    _leo_count = sum(1 for sp in student_profiles.values() if sp['is_leo'])
-    _leo1_count = sum(1 for sp in student_profiles.values() if sp.get('is_leo_i', False))
-    _pathway_count = sum(1 for sp in student_profiles.values() if sp['is_pathway'])
-    _acad_count = sum(1 for sp in student_profiles.values() if sp['is_acad_support'])
-    _pw_names = {}
-    for sp in student_profiles.values():
-        pn = sp.get('pathway_name', 'N')
-        if pn != 'N':
-            _pw_names[pn] = _pw_names.get(pn, 0) + 1
-    _pw_summary = ', '.join(f"{k}={v}" for k, v in sorted(_pw_names.items(), key=lambda x: -x[1]))
-    print(f"  Student profiles loaded: {len(student_profiles)} (LEO II={_leo_count}, LEO I={_leo1_count}, Pathway={_pathway_count}, AcadSupport={_acad_count})")
-    if _pw_summary:
-        print(f"  Pathway breakdown: {_pw_summary}")
-except FileNotFoundError:
-    print("  Template 8 not found — skipping student profiles")
-except Exception as _e:
-    print(f"  Warning: Could not read Student Profiles sheet: {_e}")
+for r in range(2, _t3_ws.max_row + 1):
+    sid = _t3_ws.cell(r, 2).value  # Student ID
+    if not sid:
+        continue
+    sid_str = str(sid).strip()
 
-# ── Template 7: Course Profiles (prerequisites + grade eligibility) ──
+    is_leo = str(_t3_ws.cell(r, 7).value or 'N').upper() == 'Y'      # LEO II (Y/N)
+    is_leo_i = str(_t3_ws.cell(r, 8).value or 'N').upper() == 'Y'    # LEO I (Y/N)
+    is_acad_support = str(_t3_ws.cell(r, 9).value or 'N').upper() == 'Y'  # Academic Support (Y/N)
+    ssp_val = _t3_ws.cell(r, 10).value  # SSP
+    grade_val = _t3_ws.cell(r, 5).value  # Grade Level
+
+    # Pathway: T3 SSP column contains pathway name or N/A
+    _ssp_raw = str(ssp_val or 'N/A').strip()
+    is_pathway = _ssp_raw not in ('N', 'n', 'N/A', '')
+    _pathway_name = _ssp_raw if is_pathway else 'N'
+
+    ssp_score = None
+    if ssp_score is None:
+        if is_leo:
+            ssp_score = 5
+        elif is_pathway:
+            ssp_score = 4
+        elif is_acad_support:
+            ssp_score = 3
+        else:
+            ssp_score = 1
+
+    student_profiles[sid_str] = {
+        'is_leo': is_leo,
+        'is_leo_i': is_leo_i,
+        'is_pathway': is_pathway,
+        'pathway_name': _pathway_name,
+        'is_acad_support': is_acad_support,
+        'ssp': ssp_score,
+        'grade': str(grade_val or ''),
+    }
+
+_leo_count = sum(1 for sp in student_profiles.values() if sp['is_leo'])
+_leo1_count = sum(1 for sp in student_profiles.values() if sp.get('is_leo_i', False))
+_pathway_count = sum(1 for sp in student_profiles.values() if sp['is_pathway'])
+_acad_count = sum(1 for sp in student_profiles.values() if sp['is_acad_support'])
+_pw_names = {}
+for sp in student_profiles.values():
+    pn = sp.get('pathway_name', 'N')
+    if pn != 'N':
+        _pw_names[pn] = _pw_names.get(pn, 0) + 1
+_pw_summary = ', '.join(f"{k}={v}" for k, v in sorted(_pw_names.items(), key=lambda x: -x[1]))
+print(f"  Student profiles from T3: {len(student_profiles)} (LEO II={_leo_count}, LEO I={_leo1_count}, Pathway={_pathway_count}, AcadSupport={_acad_count})")
+if _pw_summary:
+    print(f"  Pathway breakdown: {_pw_summary}")
+
+# ── T1_Course Profiles: prerequisites + grade eligibility ──
+# T1 columns: 16=Prerequisites, 17=Corequisites, 6=Grade Levels, 1=Course Code
 course_prereqs = {}
 course_grade_levels = {}
 try:
-    _t7wb_pr = openpyxl.load_workbook(t7_path, data_only=True)
-    _t7ws_pr = _t7wb_pr.active
-    _t7_hdr_pr = {}
-    for c in range(1, _t7ws_pr.max_column + 1):
-        v = _t7ws_pr.cell(1, c).value
-        if v:
-            _t7_hdr_pr[str(v).strip()] = c
-    _prereq_col = _t7_hdr_pr.get('Prerequisites', 14)
-    _coreq_col = _t7_hdr_pr.get('Corequisites', 15)
-    _gl_col = _t7_hdr_pr.get('Grade Levels', 6)
-    _cc_col = _t7_hdr_pr.get('Course Code', 1)
-    for r in range(3, _t7ws_pr.max_row + 1):
-        ccode = _t7ws_pr.cell(r, _cc_col).value
+    for r in range(2, _t1_ws.max_row + 1):
+        ccode = _t1_ws.cell(r, 1).value  # Course Code
         if not ccode:
             continue
         cid = str(ccode).strip()
         if not cid.replace('-', '').isdigit():
             continue
-        prereqs = _t7ws_pr.cell(r, _prereq_col).value
-        coreqs = _t7ws_pr.cell(r, _coreq_col).value
-        grade_levels_raw = _t7ws_pr.cell(r, _gl_col).value
+        prereqs = _t1_ws.cell(r, 16).value       # Prerequisites
+        coreqs = _t1_ws.cell(r, 17).value        # Corequisites
+        grade_levels_raw = _t1_ws.cell(r, 6).value  # Grade Levels
         prereq_list = []
         if prereqs and str(prereqs).strip() not in ('N/A', ''):
             prereq_list = [p.strip() for p in str(prereqs).split(',') if p.strip()]
@@ -2106,11 +2108,10 @@ try:
                     gl_set.add(int(g))
             if gl_set:
                 course_grade_levels[cid] = gl_set
-    _t7wb_pr.close()
-    print(f"  Course prerequisites loaded: {len(course_prereqs)} courses with prereqs/coreqs")
-    print(f"  Grade-level eligibility loaded: {len(course_grade_levels)} courses")
-except FileNotFoundError:
-    print("  Template 7 not found — skipping prerequisite data")
+    print(f"  Course prerequisites from T1: {len(course_prereqs)} courses with prereqs/coreqs")
+    print(f"  Grade-level eligibility from T1: {len(course_grade_levels)} courses")
+except Exception as _e:
+    print(f"  Warning: Could not read prerequisites from T1: {_e}")
 
 
 # ── Blank Cell Validation (Rule 12 — No blank cells permitted) ──
@@ -2215,16 +2216,16 @@ def validate_yn_columns(wb_path, sheet_names=None):
 
 
 # Run blank-cell validation on Engine_Templates_With_Data.xlsx if it exists
-_engine_templates_path = os.path.join(os.path.dirname(__file__) or '.', 'Engine_Templates_With_Data.xlsx')
-if os.path.exists(_engine_templates_path):
+if os.path.exists(ENGINE_WB_PATH):
     print("\n── Blank Cell Validation (Rule 12) ──")
     _blank_check_sheets = [
         'T1_Course Profiles', 'T2_Teacher Profiles', 'T3_Student Profiles',
         'T4_Room Profiles', 'T6_Student Prerequisites',
         'T7_Teacher-Section Assignments', 'T8_Co-Schedule Groups',
-        'T9_Prior Year Master Sections'
+        'T9_Prior Year Master Sections', 'T10_Graduation Requirements',
+        'T11_Pathway Courses', 'T12_Student Priority Overrides'
     ]  # T5 excluded — intentionally empty until populated
-    _blanks = validate_no_blank_cells(_engine_templates_path, _blank_check_sheets)
+    _blanks = validate_no_blank_cells(ENGINE_WB_PATH, _blank_check_sheets)
     if _blanks:
         print(f"  *** BLANK CELL VIOLATIONS: {len(_blanks)} blank cells found ***")
         _by_sheet = defaultdict(list)
@@ -2243,7 +2244,7 @@ if os.path.exists(_engine_templates_path):
 
     # Y/N column validation — columns with (Y/N) in header must contain exactly Y or N
     print("\n── Y/N Column Validation ──")
-    _yn_violations = validate_yn_columns(_engine_templates_path, _blank_check_sheets)
+    _yn_violations = validate_yn_columns(ENGINE_WB_PATH, _blank_check_sheets)
     if _yn_violations:
         print(f"  *** Y/N VIOLATIONS: {len(_yn_violations)} cells with invalid values ***")
         _yn_by_sheet = defaultdict(list)
@@ -2728,107 +2729,89 @@ except Exception as _e:
     print(f"  WARNING: could not generate review spreadsheet: {_e}")
 
 
-# ── LEO II Cohorts from Template 8 (Cohort Name column) ──
+# ── LEO II Cohorts from T3_Student Profiles ──
+# T3 columns: 2=Student ID, 7=LEO II(Y/N), 11=Cohort Name
 cohA, cohB = set(), set()
-try:
-    _t8wb_coh = openpyxl.load_workbook(t8_path, data_only=True)
-    _t8ws_coh = _t8wb_coh[_t8wb_coh.sheetnames[0]]
-    _coh_hdr = {}
-    for c in range(1, _t8ws_coh.max_column + 1):
-        v = _t8ws_coh.cell(1, c).value
-        if v:
-            _coh_hdr[str(v).strip()] = c
-    _coh_name_col = _coh_hdr.get('Cohort Name', 10)
-    _coh_sid_col = _coh_hdr.get('Student ID', 1)
-    _coh_leo_col = _coh_hdr.get('LEO II', 6)
-    for r in range(3, _t8ws_coh.max_row + 1):
-        _sid = _t8ws_coh.cell(r, _coh_sid_col).value
-        if not _sid:
-            continue
-        _pid = str(_sid).strip()
-        _is_leo = str(_t8ws_coh.cell(r, _coh_leo_col).value or 'N').upper() == 'Y'
-        if not _is_leo:
-            continue
-        _cohort_name = str(_t8ws_coh.cell(r, _coh_name_col).value or '').strip().upper()
-        if _pid in students:
-            if 'A' in _cohort_name:
-                cohA.add(_pid)
-            elif 'B' in _cohort_name:
-                cohB.add(_pid)
-            else:
-                cohA.add(_pid)
-    _t8wb_coh.close()
-except FileNotFoundError:
-    pass
+for r in range(2, _t3_ws.max_row + 1):
+    _sid = _t3_ws.cell(r, 2).value   # Student ID
+    if not _sid:
+        continue
+    _pid = str(_sid).strip()
+    _is_leo = str(_t3_ws.cell(r, 7).value or 'N').upper() == 'Y'  # LEO II (Y/N)
+    if not _is_leo:
+        continue
+    _cohort_name = str(_t3_ws.cell(r, 11).value or '').strip().upper()  # Cohort Name
+    if _pid in students:
+        if 'A' in _cohort_name:
+            cohA.add(_pid)
+        elif 'B' in _cohort_name:
+            cohB.add(_pid)
+        else:
+            cohA.add(_pid)
 print(f"  LEO Cohort A: {len(cohA)}, Cohort B: {len(cohB)}")
 
-# ── Template 4: Co-Schedule Groups (one course per row, group by name) ──
-t4_path = os.path.join(TEMPLATES, 'Template_4_CoSchedule_Groups.xlsx')
+# ── T8_Co-Schedule Groups (one course per row, group by code) ──
+# T8 columns: 1=Co-Schedule Group Code, 2=Co-Schedule Group Name, 3=Course Code,
+#   4=Teacher ID, 5=Prescribed Room
+# Note: T8 has a REQUIRED marker row at row 2 — data starts at row 3
+_t8_ws = _engine_wb['T8_Co-Schedule Groups']
 cogroups = []
-try:
-    iwb = openpyxl.load_workbook(t4_path, data_only=True)
-    cws = iwb.active
-    _cogroup_map = {}
-    for r in range(3, cws.max_row + 1):
-        gname = cws.cell(r, 1).value
-        code = cws.cell(r, 2).value
-        if not gname or not code:
-            continue
-        gname_str = str(gname).strip()
-        cid = str(code).strip()
-        if gname_str not in _cogroup_map:
-            _cogroup_map[gname_str] = []
-        _cogroup_map[gname_str].append(cid)
-    for gname_str, codes in _cogroup_map.items():
-        cogroups.append({'name': gname_str, 'codes': codes, 'period': None, 'sem': None})
-        print(f"  Co-schedule: {gname_str} = {codes}")
-    iwb.close()
-except FileNotFoundError:
-    print("  Template 4 not found — no co-schedule groups")
+_cogroup_map = {}
+for r in range(3, _t8_ws.max_row + 1):
+    gcode = _t8_ws.cell(r, 1).value     # Co-Schedule Group Code
+    gname = _t8_ws.cell(r, 2).value     # Co-Schedule Group Name
+    code = _t8_ws.cell(r, 3).value      # Course Code
+    if not gcode or not code:
+        continue
+    # Use group name as the key (matches old behavior), fall back to code
+    gname_str = str(gname or gcode).strip()
+    cid = str(code).strip()
+    if gname_str not in _cogroup_map:
+        _cogroup_map[gname_str] = []
+    _cogroup_map[gname_str].append(cid)
+for gname_str, codes in _cogroup_map.items():
+    cogroups.append({'name': gname_str, 'codes': codes, 'period': None, 'sem': None})
+    print(f"  Co-schedule: {gname_str} = {codes}")
 
-# ── Prior Year Schedule from Template_Prior_Year_Master_Schedule.xlsx ──
-_py_path = os.path.join(TEMPLATES, 'Template_Prior_Year_Master_Schedule.xlsx')
+# ── T9_Prior Year Master Sections ──
+# T9 columns: 1=School Year, 2=Course Code, 3=Section, 4=Teacher ID,
+#   5=Room, 6=Period, 7=Term, 8=Credits
+_t9_ws = _engine_wb['T9_Prior Year Master Sections']
 print("\n  Loading prior year schedule...")
 prior_entries = []
 prior_teacher_periods = defaultdict(set)
 prior_course_periods = defaultdict(set)
-try:
-    pwb = openpyxl.load_workbook(_py_path, data_only=True)
-    pws = pwb.active
-    for r in range(3, pws.max_row + 1):
-        code_raw = pws.cell(r, 2).value
-        teacher_id = pws.cell(r, 4).value
-        room = pws.cell(r, 5).value
-        period = pws.cell(r, 6).value
-        term_raw = pws.cell(r, 7).value
-        if not code_raw:
-            continue
-        code = str(code_raw).strip()
-        teacher_name = teacher_id_to_name.get(str(teacher_id).strip(), str(teacher_id or 'TBD').strip()) if teacher_id else 'TBD'
-        p = None
-        if period and str(period).strip().upper() in PERIODS:
-            p = str(period).strip().upper()
-        term_str = str(term_raw or '').strip().upper()
-        if term_str in ('S1', 'FALL'):
-            term = 'S1'
-        elif term_str in ('S2', 'SPRING'):
-            term = 'S2'
-        else:
-            term = 'FY'
-        prior_entries.append({
-            'code': code, 'teacher': teacher_name,
-            'period': p, 'term': term,
-            'class_id': f"{code}-{pws.cell(r, 3).value or 1}",
-            'room': str(room or '').strip()
-        })
-    for e in prior_entries:
-        if e['period']:
-            prior_teacher_periods[(e['code'], e['teacher'])].add(e['period'])
-            prior_course_periods[e['code']].add(e['period'])
-    pwb.close()
-    print(f"  Prior-year entries: {len(prior_entries)}")
-except FileNotFoundError:
-    print("  Template_Prior_Year_Master_Schedule.xlsx not found — skipping prior year data")
+for r in range(2, _t9_ws.max_row + 1):
+    code_raw = _t9_ws.cell(r, 2).value     # Course Code
+    teacher_id = _t9_ws.cell(r, 4).value   # Teacher ID
+    room = _t9_ws.cell(r, 5).value         # Room
+    period = _t9_ws.cell(r, 6).value       # Period
+    term_raw = _t9_ws.cell(r, 7).value     # Term
+    if not code_raw:
+        continue
+    code = str(code_raw).strip()
+    teacher_name = teacher_id_to_name.get(str(teacher_id).strip(), str(teacher_id or 'TBD').strip()) if teacher_id else 'TBD'
+    p = None
+    if period and str(period).strip().upper() in PERIODS:
+        p = str(period).strip().upper()
+    term_str = str(term_raw or '').strip().upper()
+    if term_str in ('S1', 'FALL'):
+        term = 'S1'
+    elif term_str in ('S2', 'SPRING'):
+        term = 'S2'
+    else:
+        term = 'FY'
+    prior_entries.append({
+        'code': code, 'teacher': teacher_name,
+        'period': p, 'term': term,
+        'class_id': f"{code}-{_t9_ws.cell(r, 3).value or 1}",
+        'room': str(room or '').strip()
+    })
+for e in prior_entries:
+    if e['period']:
+        prior_teacher_periods[(e['code'], e['teacher'])].add(e['period'])
+        prior_course_periods[e['code']].add(e['period'])
+print(f"  Prior-year entries from T9: {len(prior_entries)}")
 
 
 # ── Teacher Load Rules (enhanced with profiles + contracts) ──
@@ -2972,14 +2955,30 @@ for gi, cg in enumerate(cogroups):
 # same periods, opposite semesters.  Each assigned period gets one S1 section
 # and one S2 section of EVERY course in the group.  Students are NOT
 # constrained — they may take paired courses in any period, any combination.
-# Defined in course_priorities.json "semester_pairing_groups".
-_pairing_groups = _prio_data.get('semester_pairing_groups', [])
+# Defined in T1 Col 20 "Semester Pairing Group" (group label per course).
+# Reconstruct group definitions from per-course labels.
+_pairing_group_map = {}  # label -> list of course codes
+for _r in range(2, _t1_ws.max_row + 1):
+    _spg_code = _t1_ws.cell(_r, 1).value  # Course Code
+    _spg_label = _t1_ws.cell(_r, 20).value  # Semester Pairing Group
+    if _spg_code and _spg_label and str(_spg_label).strip() not in ('N/A', ''):
+        _spg_label_str = str(_spg_label).strip()
+        if _spg_label_str not in _pairing_group_map:
+            _pairing_group_map[_spg_label_str] = []
+        _pairing_group_map[_spg_label_str].append(str(_spg_code).strip())
+_pairing_groups = [{'label': label, 'courses': codes} for label, codes in _pairing_group_map.items()]
 code_to_pairing_group = {}
 for _pgi, _pg in enumerate(_pairing_groups):
     for _pc in _pg.get('courses', []):
         code_to_pairing_group[str(_pc)] = _pgi
 if _pairing_groups:
-    print(f"  Semester pairing groups: {len(_pairing_groups)}")
+    print(f"  Semester pairing groups from T1: {len(_pairing_groups)}")
+    for _pg in _pairing_groups:
+        print(f"    {_pg['label']}: courses {_pg['courses']}")
+
+# ── Close consolidated workbook — all data loaded ──
+_engine_wb.close()
+print(f"\n  Consolidated workbook closed — all data loaded from Engine_Templates_With_Data.xlsx")
 
 # ── Redistribute EC (Engine Choice) sections evenly across S1/S2 ──
 _ec_courses = defaultdict(list)
