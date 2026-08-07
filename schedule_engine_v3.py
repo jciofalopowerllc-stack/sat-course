@@ -28,6 +28,11 @@ Outputs:
     Prereq-With Transcript, Prereq-No Transcript tabs with ACTION column)
   - preflight_report.json: machine-readable pre-flight warnings (in scratchpad)
   - credit_violations.json: credit cap violations detail (in scratchpad)
+
+Data Integrity Rule (non-negotiable):
+  Every cell in every template (T1–T9) MUST contain a value.
+  Use 'N/A' for fields where no data applies.
+  Blank/empty cells are data entry errors — flagged at startup.
 """
 import sys
 _print = print
@@ -2107,6 +2112,82 @@ try:
 except FileNotFoundError:
     print("  Template 7 not found — skipping prerequisite data")
 
+
+# ── Blank Cell Validation (Rule 12 — No blank cells permitted) ──
+# Every cell in every loaded template must contain a value.
+# Blank/empty cells are data entry errors. Use 'N/A' for intentional absence.
+def validate_no_blank_cells(wb_path, sheet_names=None):
+    """Validate that no cells are blank in the specified workbook sheets.
+    Returns list of {'sheet': str, 'row': int, 'col': int, 'header': str} for each blank cell.
+    Only checks cells within the data range (row 1 = header, row 2+ = data, up to max_row/max_column).
+    """
+    import openpyxl as _opx
+    _vwb = _opx.load_workbook(wb_path, data_only=True)
+    blanks = []
+    for _sname in (sheet_names or _vwb.sheetnames):
+        if _sname not in _vwb.sheetnames:
+            continue
+        _ws = _vwb[_sname]
+        if _ws.max_row is None or _ws.max_row < 2:
+            continue
+        # Get headers from row 1
+        _headers = {}
+        _max_col = 0
+        for _c in range(1, (_ws.max_column or 0) + 1):
+            _hv = _ws.cell(1, _c).value
+            if _hv is not None:
+                _headers[_c] = str(_hv).strip()
+                _max_col = _c
+        if not _headers:
+            continue
+        # Check data rows (2 through max_row) for blanks in columns that have headers
+        for _r in range(2, _ws.max_row + 1):
+            # Skip entirely empty rows (no data in any column)
+            _row_has_data = False
+            for _c in _headers:
+                _cv = _ws.cell(_r, _c).value
+                if _cv is not None and str(_cv).strip() != '':
+                    _row_has_data = True
+                    break
+            if not _row_has_data:
+                continue
+            # Check each cell in this data row
+            for _c, _h in _headers.items():
+                _cv = _ws.cell(_r, _c).value
+                if _cv is None or str(_cv).strip() == '':
+                    blanks.append({
+                        'sheet': _sname, 'row': _r, 'col': _c,
+                        'header': _h, 'col_letter': _opx.utils.get_column_letter(_c)
+                    })
+    _vwb.close()
+    return blanks
+
+# Run blank-cell validation on Engine_Templates_With_Data.xlsx if it exists
+_engine_templates_path = os.path.join(os.path.dirname(__file__) or '.', 'Engine_Templates_With_Data.xlsx')
+if os.path.exists(_engine_templates_path):
+    print("\n── Blank Cell Validation (Rule 12) ──")
+    _blank_check_sheets = [
+        'T1_Course Profiles', 'T2_Teacher Profiles', 'T3_Student Profiles',
+        'T4_Room Profiles', 'T6_Student Prerequisites',
+        'T7_Teacher-Section Assignments', 'T8_Co-Schedule Groups',
+        'T9_Prior Year Master Sections'
+    ]  # T5 excluded — intentionally empty until populated
+    _blanks = validate_no_blank_cells(_engine_templates_path, _blank_check_sheets)
+    if _blanks:
+        print(f"  *** BLANK CELL VIOLATIONS: {len(_blanks)} blank cells found ***")
+        _by_sheet = defaultdict(list)
+        for _b in _blanks:
+            _by_sheet[_b['sheet']].append(_b)
+        for _s, _bl in sorted(_by_sheet.items()):
+            print(f"    {_s}: {len(_bl)} blank cells")
+            for _b in _bl[:5]:
+                print(f"      Row {_b['row']}, Col {_b['col_letter']} ({_b['header']})")
+            if len(_bl) > 5:
+                print(f"      ... and {len(_bl) - 5} more")
+        print(f"\n  *** WARNING: All cells must contain a value (use 'N/A' for intentional absence) ***")
+        print(f"  *** Engine will proceed but data quality is compromised ***")
+    else:
+        print(f"  Blank cell validation: PASSED (all cells populated)")
 
 # ── Credit Validation Gate ──
 CREDIT_CAP = 35.0
