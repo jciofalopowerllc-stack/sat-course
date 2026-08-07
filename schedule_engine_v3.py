@@ -5118,6 +5118,37 @@ print("\n" + "=" * 60)
 print("[2] PHASE B: SEAT STUDENTS")
 print("=" * 60)
 
+# ── Filter out unplaced sections (period=None) from sec_by_code ──
+# Job 1 may leave sections unplaced due to teacher load caps or other hard
+# constraints. Students MUST NOT be enrolled in these phantom sections —
+# occ_cells() returns (None, half) tuples that never collide with real periods,
+# making the unplaced section look conflict-free and attracting students into
+# a section that doesn't exist in the bell schedule.
+_unplaced_sids = set()
+for s in sections:
+    if s['period'] is None:
+        _unplaced_sids.add(s['sid'])
+if _unplaced_sids:
+    _unplaced_details = []
+    for sid in sorted(_unplaced_sids):
+        s = sections[sid]
+        _unplaced_details.append(f"{s['code']} {s['title']} sec#{s['section']} ({s['teacher']})")
+    print(f"\n  *** {len(_unplaced_sids)} UNPLACED SECTION(S) excluded from student placement:")
+    for d in _unplaced_details:
+        print(f"      {d}")
+    for cid in sec_by_code:
+        sec_by_code[cid] = [sid for sid in sec_by_code[cid] if sid not in _unplaced_sids]
+    # Remove courses that have NO placed sections at all
+    _empty_courses = [cid for cid, sids in sec_by_code.items() if not sids]
+    for cid in _empty_courses:
+        del sec_by_code[cid]
+    if _empty_courses:
+        print(f"  *** {len(_empty_courses)} course(s) have NO placed sections — students cannot be enrolled:")
+        for cid in _empty_courses:
+            ci = course_info.get(cid, {})
+            print(f"      {cid} {ci.get('title', '?')}")
+    print()
+
 assign = {pid: {} for pid in students}
 secfill = Counter()
 
