@@ -79,17 +79,33 @@ A semester pairing group is a set of 2+ course codes whose semester sections mus
 - **Current groups:** Grade 12 Theology (849 Catholic Social Teaching + 851 Spirituality of Vocation) — 8 sections each, 4 periods, 16 total sections.
 - **Why:** Without pairing, 849 and 851 could spread across all 7 periods, consuming every period for Grade 12 students. With pairing, they share 4 periods, leaving 3 free for other courses. Mathematical conflict reduction: up to 164 fewer conflicts.
 
-### PE Period Pool (Universal Rule — from JC Iofalo, non-negotiable)
-Grade 9/10 semester electives, SSP courses, and pathway courses MUST be in the **same periods as their grade's PE course, opposite semesters**. Students take PE one semester and their elective in the other semester in the same period slot.
+### T13 Anchor Pair System (Universal Rule — from JC Iofalo, non-negotiable)
+Semester electives for each grade/cohort MUST be in the **same periods as their grade's anchor course, opposite semesters**. Students take the anchor one semester and their paired elective the other semester in the same period slot.
 
-- **Anchor courses:** 610 Health/PE (Grade 9), 620 Driver's Ed/PE (Grade 10)
-- **Pre-placement:** PE anchors are placed in Step 1.6 (after co-schedule groups and pairing groups, before greedy). The engine scores all C(7, N) period combinations to find optimal PE periods.
-- **Period restriction (Job 1):** During `greedy_assign_periods()`, ALL Gr9/10 semester non-PE courses are restricted to PE pool periods only. Periods outside the pool are blocked with reason `pe_pool`.
-- **Grade overlap:** Courses eligible for BOTH Gr9 and Gr10 can use the UNION of both grade pools.
-- **Co-schedule compatibility:** If a co-schedule group contains a Gr9/10 semester course, its period is required to be in the PE pool (engine enforces this during combo scoring).
-- **Conflict scoring exclusion:** PE anchor ↔ pool course co-enrollment is excluded from `_predict_conflict_score()` and co-enrollment spreading — students take PE and elective in opposite semesters, so same-period same-semester overlap is not a real conflict.
-- **Immovable:** PE anchor sections are in `PE_POOL_SIDS` — Phase D optimizer cannot move them. Pool-restricted courses can only move to pool periods during Phase D.
-- **Phase D restart:** PE section periods preserved in `_save_fixed_state()` and `_restore_for_restart()`. EC redistribution excludes PE pool sections.
+- **Defined in:** `Engine_Templates_With_Data.xlsx` → `T13_Sem Anchor Pairs` (178 rows, 3 columns: Role | Course Code | Course Title)
+- **6 anchor groups:**
+  - **Gr9:** Anchor 610 Health/PE, 10 paired courses
+  - **Gr10:** Anchor 620 Driver's Ed/PE, 24 paired courses
+  - **Gr11:** Anchor 631 CPR-AED Training/PE, 31 paired courses
+  - **Gr12:** NO anchor — 36 paired courses, best-effort placement only (no hard pool restriction)
+  - **LEO I:** Anchor 734 (locked S2), 27 paired courses (available S1)
+  - **LEO II:** Anchor 745 (locked S1), 34 paired courses (available S2)
+- **T13 course codes** use grade suffixes (e.g., `708-9`, `849-12`) — engine strips to root codes for T7/sec_by_code matching
+- **Pre-placement:** Anchors are placed in Step 1.6 (after co-schedule groups and pairing groups, before greedy). The engine scores all C(7, N) period combinations per group.
+- **Period restriction (Job 1):** During `greedy_assign_periods()`, courses listed as PAIRED in any T13 group with a pool are restricted to that pool's periods. Periods outside the pool are blocked with reason `pe_pool`.
+- **Multi-group union:** Courses appearing in multiple T13 groups get the UNION of all applicable pools. Example: 473 in Gr9+Gr10+Gr11+Gr12 gets union of Gr9, Gr10, Gr11 pools (Gr12 has no pool).
+- **FY exclusion:** FY courses (term_type='FY') are excluded from anchor pair restrictions — anchor pairing applies to SE courses only.
+- **Co-schedule compatibility (intersection-with-fallback):** If a co-schedule group contains a paired course from a T13 group, its assigned period is REQUIRED to be in that group's pool. Ensures co-scheduled electives remain accessible.
+- **S1-only/S2-only anchors:** LEO I anchor 734 (S2-only) and LEO II anchor 745 (S1-only) are handled correctly — periods are projected into only the anchor's semester for teacher load/consecutive-6 checks.
+- **Conflict scoring exclusion:** Anchor ↔ pool-restricted course co-enrollment is excluded from `_predict_conflict_score()` and co-enrollment spreading — students take anchor and paired elective in opposite semesters.
+- **Immovable:** Anchor sections are in `PE_POOL_SIDS` — Phase D optimizer cannot move them. Pool-restricted courses can only move to pool periods during Phase D.
+- **Phase D restart:** Anchor section periods preserved in `_save_fixed_state()` and `_restore_for_restart()`. EC redistribution excludes anchor pool sections.
+
+### T5 Grade-Suffix Course Codes
+- **T5 course codes** may use grade suffixes (e.g., `708-9`, `849-12`) matching T13 format
+- **Engine parsing:** At T5 load time, hyphenated codes are split on `-` — the root code (before the hyphen) is used for `sec_by_code` lookup and all downstream placement logic. The grade suffix is stripped and discarded (student grade is already in T3).
+- **T1 and T7** use root codes only (no suffixes) — no changes needed
+- **Alternate codes** in T5 Column C also have grade suffixes stripped
 
 ### Engine Run Modes
 - `python schedule_engine_v3.py` or `python schedule_engine_v3.py job1` — Run Job 1 only, export Excel, **STOP** for review
@@ -200,7 +216,7 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 
 ### Key Files
 - `schedule_engine_v3.py` — Main engine (5-phase: Period Assignment → Student Seating → Bump Conflicts → Optimization → D-2 Unplaced Rescue + Phase A-1 Diagnostics)
-- `Engine_Templates_With_Data.xlsx` — **Consolidated workbook (sole authority)** — 12 sheets (T1–T12), all input templates + config data. INDEX sheet has full layout reference.
+- `Engine_Templates_With_Data.xlsx` — **Consolidated workbook (sole authority)** — 14 sheets (T1–T13 + INDEX), all input templates + config data. INDEX sheet has full layout reference. T13_Sem Anchor Pairs defines anchor pair groups for all grades and LEO cohorts.
 - `course_priorities.json` — Graduation requirements, pathway courses, singleton courses (T10, T11, T1 Col 20 hold canonical data in the workbook)
 - `student_priority_overrides.json` — Student-specific priority overrides (T12 holds canonical data in the workbook)
 - `detect_pathways.py` — Pathway detection from T8 Transcript History + Course Requests

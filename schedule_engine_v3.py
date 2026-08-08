@@ -1916,6 +1916,7 @@ _request_alternate = {}        # (pid, cid) → str alternate course code or 'N/
 _t5_data_rows = 0
 _t5_start_row = 2  # T5 data starts at row 2
 _t5_invalid_priority = 0
+_t5_hyphenated = 0  # count of grade-suffix codes parsed (e.g., '708-9' → root '708')
 for r in range(_t5_start_row, (_t5_ws.max_row or 1) + 1):
     pid_raw = _t5_ws.cell(r, 1).value
     cid_raw = _t5_ws.cell(r, 2).value
@@ -1923,6 +1924,11 @@ for r in range(_t5_start_row, (_t5_ws.max_row or 1) + 1):
         continue
     pid = str(pid_raw).strip()
     cid = str(cid_raw).strip()
+    # Parse grade suffix from hyphenated course codes (e.g., '708-9' → root '708')
+    # T5 uses grade-suffixed codes from T13; T7/sec_by_code uses root codes only
+    if '-' in cid:
+        cid = cid.split('-', 1)[0]  # root code for sec_by_code lookup
+        _t5_hyphenated += 1
     if cid == '0':
         continue
     if cid not in sec_by_code:
@@ -1930,6 +1936,9 @@ for r in range(_t5_start_row, (_t5_ws.max_row or 1) + 1):
     # Column C: Alternate Course Code (optional — default N/A)
     alt_raw = _t5_ws.cell(r, 3).value
     alt_code = str(alt_raw).strip() if alt_raw and str(alt_raw).strip() not in ('N/A', '') else 'N/A'
+    # Strip grade suffix from alternate code too
+    if alt_code != 'N/A' and '-' in alt_code:
+        alt_code = alt_code.split('-', 1)[0]
     # Column D: Priority Level 1-5 (optional — default 3 PREFERRED)
     pl_raw = _t5_ws.cell(r, 4).value
     pl = 3  # default: PREFERRED
@@ -1971,6 +1980,8 @@ else:
     for _plv in sorted(_pl_dist.keys(), reverse=True):
         _pl_parts.append(f"{PRIORITY_LEVEL_LABELS.get(_plv, '?')}({_plv})={_pl_dist[_plv]}")
     print(f"  Priority Levels: {', '.join(_pl_parts)}")
+    if _t5_hyphenated > 0:
+        print(f"  Grade-suffix codes parsed: {_t5_hyphenated} requests (hyphenated codes stripped to root codes)")
     _alt_count = sum(1 for v in _request_alternate.values() if v != 'N/A')
     if _alt_count:
         print(f"  Alternate course codes specified: {_alt_count}")
@@ -3008,6 +3019,80 @@ if _pairing_groups:
     print(f"  Semester pairing groups from T1: {len(_pairing_groups)}")
     for _pg in _pairing_groups:
         print(f"    {_pg['label']}: courses {_pg['courses']}")
+
+# ── T13_Sem Anchor Pairs ──
+# Defines anchor pair groups: Gr9, Gr10, Gr11, Gr12, LEO I, LEO II.
+# Each group has an optional ANCHOR COURSE and PAIRED COURSEs.
+# Paired course sections must be placed in the same periods as their anchor,
+# opposite semesters.  Students take the anchor one semester and a paired
+# elective the other semester in the same period slot.
+# Course codes in T13 have grade suffixes (e.g., '708-9') — stripped to root codes.
+# Gr12 has NO anchor: paired courses use best-effort placement, no hard pool.
+# FY courses are excluded from anchor pair restrictions (SE only).
+_t13_header_map = {
+    'GRADE 9': {'grade': 9, 'group_type': 'grade'},
+    'GRADE 10': {'grade': 10, 'group_type': 'grade'},
+    'GRADE 11': {'grade': 11, 'group_type': 'grade'},
+    'GRADE 12': {'grade': 12, 'group_type': 'grade'},
+    'LEO I COHORT': {'grade': 11, 'group_type': 'cohort_leo1'},
+    'LEO II COHORT': {'grade': 12, 'group_type': 'cohort_leo2'},
+}
+anchor_pair_groups = []  # list of group dicts
+_t13_current_group = None
+try:
+    _t13_ws = _engine_wb['T13_Sem Anchor Pairs']
+    for r in range(1, (_t13_ws.max_row or 1) + 1):
+        role_raw = _t13_ws.cell(r, 1).value
+        code_raw = _t13_ws.cell(r, 2).value
+        if not role_raw or not str(role_raw).strip():
+            continue
+        role = str(role_raw).strip()
+        # Check if this is a header row (group separator)
+        if role in _t13_header_map:
+            _t13_current_group = {
+                'name': role,
+                'grade': _t13_header_map[role]['grade'],
+                'group_type': _t13_header_map[role]['group_type'],
+                'anchor': None,
+                'paired': [],
+            }
+            anchor_pair_groups.append(_t13_current_group)
+            continue
+        # ANCHOR COURSE or PAIRED COURSE — extract root code
+        if _t13_current_group is None:
+            continue
+        if not code_raw:
+            continue
+        code_str = str(code_raw).strip()
+        # Strip grade suffix: '610-9' → '610'
+        root_code = code_str.split('-')[0] if '-' in code_str else code_str
+        if role == 'ANCHOR COURSE':
+            _t13_current_group['anchor'] = root_code
+        elif role == 'PAIRED COURSE':
+            if root_code not in _t13_current_group['paired']:
+                _t13_current_group['paired'].append(root_code)
+    print(f"  Anchor pair groups from T13: {len(anchor_pair_groups)}")
+    for _ag in anchor_pair_groups:
+        _anchor_str = _ag['anchor'] or 'NONE (best-effort)'
+        print(f"    {_ag['name']}: anchor={_anchor_str}, {len(_ag['paired'])} paired courses, "
+              f"type={_ag['group_type']}")
+except KeyError:
+    print("  T13_Sem Anchor Pairs: sheet not found — no anchor pair groups loaded")
+    anchor_pair_groups = []
+
+# Build lookup: course_code → list of group indices (a course can appear in multiple groups)
+code_to_anchor_groups = defaultdict(list)
+for _agi, _ag in enumerate(anchor_pair_groups):
+    if _ag['anchor']:
+        if _agi not in code_to_anchor_groups[_ag['anchor']]:
+            code_to_anchor_groups[_ag['anchor']].append(_agi)
+    for _pc in _ag['paired']:
+        if _agi not in code_to_anchor_groups[_pc]:
+            code_to_anchor_groups[_pc].append(_agi)
+if code_to_anchor_groups:
+    _t13_multi = sum(1 for v in code_to_anchor_groups.values() if len(v) > 1)
+    print(f"  Anchor pair course→group index: {len(code_to_anchor_groups)} courses "
+          f"({_t13_multi} appear in multiple groups)")
 
 # ── Close consolidated workbook — all data loaded ──
 _engine_wb.close()
@@ -4142,27 +4227,42 @@ def _build_co_enrollment():
                 co[cid_b][cid_a].append(pid)
     return co
 
-# --- STEP 1.6: PE Period Pool Pre-placement ---
-# Architectural rule (non-negotiable): Grade 9/10 semester electives, SSP courses,
-# and pathway courses MUST be in the SAME periods as their grade's PE course,
-# opposite semesters.  Students take PE one semester and their elective the other
-# semester in the same period slot.
+# --- STEP 1.6: Anchor Period Pool Pre-placement ---
+# T13 architecture (replaces hardcoded PE Pool): each grade/cohort group in T13
+# has an anchor course and paired semester courses.  Paired courses MUST be placed
+# in the same periods as their anchor (opposite semesters).
 #
-# Anchor courses:  610 Health/PE (Grade 9),  620 Driver's Ed/PE (Grade 10)
-# The anchors are pre-placed here (before greedy) so their periods are known.
-# Greedy then restricts all Gr9/10 semester non-PE courses to those periods.
+# Groups with anchors: Gr9 (610), Gr10 (620), Gr11 (631), LEO I (734), LEO II (745)
+# Groups without anchors: Gr12 — paired courses use best-effort, no hard pool
+# FY courses are excluded from pool restrictions (SE only).
+# Co-schedule groups containing paired courses: their assigned periods are REQUIRED
+# to be in the pool (intersection-with-fallback rule).
 
-PE_ANCHOR_COURSES = {'610': 9, '620': 10}  # course_code -> grade it anchors
-_pe_period_pool = {}  # grade -> set of periods  (filled after placement)
-assigned_pe_sids = set()
+# Build anchor course set from T13 (replaces hardcoded PE_ANCHOR_COURSES)
+ANCHOR_COURSES = {}  # code → grade  (all T13 anchor course codes)
+for _ag in anchor_pair_groups:
+    if _ag['anchor']:
+        ANCHOR_COURSES[_ag['anchor']] = _ag['grade']
 
-for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
-    _pe_sids = sec_by_code.get(_pe_code, [])
-    if not _pe_sids:
-        print(f"  PE Period Pool: No sections found for anchor {_pe_code} — skipping Gr{_pe_grade} pool")
+_anchor_period_pool = {}  # group_idx → set of periods (filled after placement)
+assigned_pe_sids = set()  # all anchor section SIDs (immovable by Phase D)
+
+# Pre-compute co-enrollment once (used by all anchor combo scoring)
+_pe_co_enroll = _build_co_enrollment()
+
+for _agi, _ag in enumerate(anchor_pair_groups):
+    _pe_code = _ag['anchor']
+    if not _pe_code:
+        print(f"  Anchor Period Pool: {_ag['name']} has no anchor — best-effort placement (no hard pool)")
         continue
 
-    # Collect unassigned S1 and S2 sections
+    _pe_grade = _ag['grade']
+    _pe_sids = sec_by_code.get(_pe_code, [])
+    if not _pe_sids:
+        print(f"  Anchor Period Pool: No sections found for anchor {_pe_code} ({_ag['name']}) — skipping")
+        continue
+
+    # Collect unassigned sections by semester
     _pe_s1 = [sid for sid in _pe_sids
               if sections[sid]['halves'] == ('S1',) and sections[sid]['period'] is None]
     _pe_s2 = [sid for sid in _pe_sids
@@ -4171,32 +4271,44 @@ for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
               if sections[sid]['halves'] == ('S1', 'S2') and sections[sid]['period'] is None]
 
     if _pe_fy:
-        # FY PE sections — each occupies both semesters in one period
+        # FY sections — each occupies both semesters in one period
         _pe_periods_needed = len(_pe_fy)
-    elif len(_pe_s1) != len(_pe_s2):
-        print(f"  PE Period Pool: {_pe_code} has unequal S1/S2 split ({len(_pe_s1)} S1, {len(_pe_s2)} S2) — skipping")
-        continue
-    else:
+    elif _pe_s1 and _pe_s2 and len(_pe_s1) == len(_pe_s2):
+        # Balanced S1/S2 — pair into shared periods
         _pe_periods_needed = len(_pe_s1)
+    elif _pe_s1 and not _pe_s2:
+        # S1-only anchor (e.g., LEO II anchor 745 locked S1)
+        _pe_periods_needed = len(_pe_s1)
+    elif _pe_s2 and not _pe_s1:
+        # S2-only anchor (e.g., LEO I anchor 734 locked S2)
+        _pe_periods_needed = len(_pe_s2)
+    elif _pe_s1 and _pe_s2:
+        # Unequal S1/S2 — use max to cover all sections
+        print(f"  Anchor Period Pool: {_pe_code} ({_ag['name']}) has unequal S1/S2 split "
+              f"({len(_pe_s1)} S1, {len(_pe_s2)} S2) — using max")
+        _pe_periods_needed = max(len(_pe_s1), len(_pe_s2))
+    else:
+        print(f"  Anchor Period Pool: {_pe_code} ({_ag['name']}) has no unassigned sections — skipping")
+        continue
 
     if _pe_periods_needed == 0:
-        print(f"  PE Period Pool: {_pe_code} has no unassigned sections — skipping")
+        print(f"  Anchor Period Pool: {_pe_code} ({_ag['name']}) has no unassigned sections — skipping")
         continue
 
-    # Find the PE teacher(s) and their constraints
+    # Find the anchor teacher(s) and their constraints
     _pe_teachers = set(sections[sid]['teacher'] for sid in _pe_sids
                        if sections[sid]['teacher'] and sections[sid]['teacher'] != 'TBD')
 
-    # Identify co-schedule group periods that contain Gr9/10 semester courses —
-    # these periods MUST be in the PE pool so co-scheduled electives are accessible.
+    # Identify co-schedule group periods that contain paired courses from this T13 group —
+    # these periods MUST be in the pool so co-scheduled paired courses are accessible.
+    # (Intersection-with-fallback: co-schedule groups get required-period inclusion.)
     _pe_required_periods = set()
+    _current_group_paired = set(_ag['paired'])
     for _cg in cogroups:
         _cg_codes = _cg['codes']
         _cg_has_pool_course = False
         for _cc in _cg_codes:
-            _cc_gl = course_grade_levels.get(str(_cc), set())
-            _cc_tt = course_info.get(str(_cc), {}).get('term_type', 'FY')
-            if _cc_tt == 'SE' and _pe_grade in _cc_gl and str(_cc) not in PE_ANCHOR_COURSES:
+            if str(_cc) in _current_group_paired and str(_cc) != _pe_code:
                 _cg_has_pool_course = True
                 break
         if _cg_has_pool_course:
@@ -4210,7 +4322,6 @@ for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
                     break
 
     # Score all C(7, periods_needed) combinations
-    _pe_co_enroll = _build_co_enrollment()
     _pe_all_combos = []
 
     for _pe_combo in _combinations(PERIODS, _pe_periods_needed):
@@ -4233,8 +4344,18 @@ for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
                     if 'S2' in s['halves']:
                         _existing_s2.add(s['period'])
 
-            _proj_s1 = _existing_s1 | _pe_combo_set
-            _proj_s2 = _existing_s2 | _pe_combo_set
+            # Project: anchor sections would occupy these periods
+            # For S1-only or S2-only anchors, only project into that semester
+            _proj_s1 = set(_existing_s1)
+            _proj_s2 = set(_existing_s2)
+            if _pe_fy or (_pe_s1 and _pe_s2):
+                _proj_s1 |= _pe_combo_set
+                _proj_s2 |= _pe_combo_set
+            elif _pe_s1:
+                _proj_s1 |= _pe_combo_set
+            elif _pe_s2:
+                _proj_s2 |= _pe_combo_set
+
             _max_s1, _max_s2 = get_max_load(_pt)
             if len(_proj_s1) > _max_s1 or len(_proj_s2) > _max_s2:
                 _pe_blocked = True
@@ -4257,15 +4378,22 @@ for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
                 if not teacher_available(_pt, p):
                     _pe_blocked = True
                     break
-                if teacher_busy(_pt, p, ('S1', 'S2'), -1):
-                    # Check if the teacher is busy from non-PE sections
-                    _non_pe_busy = False
+                # Check teacher isn't busy from non-anchor sections
+                _anchor_halves = ('S1', 'S2')
+                if _pe_s1 and not _pe_s2:
+                    _anchor_halves = ('S1',)
+                elif _pe_s2 and not _pe_s1:
+                    _anchor_halves = ('S2',)
+                if teacher_busy(_pt, p, _anchor_halves, -1):
+                    _non_anchor_busy = False
                     for _ts in teacher_sections.get(_pt, []):
                         _tss = sections[_ts]
                         if _tss['code'] != _pe_code and _tss['period'] == p:
-                            _non_pe_busy = True
-                            break
-                    if _non_pe_busy:
+                            # Check semester overlap
+                            if set(_anchor_halves) & set(_tss['halves']):
+                                _non_anchor_busy = True
+                                break
+                    if _non_anchor_busy:
                         _pe_blocked = True
                         break
             if _pe_blocked:
@@ -4301,28 +4429,47 @@ for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
         # Fallback: use least-loaded periods
         _pe_loads = Counter(sec['period'] for sec in sections if sec['period'])
         _pe_best_combo = tuple(sorted(PERIODS, key=lambda p: _pe_loads.get(p, 0))[:_pe_periods_needed])
-        print(f"  PE Period Pool: No valid combo for {_pe_code} — fallback to least-loaded: {','.join(_pe_best_combo)}")
+        print(f"  Anchor Period Pool: No valid combo for {_pe_code} ({_ag['name']}) — "
+              f"fallback to least-loaded: {','.join(_pe_best_combo)}")
     else:
         _pe_all_combos.sort(key=lambda x: x[1])
         _pe_best_combo = _pe_all_combos[0][0]
 
-    # Assign PE sections to the selected periods
+    # Assign anchor sections to the selected periods
     if _pe_fy:
         for i, p in enumerate(_pe_best_combo):
-            sections[_pe_fy[i]]['period'] = p
-            assigned_pe_sids.add(_pe_fy[i])
-    else:
+            if i < len(_pe_fy):
+                sections[_pe_fy[i]]['period'] = p
+                assigned_pe_sids.add(_pe_fy[i])
+    elif _pe_s1 and _pe_s2:
+        # Both S1 and S2 sections — pair into shared periods
         for i, p in enumerate(_pe_best_combo):
-            sections[_pe_s1[i]]['period'] = p
-            assigned_pe_sids.add(_pe_s1[i])
-            sections[_pe_s2[i]]['period'] = p
-            assigned_pe_sids.add(_pe_s2[i])
+            if i < len(_pe_s1):
+                sections[_pe_s1[i]]['period'] = p
+                assigned_pe_sids.add(_pe_s1[i])
+            if i < len(_pe_s2):
+                sections[_pe_s2[i]]['period'] = p
+                assigned_pe_sids.add(_pe_s2[i])
+    elif _pe_s1:
+        # S1-only anchor (e.g., LEO II anchor 745)
+        for i, p in enumerate(_pe_best_combo):
+            if i < len(_pe_s1):
+                sections[_pe_s1[i]]['period'] = p
+                assigned_pe_sids.add(_pe_s1[i])
+    elif _pe_s2:
+        # S2-only anchor (e.g., LEO I anchor 734)
+        for i, p in enumerate(_pe_best_combo):
+            if i < len(_pe_s2):
+                sections[_pe_s2[i]]['period'] = p
+                assigned_pe_sids.add(_pe_s2[i])
 
-    _pe_period_pool[_pe_grade] = set(_pe_best_combo)
+    _anchor_period_pool[_agi] = set(_pe_best_combo)
 
-    print(f"  PE Period Pool: {_pe_code} (Gr{_pe_grade}) -> Periods {', '.join(sorted(_pe_best_combo))} "
-          f"({_pe_periods_needed} periods × {'FY' if _pe_fy else '2 semesters'} = "
-          f"{len(_pe_fy) if _pe_fy else _pe_periods_needed * 2} sections)")
+    _n_assigned = sum(1 for sid in _pe_sids if sections[sid]['period'] is not None)
+    _sem_desc = 'FY' if _pe_fy else ('S1-only' if (_pe_s1 and not _pe_s2) else
+                ('S2-only' if (_pe_s2 and not _pe_s1) else 'S1+S2'))
+    print(f"  Anchor Period Pool: {_pe_code} ({_ag['name']}) -> Periods {', '.join(sorted(_pe_best_combo))} "
+          f"({_pe_periods_needed} periods, {_sem_desc}, {_n_assigned} sections assigned)")
     if _pe_required_periods:
         print(f"    Required periods (co-schedule groups): {', '.join(sorted(_pe_required_periods))}")
     # Show top combos
@@ -4332,31 +4479,39 @@ for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
             _marker = " ← SELECTED" if _combo == _pe_best_combo else ""
             print(f"    #{_rank}: Periods {','.join(_combo)} score={_sc:.1f}{_marker}")
 
-# Build the PE pool restriction lookup: course_code -> set of allowed periods
-# A course is pool-restricted if it is a semester course (SE), serves Gr9 or Gr10,
-# and is NOT a PE anchor course.  Allowed periods = union of all applicable grade pools.
-_pe_pool_restricted = {}  # course_code -> set of allowed periods
-if _pe_period_pool:
-    for _cid, _ci in course_info.items():
-        if _ci.get('term_type') != 'SE':
-            continue
-        if _cid in PE_ANCHOR_COURSES:
-            continue
-        _cid_grades = course_grade_levels.get(str(_cid), set())
+# Build the anchor pool restriction lookup: course_code → set of allowed periods
+# A course is pool-restricted if it appears as PAIRED in any T13 group that has a pool.
+# FY courses are excluded (term_type != 'SE' → skip).
+# Gr12 group has no anchor/pool → Gr12-only courses are unrestricted (best-effort).
+# Courses in multiple groups get the UNION of all applicable pools.
+_pe_pool_restricted = {}  # course_code → set of allowed periods (name kept for backward compat)
+_t13_all_paired = set()
+for _ag in anchor_pair_groups:
+    _t13_all_paired.update(_ag['paired'])
+
+if _anchor_period_pool:
+    for _cid in _t13_all_paired:
+        _ci = course_info.get(_cid)
+        if not _ci or _ci.get('term_type') != 'SE':
+            continue  # FY courses excluded from anchor pair restrictions
+        if _cid in ANCHOR_COURSES:
+            continue  # anchors themselves are not pool-restricted
         _allowed = set()
-        for _g in (9, 10):
-            if _g in _cid_grades and _g in _pe_period_pool:
-                _allowed |= _pe_period_pool[_g]
+        for _agi, _ag in enumerate(anchor_pair_groups):
+            if _cid in _ag['paired'] and _agi in _anchor_period_pool:
+                _allowed |= _anchor_period_pool[_agi]
         if _allowed:
             _pe_pool_restricted[_cid] = _allowed
 
     if _pe_pool_restricted:
-        print(f"  PE Period Pool restriction: {len(_pe_pool_restricted)} semester courses restricted to PE periods")
-        # Show pool summary
-        for _g in sorted(_pe_period_pool.keys()):
-            _pool_courses = [c for c, _ in _pe_pool_restricted.items()
-                             if _g in course_grade_levels.get(str(c), set())]
-            print(f"    Gr{_g} pool ({', '.join(sorted(_pe_period_pool[_g]))}): "
+        print(f"  Anchor Period Pool restriction: {len(_pe_pool_restricted)} semester courses "
+              f"restricted to anchor pool periods")
+        for _agi, _ag in enumerate(anchor_pair_groups):
+            if _agi not in _anchor_period_pool:
+                print(f"    {_ag['name']}: no pool (best-effort)")
+                continue
+            _pool_courses = [c for c in _ag['paired'] if c in _pe_pool_restricted]
+            print(f"    {_ag['name']} pool ({', '.join(sorted(_anchor_period_pool[_agi]))}): "
                   f"{len(_pool_courses)} courses restricted")
 
 
@@ -4422,21 +4577,20 @@ def _predict_conflict_score(code, period, halves, co_enroll):
     # Semester pairing exclusion: paired courses share periods by design —
     # students choose independently, so co-enrollment is NOT a conflict
     my_pairgroup = code_to_pairing_group.get(code)
-    # PE Period Pool exclusion: PE anchor courses and pool courses share periods by
-    # design — students take PE one semester and elective the other.  A PE-S1 section
-    # and Elective-S1 section in the same period is NOT a real conflict because the
-    # student can take PE-S2 instead.  Only exclude anchor↔pool pairs, not pool↔pool.
-    _is_pe_anchor = code in PE_ANCHOR_COURSES
+    # Anchor Period Pool exclusion (T13): anchor courses and pool-restricted paired
+    # courses share periods by design — students take the anchor one semester and
+    # the paired elective the other.  Only exclude anchor↔pool pairs, not pool↔pool.
+    _is_pe_anchor = code in ANCHOR_COURSES
     _is_pe_pool = code in _pe_pool_restricted
     for other_cid, shared_students in co_courses.items():
         if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
             continue  # same co-schedule group — not a conflict
         if my_pairgroup is not None and code_to_pairing_group.get(other_cid) == my_pairgroup:
             continue  # same semester pairing group — students choose periods independently
-        # PE pool exclusion: anchor↔pool pairs are not conflicts
+        # Anchor pool exclusion: anchor↔pool pairs are not conflicts
         if _is_pe_anchor and other_cid in _pe_pool_restricted:
             continue
-        if _is_pe_pool and other_cid in PE_ANCHOR_COURSES:
+        if _is_pe_pool and other_cid in ANCHOR_COURSES:
             continue
         other_sids = sec_by_code.get(other_cid, [])
         for osid in other_sids:
@@ -4725,11 +4879,11 @@ def greedy_assign_periods(seed=42, audit=False):
             best_score = float('inf')
             period_scores = {}
 
-            # PE Period Pool restriction: Gr9/10 semester courses can only use PE periods
+            # Anchor Period Pool restriction (T13): paired courses can only use anchor pool periods
             _pool_allowed = _pe_pool_restricted.get(code)
 
             for p in PERIODS:
-                # PE Period Pool: block periods outside the pool for restricted courses
+                # Anchor pool: block periods outside the pool for restricted courses
                 if _pool_allowed is not None and p not in _pool_allowed:
                     period_scores[p] = 'pe_pool'
                     continue
@@ -4898,17 +5052,17 @@ def greedy_assign_periods(seed=42, audit=False):
                 co_courses = co_enroll.get(code, {})
                 my_pairgroup_g = code_to_pairing_group.get(code)
                 co_period_penalty = 0
-                _is_pe_anchor_g = code in PE_ANCHOR_COURSES
+                _is_pe_anchor_g = code in ANCHOR_COURSES
                 _is_pe_pool_g = code in _pe_pool_restricted
                 for other_cid, shared_pids in co_courses.items():
                     if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
                         continue  # co-schedule group — not a conflict
                     if my_pairgroup_g is not None and code_to_pairing_group.get(other_cid) == my_pairgroup_g:
                         continue  # semester pairing group — students choose periods independently
-                    # PE pool exclusion: anchor↔pool share periods by design
+                    # Anchor pool exclusion (T13): anchor↔pool share periods by design
                     if _is_pe_anchor_g and other_cid in _pe_pool_restricted:
                         continue
-                    if _is_pe_pool_g and other_cid in PE_ANCHOR_COURSES:
+                    if _is_pe_pool_g and other_cid in ANCHOR_COURSES:
                         continue
                     n_shared = len(shared_pids)
                     if n_shared < 3:
