@@ -6027,6 +6027,8 @@ def full_reseat():
                 placed_count += 1
                 continue
             _fr_opts = sec_by_code[cid]
+            if not _fr_opts:
+                continue  # All sections unplaced — no valid section to enroll in
             if HARD_CAP_ENFORCEMENT:
                 _fr_hc = [sid for sid in _fr_opts if secfill[sid] < sections[sid]['cap']]
                 if _fr_hc:
@@ -6051,6 +6053,8 @@ def full_reseat():
         if cid not in sec_by_code:
             continue
         _fr_opts = sec_by_code[cid]
+        if not _fr_opts:
+            continue  # All sections unplaced
         if HARD_CAP_ENFORCEMENT:
             _fr_hc = [sid for sid in _fr_opts if secfill[sid] < sections[sid]['cap']]
             if _fr_hc:
@@ -6070,6 +6074,8 @@ def full_reseat():
         if cid not in sec_by_code:
             continue
         _fr_opts = sec_by_code[cid]
+        if not _fr_opts:
+            continue  # All sections unplaced
         if HARD_CAP_ENFORCEMENT:
             _fr_hc = [sid for sid in _fr_opts if secfill[sid] < sections[sid]['cap']]
             if _fr_hc:
@@ -6213,6 +6219,8 @@ def full_reseat_fast():
                               key=lambda sid: (added_conflicts(pid, sid), secfill[sid])))
                 continue
             _fr2_opts = sec_by_code[cid]
+            if not _fr2_opts:
+                continue  # All sections unplaced — no valid section to enroll in
             if HARD_CAP_ENFORCEMENT:
                 _fr2_hc = [sid for sid in _fr2_opts if secfill[sid] < sections[sid]['cap']]
                 if _fr2_hc:
@@ -6236,6 +6244,8 @@ def full_reseat_fast():
         if cid not in sec_by_code:
             continue
         _fr2_opts = sec_by_code[cid]
+        if not _fr2_opts:
+            continue  # All sections unplaced
         if HARD_CAP_ENFORCEMENT:
             _fr2_hc = [sid for sid in _fr2_opts if secfill[sid] < sections[sid]['cap']]
             if _fr2_hc:
@@ -6254,6 +6264,8 @@ def full_reseat_fast():
         if cid not in sec_by_code:
             continue
         _fr2_opts = sec_by_code[cid]
+        if not _fr2_opts:
+            continue  # All sections unplaced
         if HARD_CAP_ENFORCEMENT:
             _fr2_hc = [sid for sid in _fr2_opts if secfill[sid] < sections[sid]['cap']]
             if _fr2_hc:
