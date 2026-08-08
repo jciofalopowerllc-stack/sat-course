@@ -1476,7 +1476,18 @@ def course_section_raw(cid):
         score += PTS_AP
     if ci.get('is_singleton', False) or cid_s in SINGLETON_COURSES:
         score += PTS_SINGLETON
-    if ci.get('grad_req_dept', ''):
+    # Grad req check: use T1 grad_req_dept first, then fall back to T10
+    # GRAD_REQ_DEPTS (grade-aware). A course is a grad req for section placement
+    # if its department is required for ANY grade level — ensures courses like
+    # Business (Required-Either for Gr12 in T10 but N/A in T1) get the boost.
+    _csr_dept = _course_dept_map.get(cid_s, '')
+    _csr_is_grad_req = bool(ci.get('grad_req_dept', ''))
+    if not _csr_is_grad_req and _csr_dept:
+        for _grd_depts in GRAD_REQ_DEPTS.values():
+            if _csr_dept in _grd_depts:
+                _csr_is_grad_req = True
+                break
+    if _csr_is_grad_req:
         score += PTS_GRAD_REQ
     elif _is_gr12_pae(cid_s):
         score += PTS_GR12_PAE
@@ -4144,20 +4155,18 @@ def _refresh_top_students():
 
 def _section_priority_key(s):
     """Sort key for section placement order using the DATA_STRUCTURE.md priority system.
-    Course Section Total = Course Section Raw + Top Student Total + Teacher Total + Room Total.
+    Course Section Total = Course Section Raw + Top Student Total + Teacher Raw + Room Raw.
+    Each component is added ONCE (no cascading amplification).
     Highest-priority sections are placed first (most negative sort values).
     Uses _top_student_cache (call _refresh_top_students() after each _clear_priority_caches()).
     6th-period teacher boost: PTS_SIXTH_PERIOD is added to teacher_raw (inside
-    teacher_raw_priority) and to room_raw (here, only if prescribed room exists).
-    This compounds through t_total → r_total → cs_total, guaranteeing 6th-period
-    teacher sections always outrank non-6th-period sections."""
+    teacher_raw_priority) and to room_raw (here, only if prescribed room exists)."""
     code = s['code']
     teacher = s['teacher']
     room = s.get('room', 'TBD')
     cs_raw = course_section_raw(code)
     max_student_total = _top_student_cache.get(code, 0)
     t_raw = teacher_raw_priority(teacher) if teacher and teacher != 'TBD' else 0
-    t_total = t_raw + max_student_total
     r_raw = room_raw_priority(room) if room and room != 'TBD' else 0
     # 6th-period room boost: if this section's teacher has a 6th period AND the
     # section has a prescribed room, boost room_raw so the room is also prioritized.
@@ -4165,8 +4174,11 @@ def _section_priority_key(s):
     # teacher, not on a room the engine hasn't assigned yet.
     if room and room != 'TBD' and teacher and teacher != 'TBD' and _teacher_has_sixth_period(teacher):
         r_raw += PTS_SIXTH_PERIOD
-    r_total = r_raw + t_total + max_student_total
-    cs_total = cs_raw + max_student_total + t_total + r_total
+    # cs_total: Each component added ONCE to prevent cascading amplification.
+    # Previously max_student_total was counted 4x through t_total→r_total→cs_total,
+    # making course characteristics (cs_raw, max ~135) irrelevant vs student demand
+    # (~2000+). Now each dimension contributes independently.
+    cs_total = cs_raw + max_student_total + t_raw + r_raw
     return (
         -cs_total,
         -cs_raw,
@@ -4573,10 +4585,12 @@ def greedy_assign_periods(seed=42, audit=False):
                             # Non-overlapping semester already in this period
                             if teacher and teacher != 'TBD':
                                 _comp_s1, _comp_s2 = get_max_load(teacher)
-                                if max(_comp_s1, _comp_s2) >= 6:
+                                if max(_comp_s1, _comp_s2) >= 6 and not zero_conflict:
                                     # Teacher at 6-period capacity — sharing is critical.
                                     # Floor score to 1.0 so this period beats any
                                     # conflict-based score (which can be in the millions).
+                                    # GUARD: Never apply floor for Tier 1/2 (zero_conflict)
+                                    # — their zero-conflict mandate is non-negotiable.
                                     score = min(score, 1.0)
                                 else:
                                     score -= 20
@@ -4601,9 +4615,11 @@ def greedy_assign_periods(seed=42, audit=False):
                         if (_tc_s['period'] == p
                                 and not (set(_tc_s['halves']) & set(halves))):
                             # Same teacher, same period, opposite semester
-                            if teacher in _teacher_needs_consolidation:
+                            if teacher in _teacher_needs_consolidation and not zero_conflict:
                                 # HARD: must consolidate — floor score to
-                                # guarantee this period wins over all others
+                                # guarantee this period wins over all others.
+                                # GUARD: Never apply floor for Tier 1/2 (zero_conflict)
+                                # — their zero-conflict mandate is non-negotiable.
                                 score = min(score, 0.5)
                             else:
                                 # SOFT: nice-to-have consolidation
@@ -4668,8 +4684,10 @@ def greedy_assign_periods(seed=42, audit=False):
                         co_period_penalty += n_shared * frac
                 score += co_period_penalty * 2.0
 
+                # Period load balance: penalize overloaded periods to spread sections
+                # Weight 0.5 (was 0.1 — too weak to steer, functioned as noise)
                 period_load = sum(1 for sec in sections if sec['period'] == p)
-                score += period_load * 0.1
+                score += period_load * 0.5
 
                 # FY-equivalent load impact scoring:
                 # When placing a semester section, prefer periods that minimize
@@ -4683,18 +4701,18 @@ def greedy_assign_periods(seed=42, audit=False):
                     stipend_increase = proj_after['stipend_pct'] - proj_before['stipend_pct']
                     # Penalize placements that increase FY-equivalent beyond 5
                     if proj_after['fy_count'] > 5 and fy_increase > 0:
-                        score += 3.0 * fy_increase
+                        score += 10.0 * fy_increase  # was 3.0 — too weak to steer
                     # Penalize stipend escalation (0→50 or 50→100)
                     if stipend_increase > 0:
-                        score += stipend_increase * 0.05  # 2.5 for 50→100, 5.0 for 0→100
+                        score += stipend_increase * 0.2  # 10.0 for 50→100, 20.0 for 0→100 (was 0.05)
 
                 # (room_busy is now a hard block above — no soft penalty needed)
                 tp = teacher_profiles.get(teacher, {})
                 if tp:
                     if p in tp.get('avoid_periods', []):
-                        score += 2
+                        score += 8  # was 2 — too weak to steer
                     if p in tp.get('preferred_periods', []):
-                        score -= 1
+                        score -= 5  # was -1 — too weak to steer
                 # Prior-year data is a historical REFERENCE only — not a placement factor.
                 # Alignment is tracked in output stats for comparison, never as a score bonus.
 
@@ -4769,7 +4787,7 @@ def greedy_assign_periods(seed=42, audit=False):
                     'cs_raw': cs_raw_val, 'top_student_total': top_st,
                     'teacher_raw': t_raw_val, 'teacher_total': t_total_val,
                     'room_raw': r_raw_val, 'room_total': r_total_val,
-                    'cs_total': cs_raw_val + top_st + t_total_val + r_total_val,
+                    'cs_total': cs_raw_val + top_st + t_raw_val + r_raw_val,
                     'period_scores': period_scores,
                     'remaining_sections': len(unassigned_all) - 1,
                 })
@@ -6186,8 +6204,12 @@ def run_optimization_pass(cl=None):
                         if rc == s['code']:
                             continue
                         rsids = sec_by_code.get(rc, [])
-                        if rsids and all(sections[rs]['period'] == p for rs in rsids):
-                            if any(set(sections[rs]['halves']) & set(s['halves']) for rs in rsids):
+                        # Check if ANY section of this conflicting course is in the
+                        # target period (not ALL). Using all() vastly underestimated
+                        # new conflicts for multi-section courses — a 4-section course
+                        # almost never has ALL sections in one period.
+                        if rsids and any(sections[rs]['period'] == p for rs in rsids):
+                            if any(sections[rs]['period'] == p and set(sections[rs]['halves']) & set(s['halves']) for rs in rsids):
                                 if is_protected(rpid, rc):
                                     new_conf += 4
                                 elif course_request_priority(rpid, rc) >= PTS_AP:
