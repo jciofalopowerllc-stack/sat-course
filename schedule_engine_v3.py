@@ -4129,6 +4129,19 @@ for _pgi, _pg in enumerate(_pairing_groups):
             _marker = " ← SELECTED" if _combo == _pg_best_combo else ""
             print(f"    #{_rank}: Periods {','.join(_combo)} score={_sc:.1f}{_marker}")
 
+# --- Helper: co-enrollment index (needed by PE pool and greedy) ---
+def _build_co_enrollment():
+    """Build co-enrollment index: for each course, which other courses share students.
+    Returns dict: cid -> {other_cid: [list of student pids sharing both courses]}"""
+    co = defaultdict(lambda: defaultdict(list))
+    for pid in students:
+        reqs = sreq[pid]
+        for i, cid_a in enumerate(reqs):
+            for cid_b in reqs[i + 1:]:
+                co[cid_a][cid_b].append(pid)
+                co[cid_b][cid_a].append(pid)
+    return co
+
 # --- STEP 1.6: PE Period Pool Pre-placement ---
 # Architectural rule (non-negotiable): Grade 9/10 semester electives, SSP courses,
 # and pathway courses MUST be in the SAME periods as their grade's PE course,
@@ -4197,7 +4210,7 @@ for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
                     break
 
     # Score all C(7, periods_needed) combinations
-    _pe_co_enroll = _co_enroll_cache if _co_enroll_cache else _build_co_enrollment()
+    _pe_co_enroll = _build_co_enrollment()
     _pe_all_combos = []
 
     for _pe_combo in _combinations(PERIODS, _pe_periods_needed):
@@ -4348,18 +4361,6 @@ if _pe_period_pool:
 
 
 # --- STEP 2: Enhanced greedy assignment ---
-def _build_co_enrollment():
-    """Build co-enrollment index: for each course, which other courses share students.
-    Returns dict: cid -> {other_cid: [list of student pids sharing both courses]}"""
-    co = defaultdict(lambda: defaultdict(list))
-    for pid in students:
-        reqs = sreq[pid]
-        for i, cid_a in enumerate(reqs):
-            for cid_b in reqs[i + 1:]:
-                co[cid_a][cid_b].append(pid)
-                co[cid_b][cid_a].append(pid)
-    return co
-
 _top_student_cache = {}
 
 def _refresh_top_students():
