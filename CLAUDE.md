@@ -79,6 +79,18 @@ A semester pairing group is a set of 2+ course codes whose semester sections mus
 - **Current groups:** Grade 12 Theology (849 Catholic Social Teaching + 851 Spirituality of Vocation) — 8 sections each, 4 periods, 16 total sections.
 - **Why:** Without pairing, 849 and 851 could spread across all 7 periods, consuming every period for Grade 12 students. With pairing, they share 4 periods, leaving 3 free for other courses. Mathematical conflict reduction: up to 164 fewer conflicts.
 
+### PE Period Pool (Universal Rule — from JC Iofalo, non-negotiable)
+Grade 9/10 semester electives, SSP courses, and pathway courses MUST be in the **same periods as their grade's PE course, opposite semesters**. Students take PE one semester and their elective in the other semester in the same period slot.
+
+- **Anchor courses:** 610 Health/PE (Grade 9), 620 Driver's Ed/PE (Grade 10)
+- **Pre-placement:** PE anchors are placed in Step 1.6 (after co-schedule groups and pairing groups, before greedy). The engine scores all C(7, N) period combinations to find optimal PE periods.
+- **Period restriction (Job 1):** During `greedy_assign_periods()`, ALL Gr9/10 semester non-PE courses are restricted to PE pool periods only. Periods outside the pool are blocked with reason `pe_pool`.
+- **Grade overlap:** Courses eligible for BOTH Gr9 and Gr10 can use the UNION of both grade pools.
+- **Co-schedule compatibility:** If a co-schedule group contains a Gr9/10 semester course, its period is required to be in the PE pool (engine enforces this during combo scoring).
+- **Conflict scoring exclusion:** PE anchor ↔ pool course co-enrollment is excluded from `_predict_conflict_score()` and co-enrollment spreading — students take PE and elective in opposite semesters, so same-period same-semester overlap is not a real conflict.
+- **Immovable:** PE anchor sections are in `PE_POOL_SIDS` — Phase D optimizer cannot move them. Pool-restricted courses can only move to pool periods during Phase D.
+- **Phase D restart:** PE section periods preserved in `_save_fixed_state()` and `_restore_for_restart()`. EC redistribution excludes PE pool sections.
+
 ### Engine Run Modes
 - `python schedule_engine_v3.py` or `python schedule_engine_v3.py job1` — Run Job 1 only, export Excel, **STOP** for review
 - `python schedule_engine_v3.py full` — Run Job 1 + Job 2 (student placement), export both Excel reports
