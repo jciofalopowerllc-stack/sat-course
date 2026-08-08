@@ -6731,7 +6731,7 @@ else:
             continue
 
         print(f"\n  Attempting rescue for SID {_d2_sid}: {_d2_code} {_d2_s['title']} "
-              f"sec#{_d2_s['section']} ({_d2_teacher})")
+              f"sec#{_d2_s['section']} ({_d2_teacher}) cs_raw={_d2_cs_raw}")
 
         # Find all OTHER placed sections by the SAME teacher that are candidates for displacement
         _d2_teacher_sids = [ts for ts in teacher_sections.get(_d2_teacher, [])
@@ -6744,6 +6744,18 @@ else:
                        and ts not in PAIRING_SIDS
                        and ts not in PE_POOL_SIDS]
 
+        _d2_immovable = [ts for ts in _d2_teacher_sids
+                         if ts in COGROUP_SIDS or ts in PAIRING_SIDS or ts in PE_POOL_SIDS]
+
+        print(f"    Teacher {_d2_teacher}: {len(_d2_teacher_sids)} placed sections, "
+              f"{len(_d2_movable)} movable, {len(_d2_immovable)} immovable")
+        for _d2_ts in _d2_teacher_sids:
+            _d2_tss = sections[_d2_ts]
+            _d2_ts_cs_raw = course_section_raw(_d2_tss['code'])
+            _d2_ts_immov = 'IMMOV' if _d2_ts in COGROUP_SIDS or _d2_ts in PAIRING_SIDS or _d2_ts in PE_POOL_SIDS else 'movable'
+            print(f"      SID {_d2_ts}: {_d2_tss['code']} {_d2_tss['title'][:30]} "
+                  f"P={_d2_tss['period']} halves={_d2_tss['halves']} cs_raw={_d2_ts_cs_raw} [{_d2_ts_immov}]")
+
         if not _d2_movable:
             print(f"    No movable sections for teacher {_d2_teacher}")
             continue
@@ -6752,6 +6764,9 @@ else:
         _d2_movable.sort(key=lambda ts: _section_priority_key(sections[ts]), reverse=True)
 
         _d2_found = False
+        _d2_skip_priority = 0
+        _d2_skip_place = 0
+        _d2_skip_move = 0
         for _d2_displace_sid in _d2_movable:
             _d2_ds = sections[_d2_displace_sid]
             _d2_ds_period = _d2_ds['period']
@@ -6760,6 +6775,7 @@ else:
 
             # Only displace LOWER-priority sections
             if _d2_ds_cs_raw >= _d2_cs_raw:
+                _d2_skip_priority += 1
                 continue
 
             # Step 1: Can the unplaced section go into the displaced section's current period?
@@ -6771,6 +6787,30 @@ else:
             _invalidate_occ_cache()
 
             if not _d2_can_place:
+                # Diagnose WHY it can't be placed
+                _d2_ds['period'] = None
+                _d2_place_reasons = []
+                _t = _d2_s['teacher']
+                if _t and _t != 'TBD':
+                    if not teacher_available(_t, _d2_ds_period):
+                        _d2_place_reasons.append('teacher_unavail')
+                    if teacher_busy(_t, _d2_ds_period, _d2_halves, check_sid=_d2_sid):
+                        _d2_place_reasons.append('teacher_busy')
+                    if teacher_would_exceed_cap(_t, _d2_ds_period, _d2_halves):
+                        _d2_place_reasons.append('load_cap')
+                    if would_create_consecutive_6(_t, _d2_ds_period, _d2_halves):
+                        _d2_place_reasons.append('consecutive_6')
+                _r = _d2_s.get('room')
+                if _r and _r != 'TBD' and _r not in SHARED_ROOMS:
+                    if room_busy(_r, _d2_ds_period, _d2_halves, _d2_sid):
+                        _d2_place_reasons.append('room_busy')
+                _pp = _pe_pool_restricted.get(_d2_code)
+                if _pp is not None and _d2_ds_period not in _pp:
+                    _d2_place_reasons.append(f'pe_pool(need {_pp})')
+                _d2_ds['period'] = _d2_ds_period  # restore
+                print(f"      SID {_d2_displace_sid} ({_d2_ds_code} P={_d2_ds_period}): "
+                      f"can't place unplaced here — {', '.join(_d2_place_reasons) if _d2_place_reasons else 'unknown'}")
+                _d2_skip_place += 1
                 continue
 
             # Step 2: Can the displaced section move to any other valid period?
@@ -6782,6 +6822,9 @@ else:
                     break
 
             if _d2_move_target is None:
+                print(f"      SID {_d2_displace_sid} ({_d2_ds_code} P={_d2_ds_period}): "
+                      f"unplaced fits here, but displaced section has no valid alt period")
+                _d2_skip_move += 1
                 continue
 
             # SUCCESS: Execute the rescue
@@ -6807,7 +6850,8 @@ else:
             break  # Rescued this section — move to next unplaced
 
         if not _d2_found:
-            print(f"    ✗ Could not rescue SID {_d2_sid} — no valid displacement found")
+            print(f"    ✗ Could not rescue SID {_d2_sid} — no valid displacement found "
+                  f"(skipped: {_d2_skip_priority} priority, {_d2_skip_place} placement, {_d2_skip_move} move)")
 
     # After all rescues, re-seat students if any section was rescued
     if _d2_rescued > 0:
