@@ -1812,9 +1812,17 @@ for r in range(2, _t7_ws.max_row + 1):
         # Engine Choice — default to S1, engine will redistribute EC sections later
         halves = ('S1',)
 
-    # T7 has no Prescribed Period column — engine assigns all periods
-    # (1 section in old T7 had prescribed period A for course 710; now engine-assigned)
-    period = None
+    # ── T7 Column 26: Prescribed Period (optional — A-G or N/A) ──
+    # When set, the engine MUST place this section in the specified period.
+    # Same enforcement as prescribed term and prescribed room: prescribed = required.
+    _pp_raw = _t7_ws.cell(r, 26).value
+    _pp_str = str(_pp_raw).strip().upper() if _pp_raw else ''
+    if _pp_str in ('A', 'B', 'C', 'D', 'E', 'F', 'G'):
+        period = _pp_str
+        _prescribed_period = _pp_str
+    else:
+        period = None
+        _prescribed_period = None
 
     room_str = str(room).strip() if room and str(room).strip() not in ('None', '', 'N/A') else 'TBD'
     cap_raw = _t7_ws.cell(r, 9).value  # Section Enrollment Cap
@@ -1827,6 +1835,7 @@ for r in range(2, _t7_ws.max_row + 1):
         'period': period, 'halves': halves, 'cap': cap,
         'teacher': teacher_name, 'room': room_str,
         'prescribed_room': room_str,  # Original T7 prescribed room (immutable reference)
+        'prescribed_period': _prescribed_period,  # Original T7 prescribed period (immutable reference)
         'title': ci.get('title', cid), 'dept': ci.get('dept', ''),
         'is_fy': is_fy, 'prescribed_term': pt_raw,
         'prescribed_cohort': _pc_str,
@@ -2969,6 +2978,15 @@ _prescribed_s2 = sum(1 for s in sections if s.get('prescribed_term') == 'S2')
 _prescribed_ec = sum(1 for s in sections if s.get('prescribed_term') == 'EC')
 _prescribed_fy = sum(1 for s in sections if s.get('prescribed_term') == 'FY')
 print(f"  Prescribed terms from T7: FY={_prescribed_fy}, S1={_prescribed_s1}, S2={_prescribed_s2}, EC={_prescribed_ec}")
+
+# Prescribed periods from T7 Column 26
+_prescribed_period_sids = [s['sid'] for s in sections if s.get('prescribed_period')]
+_pp_count = len(_prescribed_period_sids)
+if _pp_count > 0:
+    print(f"  Prescribed periods from T7: {_pp_count} sections pre-placed")
+    for _pp_sid in _prescribed_period_sids:
+        _pp_s = sections[_pp_sid]
+        print(f"    {_pp_s['code']} {_pp_s['title']} Sec#{_pp_s['section']} ({_pp_s['teacher']}) → Period {_pp_s['prescribed_period']}")
 
 code_to_cogroup = {}
 for gi, cg in enumerate(cogroups):
@@ -6121,6 +6139,9 @@ PAIRING_SIDS = set(assigned_pairing_sids)
 # PE Period Pool anchor sections — immovable by Phase D optimizer
 PE_POOL_SIDS = set(assigned_pe_sids)
 
+# Prescribed Period sections from T7 Column 26 — immovable by Phase D optimizer
+PRESCRIBED_PERIOD_SIDS = set(s['sid'] for s in sections if s.get('prescribed_period'))
+
 code_requesters = defaultdict(set)
 for _pid in students:
     for _cid in sreq[_pid]:
@@ -6129,7 +6150,7 @@ for _pid in students:
 _orig_periods = {}
 _orig_halves = {}
 for s in sections:
-    if s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS or s['sid'] in PE_POOL_SIDS:
+    if s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS or s['sid'] in PE_POOL_SIDS or s['sid'] in PRESCRIBED_PERIOD_SIDS:
         _orig_periods[s['sid']] = s['period']
         _orig_halves[s['sid']] = s['halves']
     else:
@@ -6139,7 +6160,7 @@ for s in sections:
 def _save_fixed_state():
     fixed = {}
     for s in sections:
-        if s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS or s['sid'] in PE_POOL_SIDS:
+        if s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS or s['sid'] in PE_POOL_SIDS or s['sid'] in PRESCRIBED_PERIOD_SIDS:
             fixed[s['sid']] = (s['period'], s['halves'])
     return fixed
 
@@ -6596,6 +6617,8 @@ def _can_move_section(sid, new_period):
         return False  # semester pairing group — paired by design, immovable
     if sid in PE_POOL_SIDS:
         return False  # PE anchor section — defines the period pool, immovable
+    if sid in PRESCRIBED_PERIOD_SIDS:
+        return False  # prescribed period from T7 Column 26 — immovable
     # PE Period Pool restriction: pool-restricted courses can only move to pool periods
     _move_code = sections[sid]['code']
     _move_pool = _pe_pool_restricted.get(_move_code)
@@ -6946,17 +6969,18 @@ else:
         _d2_movable = [ts for ts in _d2_teacher_sids
                        if ts not in COGROUP_SIDS
                        and ts not in PAIRING_SIDS
-                       and ts not in PE_POOL_SIDS]
+                       and ts not in PE_POOL_SIDS
+                       and ts not in PRESCRIBED_PERIOD_SIDS]
 
         _d2_immovable = [ts for ts in _d2_teacher_sids
-                         if ts in COGROUP_SIDS or ts in PAIRING_SIDS or ts in PE_POOL_SIDS]
+                         if ts in COGROUP_SIDS or ts in PAIRING_SIDS or ts in PE_POOL_SIDS or ts in PRESCRIBED_PERIOD_SIDS]
 
         print(f"    Teacher {_d2_teacher}: {len(_d2_teacher_sids)} placed sections, "
               f"{len(_d2_movable)} movable, {len(_d2_immovable)} immovable")
         for _d2_ts in _d2_teacher_sids:
             _d2_tss = sections[_d2_ts]
             _d2_ts_cs_raw = course_section_raw(_d2_tss['code'])
-            _d2_ts_immov = 'IMMOV' if _d2_ts in COGROUP_SIDS or _d2_ts in PAIRING_SIDS or _d2_ts in PE_POOL_SIDS else 'movable'
+            _d2_ts_immov = 'IMMOV' if _d2_ts in COGROUP_SIDS or _d2_ts in PAIRING_SIDS or _d2_ts in PE_POOL_SIDS or _d2_ts in PRESCRIBED_PERIOD_SIDS else 'movable'
             print(f"      SID {_d2_ts}: {_d2_tss['code']} {_d2_tss['title'][:30]} "
                   f"P={_d2_tss['period']} halves={_d2_tss['halves']} cs_raw={_d2_ts_cs_raw} [{_d2_ts_immov}]")
 
