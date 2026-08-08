@@ -4228,17 +4228,29 @@ def _build_co_enrollment():
     return co
 
 # --- STEP 1.6: Anchor Period Pool Pre-placement ---
-# T13 architecture (replaces hardcoded PE Pool): each grade/cohort group in T13
-# has an anchor course and paired semester courses.  Paired courses MUST be placed
-# in the same periods as their anchor (opposite semesters).
+# T13 architecture: each grade/cohort group in T13 has an anchor course and
+# paired semester courses.
 #
-# Groups with anchors: Gr9 (610), Gr10 (620), Gr11 (631), LEO I (734), LEO II (745)
-# Groups without anchors: Gr12 — paired courses use best-effort, no hard pool
+# PLACEMENT ORDER (LEO I/II have priority over all other semester courses):
+#   1. LEO I anchor (734) — placed first
+#   2. LEO II anchor (745) — placed second
+#   3. Co-schedule groups (placed after LEO anchors)
+#   4. Semester pairing groups
+#   5. Grade anchors: Gr9 (610), Gr10 (620), Gr11 (631) — placed after LEO
+#   6. Gr12 — no anchor, best-effort only
+#
+# TWO DISTINCT POOL TYPES:
+#   Grade pools (Gr9/10/11): restrict SECTIONS in Job 1 — all students in that
+#       grade use the anchor pattern, so paired course sections must be in pool.
+#   LEO pools (LEO I/II): restrict STUDENTS in Job 2 only — only LEO students
+#       use the LEO anchor pattern.  Non-LEO students taking the same courses
+#       are unaffected.  Paired course sections are NOT pool-restricted in Job 1.
+#
 # FY courses are excluded from pool restrictions (SE only).
 # Co-schedule groups containing paired courses: their assigned periods are REQUIRED
-# to be in the pool (intersection-with-fallback rule).
+# to be in the pool (intersection-with-fallback rule) — grade pools only.
 
-# Build anchor course set from T13 (replaces hardcoded PE_ANCHOR_COURSES)
+# Build anchor course set from T13
 ANCHOR_COURSES = {}  # code → grade  (all T13 anchor course codes)
 for _ag in anchor_pair_groups:
     if _ag['anchor']:
@@ -4250,7 +4262,23 @@ assigned_pe_sids = set()  # all anchor section SIDs (immovable by Phase D)
 # Pre-compute co-enrollment once (used by all anchor combo scoring)
 _pe_co_enroll = _build_co_enrollment()
 
-for _agi, _ag in enumerate(anchor_pair_groups):
+# Determine processing order: LEO groups first (cohort_leo1, cohort_leo2),
+# then grade groups in grade order (9, 10, 11, 12).
+# LEO I/II have priority over all other semester courses (JC 08.08.26).
+_anchor_order = sorted(
+    range(len(anchor_pair_groups)),
+    key=lambda i: (
+        0 if anchor_pair_groups[i]['group_type'] == 'cohort_leo1' else
+        1 if anchor_pair_groups[i]['group_type'] == 'cohort_leo2' else
+        2,
+        anchor_pair_groups[i]['grade']
+    )
+)
+_leo_group_types = {'cohort_leo1', 'cohort_leo2'}
+print(f"  Anchor processing order: {[anchor_pair_groups[i]['name'] for i in _anchor_order]}")
+
+for _agi in _anchor_order:
+    _ag = anchor_pair_groups[_agi]
     _pe_code = _ag['anchor']
     if not _pe_code:
         print(f"  Anchor Period Pool: {_ag['name']} has no anchor — best-effort placement (no hard pool)")
@@ -4480,14 +4508,18 @@ for _agi, _ag in enumerate(anchor_pair_groups):
             print(f"    #{_rank}: Periods {','.join(_combo)} score={_sc:.1f}{_marker}")
 
 # Build the anchor pool restriction lookup: course_code → set of allowed periods
-# A course is pool-restricted if it appears as PAIRED in any T13 group that has a pool.
+# GRADE pools (Gr9/10/11) restrict SECTIONS in Job 1 — all students in grade need it.
+# LEO pools (LEO I/II) do NOT restrict sections — only LEO students are affected (Job 2).
 # FY courses are excluded (term_type != 'SE' → skip).
 # Gr12 group has no anchor/pool → Gr12-only courses are unrestricted (best-effort).
-# Courses in multiple groups get the UNION of all applicable pools.
+# Among grade pools, courses in multiple groups get the UNION of all applicable pools.
 _pe_pool_restricted = {}  # course_code → set of allowed periods (name kept for backward compat)
 _t13_all_paired = set()
 for _ag in anchor_pair_groups:
     _t13_all_paired.update(_ag['paired'])
+
+# LEO pool periods stored for Job 2 use (not for Job 1 section restriction)
+_leo_pool_periods = {}  # group_idx → set of periods (LEO groups only)
 
 if _anchor_period_pool:
     for _cid in _t13_all_paired:
@@ -4499,20 +4531,32 @@ if _anchor_period_pool:
         _allowed = set()
         for _agi, _ag in enumerate(anchor_pair_groups):
             if _cid in _ag['paired'] and _agi in _anchor_period_pool:
+                # Only GRADE pools restrict sections; LEO pools are Job 2 only
+                if _ag['group_type'] in _leo_group_types:
+                    _leo_pool_periods[_agi] = _anchor_period_pool[_agi]
+                    continue  # skip LEO pools for section restriction
                 _allowed |= _anchor_period_pool[_agi]
         if _allowed:
             _pe_pool_restricted[_cid] = _allowed
 
     if _pe_pool_restricted:
-        print(f"  Anchor Period Pool restriction: {len(_pe_pool_restricted)} semester courses "
-              f"restricted to anchor pool periods")
+        print(f"  Grade Pool restriction: {len(_pe_pool_restricted)} semester courses "
+              f"restricted to grade anchor pool periods (Job 1)")
         for _agi, _ag in enumerate(anchor_pair_groups):
+            if _ag['group_type'] in _leo_group_types:
+                continue  # LEO pools are not section-level restrictions
             if _agi not in _anchor_period_pool:
                 print(f"    {_ag['name']}: no pool (best-effort)")
                 continue
             _pool_courses = [c for c in _ag['paired'] if c in _pe_pool_restricted]
             print(f"    {_ag['name']} pool ({', '.join(sorted(_anchor_period_pool[_agi]))}): "
                   f"{len(_pool_courses)} courses restricted")
+    if _leo_pool_periods:
+        print(f"  LEO pools (Job 2 student-level only, NOT restricting sections):")
+        for _agi in sorted(_leo_pool_periods):
+            _ag = anchor_pair_groups[_agi]
+            print(f"    {_ag['name']} pool ({', '.join(sorted(_leo_pool_periods[_agi]))}): "
+                  f"{len(_ag['paired'])} paired courses (unrestricted in Job 1)")
 
 
 # --- STEP 2: Enhanced greedy assignment ---

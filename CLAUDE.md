@@ -86,19 +86,33 @@ Semester electives for each grade/cohort MUST be in the **same periods as their 
 - **6 anchor groups:**
   - **Gr9:** Anchor 610 Health/PE, 10 paired courses
   - **Gr10:** Anchor 620 Driver's Ed/PE, 24 paired courses
-  - **Gr11:** Anchor 631 CPR-AED Training/PE, 31 paired courses
+  - **Gr11:** Anchor 631 CPR-AED Training/PE, 31 paired courses — BUT for students with a LEO I (734) request, 734 becomes the anchor and 631 becomes a paired course
   - **Gr12:** NO anchor — 36 paired courses, best-effort placement only (no hard pool restriction)
-  - **LEO I:** Anchor 734 (locked S2), 27 paired courses (available S1)
-  - **LEO II:** Anchor 745 (locked S1), 34 paired courses (available S2)
+  - **LEO I:** Anchor 734 (locked S2), 27 paired courses incl. 631 (available S1) — **PLACED FIRST, priority over all other semester courses**
+  - **LEO II:** Anchor 745 (locked S1), 34 paired courses (available S2) — **PLACED SECOND, priority over all other semester courses**
+- **LEO I/II have priority over all other semester courses (JC 08.08.26).**
 - **T13 course codes** use grade suffixes (e.g., `708-9`, `849-12`) — engine strips to root codes for T7/sec_by_code matching
-- **Pre-placement:** Anchors are placed in Step 1.6 (after co-schedule groups and pairing groups, before greedy). The engine scores all C(7, N) period combinations per group.
-- **Period restriction (Job 1):** During `greedy_assign_periods()`, courses listed as PAIRED in any T13 group with a pool are restricted to that pool's periods. Periods outside the pool are blocked with reason `pe_pool`.
-- **Multi-group union:** Courses appearing in multiple T13 groups get the UNION of all applicable pools. Example: 473 in Gr9+Gr10+Gr11+Gr12 gets union of Gr9, Gr10, Gr11 pools (Gr12 has no pool).
+
+**Placement order in Step 1.6 (non-negotiable):**
+1. LEO I anchor (734) — placed first
+2. LEO II anchor (745) — placed second
+3. Co-schedule groups
+4. Semester pairing groups
+5. Grade anchors: Gr9 (610) → Gr10 (620) → Gr11 (631)
+6. Gr12 — no anchor, best-effort only
+
+**Two distinct pool types (JC 08.08.26):**
+- **Grade pools (Gr9/10/11):** Restrict SECTIONS in Job 1. All students in that grade use the anchor pattern, so paired course sections MUST be in the grade's pool periods. Period restriction enforced during `greedy_assign_periods()` with block reason `pe_pool`.
+- **LEO pools (LEO I/II):** Restrict STUDENTS in Job 2 only. Only LEO students use the LEO anchor pattern. Non-LEO students taking the same courses are completely unaffected. Paired course sections are NOT pool-restricted in Job 1 — they are placed freely across all periods.
+- **Rationale:** LEO programs serve a subset of students (36 LEO II, ~30 LEO I). Restricting sections to LEO pool periods would unnecessarily limit the ~700 non-LEO students who also take those courses.
+- **If paired courses don't fit:** Students get an empty opposite semester in that period slot. The anchor is sacred — paired courses bend to the anchor, never the other way around. This applies to ALL anchored groups (Gr9, Gr10, Gr11, LEO I, LEO II).
+
+- **Multi-group union (grade pools only):** Courses appearing in multiple GRADE groups get the UNION of all applicable grade pools. LEO pools do not contribute to section-level restrictions.
 - **FY exclusion:** FY courses (term_type='FY') are excluded from anchor pair restrictions — anchor pairing applies to SE courses only.
-- **Co-schedule compatibility (intersection-with-fallback):** If a co-schedule group contains a paired course from a T13 group, its assigned period is REQUIRED to be in that group's pool. Ensures co-scheduled electives remain accessible.
+- **Co-schedule compatibility (intersection-with-fallback):** If a co-schedule group contains a paired course from a GRADE T13 group, its assigned period is REQUIRED to be in that group's pool. Ensures co-scheduled electives remain accessible. LEO pools do not trigger this requirement.
 - **S1-only/S2-only anchors:** LEO I anchor 734 (S2-only) and LEO II anchor 745 (S1-only) are handled correctly — periods are projected into only the anchor's semester for teacher load/consecutive-6 checks.
-- **Conflict scoring exclusion:** Anchor ↔ pool-restricted course co-enrollment is excluded from `_predict_conflict_score()` and co-enrollment spreading — students take anchor and paired elective in opposite semesters.
-- **Immovable:** Anchor sections are in `PE_POOL_SIDS` — Phase D optimizer cannot move them. Pool-restricted courses can only move to pool periods during Phase D.
+- **Conflict scoring exclusion:** Grade anchor ↔ grade-pool-restricted course co-enrollment is excluded from `_predict_conflict_score()` and co-enrollment spreading. LEO paired courses are NOT excluded (they are not section-restricted, so co-enrollment IS a real conflict to score).
+- **Immovable:** Anchor sections are in `PE_POOL_SIDS` — Phase D optimizer cannot move them. Grade-pool-restricted courses can only move to pool periods during Phase D. LEO paired courses are freely movable.
 - **Phase D restart:** Anchor section periods preserved in `_save_fixed_state()` and `_restore_for_restart()`. EC redistribution excludes anchor pool sections.
 
 ### T5 Grade-Suffix Course Codes
