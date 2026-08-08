@@ -3160,8 +3160,32 @@ def _teacher_aware_ec_rebalance(verbose=True):
 
     for rb_teacher, rb_ec_sids in ec_by_teacher.items():
         rb_all_sids = teacher_sections.get(rb_teacher, [])
-        rb_s1_count = sum(1 for sid in rb_all_sids if 'S1' in sections[sid]['halves'])
-        rb_s2_count = sum(1 for sid in rb_all_sids if 'S2' in sections[sid]['halves'])
+        # Count unique period SLOTS per semester, with co-schedule groups
+        # counting as 1 slot (they share a single period).  Raw section
+        # count inflates teachers with co-schedule groups — e.g. McConnell's
+        # Robotics Block (590×2 + 591×2) is 4 raw S1 sections but 1 period.
+        _rb_cg_s1 = set()  # co-group IDs already counted in S1
+        _rb_cg_s2 = set()  # co-group IDs already counted in S2
+        rb_s1_count = 0
+        rb_s2_count = 0
+        for sid in rb_all_sids:
+            _rb_s = sections[sid]
+            _rb_gi = code_to_cogroup.get(_rb_s['code'])
+            if 'S1' in _rb_s['halves']:
+                if _rb_gi is not None:
+                    if _rb_gi not in _rb_cg_s1:
+                        _rb_cg_s1.add(_rb_gi)
+                        rb_s1_count += 1
+                    # else: co-group already counted — skip
+                else:
+                    rb_s1_count += 1
+            if 'S2' in _rb_s['halves']:
+                if _rb_gi is not None:
+                    if _rb_gi not in _rb_cg_s2:
+                        _rb_cg_s2.add(_rb_gi)
+                        rb_s2_count += 1
+                else:
+                    rb_s2_count += 1
         rb_max_s1, rb_max_s2 = get_max_load(rb_teacher)
 
         if rb_s1_count <= rb_max_s1 and rb_s2_count <= rb_max_s2:
