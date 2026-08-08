@@ -4129,6 +4129,224 @@ for _pgi, _pg in enumerate(_pairing_groups):
             _marker = " ← SELECTED" if _combo == _pg_best_combo else ""
             print(f"    #{_rank}: Periods {','.join(_combo)} score={_sc:.1f}{_marker}")
 
+# --- STEP 1.6: PE Period Pool Pre-placement ---
+# Architectural rule (non-negotiable): Grade 9/10 semester electives, SSP courses,
+# and pathway courses MUST be in the SAME periods as their grade's PE course,
+# opposite semesters.  Students take PE one semester and their elective the other
+# semester in the same period slot.
+#
+# Anchor courses:  610 Health/PE (Grade 9),  620 Driver's Ed/PE (Grade 10)
+# The anchors are pre-placed here (before greedy) so their periods are known.
+# Greedy then restricts all Gr9/10 semester non-PE courses to those periods.
+
+PE_ANCHOR_COURSES = {'610': 9, '620': 10}  # course_code -> grade it anchors
+_pe_period_pool = {}  # grade -> set of periods  (filled after placement)
+assigned_pe_sids = set()
+
+for _pe_code, _pe_grade in PE_ANCHOR_COURSES.items():
+    _pe_sids = sec_by_code.get(_pe_code, [])
+    if not _pe_sids:
+        print(f"  PE Period Pool: No sections found for anchor {_pe_code} — skipping Gr{_pe_grade} pool")
+        continue
+
+    # Collect unassigned S1 and S2 sections
+    _pe_s1 = [sid for sid in _pe_sids
+              if sections[sid]['halves'] == ('S1',) and sections[sid]['period'] is None]
+    _pe_s2 = [sid for sid in _pe_sids
+              if sections[sid]['halves'] == ('S2',) and sections[sid]['period'] is None]
+    _pe_fy = [sid for sid in _pe_sids
+              if sections[sid]['halves'] == ('S1', 'S2') and sections[sid]['period'] is None]
+
+    if _pe_fy:
+        # FY PE sections — each occupies both semesters in one period
+        _pe_periods_needed = len(_pe_fy)
+    elif len(_pe_s1) != len(_pe_s2):
+        print(f"  PE Period Pool: {_pe_code} has unequal S1/S2 split ({len(_pe_s1)} S1, {len(_pe_s2)} S2) — skipping")
+        continue
+    else:
+        _pe_periods_needed = len(_pe_s1)
+
+    if _pe_periods_needed == 0:
+        print(f"  PE Period Pool: {_pe_code} has no unassigned sections — skipping")
+        continue
+
+    # Find the PE teacher(s) and their constraints
+    _pe_teachers = set(sections[sid]['teacher'] for sid in _pe_sids
+                       if sections[sid]['teacher'] and sections[sid]['teacher'] != 'TBD')
+
+    # Identify co-schedule group periods that contain Gr9/10 semester courses —
+    # these periods MUST be in the PE pool so co-scheduled electives are accessible.
+    _pe_required_periods = set()
+    for _cg in cogroups:
+        _cg_codes = _cg['codes']
+        _cg_has_pool_course = False
+        for _cc in _cg_codes:
+            _cc_gl = course_grade_levels.get(str(_cc), set())
+            _cc_tt = course_info.get(str(_cc), {}).get('term_type', 'FY')
+            if _cc_tt == 'SE' and _pe_grade in _cc_gl and str(_cc) not in PE_ANCHOR_COURSES:
+                _cg_has_pool_course = True
+                break
+        if _cg_has_pool_course:
+            # Find this co-schedule group's assigned period
+            for _cc in _cg_codes:
+                for _cs in sec_by_code.get(str(_cc), []):
+                    if sections[_cs]['period']:
+                        _pe_required_periods.add(sections[_cs]['period'])
+                        break
+                if _pe_required_periods:
+                    break
+
+    # Score all C(7, periods_needed) combinations
+    _pe_co_enroll = _co_enroll_cache if _co_enroll_cache else _build_co_enrollment()
+    _pe_all_combos = []
+
+    for _pe_combo in _combinations(PERIODS, _pe_periods_needed):
+        _pe_combo_set = set(_pe_combo)
+
+        # Required periods MUST be included
+        if not _pe_required_periods.issubset(_pe_combo_set):
+            continue
+
+        # Teacher feasibility: check load, availability, consecutive-6
+        _pe_blocked = False
+        for _pt in _pe_teachers:
+            _existing_s1 = set()
+            _existing_s2 = set()
+            for sid in teacher_sections.get(_pt, []):
+                s = sections[sid]
+                if s['period'] and s['code'] != _pe_code:
+                    if 'S1' in s['halves']:
+                        _existing_s1.add(s['period'])
+                    if 'S2' in s['halves']:
+                        _existing_s2.add(s['period'])
+
+            _proj_s1 = _existing_s1 | _pe_combo_set
+            _proj_s2 = _existing_s2 | _pe_combo_set
+            _max_s1, _max_s2 = get_max_load(_pt)
+            if len(_proj_s1) > _max_s1 or len(_proj_s2) > _max_s2:
+                _pe_blocked = True
+                break
+
+            # Consecutive-6 check
+            for _proj_set in (_proj_s1, _proj_s2):
+                if len(_proj_set) == 6:
+                    _proj_free = set(PERIODS) - _proj_set
+                    if _proj_free:
+                        _fp = _proj_free.pop()
+                        if _fp == 'A' or _fp == 'G':
+                            _pe_blocked = True
+                            break
+            if _pe_blocked:
+                break
+
+            # Teacher availability
+            for p in _pe_combo:
+                if not teacher_available(_pt, p):
+                    _pe_blocked = True
+                    break
+                if teacher_busy(_pt, p, ('S1', 'S2'), -1):
+                    # Check if the teacher is busy from non-PE sections
+                    _non_pe_busy = False
+                    for _ts in teacher_sections.get(_pt, []):
+                        _tss = sections[_ts]
+                        if _tss['code'] != _pe_code and _tss['period'] == p:
+                            _non_pe_busy = True
+                            break
+                    if _non_pe_busy:
+                        _pe_blocked = True
+                        break
+            if _pe_blocked:
+                break
+
+        if _pe_blocked:
+            continue
+
+        # Score: conflict potential + period load balance
+        _pe_score = 0
+        for p in _pe_combo:
+            _pe_co = _pe_co_enroll.get(_pe_code, {})
+            for other_cid, shared_pids in _pe_co.items():
+                other_sids_list = sec_by_code.get(other_cid, [])
+                for osid in other_sids_list:
+                    _os = sections[osid]
+                    if _os['period'] != p:
+                        continue
+                    if not (set(('S1', 'S2')) & set(_os['halves'])):
+                        continue
+                    for pid in shared_pids:
+                        _pe_score += student_raw_priority(pid) + max(
+                            course_request_priority(pid, _pe_code),
+                            course_request_priority(pid, other_cid))
+                    break
+            # Period load balance
+            _pload = sum(1 for sec in sections if sec['period'] == p)
+            _pe_score += _pload * 0.5
+
+        _pe_all_combos.append((_pe_combo, _pe_score))
+
+    if not _pe_all_combos:
+        # Fallback: use least-loaded periods
+        _pe_loads = Counter(sec['period'] for sec in sections if sec['period'])
+        _pe_best_combo = tuple(sorted(PERIODS, key=lambda p: _pe_loads.get(p, 0))[:_pe_periods_needed])
+        print(f"  PE Period Pool: No valid combo for {_pe_code} — fallback to least-loaded: {','.join(_pe_best_combo)}")
+    else:
+        _pe_all_combos.sort(key=lambda x: x[1])
+        _pe_best_combo = _pe_all_combos[0][0]
+
+    # Assign PE sections to the selected periods
+    if _pe_fy:
+        for i, p in enumerate(_pe_best_combo):
+            sections[_pe_fy[i]]['period'] = p
+            assigned_pe_sids.add(_pe_fy[i])
+    else:
+        for i, p in enumerate(_pe_best_combo):
+            sections[_pe_s1[i]]['period'] = p
+            assigned_pe_sids.add(_pe_s1[i])
+            sections[_pe_s2[i]]['period'] = p
+            assigned_pe_sids.add(_pe_s2[i])
+
+    _pe_period_pool[_pe_grade] = set(_pe_best_combo)
+
+    print(f"  PE Period Pool: {_pe_code} (Gr{_pe_grade}) -> Periods {', '.join(sorted(_pe_best_combo))} "
+          f"({_pe_periods_needed} periods × {'FY' if _pe_fy else '2 semesters'} = "
+          f"{len(_pe_fy) if _pe_fy else _pe_periods_needed * 2} sections)")
+    if _pe_required_periods:
+        print(f"    Required periods (co-schedule groups): {', '.join(sorted(_pe_required_periods))}")
+    # Show top combos
+    if _pe_all_combos:
+        _top5 = _pe_all_combos[:5]
+        for _rank, (_combo, _sc) in enumerate(_top5, 1):
+            _marker = " ← SELECTED" if _combo == _pe_best_combo else ""
+            print(f"    #{_rank}: Periods {','.join(_combo)} score={_sc:.1f}{_marker}")
+
+# Build the PE pool restriction lookup: course_code -> set of allowed periods
+# A course is pool-restricted if it is a semester course (SE), serves Gr9 or Gr10,
+# and is NOT a PE anchor course.  Allowed periods = union of all applicable grade pools.
+_pe_pool_restricted = {}  # course_code -> set of allowed periods
+if _pe_period_pool:
+    for _cid, _ci in course_info.items():
+        if _ci.get('term_type') != 'SE':
+            continue
+        if _cid in PE_ANCHOR_COURSES:
+            continue
+        _cid_grades = course_grade_levels.get(str(_cid), set())
+        _allowed = set()
+        for _g in (9, 10):
+            if _g in _cid_grades and _g in _pe_period_pool:
+                _allowed |= _pe_period_pool[_g]
+        if _allowed:
+            _pe_pool_restricted[_cid] = _allowed
+
+    if _pe_pool_restricted:
+        print(f"  PE Period Pool restriction: {len(_pe_pool_restricted)} semester courses restricted to PE periods")
+        # Show pool summary
+        for _g in sorted(_pe_period_pool.keys()):
+            _pool_courses = [c for c, _ in _pe_pool_restricted.items()
+                             if _g in course_grade_levels.get(str(c), set())]
+            print(f"    Gr{_g} pool ({', '.join(sorted(_pe_period_pool[_g]))}): "
+                  f"{len(_pool_courses)} courses restricted")
+
+
 # --- STEP 2: Enhanced greedy assignment ---
 def _build_co_enrollment():
     """Build co-enrollment index: for each course, which other courses share students.
@@ -4203,11 +4421,22 @@ def _predict_conflict_score(code, period, halves, co_enroll):
     # Semester pairing exclusion: paired courses share periods by design —
     # students choose independently, so co-enrollment is NOT a conflict
     my_pairgroup = code_to_pairing_group.get(code)
+    # PE Period Pool exclusion: PE anchor courses and pool courses share periods by
+    # design — students take PE one semester and elective the other.  A PE-S1 section
+    # and Elective-S1 section in the same period is NOT a real conflict because the
+    # student can take PE-S2 instead.  Only exclude anchor↔pool pairs, not pool↔pool.
+    _is_pe_anchor = code in PE_ANCHOR_COURSES
+    _is_pe_pool = code in _pe_pool_restricted
     for other_cid, shared_students in co_courses.items():
         if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
             continue  # same co-schedule group — not a conflict
         if my_pairgroup is not None and code_to_pairing_group.get(other_cid) == my_pairgroup:
             continue  # same semester pairing group — students choose periods independently
+        # PE pool exclusion: anchor↔pool pairs are not conflicts
+        if _is_pe_anchor and other_cid in _pe_pool_restricted:
+            continue
+        if _is_pe_pool and other_cid in PE_ANCHOR_COURSES:
+            continue
         other_sids = sec_by_code.get(other_cid, [])
         for osid in other_sids:
             os = sections[osid]
@@ -4495,7 +4724,14 @@ def greedy_assign_periods(seed=42, audit=False):
             best_score = float('inf')
             period_scores = {}
 
+            # PE Period Pool restriction: Gr9/10 semester courses can only use PE periods
+            _pool_allowed = _pe_pool_restricted.get(code)
+
             for p in PERIODS:
+                # PE Period Pool: block periods outside the pool for restricted courses
+                if _pool_allowed is not None and p not in _pool_allowed:
+                    period_scores[p] = 'pe_pool'
+                    continue
                 if teacher and teacher != 'TBD' and teacher_busy(teacher, p, halves, s['sid']):
                     period_scores[p] = 'teacher_busy'
                     continue
@@ -4661,11 +4897,18 @@ def greedy_assign_periods(seed=42, audit=False):
                 co_courses = co_enroll.get(code, {})
                 my_pairgroup_g = code_to_pairing_group.get(code)
                 co_period_penalty = 0
+                _is_pe_anchor_g = code in PE_ANCHOR_COURSES
+                _is_pe_pool_g = code in _pe_pool_restricted
                 for other_cid, shared_pids in co_courses.items():
                     if my_cogroup is not None and code_to_cogroup.get(other_cid) == my_cogroup:
                         continue  # co-schedule group — not a conflict
                     if my_pairgroup_g is not None and code_to_pairing_group.get(other_cid) == my_pairgroup_g:
                         continue  # semester pairing group — students choose periods independently
+                    # PE pool exclusion: anchor↔pool share periods by design
+                    if _is_pe_anchor_g and other_cid in _pe_pool_restricted:
+                        continue
+                    if _is_pe_pool_g and other_cid in PE_ANCHOR_COURSES:
+                        continue
                     n_shared = len(shared_pids)
                     if n_shared < 3:
                         continue  # skip low-co-enrollment pairs (noise)
@@ -5670,6 +5913,9 @@ for _cg in cogroups:
 # Semester pairing group sections — immovable by Phase D optimizer
 PAIRING_SIDS = set(assigned_pairing_sids)
 
+# PE Period Pool anchor sections — immovable by Phase D optimizer
+PE_POOL_SIDS = set(assigned_pe_sids)
+
 code_requesters = defaultdict(set)
 for _pid in students:
     for _cid in sreq[_pid]:
@@ -5678,7 +5924,7 @@ for _pid in students:
 _orig_periods = {}
 _orig_halves = {}
 for s in sections:
-    if s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS:
+    if s['sid'] in COGROUP_SIDS or s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS or s['sid'] in PE_POOL_SIDS:
         _orig_periods[s['sid']] = s['period']
         _orig_halves[s['sid']] = s['halves']
     else:
@@ -5688,7 +5934,7 @@ for s in sections:
 def _save_fixed_state():
     fixed = {}
     for s in sections:
-        if s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS:
+        if s['sid'] in assigned_cogroups or s['sid'] in PAIRING_SIDS or s['sid'] in PE_POOL_SIDS:
             fixed[s['sid']] = (s['period'], s['halves'])
     return fixed
 
@@ -5715,7 +5961,7 @@ def _restore_for_restart(fixed_state):
     # EXCLUDE pairing group sections — their halves are fixed by the pairing rule
     _ec_by_code = defaultdict(list)
     for s in sections:
-        if s.get('prescribed_term') == 'EC' and s['sid'] not in PAIRING_SIDS:
+        if s.get('prescribed_term') == 'EC' and s['sid'] not in PAIRING_SIDS and s['sid'] not in PE_POOL_SIDS:
             _ec_by_code[s['code']].append(s['sid'])
     for cid, ec_sids in _ec_by_code.items():
         n_s1 = (len(ec_sids) + 1) // 2
@@ -6131,6 +6377,13 @@ def _can_move_section(sid, new_period):
         return False
     if sid in PAIRING_SIDS:
         return False  # semester pairing group — paired by design, immovable
+    if sid in PE_POOL_SIDS:
+        return False  # PE anchor section — defines the period pool, immovable
+    # PE Period Pool restriction: pool-restricted courses can only move to pool periods
+    _move_code = sections[sid]['code']
+    _move_pool = _pe_pool_restricted.get(_move_code)
+    if _move_pool is not None and new_period not in _move_pool:
+        return False  # target period is outside the PE pool
     s = sections[sid]
     if new_period == s['period']:
         return False
