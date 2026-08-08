@@ -6827,6 +6827,45 @@ else:
                 _d2_skip_move += 1
                 continue
 
+            # Step 3: Verify COMBINED result — simulate both changes and check
+            # for consecutive-6 violation on the teacher's full schedule.
+            # Steps 1 and 2 check each operation independently, but the combined
+            # effect can create a violation neither individual check catches.
+            # Example: displaced 757 FY moves D→E, unplaced 727 S1 placed in D.
+            # Individually: 757 at E is fine (5 periods), 727 at D is fine (5 periods).
+            # Combined: teacher has A,B,C,D,E,F in S1 — 6 consecutive, free=G — violation!
+            _d2_combined_ok = True
+            if _d2_teacher and _d2_teacher != 'TBD':
+                # Temporarily apply BOTH changes
+                _d2_ds['period'] = _d2_move_target       # displaced → new period
+                _d2_s['period'] = _d2_ds_period           # unplaced → freed period
+                _invalidate_occ_cache()
+
+                # Check consecutive-6 for each semester the teacher touches
+                for _d2_sem in ('S1', 'S2'):
+                    _d2_occ = set()
+                    for _d2_tsid in teacher_sections.get(_d2_teacher, []):
+                        _d2_tsc = sections[_d2_tsid]
+                        if _d2_tsc['period'] and _d2_sem in _d2_tsc['halves']:
+                            _d2_occ.add(_d2_tsc['period'])
+                    if len(_d2_occ) == 6:
+                        _d2_free = set(PERIODS) - _d2_occ
+                        _d2_free_p = _d2_free.pop()
+                        if _d2_free_p == 'A' or _d2_free_p == 'G':
+                            print(f"      SID {_d2_displace_sid} ({_d2_ds_code} P={_d2_ds_period}→{_d2_move_target}): "
+                                  f"COMBINED consecutive-6 violation in {_d2_sem} — free={_d2_free_p}")
+                            _d2_combined_ok = False
+                            break
+
+                # Revert both changes
+                _d2_ds['period'] = _d2_ds_period          # restore displaced
+                _d2_s['period'] = None                     # restore unplaced
+                _invalidate_occ_cache()
+
+            if not _d2_combined_ok:
+                _d2_skip_move += 1
+                continue
+
             # SUCCESS: Execute the rescue
             # (a) Move the displaced section to its new period
             _d2_old_period = _d2_ds['period']
