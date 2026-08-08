@@ -259,7 +259,7 @@ The engine calculates each teacher's full-year-equivalent period load and 6th-pe
 
 ### Priority System (DATA_STRUCTURE.md — current engine implementation)
 - **Two-level priority:** Course Section Priority determines section placement order; Student Priority determines student fill order
-- **9 stacking course characteristics:** AP (30), Singleton (25), Graduation Requirement (20), Gr12 PAE (20), Priority Level (0–20), Semester Only (15), Cohort Course (15), Co-Schedule Group (15), Prescribed Term (10)
+- **9 stacking course characteristics:** AP (30), Singleton (25), Graduation Requirement (30), Gr12 PAE (20), Priority Level (0–20), Semester Only (10), Cohort Course (15), Co-Schedule Group (15), Prescribed Term (10)
 - **6th-Period Teacher boost (5,000):** Applied to Teacher Raw and Room Raw (if prescribed room). Teachers approved for a 6th period are more constrained (consecutive-6 rule, load cap ceiling). The 5,000-point boost guarantees their sections always rank above any non-6th-period teacher's sections (theoretical max cs_total without boost is ~5,790). Boost applies to the TEACHER and ROOM, NOT to course characteristics — course identity stays independent. Among 6th-period teachers, normal priority characteristics still break ties.
 - **Student Raw** = Grade Level (10/20/30/40) + Cohort LEO II (50) + SSP (25)
 - **Student Total** = Raw + sum of course request priorities
