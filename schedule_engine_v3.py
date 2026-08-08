@@ -3096,6 +3096,90 @@ if _rebalance_count == 0:
 else:
     print(f"    Total EC sections rebalanced: {_rebalance_count}")
 
+# ── Teacher Semester Section Consolidation ──
+# Identify teachers who MUST share periods between S1-only and S2-only
+# sections of DIFFERENT courses to fit within their max load cap.
+#
+# Problem: A teacher with N_FY full-year + N_S1 semester-1 + N_S2 semester-2
+# sections needs N_FY + N_S1 + N_S2 unique periods WITHOUT consolidation.
+# If S1 and S2 sections share periods (one S1 + one S2 in the same period),
+# they only need N_FY + max(N_S1, N_S2) unique periods.
+#
+# Example: Saggio has 3 FY + 3 S1 + 3 S2 = 9 sections.
+#   Without consolidation: 3 + 3 + 3 = 9 unique periods (impossible, only 7 exist)
+#   With consolidation:    3 + max(3,3) = 6 unique periods (fits in 6-period cap)
+#
+# For teachers in this set, greedy_assign_periods() applies a HARD floor
+# bonus to guarantee S1/S2 sections share periods across course boundaries.
+
+def _compute_consolidation_set():
+    """Return set of teacher names who need cross-course period consolidation."""
+    need_consolidation = set()
+    for teacher, sids in teacher_sections.items():
+        if not teacher or teacher == 'TBD':
+            continue
+        max_s1, max_s2 = get_max_load(teacher)
+        max_load = max(max_s1, max_s2)
+
+        # Count sections by type, with co-schedule groups counting as 1 slot
+        _cg_counted = set()
+        n_fy = 0
+        n_s1_only = 0
+        n_s2_only = 0
+        for sid in sids:
+            s = sections[sid]
+            gi = code_to_cogroup.get(s['code'])
+            if gi is not None:
+                if gi in _cg_counted:
+                    continue  # already counted this co-group
+                _cg_counted.add(gi)
+            if s['halves'] == ('S1', 'S2'):
+                n_fy += 1
+            elif s['halves'] == ('S1',):
+                n_s1_only += 1
+            elif s['halves'] == ('S2',):
+                n_s2_only += 1
+
+        unique_without = n_fy + n_s1_only + n_s2_only
+        unique_with = n_fy + max(n_s1_only, n_s2_only)
+
+        # Need consolidation if: without pairing exceeds capacity,
+        # but with pairing it fits (or at least fits within 7 periods).
+        if unique_without > max_load and unique_with <= max_load:
+            need_consolidation.add(teacher)
+        elif unique_without > 7 and unique_with <= 7:
+            need_consolidation.add(teacher)
+
+    return need_consolidation
+
+_teacher_needs_consolidation = _compute_consolidation_set()
+if _teacher_needs_consolidation:
+    print("\n  Teacher semester consolidation needed:")
+    for t in sorted(_teacher_needs_consolidation):
+        sids = teacher_sections[t]
+        _cg_counted = set()
+        n_fy = n_s1 = n_s2 = 0
+        for sid in sids:
+            s = sections[sid]
+            gi = code_to_cogroup.get(s['code'])
+            if gi is not None:
+                if gi in _cg_counted:
+                    continue
+                _cg_counted.add(gi)
+            if s['halves'] == ('S1', 'S2'):
+                n_fy += 1
+            elif s['halves'] == ('S1',):
+                n_s1 += 1
+            elif s['halves'] == ('S2',):
+                n_s2 += 1
+        max_s1, max_s2 = get_max_load(t)
+        print(f"    {t}: {n_fy} FY + {n_s1} S1 + {n_s2} S2 = "
+              f"{n_fy + n_s1 + n_s2} periods without consolidation, "
+              f"{n_fy + max(n_s1, n_s2)} with consolidation "
+              f"(max load: {max(max_s1, max_s2)})")
+else:
+    print("\n  Teacher semester consolidation: no teachers need cross-course pairing")
+
 # ── Pre-Flight Teacher Load Validation ──
 # After EC redistribution and rebalancing, verify every teacher's total
 # semester load against their max load cap.  Co-scheduled sections share
@@ -4500,6 +4584,55 @@ def greedy_assign_periods(seed=42, audit=False):
                                 score -= 20
                             break
 
+                # Cross-course teacher period consolidation:
+                # For teachers who need to share periods between S1-only and
+                # S2-only sections of DIFFERENT courses to fit within their
+                # max load, prefer periods where the teacher already has a
+                # section in the OPPOSITE semester (any course, same teacher).
+                # For consolidation-required teachers, this is a HARD floor
+                # that guarantees pairing.  For other teachers, a soft bonus.
+                if teacher and teacher != 'TBD' and len(halves) == 1:
+                    # Only applies to semester-only sections (not FY)
+                    _tc_found = False
+                    for _tc_sid in teacher_sections.get(teacher, []):
+                        _tc_s = sections[_tc_sid]
+                        if _tc_s['sid'] == s['sid']:
+                            continue
+                        if (_tc_s['period'] == p
+                                and not (set(_tc_s['halves']) & set(halves))):
+                            # Same teacher, same period, opposite semester
+                            if teacher in _teacher_needs_consolidation:
+                                # HARD: must consolidate — floor score to
+                                # guarantee this period wins over all others
+                                score = min(score, 0.5)
+                            else:
+                                # SOFT: nice-to-have consolidation
+                                score -= 15
+                            _tc_found = True
+                            break
+                    # For consolidation-required teachers, penalize periods
+                    # where the teacher has NO opposite-semester section yet
+                    # (discourages spreading into new periods when pairing
+                    # is available elsewhere).
+                    if not _tc_found and teacher in _teacher_needs_consolidation:
+                        # Check if ANY period already has the teacher in the
+                        # opposite semester — if so, penalize this empty one
+                        _has_opposite_elsewhere = False
+                        for _tc_sid2 in teacher_sections.get(teacher, []):
+                            _tc_s2 = sections[_tc_sid2]
+                            if _tc_s2['sid'] == s['sid']:
+                                continue
+                            if (_tc_s2['period'] is not None
+                                    and _tc_s2['period'] != p
+                                    and not (set(_tc_s2['halves']) & set(halves))):
+                                # Teacher has an opposite-semester section in
+                                # a different period — that period is a better
+                                # candidate for consolidation
+                                _has_opposite_elsewhere = True
+                                break
+                        if _has_opposite_elsewhere:
+                            score += 50  # push toward the paired period
+
                 # Cross-course co-enrollment spreading: penalize placing this
                 # course in a period where courses that share many students
                 # already have sections.  This prevents co-enrolled courses
@@ -5574,6 +5707,9 @@ def _restore_for_restart(fixed_state):
     # redistribution can overload a teacher's semester (e.g., 4 FY + 2 EC
     # all assigned to S1 = 6 periods, exceeding a 5-period cap).
     _teacher_aware_ec_rebalance(verbose=False)
+    # Re-compute teacher consolidation set after EC redistribution
+    global _teacher_needs_consolidation
+    _teacher_needs_consolidation = _compute_consolidation_set()
 
 fixed_state = _save_fixed_state()
 
