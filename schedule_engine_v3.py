@@ -7006,10 +7006,24 @@ for _a1_code, _a1_conflicts in _a1_conflict_by_code.items():
         _a1_teacher_free[_t_name if _t_name else _t_id] = _free
 
     # Estimate conflict reduction for each uncovered period
+    # BUG FIX B10: Only recommend a target period if at least one teacher is
+    # actually free there.  Without this check the SIR picks the period with
+    # the most rescuable students even when the teacher is already teaching
+    # another course in that period (e.g., 742 Economics → Period A where
+    # Zawacki already teaches 752 Economics H).
     _a1_best_uncovered = None
     _a1_best_reduction = 0
     _a1_best_teacher = None
     for _up in _a1_uncovered:
+        # Pre-check: is ANY teacher for this course free in this period?
+        _free_teacher_for_period = None
+        for _tn, _fp in _a1_teacher_free.items():
+            if _up in _fp:
+                _free_teacher_for_period = _tn
+                break
+        if _free_teacher_for_period is None:
+            continue  # No teacher can move here — skip this period entirely
+
         # Count how many conflicted students could be rescued by a section in this period
         _rescued = 0
         for _c in _a1_conflicts:
@@ -7026,11 +7040,7 @@ for _a1_code, _a1_conflicts in _a1_conflict_by_code.items():
         if _rescued > _a1_best_reduction:
             _a1_best_reduction = _rescued
             _a1_best_uncovered = _up
-            # Find a teacher who's free in this period
-            for _tn, _fp in _a1_teacher_free.items():
-                if _up in _fp:
-                    _a1_best_teacher = _tn
-                    break
+            _a1_best_teacher = _free_teacher_for_period
 
     # Determine best move recommendation
     _a1_best_move = {}
@@ -7047,7 +7057,10 @@ for _a1_code, _a1_conflicts in _a1_conflict_by_code.items():
         # is worse than no recommendation.
         _move_teacher = _a1_best_teacher
         _move_valid = True
-        if _move_teacher:
+        if not _move_teacher:
+            # Defensive: no teacher available for target period — cannot recommend move
+            _move_valid = False
+        elif _move_teacher:
             _move_teacher_busy_periods = set()
             for _ms in teacher_sections.get(_move_teacher, []):
                 if sections[_ms]['period']:
