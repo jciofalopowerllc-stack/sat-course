@@ -1765,8 +1765,14 @@ for r in range(2, _t7_ws.max_row + 1):
     is_fy = ci.get('is_fy', True)
     term_type = ci.get('term_type', 'FY')
 
+    # Read T7 Column 7 for the actual section number — use it instead of auto-generating.
+    # Fallback to auto-counter only if T7 Col 7 is missing/blank.
+    _t7_secnum_raw = _t7_ws.cell(r, 7).value  # Section # from T7
     _section_counter[cid] += 1
-    secnum = _section_counter[cid]
+    if _t7_secnum_raw is not None and str(_t7_secnum_raw).strip():
+        secnum = int(_t7_secnum_raw)
+    else:
+        secnum = _section_counter[cid]
 
     teacher_name = 'TBD'
     if _tid:
