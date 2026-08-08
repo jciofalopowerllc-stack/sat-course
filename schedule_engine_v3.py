@@ -5217,9 +5217,6 @@ def greedy_assign_periods(seed=42, audit=False):
             else:
                 # NO valid period found — every period is blocked by teacher_busy,
                 # load_cap, room_busy, or unavailability.
-                # Hard rule: do NOT override load cap, do NOT double-book.
-                # Leave section UNPLACED.
-                #
                 # Determine the reason for the block to give a clear message.
                 _block_reasons = Counter()
                 for _bp in PERIODS:
@@ -5228,10 +5225,85 @@ def greedy_assign_periods(seed=42, audit=False):
                         if isinstance(_br, str):
                             _block_reasons[_br] += 1
                 _block_summary = ', '.join(f"{v}× {k}" for k, v in _block_reasons.most_common())
-                s['period'] = None
-                _unplaceable_sids.add(s['sid'])
-                print(f"    ✖ UNPLACED: {code} {s['title'][:30]} sid={s['sid']} "
-                      f"teacher={teacher} — no valid period ({_block_summary})")
+
+                # ── FY-BUMP LOGIC ──
+                # A full-year course MUST be scheduled — it bumps a lower-priority
+                # semester course from the SAME teacher if needed. FY courses are
+                # graduation requirements that cannot be deferred; semester electives
+                # can find alternative slots or be rescued by Phase D-2.
+                _fy_bumped = False
+                if 'S1' in halves and 'S2' in halves and teacher and teacher != 'TBD':
+                    # Immovable SID sets available at this point in the code
+                    _immov = assigned_cogroups | assigned_pairing_sids | assigned_pe_sids
+                    # Also protect sections with prescribed periods
+                    _immov |= set(ss['sid'] for ss in sections if ss.get('prescribed_period'))
+
+                    # Find same-teacher semester sections that are placed and bumpable
+                    _bump_candidates = []
+                    for _bsid in teacher_sections.get(teacher, []):
+                        _bs = sections[_bsid]
+                        if _bs['sid'] == s['sid']:
+                            continue
+                        if _bs['period'] is None:
+                            continue  # already unplaced
+                        if _bsid in _immov:
+                            continue  # immovable
+                        if len(_bs['halves']) == 2:
+                            continue  # also FY — don't bump FY for FY
+                        # Candidate: placed, semester-only, same teacher, movable
+                        _b_cs_raw = course_section_raw(_bs['code'])
+                        _bump_candidates.append((_b_cs_raw, _bsid, _bs))
+
+                    if _bump_candidates:
+                        # Sort by priority (lowest first — bump the least important)
+                        _bump_candidates.sort(key=lambda x: x[0])
+
+                        for _b_prio, _b_sid, _b_sec in _bump_candidates:
+                            _b_period = _b_sec['period']
+                            _b_halves = list(_b_sec['halves'])
+                            _b_room = _b_sec['room']
+
+                            # Temporarily unplace the candidate
+                            _b_sec['period'] = None
+
+                            # Check if the FY section can now go into that period:
+                            # 1. Teacher must not be busy there (in BOTH semesters)
+                            _t_ok = not teacher_busy(teacher, _b_period, halves, s['sid'])
+                            # 2. Must not exceed load cap
+                            _l_ok = not teacher_would_exceed_cap(teacher, _b_period, halves)
+                            # 3. Must not create consecutive-6
+                            _c6_ok = not would_create_consecutive_6(teacher, _b_period, halves)
+                            # 4. Room must not be double-booked (if prescribed)
+                            _r_ok = True
+                            if room and room != 'TBD' and room not in SHARED_ROOMS:
+                                _r_ok = not room_busy(room, _b_period, halves, s['sid'])
+
+                            if _t_ok and _l_ok and _c6_ok and _r_ok:
+                                # SUCCESS: bump the semester section, place the FY section
+                                s['period'] = _b_period
+                                _fy_bumped = True
+                                _unplaceable_sids.discard(s['sid'])
+                                print(f"    ⚡ FY-BUMP: {code} {s['title'][:30]} sid={s['sid']} "
+                                      f"placed in Period {_b_period} by bumping "
+                                      f"{_b_sec['code']} {_b_sec['title'][:25]} sid={_b_sid} "
+                                      f"(CS Raw {_b_prio} < FY course)")
+                                # The bumped section goes to unplaced — it will attempt
+                                # to find another slot when its turn comes in the queue,
+                                # or Phase D-2 can rescue it later
+                                _unplaceable_sids.add(_b_sid)
+                                print(f"      ↳ Bumped {_b_sec['code']} Sec#{_b_sec['section']} "
+                                      f"({_b_sec['teacher']}) now UNPLACED — "
+                                      f"will seek alternative slot")
+                                break
+                            else:
+                                # Restore — this candidate doesn't work
+                                _b_sec['period'] = _b_period
+
+                if not _fy_bumped:
+                    s['period'] = None
+                    _unplaceable_sids.add(s['sid'])
+                    print(f"    ✖ UNPLACED: {code} {s['title'][:30]} sid={s['sid']} "
+                          f"teacher={teacher} — no valid period ({_block_summary})")
 
             step += 1
             tier_placed += 1
