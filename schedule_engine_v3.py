@@ -6417,6 +6417,43 @@ def _can_move_section(sid, new_period):
             return False
     return True
 
+def _can_place_unplaced(sid, target_period):
+    """Check if an unplaced section (period=None) can be placed into target_period.
+    Unlike _can_move_section() which handles MOVING a placed section, this handles
+    fresh placement of a section that currently has no period.
+
+    Checks: teacher availability (profile), teacher busy (double-booking),
+    teacher load cap, consecutive-6 rule, room double-booking,
+    PE pool restriction."""
+    s = sections[sid]
+    if s['period'] is not None:
+        return False  # Not unplaced — use _can_move_section() instead
+    # PE Period Pool restriction: pool-restricted courses can only go in pool periods
+    _place_code = s['code']
+    _place_pool = _pe_pool_restricted.get(_place_code)
+    if _place_pool is not None and target_period not in _place_pool:
+        return False
+    t = s['teacher']
+    if t and t != 'TBD':
+        # Teacher profile availability
+        if not teacher_available(t, target_period):
+            return False
+        # Teacher double-booking: already teaching in target_period+semester?
+        if teacher_busy(t, target_period, s['halves'], check_sid=sid):
+            return False
+        # Teacher load cap: would adding this period exceed cap?
+        if teacher_would_exceed_cap(t, target_period, s['halves']):
+            return False
+        # Consecutive-6: would placing here create 6 consecutive periods?
+        if would_create_consecutive_6(t, target_period, s['halves']):
+            return False
+    # Room double-booking
+    r = s.get('room')
+    if r and r != 'TBD' and r not in SHARED_ROOMS:
+        if room_busy(r, target_period, s['halves'], sid):
+            return False
+    return True
+
 def run_optimization_pass(cl=None):
     if cl is None:
         cl = full_reseat()
@@ -6630,6 +6667,175 @@ for teacher in teacher_sections:
                                'max_s1': ms1, 'max_s2': ms2})
 
 print(f"\n  PHASE D COMPLETE: {len(conflict)} conflicts")
+
+
+# ============================================================
+# PHASE D-2: UNPLACED SECTION RESCUE PASS
+# ============================================================
+# After Phase D finishes optimizing student conflicts with the best-seed solution,
+# scan all sections that remain UNPLACED (period=None). For each unplaced section,
+# try to rescue it by moving a lower-priority placed section from the SAME TEACHER
+# to a different valid period, freeing the original period for the unplaced section.
+#
+# This solves cases like Corcoran (105712): 3 FY sections + 2 semester sections
+# requiring 5 periods, but the optimizer can't rescue unplaced sections because
+# run_optimization_pass() only moves PLACED sections — it never attempts to place
+# sections that greedy left behind.
+#
+# Safeguards:
+# 1. Only displaces lower-priority sections (cs_raw comparison)
+# 2. Respects all constraints via _can_move_section() and _can_place_unplaced()
+# 3. Re-adds rescued SIDs to sec_by_code (Bug B1 filter removed them)
+# 4. Invalidates occ_cells cache after any period change
+# 5. Runs full_reseat() after rescues to rebuild student placements
+
+print("\n" + "=" * 60)
+print("[D-2] PHASE D-2: UNPLACED SECTION RESCUE PASS")
+print("=" * 60)
+
+_d2_unplaced = [s for s in sections if s['period'] is None]
+_d2_rescued = 0
+
+if not _d2_unplaced:
+    print("  No unplaced sections — nothing to rescue.")
+else:
+    print(f"  {len(_d2_unplaced)} unplaced section(s) to attempt rescue:")
+    for _d2_s in _d2_unplaced:
+        print(f"    SID {_d2_s['sid']}: {_d2_s['code']} {_d2_s['title']} sec#{_d2_s['section']} "
+              f"({_d2_s['teacher']}) — halves={_d2_s['halves']}")
+
+    # Sort unplaced sections by priority (highest priority rescued first)
+    _d2_unplaced.sort(key=lambda s: _section_priority_key(s))
+
+    for _d2_s in _d2_unplaced:
+        _d2_sid = _d2_s['sid']
+        _d2_teacher = _d2_s['teacher']
+        _d2_code = _d2_s['code']
+        _d2_cs_raw = course_section_raw(_d2_code)
+        _d2_halves = _d2_s['halves']
+
+        if not _d2_teacher or _d2_teacher == 'TBD':
+            print(f"\n  SKIP SID {_d2_sid} ({_d2_code}): no teacher assigned")
+            continue
+
+        print(f"\n  Attempting rescue for SID {_d2_sid}: {_d2_code} {_d2_s['title']} "
+              f"sec#{_d2_s['section']} ({_d2_teacher})")
+
+        # Find all OTHER placed sections by the SAME teacher that are candidates for displacement
+        _d2_teacher_sids = [ts for ts in teacher_sections.get(_d2_teacher, [])
+                            if ts != _d2_sid and sections[ts]['period'] is not None]
+
+        # Filter: only sections that _can_move_section() could potentially move
+        # (not in immovable sets)
+        _d2_movable = [ts for ts in _d2_teacher_sids
+                       if ts not in COGROUP_SIDS
+                       and ts not in PAIRING_SIDS
+                       and ts not in PE_POOL_SIDS]
+
+        if not _d2_movable:
+            print(f"    No movable sections for teacher {_d2_teacher}")
+            continue
+
+        # Sort movable sections by priority: LOWEST priority first (best displacement candidate)
+        _d2_movable.sort(key=lambda ts: _section_priority_key(sections[ts]), reverse=True)
+
+        _d2_found = False
+        for _d2_displace_sid in _d2_movable:
+            _d2_ds = sections[_d2_displace_sid]
+            _d2_ds_period = _d2_ds['period']
+            _d2_ds_code = _d2_ds['code']
+            _d2_ds_cs_raw = course_section_raw(_d2_ds_code)
+
+            # Only displace LOWER-priority sections
+            if _d2_ds_cs_raw >= _d2_cs_raw:
+                continue
+
+            # Step 1: Can the unplaced section go into the displaced section's current period?
+            # Temporarily clear the displaced section's period so it doesn't block the check
+            _d2_ds['period'] = None
+            _invalidate_occ_cache()
+            _d2_can_place = _can_place_unplaced(_d2_sid, _d2_ds_period)
+            _d2_ds['period'] = _d2_ds_period  # restore
+            _invalidate_occ_cache()
+
+            if not _d2_can_place:
+                continue
+
+            # Step 2: Can the displaced section move to any other valid period?
+            _d2_alt_periods = [p for p in PERIODS if p != _d2_ds_period]
+            _d2_move_target = None
+            for _d2_ap in _d2_alt_periods:
+                if _can_move_section(_d2_displace_sid, _d2_ap):
+                    _d2_move_target = _d2_ap
+                    break
+
+            if _d2_move_target is None:
+                continue
+
+            # SUCCESS: Execute the rescue
+            # (a) Move the displaced section to its new period
+            _d2_old_period = _d2_ds['period']
+            _d2_ds['period'] = _d2_move_target
+            _invalidate_occ_cache()
+
+            # (b) Place the unplaced section in the freed period
+            _d2_s['period'] = _d2_old_period
+            _invalidate_occ_cache()
+
+            # (c) Re-add rescued SID to sec_by_code (Bug B1 filter removed it)
+            if _d2_sid not in sec_by_code.get(_d2_code, []):
+                sec_by_code[_d2_code].append(_d2_sid)
+
+            _d2_rescued += 1
+            print(f"    ✓ RESCUED SID {_d2_sid}: {_d2_code} sec#{_d2_s['section']} → Period {_d2_old_period}")
+            print(f"      Displaced SID {_d2_displace_sid}: {_d2_ds_code} {_d2_ds['title']} "
+                  f"sec#{_d2_ds['section']} Period {_d2_old_period}→{_d2_move_target} "
+                  f"(cs_raw {_d2_ds_cs_raw} < {_d2_cs_raw})")
+            _d2_found = True
+            break  # Rescued this section — move to next unplaced
+
+        if not _d2_found:
+            print(f"    ✗ Could not rescue SID {_d2_sid} — no valid displacement found")
+
+    # After all rescues, re-seat students if any section was rescued
+    if _d2_rescued > 0:
+        print(f"\n  Phase D-2: {_d2_rescued} section(s) rescued — re-seating students...")
+        _recompute_seating_order()
+        conflict = full_reseat()
+        print(f"  Phase D-2 post-rescue: {len(conflict)} conflicts")
+
+        # Recompute stats after rescue
+        prior_match = sum(1 for s in sections
+                          if s['period'] in (prior_teacher_periods.get((s['code'], s['teacher']), set())
+                                             or prior_course_periods.get(s['code'], set())))
+        prior_total = sum(1 for s in sections
+                          if prior_teacher_periods.get((s['code'], s['teacher']), set())
+                          or prior_course_periods.get(s['code'], set()))
+        t_conflicts = 0
+        for teacher, sids in teacher_sections.items():
+            slots = defaultdict(list)
+            for sid in sids:
+                for h in sections[sid]['halves']:
+                    slots[(sections[sid]['period'], h)].append(sid)
+            for slot, sl in slots.items():
+                if len(sl) > 1:
+                    real = sum(1 for i in range(len(sl))
+                               if not any(in_same_cogroup(sl[i], sl[j])
+                                          for j in range(len(sl)) if i != j))
+                    if real > 1:
+                        t_conflicts += real - 1
+        load_violations = []
+        for teacher in teacher_sections:
+            ms1, ms2 = get_max_load(teacher)
+            s1_load = teacher_load(teacher, 'S1')
+            s2_load = teacher_load(teacher, 'S2')
+            if s1_load > ms1 or s2_load > ms2:
+                load_violations.append({'teacher': teacher, 's1': s1_load, 's2': s2_load,
+                                       'max_s1': ms1, 'max_s2': ms2})
+    else:
+        print(f"\n  Phase D-2: No sections rescued.")
+
+print(f"\n  PHASE D-2 COMPLETE: {_d2_rescued} rescued, {len(conflict)} conflicts")
 
 
 # ============================================================
