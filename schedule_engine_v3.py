@@ -3609,103 +3609,21 @@ def teacher_available(teacher, period):
 # ── Cross-Run Diagnostic Loader ──
 # Reads run_diagnostics.json from the PRIOR run and builds _diagnostic_bias dict
 # that adjusts _predict_conflict_score() to learn from past mistakes.
+# ── Cross-Run Learning: DISABLED (2026-08-09) ──
+# Cross-run biases cause oscillation: each run fully replaces biases from the
+# prior run. Run N penalizes Period B → Run N+1 avoids B, Period C becomes hot →
+# Run N+2 penalizes C, B is hot again. Oscillation of ±30 conflicts per run.
+# The engine's natural conflict scoring in _predict_conflict_score() is more
+# accurate than retrospective biases that fight the optimizer's layout choices.
+# The diagnostic analysis (Phase A-1) still WRITES run_diagnostics.json for
+# human review — it just no longer feeds back into the next run's scoring.
 if os.path.exists(DIAGNOSTICS_FILE):
-    try:
-        with open(DIAGNOSTICS_FILE, 'r') as _df:
-            _prior_diag = json.load(_df)
-        print("\n" + "=" * 60)
-        print("  CROSS-RUN LEARNING — Loading prior run diagnostics")
-        print("=" * 60)
-        print(f"  Prior run: {_prior_diag.get('run_timestamp', 'unknown')}")
-        print(f"  Prior conflicts: {_prior_diag.get('total_conflicts', '?')}")
-        print(f"  Prior placement rate: {_prior_diag.get('placement_rate', '?')}%")
-
-        _bias_count = 0
-        _cd = _prior_diag.get('course_diagnostics', {})
-        for _diag_code, _diag_data in _cd.items():
-            _conflicts = _diag_data.get('conflicts', 0)
-            if _conflicts == 0:
-                continue
-            _covered = _diag_data.get('periods_covered', [])
-            _uncovered = _diag_data.get('periods_uncovered', [])
-            _severity = _diag_data.get('severity', 'LOW')
-
-            # Severity multiplier: CRITICAL=3, HIGH=2, MEDIUM=1.5, LOW=1
-            _sev_mult = {'CRITICAL': 3.0, 'HIGH': 2.0, 'MEDIUM': 1.5, 'LOW': 1.0}.get(_severity, 1.0)
-
-            # Bias multipliers are intentionally gentle — nudges, not overrides.
-            # Too-strong biases cause cascading regressions by pushing sections
-            # away from global optima found by Phase D's 16-restart search.
-            # MAX_BIAS caps any single (course, period) adjustment.
-            MAX_BIAS = 15.0  # absolute cap per (course, period) pair
-
-            # 1. Coverage penalty: penalize placing in already-covered periods
-            #    Gentle nudge proportional to conflict count × severity
-            for _per in _covered:
-                _penalty = min(_conflicts * _sev_mult * 0.05, MAX_BIAS)
-                _diagnostic_bias[(_diag_code, _per)] = _penalty
-                _bias_count += 1
-
-            # 2. Coverage reward: reward placing in uncovered periods
-            #    Gentle nudge (negative = prefer this period)
-            for _per in _uncovered:
-                _reward = max(-_conflicts * _sev_mult * 0.03, -MAX_BIAS)
-                _diagnostic_bias[(_diag_code, _per)] = _reward
-                _bias_count += 1
-
-            # 3. Best move bonus: extra reward for the recommended target period
-            _best_move = _diag_data.get('best_move', {})
-            if _best_move and _best_move.get('to_period'):
-                _to = _best_move['to_period']
-                _est_reduction = _best_move.get('estimated_conflict_reduction', 0)
-                # Add extra reward on top of the uncovered reward
-                _existing = _diagnostic_bias.get((_diag_code, _to), 0)
-                _new_bias = max(_existing - _est_reduction * _sev_mult * 0.1, -MAX_BIAS)
-                _diagnostic_bias[(_diag_code, _to)] = _new_bias
-                _bias_count += 1
-
-        # 4. Period hotspot cooling: penalize overloaded periods for ANY conflict-prone course
-        _hotspots = _prior_diag.get('period_hotspots', {})
-        for _hp_period, _hp_data in _hotspots.items():
-            _hp_conflicts = _hp_data.get('total_conflicts_involving_period', 0)
-            _hp_courses = _hp_data.get('conflict_courses', [])
-            for _hp_code in _hp_courses:
-                # Gentle hotspot penalty (on top of any coverage penalty already set)
-                _existing = _diagnostic_bias.get((_hp_code, _hp_period), 0)
-                _new_val = min(_existing + _hp_conflicts * 0.01, MAX_BIAS)
-                _diagnostic_bias[(_hp_code, _hp_period)] = _new_val
-                _bias_count += 1
-
-        # 5. Blocking chain awareness: push blocked courses toward free periods
-        _chains = _prior_diag.get('blocking_chains', [])
-        for _chain in _chains:
-            _affected = _chain.get('students_affected', 0)
-            _blocked_code = _chain.get('blocked_course', '')
-            _free_periods = _chain.get('free_periods', [])
-            if _blocked_code and _free_periods:
-                for _fp in _free_periods:
-                    _existing = _diagnostic_bias.get((_blocked_code, _fp), 0)
-                    _new_val = max(_existing - _affected * 0.15, -MAX_BIAS)
-                    _diagnostic_bias[(_blocked_code, _fp)] = _new_val
-                    _bias_count += 1
-
-        _diagnostic_loaded = True
-        print(f"  Loaded {len(_cd)} course diagnostics, {_bias_count} bias adjustments applied")
-        # Print top 10 biases for transparency
-        _sorted_biases = sorted(_diagnostic_bias.items(), key=lambda x: abs(x[1]), reverse=True)
-        if _sorted_biases:
-            print("  Top bias adjustments:")
-            for (_bc, _bp), _bv in _sorted_biases[:10]:
-                _dir = "AVOID" if _bv > 0 else "PREFER"
-                _ci_title = course_info.get(_bc, {}).get('title', _bc)
-                print(f"    {_bc} {_ci_title} in Period {_bp}: {_dir} ({_bv:+.1f})")
-        print("=" * 60)
-    except (json.JSONDecodeError, KeyError) as _e:
-        print(f"\n  WARNING: Could not load prior diagnostics: {_e}")
-        _diagnostic_bias = {}
-        _diagnostic_loaded = False
+    print("\n  Cross-run learning: DISABLED (biases cause run-to-run oscillation)")
+    print(f"  run_diagnostics.json exists but will NOT be loaded as scoring biases")
+    _diagnostic_loaded = False
+    # _diagnostic_bias stays empty — _predict_conflict_score() uses pure conflict scoring
 else:
-    print("\n  No prior run_diagnostics.json found — first run (no cross-run biases)")
+    print("\n  No prior run_diagnostics.json found — first run")
 
 # ── Interactive Scenario Menu ──
 # Runs when ENGINE_MODE == 'scenario' with no CLI filter flags.
@@ -5361,6 +5279,77 @@ def greedy_assign_periods(seed=42, audit=False):
         if tier_placed > 0:
             print(f"    Tier {tier} ({tier_labels[tier]}): {tier_placed} sections placed")
 
+    # ── Post-Greedy Cleanup Pass (2026-08-09) ──
+    # The greedy pass places sections one at a time with partial information.
+    # Early placements are blind to later placements. Now that ALL sections
+    # are placed, re-evaluate each section's period against the FULL schedule.
+    # Move sections to lower-conflict periods when possible.
+    # Process lowest-priority sections first — they yield to higher-priority ones.
+    _cleanup_immov = set()
+    for _ci_s in sections:
+        if _ci_s.get('prescribed_period'):
+            _cleanup_immov.add(_ci_s['sid'])
+    _cleanup_immov |= assigned_cogroups
+    _cleanup_immov |= assigned_pairing_sids
+    _cleanup_immov |= assigned_pe_sids
+
+    _cleanup_moves = 0
+    _cleanup_sections = sorted(
+        [s for s in sections if s['period'] is not None and s['sid'] not in _cleanup_immov],
+        key=_section_priority_key, reverse=True  # lowest priority first
+    )
+
+    for _cl_s in _cleanup_sections:
+        _cl_code = _cl_s['code']
+        _cl_teacher = _cl_s['teacher']
+        _cl_room = _cl_s['room']
+        _cl_halves = _cl_s['halves']
+        _cl_current = _cl_s['period']
+        _cl_best = _cl_current
+        _cl_best_score = _predict_conflict_score(_cl_code, _cl_current, _cl_halves, co_enroll)
+
+        for _cl_p in PERIODS:
+            if _cl_p == _cl_current:
+                continue
+            # PE pool restriction
+            _cl_pool = _pe_pool_restricted.get(_cl_code)
+            if _cl_pool is not None and _cl_p not in _cl_pool:
+                continue
+            # Teacher constraints
+            if _cl_teacher and _cl_teacher != 'TBD':
+                if teacher_busy(_cl_teacher, _cl_p, _cl_halves, _cl_s['sid']):
+                    continue
+                _cl_old_p = _cl_s['period']
+                _cl_s['period'] = None
+                _cl_exc = teacher_would_exceed_cap(_cl_teacher, _cl_p, _cl_halves)
+                if not _cl_exc:
+                    _cl_c6 = would_create_consecutive_6(_cl_teacher, _cl_p, _cl_halves)
+                else:
+                    _cl_c6 = False
+                _cl_s['period'] = _cl_old_p
+                if _cl_exc or _cl_c6:
+                    continue
+                if not teacher_available(_cl_teacher, _cl_p):
+                    continue
+            # Room constraint
+            if _cl_room and _cl_room != 'TBD' and _cl_room not in SHARED_ROOMS:
+                if room_busy(_cl_room, _cl_p, _cl_halves, _cl_s['sid']):
+                    continue
+
+            _cl_score = _predict_conflict_score(_cl_code, _cl_p, _cl_halves, co_enroll)
+            if _cl_score < _cl_best_score:
+                _cl_best_score = _cl_score
+                _cl_best = _cl_p
+
+        if _cl_best != _cl_current:
+            _cl_s['period'] = _cl_best
+            _cleanup_moves += 1
+
+    if _cleanup_moves > 0:
+        print(f"    Post-greedy cleanup: {_cleanup_moves} sections moved to lower-conflict periods")
+    else:
+        print(f"    Post-greedy cleanup: no improvements found (initial placement was optimal)")
+
     if audit:
         _clear_priority_caches()
         _refresh_top_students()
@@ -6794,8 +6783,8 @@ def run_optimization_pass(cl=None):
         cl = full_reseat()
     best_q = _conflict_quality(cl)
     stalled = 0
-    for d_iter in range(60):
-        if stalled >= 8:
+    for d_iter in range(80):
+        if stalled >= 12:
             break
         sec_sc = Counter()
         for c in cl:
@@ -6852,7 +6841,7 @@ def run_optimization_pass(cl=None):
             break
         cands.sort(reverse=True)
         improved = False
-        for est, sid, np in cands[:16]:
+        for est, sid, np in cands[:24]:
             s = sections[sid]
             op = s['period']
             s['period'] = np
@@ -6872,27 +6861,27 @@ def run_optimization_pass(cl=None):
     import time as _swap_time
     _swap_start = _swap_time.time()
     stalled2 = 0
-    for d_iter2 in range(20):
-        if stalled2 >= 4:
+    for d_iter2 in range(30):
+        if stalled2 >= 6:
             break
-        if _swap_time.time() - _swap_start > 60:
+        if _swap_time.time() - _swap_start > 90:
             break
         sec_sc2 = Counter()
         for c in cl:
             for sid in sec_by_code.get(c['code'], []):
                 sec_sc2[sid] += 1
-        top_sids = [sid for sid, _ in sec_sc2.most_common(30)
+        top_sids = [sid for sid, _ in sec_sc2.most_common(40)
                     if sid not in COGROUP_SIDS and sid not in PAIRING_SIDS]
         improved2 = False
         for i in range(len(top_sids)):
             if improved2:
                 break
-            if _swap_time.time() - _swap_start > 60:
+            if _swap_time.time() - _swap_start > 90:
                 break
             sid1 = top_sids[i]
             s1 = sections[sid1]
             p1 = s1['period']
-            for j in range(i + 1, min(i + 15, len(top_sids))):
+            for j in range(i + 1, min(i + 20, len(top_sids))):
                 sid2 = top_sids[j]
                 s2 = sections[sid2]
                 p2 = s2['period']
