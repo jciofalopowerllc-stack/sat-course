@@ -5524,7 +5524,7 @@ def greedy_assign_periods(seed=42, audit=False):
             _rb_sids = sec_by_code.get(_rb_code, [])
             _rb_placed = [sid for sid in _rb_sids if sections[sid]['period'] is not None]
             _rb_coverage = len(set(sections[sid]['period'] for sid in _rb_placed))
-            _rb_title = course_titles.get(str(_rb_code), f"Code {_rb_code}")
+            _rb_title = course_info.get(str(_rb_code), {}).get('title', f"Code {_rb_code}")
             if _rb_coverage != len(_rb_placed):  # still has doubling
                 print(f"      {_rb_code} {_rb_title}: {_rb_coverage}/{len(PERIODS)} periods covered ({len(_rb_placed)} sections)")
     else:
