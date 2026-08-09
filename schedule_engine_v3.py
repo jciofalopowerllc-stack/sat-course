@@ -5350,6 +5350,186 @@ def greedy_assign_periods(seed=42, audit=False):
     else:
         print(f"    Post-greedy cleanup: no improvements found (initial placement was optimal)")
 
+    # ── Period Rebalancing Phase (2026-08-09) ──
+    # After greedy + cleanup, some courses still have sections clustered in
+    # duplicate periods while other periods are uncovered.  This phase
+    # specifically targets under-covered courses: it identifies courses where
+    # 2+ sections share a period while empty periods exist, then moves one
+    # section from the doubled period to an uncovered period.
+    #
+    # Priority: courses with the WORST coverage ratio (sections/coverage)
+    # get rebalanced first — they have the most students locked out.
+    #
+    # This is the period-spreading logic from greedy_assign_periods() applied
+    # as a post-hoc corrective pass.  The greedy pass can't always achieve
+    # perfect spread because early placements constrain later ones.
+    print(f"\n    Period rebalancing phase: identifying under-covered courses...")
+
+    # Build per-course period coverage map (semester-aware)
+    _rb_candidates = []  # (coverage_ratio, code, doubled_periods, uncovered_periods)
+    for _rb_code in set(s['code'] for s in sections if s['period'] is not None):
+        _rb_sids = sec_by_code.get(_rb_code, [])
+        _rb_placed = [sid for sid in _rb_sids if sections[sid]['period'] is not None]
+        if len(_rb_placed) < 2:
+            continue  # singletons can't be rebalanced
+
+        # Build semester-aware period coverage: S1 and S2 sections of the same
+        # course CAN share a period (students take them in different semesters).
+        # Only same-semester doubling is a problem.
+        _rb_s1_periods = Counter()
+        _rb_s2_periods = Counter()
+        for _rb_sid in _rb_placed:
+            _rb_s = sections[_rb_sid]
+            _rb_p = _rb_s['period']
+            _rb_h = _rb_s['halves']
+            if 'S1' in _rb_h:
+                _rb_s1_periods[_rb_p] += 1
+            if 'S2' in _rb_h:
+                _rb_s2_periods[_rb_p] += 1
+
+        # Find doubled periods (2+ sections in same period+semester)
+        _rb_doubled = set()
+        for _rb_p, _rb_cnt in _rb_s1_periods.items():
+            if _rb_cnt >= 2:
+                _rb_doubled.add((_rb_p, 'S1'))
+        for _rb_p, _rb_cnt in _rb_s2_periods.items():
+            if _rb_cnt >= 2:
+                _rb_doubled.add((_rb_p, 'S2'))
+
+        if not _rb_doubled:
+            continue
+
+        # Find uncovered periods for each semester
+        _rb_s1_covered = set(_rb_s1_periods.keys())
+        _rb_s2_covered = set(_rb_s2_periods.keys())
+        _rb_s1_uncovered = set(PERIODS) - _rb_s1_covered if _rb_s1_periods else set()
+        _rb_s2_uncovered = set(PERIODS) - _rb_s2_covered if _rb_s2_periods else set()
+
+        # Only candidates with both doubled periods AND uncovered periods
+        _rb_has_target = False
+        for (_rb_dp, _rb_dsem) in _rb_doubled:
+            if _rb_dsem == 'S1' and _rb_s1_uncovered:
+                _rb_has_target = True
+                break
+            if _rb_dsem == 'S2' and _rb_s2_uncovered:
+                _rb_has_target = True
+                break
+        if not _rb_has_target:
+            continue
+
+        # Coverage ratio: lower = worse coverage = higher priority
+        _rb_all_covered = _rb_s1_covered | _rb_s2_covered
+        _rb_ratio = len(_rb_all_covered) / max(len(_rb_placed), 1)
+        _rb_candidates.append((_rb_ratio, _rb_code, _rb_doubled,
+                               _rb_s1_uncovered, _rb_s2_uncovered))
+
+    # Sort: worst coverage first (lowest ratio)
+    _rb_candidates.sort(key=lambda x: x[0])
+
+    _rb_total_moves = 0
+    _rb_courses_fixed = 0
+
+    for _rb_ratio, _rb_code, _rb_doubled, _rb_s1_uncov, _rb_s2_uncov in _rb_candidates:
+        _rb_moved_this_course = 0
+
+        # Rebuild doubled info each iteration (prior moves may have fixed some)
+        _rb_sids = sec_by_code.get(_rb_code, [])
+        _rb_placed = [sid for sid in _rb_sids if sections[sid]['period'] is not None]
+
+        # Iterate doubled periods — try to move one section from each
+        for (_rb_dp, _rb_dsem) in sorted(_rb_doubled):
+            # Re-check: is this period still doubled after prior moves?
+            _rb_in_this_slot = [sid for sid in _rb_placed
+                                if sections[sid]['period'] == _rb_dp
+                                and _rb_dsem in sections[sid]['halves']]
+            if len(_rb_in_this_slot) < 2:
+                continue  # no longer doubled
+
+            # Determine target periods (uncovered in this semester)
+            if _rb_dsem == 'S1':
+                _rb_targets = set(PERIODS) - set(
+                    sections[sid]['period'] for sid in _rb_placed
+                    if 'S1' in sections[sid]['halves'])
+            else:
+                _rb_targets = set(PERIODS) - set(
+                    sections[sid]['period'] for sid in _rb_placed
+                    if 'S2' in sections[sid]['halves'])
+            if not _rb_targets:
+                continue  # no uncovered periods left
+
+            # Pick the section to move: lowest priority in this slot (least disruptive)
+            # Exclude immovable sections
+            _rb_movable = [sid for sid in _rb_in_this_slot
+                           if sid not in _cleanup_immov]
+            if not _rb_movable:
+                continue
+
+            # Sort by priority — move the LOWEST priority section
+            _rb_movable.sort(key=lambda sid: _section_priority_key(sections[sid]))
+
+            for _rb_sid in _rb_movable:
+                _rb_s = sections[_rb_sid]
+                _rb_teacher = _rb_s['teacher']
+                _rb_room = _rb_s['room']
+                _rb_halves = _rb_s['halves']
+                _rb_old_period = _rb_s['period']
+
+                # Score each target period — pick the one with lowest conflict
+                _rb_best_target = None
+                _rb_best_score = float('inf')
+
+                for _rb_tp in sorted(_rb_targets):
+                    # PE pool restriction
+                    _rb_pool = _pe_pool_restricted.get(_rb_code)
+                    if _rb_pool is not None and _rb_tp not in _rb_pool:
+                        continue
+                    # Teacher constraints
+                    if _rb_teacher and _rb_teacher != 'TBD':
+                        if teacher_busy(_rb_teacher, _rb_tp, _rb_halves, _rb_sid):
+                            continue
+                        _rb_s['period'] = None  # temp remove for cap check
+                        _rb_exc = teacher_would_exceed_cap(_rb_teacher, _rb_tp, _rb_halves)
+                        if not _rb_exc:
+                            _rb_c6 = would_create_consecutive_6(_rb_teacher, _rb_tp, _rb_halves)
+                        else:
+                            _rb_c6 = False
+                        _rb_s['period'] = _rb_old_period  # restore
+                        if _rb_exc or _rb_c6:
+                            continue
+                        if not teacher_available(_rb_teacher, _rb_tp):
+                            continue
+                    # Room constraint
+                    if _rb_room and _rb_room != 'TBD' and _rb_room not in SHARED_ROOMS:
+                        if room_busy(_rb_room, _rb_tp, _rb_halves, _rb_sid):
+                            continue
+
+                    _rb_score = _predict_conflict_score(_rb_code, _rb_tp, _rb_halves, co_enroll)
+                    if _rb_score < _rb_best_score:
+                        _rb_best_score = _rb_score
+                        _rb_best_target = _rb_tp
+
+                if _rb_best_target is not None:
+                    _rb_s['period'] = _rb_best_target
+                    _rb_total_moves += 1
+                    _rb_moved_this_course += 1
+                    break  # moved one section from this doubled slot, next slot
+
+        if _rb_moved_this_course > 0:
+            _rb_courses_fixed += 1
+
+    if _rb_total_moves > 0:
+        print(f"    Period rebalancing: {_rb_total_moves} sections moved across {_rb_courses_fixed} courses")
+        # Show per-course summary
+        for _rb_ratio, _rb_code, _, _, _ in _rb_candidates:
+            _rb_sids = sec_by_code.get(_rb_code, [])
+            _rb_placed = [sid for sid in _rb_sids if sections[sid]['period'] is not None]
+            _rb_coverage = len(set(sections[sid]['period'] for sid in _rb_placed))
+            _rb_title = course_titles.get(str(_rb_code), f"Code {_rb_code}")
+            if _rb_coverage != len(_rb_placed):  # still has doubling
+                print(f"      {_rb_code} {_rb_title}: {_rb_coverage}/{len(PERIODS)} periods covered ({len(_rb_placed)} sections)")
+    else:
+        print(f"    Period rebalancing: no improvements found")
+
     if audit:
         _clear_priority_caches()
         _refresh_top_students()
